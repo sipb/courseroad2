@@ -18,12 +18,13 @@ body {
 	background-color: orange;
 }
 
+#center-panel {
+	flex-grow: 1;
+	background-color: grey;
+}
+
 #right-panel {
 	flex-basis: 350px;
 	background-color: aquamarine;
 }
 
-#center-panel {
-	flex-grow: 1;
-	background-color: grey;
-}

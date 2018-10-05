@@ -2,35 +2,36 @@
 
 <html>
 <head>
-	<!-- dev version -->
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	<link rel="stylesheet" href="global.css">
+  <!-- dev version -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="./source-of-truth.js"></script>
+  <link rel="stylesheet" href="global.css">
 <!-- production version, optimized for size and speed -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
-
-
 </head>
 
 <body>
 
-	<div id="left-panel" class="panel">
-		Degree audit
-		<!-- Degree audit, redesigned to be better -->
+  <div id="left-panel" class="panel">
+    <div id="degree-audit">
+    	{{ message }}
+    </div>
+  </div>
 
-		<p>Courses</p>
-	  <p>{{ message }}</p>
-	  <button v-on:click="reverseMessage">Reverse Message</button>
+  <div id="center-panel" class="panel">
+    <div id="road">
+    </div>
+  </div>
 
-	</div>
+  <div id="right-panel" class="panel">
+    <div id="class-browser">
+      <div id="search"></div>
+      <div id="class-info"></div>
+    </div>
+  </div>
 
-	<div id="center-panel" class="panel">
-	</div>
-
-	<div id="right-panel" class="panel">
-		All the things
-	</div>
-
-	<script src="script.js"></script>
+<!-- add some scripts here?? -->
+  <script src="./vue-js/audit.js"></script>
 
 </body>
 
