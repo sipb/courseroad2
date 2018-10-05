@@ -1,0 +1,29 @@
+html {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: row;
+	margin: 0px;
+	height: 100%;
+}
+
+.panel {
+	height: 100%;
+}
+
+#left-panel {
+	flex-basis: 200px;
+	background-color: orange;
+}
+
+#right-panel {
+	flex-basis: 350px;
+	background-color: aquamarine;
+}
+
+#center-panel {
+	flex-grow: 1;
+	background-color: grey;
+}

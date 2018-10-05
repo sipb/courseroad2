@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<!-- dev version -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="global.css">
+<!-- production version, optimized for size and speed -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+
+
+</head>
+
+<body>
+
+	<div id="left-panel" class="panel">
+		Degree audit
+		<!-- Degree audit, redesigned to be better -->
+
+		<p>Courses</p>
+	  <p>{{ message }}</p>
+	  <button v-on:click="reverseMessage">Reverse Message</button>
+
+	</div>
+
+	<div id="center-panel" class="panel">
+	</div>
+
+	<div id="right-panel" class="panel">
+		All the things
+	</div>
+
+	<script src="script.js"></script>
+
+</body>
+
+
+</html>
