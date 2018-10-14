@@ -17,7 +17,12 @@
 
   <div id="left-panel" class="panel">
     <div id="degree-audit">
-    	{{ message }}
+      <ul>
+        <req-tree
+            v-for="item in selectedReqs"
+            v-bind:root="reqTrees[item]">
+         </req-tree>
+      </ul>
     </div>
   </div>
 
