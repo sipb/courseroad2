@@ -36,20 +36,33 @@ Vue.component('req-tree', {
 const DegreeAudit = new Vue({
   el: '#degree-audit',
   data: {
-    selectedReqs: ['major6-3','major18gm',],
+    selectedReqs: ['girs','major6-3','minor2',],
     reqTrees: {
-      'major6-3': { // unfortunately have to have this here or it crashes on key lookup in the beginning...
+      // unfortunately have to have this here or it crashes on key lookup in the beginning...
+      // TODO: make that ^ not the case
+      'girs': {
           title: 'loading...',
           reqs: []
         },
-      'major18gm': {
+      'major6-3': {
+          title: 'loading...',
+          reqs: []
+        },
+      'minor2': {
           title: 'loading...',
           reqs: []
         },
       },
     reqList: [],
     selected: '',
-  },  
+  },
+  // computed: { // tried this to fix the thing above but it didn't update reactively
+  //   loadedReqs: function () {
+  //     return this.selectedReqs.filter(function(r) {
+  //       return this.reqTrees && (r in this.reqTrees);
+  //     })
+  //   }
+  // },
   mounted() {
     // TODO: this is kind of janky, and should not happen ideally:
     //  I'm bouncing the request through this proxy to avoid some issue with CORS
@@ -58,13 +71,17 @@ const DegreeAudit = new Vue({
       .then(response => {
         this.reqList = response.data;
       })
+    axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/girs`)
+      .then(response => {
+        this.reqTrees['girs'] = response.data;
+      })
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/major6-3`)
       .then(response => {
         this.reqTrees['major6-3'] = response.data;
       })
-    axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/major18gm`)
+    axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/minor2`)
       .then(response => {
-        this.reqTrees['major18gm'] = response.data;
+        this.reqTrees['minor2'] = response.data;
       })
     // return sourceOfTruth.selectedSubjects[0].id;
   },
