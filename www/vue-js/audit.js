@@ -39,7 +39,7 @@ const DegreeAudit = new Vue({
     selectedReqs: ['girs','major6-3','minor2',],
     reqTrees: {
       // unfortunately have to have this here or it crashes on key lookup in the beginning...
-      // TODO: make that ^ not the case
+      // TODO: make that ^ not the case. Probably by using the Vue key system properly/at all
       'girs': {
           title: 'loading...',
           reqs: []
