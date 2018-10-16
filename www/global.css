@@ -14,7 +14,7 @@ body {
 }
 
 #left-panel {
-	flex-basis: 200px;
+	flex-basis: 400px;
 	background-color: orange;
 }
 
