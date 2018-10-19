@@ -18,9 +18,9 @@ Vue.component('req-tree', {
         <div>{{ root.req }}</div>
         <a href="#" @click="toggleChildren" v-if="'reqs' in root"> show/hide </a>
         <ul v-if="showChildren">
-          <req-tree 
-            v-for="node in root.reqs" 
-            :root="node" 
+          <req-tree
+            v-for="node in root.reqs"
+            :root="node"
           >
           </req-tree>
         </ul>
