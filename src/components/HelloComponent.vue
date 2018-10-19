@@ -11,3 +11,4 @@ export default {
   }
 }
 </script>
+<!-- this is an example file -->
