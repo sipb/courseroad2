@@ -1,4 +1,4 @@
-# courseroad2
+# CourseRoad 2.0
 A 4-year academic planner for the MIT community.
 
 # Installation
