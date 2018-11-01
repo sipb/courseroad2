@@ -17,19 +17,18 @@
 </template>
 
 <script>
-modules.export = {
+export default {
+  name: 'req-tree',
   props: ['root'],
   data: function() {
     return {
       showChildren: false,
     }
   },
-  template:
-
-    methods: {
-      toggleChildren() {
-        this.showChildren = !this.showChildren;
-      }
+  methods: {
+    toggleChildren() {
+      this.showChildren = !this.showChildren;
     }
+  }
 }
 </script>
