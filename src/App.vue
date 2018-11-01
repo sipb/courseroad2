@@ -51,7 +51,6 @@ export default {
         },
       },
     reqList: [],
-    selected: '',
   }},
   // computed: { // tried this to fix the thing above but it didn't update reactively
   //   loadedReqs: function () {
@@ -80,7 +79,6 @@ export default {
       .then(response => {
         this.reqTrees['minor2'] = response.data;
       })
-    // return sourceOfTruth.selectedSubjects[0].id;
   },
 };
 </script>
