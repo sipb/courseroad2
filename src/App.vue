@@ -12,7 +12,6 @@
 
     <div id="center-panel" class="panel">
       <div id="road">
-        <road></road>
       </div>
     </div>
 
@@ -28,12 +27,10 @@
 
 <script>
 import Audit from './components/Audit.vue'
-import Road from './components/Road.vue'
 
 export default {
   components: {
     'audit': Audit,
-    'road': Road
   },
   data: function(){ return {
     selectedReqs: ['girs','major6-3','minor2',],
@@ -69,19 +66,19 @@ export default {
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
         this.reqList = response.data;
-      });
+      })
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/girs`)
       .then(response => {
         this.reqTrees['girs'] = response.data;
-      });
+      })
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/major6-3`)
       .then(response => {
         this.reqTrees['major6-3'] = response.data;
-      });
+      })
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/minor2`)
       .then(response => {
         this.reqTrees['minor2'] = response.data;
-      });
+      })
   },
 };
 </script>
