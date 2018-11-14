@@ -4,5 +4,4 @@ dist
 .babelrc
 build
 .package-lock.json
-..gitignore.un~
-.gitignore~
+*~
