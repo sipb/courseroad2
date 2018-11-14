@@ -17,7 +17,9 @@
 
     <div id="right-panel" class="panel">
       <div id="class-browser">
-        <div id="search"></div>
+        <div id="search">
+          <class-search v-bind:subjects="subjectsInfo"></class-search>
+        </div>
         <div id="class-info"></div>
       </div>
     </div>
@@ -27,10 +29,12 @@
 
 <script>
 import Audit from './components/Audit.vue'
+import ClassSearch from './components/ClassSearch.vue'
 
 export default {
   components: {
     'audit': Audit,
+    'class-search': ClassSearch,
   },
   data: function(){ return {
     selectedReqs: ['girs','major6-3','minor2',],
@@ -51,6 +55,10 @@ export default {
         },
       },
     reqList: [],
+
+    // A list of dictionaries containing info on current mit subjects.
+    // This should eventually be dynamically loaded
+    subjectsInfo: [{"name": "4.5389"}, {'name':'4.567'},{'name':'3.498'}],
   }},
   // computed: { // tried this to fix the thing above but it didn't update reactively
   //   loadedReqs: function () {
