@@ -1,2 +1,7 @@
 node_modules
 dist
+.idea
+.babelrc
+build
+.package-lock.json
+*~
