@@ -1,4 +1,8 @@
 node_modules
 dist
-.gitignore
 .idea
+.babelrc
+build
+.package-lock.json
+..gitignore.un~
+.gitignore~
