@@ -92,7 +92,7 @@ export default {
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
-    var term = '2018FA';
+    var term = '2018SP';
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}http://coursews.mit.edu/coursews/?term=${term}`)
       .then(response => {
         this.subjectsInfo = response.data.items.filter(
