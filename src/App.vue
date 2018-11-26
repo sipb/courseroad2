@@ -59,9 +59,8 @@ export default {
       },
     reqList: [],
 
-    // A list of dictionaries containing info on current mit subjects.
-    // This should eventually be dynamically loaded
-    subjectsInfo: [{"name": "4.5389"}, {'name':'4.567'},{'name':'3.498'}],
+    // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
+    subjectsInfo: [{"id": "6.00"},],
   }},
   // computed: { // tried this to fix the thing above but it didn't update reactively
   //   loadedReqs: function () {
@@ -90,6 +89,18 @@ export default {
       .then(response => {
         this.reqTrees['minor2'] = response.data;
       });
+    // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
+    // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
+    // , 'Accept': 'application/json'} ?
+    var term = '2018SP';
+    axios.get(`${'https://cors-anywhere.herokuapp.com/'}http://coursews.mit.edu/coursews/?term=${term}`)
+      .then(response => {
+        this.subjectsInfo = response.data.items.filter(
+            function(item) {
+              // possible 'type' labels: {'LabSession', 'Class', 'LectureSession', 'RecitationSession'}
+              return item['type'] == 'Class'
+            })
+      })
   },
 };
 </script>
