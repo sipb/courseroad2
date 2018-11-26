@@ -1,6 +1,6 @@
 <template>
-  <div class="semester-bin">
-
+  <div :class="semesterStyles">
+    Semester {{semesterInfo.id}}
     <class v-for="subject in semesterInfo.subjects" :key="subject.id"
       v-bind:classInfo="subject">
 
@@ -20,14 +20,31 @@
     props:['semesterInfo'],
     components: {
       'class': Class
+    },
+    computed: {
+      semesterStyles: function() {
+        return {
+          semesterBin: true,
+          dark: this.semesterInfo.id % 2 == 0,
+          light: this.semesterInfo.id % 2 == 1,
+        }
+      }
     }
   }
 </script>
 
 <style scoped>
-  .semester-bin {
+  .semesterBin {
     display: flex;
     justify-content: space-between;
     padding: 5% 10% 5% 10%;
+  }
+
+  .dark {
+    background-color: #3AAED8;
+  }
+
+  .light {
+    background-color: #2BD9FE;
   }
 </style>

@@ -19,7 +19,7 @@ body {
 
 #left-panel {
 	flex-basis: 400px;
-	background-color: orange;
+	background-color: #52AA8A;
 }
 
 #center-panel {
@@ -29,6 +29,6 @@ body {
 
 #right-panel {
 	flex-basis: 350px;
-	background-color: aquamarine;
+	background-color: #388659;
 }
 
