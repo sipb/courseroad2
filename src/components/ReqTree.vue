@@ -1,11 +1,20 @@
 <template>
   <li>
     <div class="req-tree">
-      <div>{{ root.title }}</div>
+      <div>
+        <a href="#" @click="toggleChildren" v-if="'reqs' in root" class="req-title">
+          <span v-if="showChildren" class='chevron'></span>
+          <span v-else class='chevron right'></span>
+          {{ root.title }}
+        </a>
+        <span v-else>● {{ root.title }}</span>
+      </div>
+
       <div style="font-style:italic">{{ root['threshold-desc'] }}</div>
+
       <div>{{ root.req }}</div>
-      <a href="#" @click="toggleChildren" v-if="'reqs' in root"> show/hide </a>
-      <ul v-if="showChildren">
+
+      <ul class="tree" v-if="showChildren">
         <req-tree
           v-for="node in root.reqs"
           :root="node"
