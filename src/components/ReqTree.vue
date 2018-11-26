@@ -4,7 +4,7 @@
 
 
       <div v-if="'reqs' in root">
-        <a href="#" @click="toggleChildren" class="req-title">
+        <button @click="toggleChildren" class="req-title">
           <span v-if="showChildren" class='chevron'></span>
           <span v-else class='chevron right'></span>
 
@@ -12,7 +12,7 @@
             <div style="font-style:italic">{{ root['threshold-desc'] }}</div>
           </span>
           <span v-else style="font-style:italic">{{ root['threshold-desc'] }}</span>
-        </a>
+        </button>
 
       </div>
 
@@ -22,7 +22,7 @@
 
       <div>
         <span v-if="!('title' in root) && 'req' in root">● </span>
-        {{ root.req }}
+        <span :class="reqFulfilledHash">{{ root.req }}</span>
       </div>
 
       <ul class="tree" v-if="showChildren">
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+
+
 export default {
   name: 'req-tree',
   props: ['root'],
@@ -49,6 +51,27 @@ export default {
     toggleChildren() {
       this.showChildren = !this.showChildren;
     }
+  },
+  computed: {
+    reqFulfilledHash: function() {
+      let hashCode = (s) => {
+        var h = 0, l = s.length, i = 0;
+        if ( l > 0 )
+          while (i < l)
+            h = (h << 5) - h + s.charCodeAt(i++) | 0;
+        return h;
+      };
+
+      return {
+        green: this.root.req && hashCode(this.root.req) % 3 === 0,
+      }
+    }
   }
 }
 </script>
+
+<style scoped>
+.green {
+  color: green;
+}
+</style>
