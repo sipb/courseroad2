@@ -3,7 +3,7 @@
     <div class="req-tree">
       
       <div v-if="'reqs' in root">
-        <button @click="toggleChildren" class="req-title">
+        <button type="button" @click="toggleChildren" class="req-title">
           <span v-if="showChildren" class='chevron'></span>
           <span v-else class='chevron right'></span>
 
@@ -70,7 +70,43 @@ export default {
 </script>
 
 <style scoped>
-.green {
-  color: green;
+  .green {
+    color: green;
+  }
+
+  ul.tree {
+    padding-left: 2rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+  }
+
+  button.req-title {
+    text-decoration: none;
+    text-align: left;
+  }
+
+  button.req-title:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+
+  .chevron:before {
+    border-style: solid;
+    border-width: 0.16em 0.16em 0 0;
+    content: '';
+    display: inline-block;
+    height: 0.35em;
+    left: 0.2em;
+    position: relative;
+    top: 0.23em;
+    transform: rotate(135deg);
+    vertical-align: top;
+    width: 0.35em;
+    margin-right: .3em;
+  }
+
+  .chevron.right:before {
+    left: 0;
+    transform: rotate(45deg);
 }
 </style>

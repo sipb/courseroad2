@@ -18,7 +18,7 @@
 
 <style scoped>
 .classbox {
-  padding: 10px 20px;
+  padding: 1rem 2rem;
   border-style: solid;
   border-width: 0.2em;
   border-radius: 0.5em;
