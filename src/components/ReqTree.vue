@@ -4,8 +4,8 @@
       
       <div v-if="'reqs' in root">
         <button type="button" @click="toggleChildren" class="req-title">
-          <span v-if="showChildren" class='chevron'></span>
-          <span v-else class='chevron right'></span>
+          <span v-if="showChildren" class='chevron down'></span>
+          <span v-else class='chevron right' v-bind:class="{close : !firstTime}"></span>
 
           <span v-if="'title' in root">{{ root.title }}
             <div style="font-style:italic">{{ root['threshold-desc'] }}</div>
@@ -44,11 +44,13 @@ export default {
   data: function() {
     return {
       showChildren: false,
+      firstTime: true,
     }
   },
   methods: {
     toggleChildren() {
       this.showChildren = !this.showChildren;
+      this.firstTime = false;
     }
   },
   computed: {
@@ -99,7 +101,6 @@ export default {
     left: 0.2em;
     position: relative;
     top: 0.23em;
-    transform: rotate(135deg);
     vertical-align: top;
     width: 0.35em;
     margin-right: .3em;
@@ -107,6 +108,38 @@ export default {
 
   .chevron.right:before {
     left: 0;
+    top: 0.30em;
     transform: rotate(45deg);
-}
+  }
+
+  .chevron.close:before {
+    animation: rotate-close .1s ease forwards;
+  }
+
+  .chevron.down:before {
+    animation: rotate-open .1s ease forwards;
+  }
+
+  @keyframes rotate-open {
+    0% {
+      left: 0;
+      transform: rotate(45deg);
+    }
+    100% {
+      left: .2em;
+      transform: rotate(135deg);
+    }
+  }
+
+  @keyframes rotate-close {
+    0% {
+      left: .2em;
+      transform: rotate(135deg);
+    }
+    100% {
+      left: 0;
+      transform: rotate(45deg);
+    }
+  }
+
 </style>
