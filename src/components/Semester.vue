@@ -41,10 +41,10 @@
   }
 
   .dark {
-    background-color: #3AAED8;
+    background-color: #bcdeea;
   }
 
   .light {
-    background-color: #2BD9FE;
+    background-color: #cde7f0;
   }
 </style>

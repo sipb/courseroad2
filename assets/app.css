@@ -1,10 +1,31 @@
+:root {
+	font-size: 62.5%;
+}
+
+/** Style resets */
+button, input[type="submit"], input[type="reset"] {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+}
+
+ul {
+	list-style-type: none;
+}
+
 html {
 	height: 100%;
 }
 
 body {
+	font-family: 'Roboto', 'Helvetica', sans-serif;
+	font-size: 1.6rem;
 	margin: 0px;
 	height: 100%;
+	color: #202020; /** Off black for text */
 }
 
 #app-wrapper {
@@ -19,16 +40,20 @@ body {
 
 #left-panel {
 	flex-basis: 400px;
-	background-color: #52AA8A;
+	background-color: #ffffe6;
+	border-right: 3px solid #f593a6;
+	overflow-y: auto;
 }
 
 #center-panel {
 	flex-grow: 1;
-	background-color: grey;
+	background-color: #bcdeea;
 }
 
 #right-panel {
 	flex-basis: 350px;
-	background-color: #388659;
+	background-color: #ffffe6;
+	border-left: 3px solid #f593a6;
 }
+
 
