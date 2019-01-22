@@ -64,6 +64,7 @@ export default {
 
       return {
         green: this.root.req && hashCode(this.root.req) % 3 === 0,
+        pd: true,
       }
     }
   }
@@ -74,6 +75,9 @@ export default {
 <style scoped>
   .green {
     color: green;
+  }
+  .pd {
+    background-color: #fff;
   }
 
   ul.tree {

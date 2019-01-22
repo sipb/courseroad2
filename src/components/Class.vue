@@ -10,7 +10,7 @@ export default {
   props: ['classInfo'],
   data() {
     return {
-      isSatisfied: true
+      isSatisfied: true,
     }
   },
 }
