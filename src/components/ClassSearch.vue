@@ -10,25 +10,26 @@
   </div>
 </template>
 
-<script>
 
-  export default {
-    name: "ClassSearch",
-    props: ['subjects'],
-    data: function () {
-      return {
-        nameInput: ""
-      }
-    },
-    computed: {
-      autocomplete: function () {
-        return this.subjects.map(subject => subject.id).filter(name => {
-          return this.nameInput !== "" && this.nameInput <= name.length && name.indexOf(this.nameInput) === 0;
-        });
-      }
+<script>
+export default {
+  name: "ClassSearch",
+  props: ['subjects'],
+  data: function () {
+    return {
+      nameInput: ""
+    }
+  },
+  computed: {
+    autocomplete: function () {
+      return this.subjects.map(subject => subject.id).filter(name => {
+        return this.nameInput !== "" && this.nameInput <= name.length && name.indexOf(this.nameInput) === 0;
+      });
     }
   }
+}
 </script>
+
 
 <style scoped>
   .searchdiv {

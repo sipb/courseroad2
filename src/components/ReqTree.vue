@@ -35,9 +35,8 @@
   </li>
 </template>
 
+
 <script>
-
-
 export default {
   name: 'req-tree',
   props: ['root'],
@@ -70,6 +69,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
   .green {
