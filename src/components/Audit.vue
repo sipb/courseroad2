@@ -1,5 +1,5 @@
 <template>
-  <ul>
+  <ul class="tree">
     <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
     <req-tree
         v-for="item in selectedReqs"

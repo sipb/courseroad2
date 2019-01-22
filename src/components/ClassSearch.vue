@@ -1,6 +1,5 @@
 <template>
-  <div>
-
+  <div class="searchdiv">
     <h1>Class Search</h1>
     <input v-model="nameInput" placeholder="6.0061 Silly Systems" type="text"/>
     <h4> Search: {{ nameInput}} </h4>
@@ -32,5 +31,7 @@
 </script>
 
 <style scoped>
-
+  .searchdiv {
+    padding: 1em;
+  }
 </style>

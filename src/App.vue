@@ -75,6 +75,7 @@ export default {
     //  see this issue for more: https://github.com/axios/axios/issues/853
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
+        console.log(response.data);
         this.reqList = response.data;
       });
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/girs`)
@@ -83,6 +84,7 @@ export default {
       });
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/major6-3`)
       .then(response => {
+        console.log(response.data['major6-3']);
         this.reqTrees['major6-3'] = response.data;
       });
     axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/requirements/get_json/minor2`)
