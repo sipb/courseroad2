@@ -5,16 +5,17 @@
 </template>
 
 <script>
-  export default {
-    name: "class",
-    props: ['classInfo'],
-    data() {
-      return {
-        isSatisfied: true
-      }
-    },
-  }
+export default {
+  name: "class",
+  props: ['classInfo'],
+  data() {
+    return {
+      isSatisfied: true
+    }
+  },
+}
 </script>
+
 
 <style scoped>
   .classbox {

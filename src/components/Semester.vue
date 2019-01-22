@@ -11,27 +11,28 @@
   </div>
 </template>
 
+
 <script>
+import Class from './Class.vue'
 
-  import Class from './Class.vue'
-
-  export default {
-    name: "semester",
-    props:['semesterInfo'],
-    components: {
-      'class': Class
-    },
-    computed: {
-      semesterStyles: function() {
-        return {
-          semesterBin: true,
-          dark: this.semesterInfo.id % 2 == 0,
-          light: this.semesterInfo.id % 2 == 1,
-        }
+export default {
+  name: "semester",
+  props:['semesterInfo'],
+  components: {
+    'class': Class
+  },
+  computed: {
+    semesterStyles: function() {
+      return {
+        semesterBin: true,
+        dark: this.semesterInfo.id % 2 == 0,
+        light: this.semesterInfo.id % 2 == 1,
       }
     }
   }
+}
 </script>
+
 
 <style scoped>
   .semesterBin {

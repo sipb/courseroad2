@@ -28,6 +28,37 @@
 </template>
 
 
+<style scoped>
+  #app-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+  }
+
+  .panel {
+    height: 100%;
+  }
+
+  #left-panel {
+    flex-basis: 400px;
+    background-color: #ffffe6;
+    border-right: 3px solid #f593a6;
+    overflow-y: auto;
+  }
+
+  #center-panel {
+    flex-grow: 1;
+    background-color: #bcdeea;
+  }
+
+  #right-panel {
+    flex-basis: 350px;
+    background-color: #ffffe6;
+    border-left: 3px solid #f593a6;
+  }
+</style>
+
+
 <script>
 import Audit from './components/Audit.vue'
 import ClassSearch from './components/ClassSearch.vue'
