@@ -1,12 +1,11 @@
 <template>
   <div :class="semesterStyles">
-    Semester {{semesterInfo.id}}
-    <class v-for="subject in semesterInfo.subjects" :key="subject.id"
+    Semester {{index}}
+    <class v-for="subject in semesterSubjects" :key="subject.id + index"
       v-bind:classInfo="subject">
-
     </class>
 
-    <!--<h1>{{semesterInfo.name}}</h1>-->
+    <!--<h1>{{selectedSubjects.name}}</h1>-->
 
   </div>
 </template>
@@ -17,7 +16,7 @@ import Class from './Class.vue'
 
 export default {
   name: "semester",
-  props:['semesterInfo'],
+  props:['selectedSubjects','index'],
   components: {
     'class': Class
   },
@@ -25,9 +24,14 @@ export default {
     semesterStyles: function() {
       return {
         semesterBin: true,
-        dark: this.semesterInfo.id % 2 == 0,
-        light: this.semesterInfo.id % 2 == 1,
+        dark: this.index % 2 == 0,
+        light: this.index % 2 == 1,
       }
+    },
+    semesterSubjects: function() {
+      return this.selectedSubjects.filter(subj => {
+        return this.index === subj.semester;
+      });
     }
   }
 }

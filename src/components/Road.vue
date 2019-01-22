@@ -1,7 +1,12 @@
 <template>
   <div>
-    <semester v-for="stage in courseroad" :key="stage.id"
-              v-bind:semesterInfo="stage"></semester>
+    <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
+    <!-- v-for index in N starts at 1... -->
+    <semester v-for="index in 8"
+              :key="index-1"
+              v-bind:index="index-1"
+              v-bind:selectedSubjects="selectedSubjects">
+    </semester>
   </div>
 </template>
 
@@ -16,17 +21,50 @@ export default {
   },
   data: function () { return {
       // TODO: Really we should grab this from a global datastore
-      courseroad : [
-        {'name':'S1', 'id':0, 'subjects':[
-          {'name':'6.006', 'id':0},
-          {'name':'6.031', 'id':1},
-          {'name':'6.009', 'id':2}]},
-        {'name':'S2', 'id':1, 'subjects':[
-          {'name':'6.007', 'id':3}]},
-        {'name':'S3', 'id':2, 'subjects':[]},
-        {'name':'S4', 'id':3, 'subjects':[
-          {'name':'6.172', 'id':4},
-        ]},
+      // now in the same format as FireRoad
+      selectedSubjects : [
+        {
+          overrideWarnings : false,
+          semester : 0,
+          title : "Generic Physics I GIR",
+          id : "PHY1",
+          units : 12
+        },
+        {
+          overrideWarnings : false,
+          semester : 1,
+          title : "Principles of Chemical Science",
+          id : "5.112",
+          units : 12
+        },
+        {
+          overrideWarnings : false,
+          semester : 4,
+          title : "Fundamentals of Programming",
+          id : "6.009",
+          units : 12
+        },
+        {
+          overrideWarnings : false,
+          semester : 0,
+          title : "Intro to EECS",
+          id : "6.01",
+          units : 12
+        },
+        {
+          overrideWarnings : false,
+          semester : 4,
+          title : "Advanced Music Performance",
+          id : "21M.480",
+          units : 6
+        },
+        {
+          overrideWarnings : false,
+          semester : 6,
+          title : "Advanced Music Performance",
+          id : "21M.480",
+          units : 6
+        }
       ]
     }
   }

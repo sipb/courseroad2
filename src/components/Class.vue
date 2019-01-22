@@ -1,6 +1,6 @@
 <template>
   <div :class="{classbox: true, satisfied: isSatisfied}">
-    {{classInfo.name}}
+    {{classInfo.id}} {{classInfo.title}}
   </div>
 </template>
 
