@@ -2,40 +2,10 @@
   <div class="searchdiv">
     <h1>Class Search</h1>
     <input v-model="nameInput" placeholder="6.0061 Silly Systems" type="text"/>
-    <filter-set v-model = "myFunVariable" v-bind:label="'hi there'" v-bind:filters="[{'name': 'Any', 'regex': 'fun'}, {'name': 'unicorn', 'regex': 'uni|corn'}]">
-    </filter-set>
-    <div>
-      <label class = "filter-title">GIR</label>
-      <input type = "checkbox" v-model = "girInput" value = ".+">Any</input>
-      <input type = "checkbox" v-model = "girInput" value = ".*(LAB|LAB2).*">Lab</input>
-      <input type = "checkbox" v-model = "girInput" value = ".*(REST|RST2).*">REST</input>
-    </div>
-    <div>
-      <label class = "filter-title">HASS</label>
-      <input type = "checkbox" v-model = "hassInput" value = ".+">Any</input>
-      <input type = "checkbox" v-model = "hassInput" value = ".*HA.*">Arts</input>
-      <input type = "checkbox" v-model = "hassInput" value = ".*HS.*">Social Sciences</input>
-      <input type = "checkbox" v-model = "hassInput" value = ".*HH.*">Humanity</input>
-      <input type = "checkbox" v-model = "hassInput" value = ".*HE.*">Elective</input>
-    </div>
-    <div>
-      <label class = "filter-title">CI</label>
-      <input type = "checkbox" v-model = "ciInput" value = "CI.+">Any</input>
-      <input type = "checkbox" v-model = "ciInput" value = "CIH">CI-H</input>
-      <input type = "checkbox" v-model = "ciInput" value = "CIHW">CI-HW</input>
-      <input type = "checkbox" v-model = "ciInput" value = "CIM">CI-M</input>
-      <input type = "checkbox" v-model = "ciInput" value = "^(?![\s\S])">Not CI</input>
-    </div>
-    <!-- <label>Semester</label>
-    <input type = "checkbox" v-model = "semesterInput" value = "Fall">Fall</input>
-    <input type = "checkbox" v-model = "semesterInput" value = "Spring">Spring</input>
-    <input type = "checkbox" v-model = "semesterInput" value = "IAP">IAP</input>
-    <input type = "checkbox" v-model = "semesterInput" value = "Summer">Summer</input> -->
-    <div>
-      <label class = "filter-title">Level</label>
-      <input type = "checkbox" v-model = "levelInput" value = "Undergraduate">Undergraduate</input>
-      <input type = "checkbox" v-model = "levelInput" value = "Graduate">Graduate</input>
-    </div>
+    <filter-set v-model = "girInput" v-bind:label="'GIR'" v-bind:filters="classFilters.girInput"></filter-set>
+    <filter-set v-model = "hassInput" v-bind:label="'HASS'" v-bind:filters="classFilters.hassInput"></filter-set>
+    <filter-set v-model = "ciInput" v-bind:label = "'CI'" v-bind:filters="classFilters.ciInput"></filter-set>
+    <filter-set v-model = "levelInput" v-bind:label = "'Level'" v-bind:filters="classFilters.levelInput"></filter-set>
     <h4> Search: {{ nameInput}} </h4>
     <h4> Results: </h4>
     <ul>
@@ -62,7 +32,6 @@ export default {
       ciInput: [],
       // semesterInput: [],
       levelInput: [],
-      myFunVariable: ["fun"],
       classFilters: {
         girInput: [
           {name: "Any", regex: ".+"},
@@ -92,8 +61,6 @@ export default {
   },
   computed: {
     autocomplete: function () {
-      console.log("myFunVariable");
-      console.log(this.myFunVariable);
       var returnAny = this.nameInput.length || this.girInput.length || this.hassInput.length || this.ciInput.length || this.levelInput.length;
       if(returnAny) {
         function escapeRegExp(string) {
