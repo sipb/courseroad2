@@ -2,6 +2,8 @@
   <div class="searchdiv">
     <h1>Class Search</h1>
     <input v-model="nameInput" placeholder="6.0061 Silly Systems" type="text"/>
+    <filter-set v-model = "myFunVariable" v-bind:label="'hi there'" v-bind:filters="[{'name': 'Any', 'regex': 'fun'}, {'name': 'unicorn', 'regex': 'uni|corn'}]">
+    </filter-set>
     <div>
       <label class = "filter-title">GIR</label>
       <input type = "checkbox" v-model = "girInput" value = ".+">Any</input>
@@ -44,8 +46,13 @@
 
 
 <script>
+import FilterSet from "./FilterSet.vue";
+
 export default {
   name: "ClassSearch",
+  components: {
+    "filter-set": FilterSet
+  },
   props: ['subjects'],
   data: function () {
     return {
@@ -54,11 +61,39 @@ export default {
       hassInput: [],
       ciInput: [],
       // semesterInput: [],
-      levelInput: []
+      levelInput: [],
+      myFunVariable: ["fun"],
+      classFilters: {
+        girInput: [
+          {name: "Any", regex: ".+"},
+          {name: "Lab", regex: ".*(LAB|LAB2).*"},
+          {name: "REST", regex: ".*(REST|RST2).*"}
+        ],
+        hassInput: [
+          {name: "Any", regex: ".*HA.*"},
+          {name: "Art", regex: ".*HA.*"},
+          {name: "Social Science", regex: ".*HS.*"},
+          {name: "Humanity", regex: ".*HH.*"},
+          {name: "Elective", regex: ".*HE.*"}
+        ],
+        ciInput: [
+          {name: "Any", regex: "CI.+"},
+          {name: "CI-H", regex: "CIH"},
+          {name: "CI-HW", regex: "CIHW"},
+          {name: "CI-M", regex: "CIM"},
+          {name: "Not CI", regex: "^(?![\s\S])"}
+        ],
+        levelInput: [
+          {name: "Undergraduate", regex: "Undergraduate"},
+          {name: "Graduate", regex: "Graduate"}
+        ]
+      }
     }
   },
   computed: {
     autocomplete: function () {
+      console.log("myFunVariable");
+      console.log(this.myFunVariable);
       var returnAny = this.nameInput.length || this.girInput.length || this.hassInput.length || this.ciInput.length || this.levelInput.length;
       if(returnAny) {
         function escapeRegExp(string) {

@@ -63,12 +63,14 @@
 import Audit from './components/Audit.vue'
 import ClassSearch from './components/ClassSearch.vue'
 import Road from './components/Road.vue'
+import FilterSet from "./components/FilterSet.vue"
 
 export default {
   components: {
     'audit': Audit,
     'class-search': ClassSearch,
-    'road': Road
+    'road': Road,
+    'filter-set': FilterSet
   },
   data: function(){ return {
     selectedReqs: ['girs','major6-3','minor2',],
