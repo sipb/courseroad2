@@ -34,27 +34,27 @@ export default {
       levelInput: [],
       classFilters: {
         girInput: [
-          {name: "Any", regex: ".+"},
-          {name: "Lab", regex: ".*(LAB|LAB2).*"},
-          {name: "REST", regex: ".*(REST|RST2).*"}
+          {name: "Any", short: "Any", regex: ".+"},
+          {name: "Lab", short: "Lab", regex: ".*(LAB|LAB2).*"},
+          {name: "REST", short: "REST", regex: ".*(REST|RST2).*"}
         ],
         hassInput: [
-          {name: "Any", regex: ".+"},
-          {name: "Art", regex: ".*HA.*"},
-          {name: "Social Science", regex: ".*HS.*"},
-          {name: "Humanity", regex: ".*HH.*"},
-          {name: "Elective", regex: ".*HE.*"}
+          {name: "Any", short: "Any", regex: ".+"},
+          {name: "Art", short: "A", regex: ".*HA.*"},
+          {name: "Social Science", short: "S", regex: ".*HS.*"},
+          {name: "Humanity", short: "H", regex: ".*HH.*"},
+          {name: "Elective", short: "E", regex: ".*HE.*"}
         ],
         ciInput: [
-          {name: "Any", regex: "CI.+"},
-          {name: "CI-H", regex: "CIH"},
-          {name: "CI-HW", regex: "CIHW"},
-          {name: "CI-M", regex: "CIM"},
-          {name: "Not CI", regex: "^(?![\s\S])"}
+          {name: "Any", short: "Any", regex: "CI.+"},
+          {name: "CI-H", short: "CI-H", regex: "CIH"},
+          {name: "CI-HW", short: "CI-HW", regex: "CIHW"},
+          {name: "CI-M", short: "CI-M", regex: "CIM"},
+          {name: "Not CI", short: "None", regex: "^(?![\s\S])"}
         ],
         levelInput: [
-          {name: "Undergraduate", regex: "Undergraduate"},
-          {name: "Graduate", regex: "Graduate"}
+          {name: "Undergraduate", short: "UG", regex: "Undergraduate"},
+          {name: "Graduate", short: "G", regex: "Graduate"}
         ]
       }
     }
