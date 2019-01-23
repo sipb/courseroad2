@@ -1,7 +1,23 @@
+<!-- this is a cool idea for class info on click: https://vuetifyjs.com/en/components/expansion-panels#popout-inset -->
+
 <template>
-  <div :class="{classbox: true, satisfied: isSatisfied}">
-    {{classInfo.id}} {{classInfo.title}}
-  </div>
+  <v-card
+    :class="{classbox: true, satisfied: isSatisfied}"
+  >
+    <v-container
+      height="200px"
+      fluid
+      pa-2
+    >
+      <v-layout fill-height>
+        <v-flex xs12 align-end flexbox>
+          <div >
+          {{classInfo.id}} {{classInfo.title}}
+          </div>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -18,20 +34,18 @@ export default {
 
 
 <style scoped>
-  .classbox {
+/*  .classbox {
     padding: 1rem 2rem;
     border-style: solid;
     border-width: 0.2em;
     border-radius: 0.5em;
   }
-
+*/
   .satisfied {
     background: #98fb98;
-    border-color: #79c879;
   }
   /* this is a bad color, change it */
   .unsatisfied {
     background: #eb7e7e;
-    border-color: #e75f5f;
   }
 </style>
