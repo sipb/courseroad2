@@ -22,8 +22,9 @@ export default {
   },
   computed: {
     autocomplete: function () {
+      console.log(this.subjects);
       return this.subjects.map(subject => subject.id).filter(name => {
-        return this.nameInput !== "" && this.nameInput <= name.length && name.indexOf(this.nameInput) === 0;
+        return this.nameInput !== "" && this.nameInput.length <= name.length && name.indexOf(this.nameInput) === 0;
       });
     }
   }
