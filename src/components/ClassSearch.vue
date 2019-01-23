@@ -39,7 +39,7 @@ export default {
           {name: "REST", regex: ".*(REST|RST2).*"}
         ],
         hassInput: [
-          {name: "Any", regex: ".*HA.*"},
+          {name: "Any", regex: ".+"},
           {name: "Art", regex: ".*HA.*"},
           {name: "Social Science", regex: ".*HS.*"},
           {name: "Humanity", regex: ".*HH.*"},
