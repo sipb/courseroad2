@@ -6,18 +6,13 @@
     expand
   >
     <!-- v-for index in N starts at 1... -->
-    <v-expansion-panel-content
+    <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
+    <semester 
       v-for="index in 8"
       :key="index-1"
-    >
-      <!-- not sure why but I can't put this in the semester file, darn -->
-      <div slot="header">Semester {{index-1}}</div>
-      <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
-      <semester 
-        v-bind:index="index-1"
-        v-bind:selectedSubjects="selectedSubjects">
-      </semester>
-    </v-expansion-panel-content>
+      v-bind:index="index-1"
+      v-bind:selectedSubjects="selectedSubjects">
+    </semester>
   </v-expansion-panel>
 </template>
 
