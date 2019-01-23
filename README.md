@@ -15,4 +15,4 @@ Then, just do `npm install <package> --save-dev` for every package mentioned in 
 Honestly I don't understand how any of this package stuff works. (TODO)
 
 # Running
-`npm run dev` then go to <http://localhost:8080/>, I think.
+`npm run dev` then go to <http://localhost:8080/>.
