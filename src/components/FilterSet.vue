@@ -1,8 +1,8 @@
 <template>
   <div>
     <label class = "filter-title">{{label}}</label>
-    <div v-for = "filter in filters" v-on:click = "check" v-bind:class = "buttonClass(shouldBeChecked(filter.regex))">
-        <input class = "hidden-checkbox" type = "checkbox" :checked = "shouldBeChecked(filter.regex)" :value = "filter.regex">{{filter.short}}</input>
+    <div v-for = "filter in filters" v-on:click = "check" v-bind:class = "buttonClass(shouldBeChecked(filter.filterString))">
+        <input class = "hidden-checkbox" type = "checkbox" :checked = "shouldBeChecked(filter.filterString)" :value = "filter.filterString">{{filter.short}}</input>
     </div>
   </div>
 </template>
