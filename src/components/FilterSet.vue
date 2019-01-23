@@ -12,11 +12,6 @@ export default {
   props: ["value", "label", "filters"],
   computed: {
   },
-  data: function () {
-    return {
-
-    }
-  },
   methods: {
     buttonClass: function(buttonBool) {
       if(buttonBool) {
@@ -46,18 +41,7 @@ export default {
         newValue.splice(newValue.indexOf(input.value),1);
       }
       this.$emit("input", newValue);
-    },
-    // updateInput(event) {
-    //   console.log("updating input");
-    //   let isChecked = event.target.checked;
-    //   let newValue = [...this.value];
-    //   if(isChecked) {
-    //     newValue.push(event.target.value);
-    //   } else {
-    //     newValue.splice(newValue.indexOf(event.target.value),1);
-    //   }
-    //   this.$emit("input", newValue);
-    // }
+    }
   }
 }
 </script>
@@ -94,6 +78,5 @@ export default {
   background-color: var(--secondary-light);
   border-color: var(--secondary-light);
   color: white;
-
 }
 </style>
