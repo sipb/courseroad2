@@ -27,6 +27,7 @@ export default {
   props: ['subjects'],
   data: function () {
     return {
+      //lists of the filters turned on in each filter group
       chosenFilters: {
         nameInput: "",
         girInput: [],
@@ -36,6 +37,9 @@ export default {
         levelInput: [],
         unitInput: []
       },
+      //list of all filters
+      //most are regex but unitInput tests math equations
+      //name is the display name of the filter, short is the short display name, and filterString is the filter regex/math
       allFilters: {
         girInput: [
           {name: "Any", short: "Any", filterString: ".+"},
@@ -70,24 +74,30 @@ export default {
           {name: ">=15", short: ">15", filterString:"$>15"}
         ]
       },
+      //modes to filter by across a filter group
       filterGroupModes: {
         "AND": function(a,b) { return a && b; },
         "OR": function(a,b) { return a || b; }
       },
+      //set this to AND to get subjects that match all filters turned on in a group
+      //set this to OR to get subjects that match any filter turned on in a group
       filterGroupMode: "OR"
     }
   },
   computed: {
     autocomplete: function () {
+      //only display subjects if you are filtering by something
       var returnAny = false;
       for(var filterName in this.chosenFilters) {
         returnAny = returnAny || this.chosenFilters[filterName].length;
       }
       var returnAny = this.chosenFilters.nameInput.length || this.chosenFilters.girInput.length || this.chosenFilters.hassInput.length || this.chosenFilters.ciInput.length || this.chosenFilters.levelInput.length || this.chosenFilters.unitInput.length;
       if(returnAny) {
+        //escapes special characters for regex in a string
         function escapeRegExp(string) {
           return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
         }
+        //gets the .test function (which tests if a string matches regex) from each regex filter in a group
         function getRegexFuncs(regexStrings) {
           return regexStrings.map(function(rs) {
             var r = new RegExp(rs);
@@ -95,6 +105,8 @@ export default {
             return t;
           });
         }
+        //gets a function that returns true if a string is true
+        //replaces $ in the string with the input (value of an attribute of the subject)
         function getMathFuncs(mathStrings) {
           return mathStrings.map(function(ms) {
             return function(input) {
@@ -102,6 +114,7 @@ export default {
             }.bind({ms: ms});
           })
         }
+        //gets functions that return a boolean if a filter is true
         var filters = {
           "id": getRegexFuncs(["^"+this.chosenFilters.nameInput]),
           "gir_attribute": getRegexFuncs(this.chosenFilters.girInput),
@@ -119,16 +132,21 @@ export default {
         //   return unique(allSubjects.map(s=>s[attr]));
         // }
         // console.log(allAttr("total-units"));
+        //and or or function based on filter mode
         var filterAction = this.filterGroupModes[this.filterGroupMode];
         return this.subjects.filter(function(subject) {
           for(var attr in filters) {
+            //each test function in a filter group
             var testers = filters[attr];
             if(testers.length) {
+              //start with false for OR mode, and true for AND mode
               var passesAttributeGroup = !filterAction(false, true);
+              //use the filter mode function (OR or AND) and test all filters in a group
               for(var t = 0; t < testers.length; t++) {
                 passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subject[attr]));
               }
               if(!passesAttributeGroup) {
+                //if the subject doesn't pass a group, don't include it in the list
                 return false;
               }
             }

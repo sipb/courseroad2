@@ -13,6 +13,7 @@ export default {
   computed: {
   },
   methods: {
+    //change style of button depending on the hidden checkbox
     buttonClass: function(buttonBool) {
       if(buttonBool) {
         return {
@@ -26,9 +27,11 @@ export default {
         }
       }
     },
+    //determines if a checkbox should be checked based on if the value is in the v-model array
     shouldBeChecked(val) {
       return this.value.includes(val);
     },
+    //change the value of the v-model array when a checkbox is checked or unchecked
     check(event) {
       var button = event.target;
       var input = event.target.children[0];
