@@ -1,62 +1,63 @@
 <template>
   <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
-  <div id="app-wrapper">
-    <div id="left-panel" class="panel">
-      <div id="degree-audit">
-        <audit
-          v-bind:reqTrees="reqTrees"
-          v-bind:selectedReqs="selectedReqs"
-        ></audit>
-          <!-- TODO: will need to add event for when the child can edit selectedReqs -->
-      </div>
-    </div>
+  <v-app id="app-wrapper">
+    <v-toolbar fixed app dense>
+        <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
+        <v-toolbar-title>Audit</v-toolbar-title>
+      <v-spacer></v-spacer>
+        <v-toolbar-title>Class Search</v-toolbar-title>
+        <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
+    </v-toolbar>
 
-    <div id="center-panel" class="panel">
-      <div id="road">
-        <road></road>
-      </div>
-    </div>
+    <v-navigation-drawer
+      id="left-panel"
+      width="350"
+      mobile-break-point="800"
+      class="panel side-shadow"
+      v-model="leftDrawer"
+      app
+    >
+      <audit
+        v-bind:reqTrees="reqTrees"
+        v-bind:selectedReqs="selectedReqs"
+      ></audit>
+      <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
+    </v-navigation-drawer>
 
-    <div id="right-panel" class="panel">
-      <div id="class-browser">
-        <div id="search">
-          <class-search v-bind:subjects="subjectsInfo"></class-search>
-        </div>
-        <div id="class-info"></div>
-      </div>
-    </div>
-  </div>
+    <v-content id="center-panel" class="panel">
+          <road></road>
+    </v-content>
+
+    <v-navigation-drawer
+      id="right-panel"
+      width="350"
+      mobile-break-point="800"
+      class="panel side-shadow"
+      v-model="rightDrawer"
+      right
+      app
+    >
+      <class-search v-bind:subjects="subjectsInfo"></class-search>
+    </v-navigation-drawer>
+  </v-app>
 </template>
 
 
 <style scoped>
+  .side-shadow {
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+
   #app-wrapper {
-    display: flex;
+/*    display: flex;
     flex-direction: row;
-    height: 100%;
+    height: 100%;*/
   }
 
   .panel {
-    height: 100%;
+    /*height: 100%;*/
   }
 
-  #left-panel {
-    flex-basis: 400px;
-    background-color: #ffffe6;
-    border-right: 3px solid #f593a6;
-    overflow-y: auto;
-  }
-
-  #center-panel {
-    flex-grow: 1;
-    background-color: #bcdeea;
-  }
-
-  #right-panel {
-    flex-basis: 350px;
-    background-color: #ffffe6;
-    border-left: 3px solid #f593a6;
-  }
 </style>
 
 
@@ -95,6 +96,8 @@ export default {
 
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [{"id": "6.00"},],
+    leftDrawer: null,
+    rightDrawer: null,
   }},
   // computed: { // tried this to fix the thing above but it didn't update reactively
   //   loadedReqs: function () {
