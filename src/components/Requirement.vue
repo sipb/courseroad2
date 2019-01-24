@@ -26,15 +26,6 @@ export default {
   props: ['req', 'leaf'],
   data: function() {
     return {
-      showChildren: false,
-      firstTime: true,
-      open: [],
-    }
-  },
-  methods: {
-    toggleChildren() {
-      this.showChildren = !this.showChildren;
-      this.firstTime = false;
     }
   },
   computed: {
