@@ -1,9 +1,9 @@
-:root {
+/*:root {
 	font-size: 62.5%;
 }
-
+*/
 /** Style resets */
-button, input[type="submit"], input[type="reset"] {
+/*button, input[type="submit"], input[type="reset"] {
 	background: none;
 	color: inherit;
 	border: none;
@@ -25,5 +25,6 @@ body {
 	font-size: 1.6rem;
 	margin: 0px;
 	height: 100%;
-	color: #202020; /** Off black for text */
+	color: #202020; /** Off black for text *
 }
+*/
