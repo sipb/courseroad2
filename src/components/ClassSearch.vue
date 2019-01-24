@@ -1,13 +1,13 @@
 <template>
   <div class="searchdiv">
     <h1>Class Search</h1>
-    <input v-model="nameInput" placeholder="6.0061 Silly Systems" type="text"/>
-    <filter-set v-model = "girInput" v-bind:label="'GIR'" v-bind:filters="classFilters.girInput"></filter-set>
-    <filter-set v-model = "hassInput" v-bind:label="'HASS'" v-bind:filters="classFilters.hassInput"></filter-set>
-    <filter-set v-model = "ciInput" v-bind:label = "'CI'" v-bind:filters="classFilters.ciInput"></filter-set>
-    <filter-set v-model = "levelInput" v-bind:label = "'Level'" v-bind:filters="classFilters.levelInput"></filter-set>
-    <filter-set v-model = "unitInput" v-bind:label = "'Units'" v-bind:filters = "classFilters.unitInput"></filter-set>
-    <h4> Search: {{ nameInput}} </h4>
+    <input v-model="chosenFilters.nameInput" placeholder="6.0061 Silly Systems" type="text"/>
+    <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
+    <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
+    <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
+    <filter-set v-model = "chosenFilters.levelInput" v-bind:label = "'Level'" v-bind:filters="allFilters.levelInput"></filter-set>
+    <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
+    <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
     <ul>
       <li v-for="subjectName in autocomplete">{{ subjectName }}</li>
@@ -27,14 +27,16 @@ export default {
   props: ['subjects'],
   data: function () {
     return {
-      nameInput: "",
-      girInput: [],
-      hassInput: [],
-      ciInput: [],
-      // semesterInput: [],
-      levelInput: [],
-      unitInput: [],
-      classFilters: {
+      chosenFilters: {
+        nameInput: "",
+        girInput: [],
+        hassInput: [],
+        ciInput: [],
+        // semesterInput: [],
+        levelInput: [],
+        unitInput: []
+      },
+      allFilters: {
         girInput: [
           {name: "Any", short: "Any", filterString: ".+"},
           {name: "Lab", short: "Lab", filterString: ".*(LAB|LAB2).*"},
@@ -67,12 +69,21 @@ export default {
           {name: "6-15", short: "6-15", filterString:"$>=6&&$<=15"},
           {name: ">=15", short: ">15", filterString:"$>15"}
         ]
-      }
+      },
+      filterGroupModes: {
+        "AND": function(a,b) { return a && b; },
+        "OR": function(a,b) { return a || b; }
+      },
+      filterGroupMode: "OR"
     }
   },
   computed: {
     autocomplete: function () {
-      var returnAny = this.nameInput.length || this.girInput.length || this.hassInput.length || this.ciInput.length || this.levelInput.length || this.unitInput.length;
+      var returnAny = false;
+      for(var filterName in this.chosenFilters) {
+        returnAny = returnAny || this.chosenFilters[filterName].length;
+      }
+      var returnAny = this.chosenFilters.nameInput.length || this.chosenFilters.girInput.length || this.chosenFilters.hassInput.length || this.chosenFilters.ciInput.length || this.chosenFilters.levelInput.length || this.chosenFilters.unitInput.length;
       if(returnAny) {
         function escapeRegExp(string) {
           return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
@@ -92,12 +103,12 @@ export default {
           })
         }
         var filters = {
-          "id": getRegexFuncs(["^"+this.nameInput]),
-          "gir_attribute": getRegexFuncs(this.girInput),
-          "hass_attribute": getRegexFuncs(this.hassInput),
-          "comm_req_attribute": getRegexFuncs(this.ciInput),
-          "level": getRegexFuncs(this.levelInput),
-          "total-units": getMathFuncs(this.unitInput)
+          "id": getRegexFuncs(["^"+this.chosenFilters.nameInput]),
+          "gir_attribute": getRegexFuncs(this.chosenFilters.girInput),
+          "hass_attribute": getRegexFuncs(this.chosenFilters.hassInput),
+          "comm_req_attribute": getRegexFuncs(this.chosenFilters.ciInput),
+          "level": getRegexFuncs(this.chosenFilters.levelInput),
+          "total-units": getMathFuncs(this.chosenFilters.unitInput)
         }
         //gets all possible values of an attribute
         // var allSubjects = this.subjects;
@@ -108,11 +119,16 @@ export default {
         //   return unique(allSubjects.map(s=>s[attr]));
         // }
         // console.log(allAttr("total-units"));
+        var filterAction = this.filterGroupModes[this.filterGroupMode];
         return this.subjects.filter(function(subject) {
           for(var attr in filters) {
             var testers = filters[attr];
-            for(var t = 0; t < testers.length; t++) {
-              if(!testers[t](subject[attr])) {
+            if(testers.length) {
+              var passesAttributeGroup = !filterAction(false, true);
+              for(var t = 0; t < testers.length; t++) {
+                passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subject[attr]));
+              }
+              if(!passesAttributeGroup) {
                 return false;
               }
             }
