@@ -61,8 +61,8 @@ export default {
           {name: "Not CI", short: "None", filterString: "^(?![\s\S])"}
         ],
         levelInput: [
-          {name: "Undergraduate", short: "UG", filterString: "Undergraduate"},
-          {name: "Graduate", short: "G", filterString: "Graduate"}
+          {name: "Undergraduate", short: "UG", filterString: "U"},
+          {name: "Graduate", short: "G", filterString: "G"}
         ],
         unitInput: [
           {name: "<6", short: "<6", filterString: "$<6"},
@@ -116,12 +116,14 @@ export default {
         }
         //gets functions that return a boolean if a filter is true
         var filters = {
-          "id": getRegexFuncs(["^"+this.chosenFilters.nameInput]),
+          "subject_id": getRegexFuncs([this.chosenFilters.nameInput]),
+          // commenting in matches almost nothing, needs to be OR
+          // "title": getRegexFuncs([this.chosenFilters.nameInput]),
           "gir_attribute": getRegexFuncs(this.chosenFilters.girInput),
           "hass_attribute": getRegexFuncs(this.chosenFilters.hassInput),
-          "comm_req_attribute": getRegexFuncs(this.chosenFilters.ciInput),
+          "communication_requirement": getRegexFuncs(this.chosenFilters.ciInput),
           "level": getRegexFuncs(this.chosenFilters.levelInput),
-          "total-units": getMathFuncs(this.chosenFilters.unitInput)
+          "total_units": getMathFuncs(this.chosenFilters.unitInput)
         }
         //gets all possible values of an attribute
         // var allSubjects = this.subjects;
@@ -153,7 +155,7 @@ export default {
 
           }
           return true;
-        }).map(s=>s.id);
+        }).map(s=>s.subject_id);
       } else {
         return [];
       }

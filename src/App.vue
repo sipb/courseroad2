@@ -94,7 +94,7 @@ export default {
     reqList: [],
 
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
-    subjectsInfo: [{"id": "6.00"},],
+    subjectsInfo: [{"subject_id": "6.00"},],
   }},
   // computed: { // tried this to fix the thing above but it didn't update reactively
   //   loadedReqs: function () {
@@ -128,16 +128,11 @@ export default {
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
-    // ** load from fireroad instead: https://fireroad-dev.mit.edu/courses/all?full=false
-    var term = '2018SP';
-    axios.get(`${'https://cors-anywhere.herokuapp.com/'}http://coursews.mit.edu/coursews/?term=${term}`)
+    // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
+    axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
-        this.subjectsInfo = response.data.items.filter(
-            function(item) {
-              // possible 'type' labels: {'LabSession', 'Class', 'LectureSession', 'RecitationSession'}
-              return item['type'] == 'Class'
-            })
-      })
+        this.subjectsInfo = response.data
+      });
   },
 };
 </script>
