@@ -92,6 +92,7 @@ export default {
 
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [{"id": "6.00"},],
+    subjectdict: {},
     leftDrawer: true,
     rightDrawer: true,
   }},
@@ -136,6 +137,8 @@ export default {
               // possible 'type' labels: {'LabSession', 'Class', 'LectureSession', 'RecitationSession'}
               return item['type'] == 'Class'
             })
+      }).then(res=>{
+        
       })
   },
 };
