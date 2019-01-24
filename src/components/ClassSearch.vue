@@ -47,22 +47,21 @@ export default {
           {name: "REST", short: "REST", filterString: ".*(REST|RST2).*"}
         ],
         hassInput: [
-          {name: "Any", short: "Any", filterString: ".+"},
-          {name: "Art", short: "A", filterString: ".*HA.*"},
-          {name: "Social Science", short: "S", filterString: ".*HS.*"},
-          {name: "Humanity", short: "H", filterString: ".*HH.*"},
-          {name: "Elective", short: "E", filterString: ".*HE.*"}
+          {name: "Any", short: "Any", filterString: "HASS"},
+          {name: "Art", short: "A", filterString: "HASS-A"},
+          {name: "Social Science", short: "S", filterString: "HASS-S"},
+          {name: "Humanity", short: "H", filterString: "HASS-H"},
         ],
         ciInput: [
           {name: "Any", short: "Any", filterString: "CI.+"},
-          {name: "CI-H", short: "CI-H", filterString: "CIH"},
-          {name: "CI-HW", short: "CI-HW", filterString: "CIHW"},
-          {name: "CI-M", short: "CI-M", filterString: "CIM"},
-          {name: "Not CI", short: "None", filterString: "^(?![\s\S])"}
+          {name: "CI-H", short: "CI-H", filterString: "CI-H"},
+          {name: "CI-HW", short: "CI-HW", filterString: "CI-HW"},
+          {name: "CI-M", short: "CI-M", filterString: "CI-M"},
+          {name: "Not CI", short: "None", filterString: "^(?!CI)"}
         ],
         levelInput: [
-          {name: "Undergraduate", short: "UG", filterString: "Undergraduate"},
-          {name: "Graduate", short: "G", filterString: "Graduate"}
+          {name: "Undergraduate", short: "UG", filterString: "U"},
+          {name: "Graduate", short: "G", filterString: "G"}
         ],
         unitInput: [
           {name: "<6", short: "<6", filterString: "$<6"},
@@ -116,12 +115,14 @@ export default {
         }
         //gets functions that return a boolean if a filter is true
         var filters = {
-          "id": getRegexFuncs(["^"+this.chosenFilters.nameInput]),
+          "subject_id": getRegexFuncs([this.chosenFilters.nameInput]),
+          // commenting in matches almost nothing, needs to be OR
+          // "title": getRegexFuncs([this.chosenFilters.nameInput]),
           "gir_attribute": getRegexFuncs(this.chosenFilters.girInput),
           "hass_attribute": getRegexFuncs(this.chosenFilters.hassInput),
-          "comm_req_attribute": getRegexFuncs(this.chosenFilters.ciInput),
+          "communication_requirement": getRegexFuncs(this.chosenFilters.ciInput),
           "level": getRegexFuncs(this.chosenFilters.levelInput),
-          "total-units": getMathFuncs(this.chosenFilters.unitInput)
+          "total_units": getMathFuncs(this.chosenFilters.unitInput)
         }
         //gets all possible values of an attribute
         // var allSubjects = this.subjects;
@@ -136,6 +137,9 @@ export default {
         var filterAction = this.filterGroupModes[this.filterGroupMode];
         return this.subjects.filter(function(subject) {
           for(var attr in filters) {
+            if(!(attr in subject)){
+              continue;
+            }
             //each test function in a filter group
             var testers = filters[attr];
             if(testers.length) {
@@ -153,7 +157,7 @@ export default {
 
           }
           return true;
-        }).map(s=>s.id);
+        }).map(s=>s.subject_id);
       } else {
         return [];
       }
