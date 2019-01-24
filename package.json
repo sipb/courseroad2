@@ -24,7 +24,8 @@
   "homepage": "https://github.com/npfoss/courseroad2#readme",
   "dependencies": {
     "@babel/preset-env": "^7.1.0",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuetify": "^1.4.3"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
