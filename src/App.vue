@@ -13,7 +13,7 @@
       id="left-panel"
       width="350"
       mobile-break-point="800"
-      class="panel side-shadow"
+      class="side-panel elevation-5"
       v-model="leftDrawer"
       app
     >
@@ -24,15 +24,15 @@
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
 
-    <v-content id="center-panel" class="panel">
-          <road></road>
+    <v-content id="center-panel">
+      <road></road>
     </v-content>
 
     <v-navigation-drawer
       id="right-panel"
       width="350"
       mobile-break-point="800"
-      class="panel side-shadow"
+      class="side-panel elevation-5"
       v-model="rightDrawer"
       right
       app
@@ -44,17 +44,13 @@
 
 
 <style scoped>
-  .side-shadow {
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-  }
-
   #app-wrapper {
 /*    display: flex;
     flex-direction: row;
     height: 100%;*/
   }
 
-  .panel {
+  .side-panel {
     /*height: 100%;*/
   }
 
@@ -96,8 +92,8 @@ export default {
 
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [{"id": "6.00"},],
-    leftDrawer: null,
-    rightDrawer: null,
+    leftDrawer: true,
+    rightDrawer: true,
   }},
   // computed: { // tried this to fix the thing above but it didn't update reactively
   //   loadedReqs: function () {

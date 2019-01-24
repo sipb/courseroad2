@@ -2,24 +2,20 @@
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content>
     <div slot="header">Semester {{index}}</div>
-    <v-card class="grey lighten-3">
-      <v-container
-        fluid
-        grid-list-md
-        :class="semesterStyles"
-      >
-        <v-layout row wrap>
-          <v-flex
-            v-for="subject in semesterSubjects"
-            :key="subject.id + index"
-          >
-            <class
-              v-bind:classInfo="subject"
-            />
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-card>
+    <v-container
+      class="grey lighten-3" 
+      fluid
+      grid-list-md
+      :class="semesterStyles"
+    >
+      <v-layout wrap align-center justify-center row fill-height>
+        <class
+          v-for="subject in semesterSubjects"
+          v-bind:classInfo="subject"
+          :key="subject.id + index"
+        />
+      </v-layout>
+    </v-container>
   </v-expansion-panel-content>
 </template>
 

@@ -1,23 +1,20 @@
 <!-- this is a cool idea for class info on click: https://vuetifyjs.com/en/components/expansion-panels#popout-inset -->
 
 <template>
-  <v-card
-    :class="{classbox: true, satisfied: isSatisfied}"
-  >
-    <v-container
+  <v-flex md3>
+    <v-card
+      :class="{classbox: true, satisfied: isSatisfied}"
+    >
+      <v-card-text class="">{{classInfo.id}} {{classInfo.title}}</v-card-text>
+<!--
+     <v-container
       height="200px"
       fluid
       pa-2
     >
-      <v-layout fill-height>
-        <v-flex xs12 align-end flexbox>
-          <div >
-          {{classInfo.id}} {{classInfo.title}}
-          </div>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-card>
+ --->
+    </v-card>
+  </v-flex>
 </template>
 
 <script>
