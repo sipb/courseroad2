@@ -81,11 +81,11 @@ export default {
           reqs: []
         },
       'major6-3': {
-          title: 'loading...',
+          title: 'loading....',
           reqs: []
         },
       'minor2': {
-          title: 'loading...',
+          title: 'loading.....',
           reqs: []
         },
       },
