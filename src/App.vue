@@ -1,4 +1,5 @@
 <template>
+  <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
   <div id="app-wrapper">
     <div id="left-panel" class="panel">
       <div id="degree-audit">
@@ -82,11 +83,11 @@ export default {
           reqs: []
         },
       'major6-3': {
-          title: 'loading...',
+          title: 'loading....',
           reqs: []
         },
       'minor2': {
-          title: 'loading...',
+          title: 'loading.....',
           reqs: []
         },
       },

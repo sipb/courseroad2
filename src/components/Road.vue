@@ -1,13 +1,19 @@
 <template>
-  <div>
-    <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
+  <!-- more on expansion panels (and more examples): https://vuetifyjs.com/en/components/expansion-panels -->
+  <!-- this is the example I copied: https://vuetifyjs.com/en/components/expansion-panels#expand -->
+  <v-expansion-panel
+    v-model="visibleList"
+    expand
+  >
     <!-- v-for index in N starts at 1... -->
-    <semester v-for="index in 8"
-              :key="index-1"
-              v-bind:index="index-1"
-              v-bind:selectedSubjects="selectedSubjects">
+    <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
+    <semester 
+      v-for="index in 8"
+      :key="index-1"
+      v-bind:index="index-1"
+      v-bind:selectedSubjects="selectedSubjects">
     </semester>
-  </div>
+  </v-expansion-panel>
 </template>
 
 
@@ -65,8 +71,14 @@ export default {
           id : "21M.480",
           units : 6
         }
-      ]
+      ],
+      visibleList: Array(8).fill(true),
     }
-  }
+  },
 }
 </script>
+
+
+<style scoped>
+
+</style>
