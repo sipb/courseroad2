@@ -145,11 +145,15 @@ export default {
               var attrSet = attrs.split(",");
               for(var a = 0; a < attrSet.length; a++) {
                 var attr = attrSet[a];
+                var subjectattr = subject[attr]
+                if(!subject[attr]) {
+                  subjectattr = ""
+                }
                 //start with false for OR mode, and true for AND mode
                 var passesAttributeGroup = !filterAction(false, true);
                 //use the filter mode function (OR or AND) and test all filters in a group
                 for(var t = 0; t < testers.length; t++) {
-                  passesAttributeGroup = filterAction(passesAttributeGroup, subject[attr]!=undefined&&testers[t](subject[attr]));
+                  passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subjectattr));
                 }
                 if(passesAttributeGroup) {
                   passesAnyAttributeGroupInSet = true;
