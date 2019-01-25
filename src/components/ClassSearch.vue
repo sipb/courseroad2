@@ -115,16 +115,15 @@ export default {
         }
         //gets functions that return a boolean if a filter is true
         var filters = {
-          "subject_id": getRegexFuncs([this.chosenFilters.nameInput]),
-          // commenting in matches almost nothing, needs to be OR
-          // "title": getRegexFuncs([this.chosenFilters.nameInput]),
+          "subject_id,title": getRegexFuncs([this.chosenFilters.nameInput]),
           "gir_attribute": getRegexFuncs(this.chosenFilters.girInput),
           "hass_attribute": getRegexFuncs(this.chosenFilters.hassInput),
           "communication_requirement": getRegexFuncs(this.chosenFilters.ciInput),
           "level": getRegexFuncs(this.chosenFilters.levelInput),
           "total_units": getMathFuncs(this.chosenFilters.unitInput)
         }
-        //gets all possible values of an attribute
+        // gets all possible values of an attribute
+
         // var allSubjects = this.subjects;
         // function unique(arr) {
         //   return [... new Set(arr)]
@@ -132,27 +131,35 @@ export default {
         // function allAttr(attr) {
         //   return unique(allSubjects.map(s=>s[attr]));
         // }
-        // console.log(allAttr("total-units"));
-        //and or or function based on filter mode
+        // console.log(allAttr("preparation_units"));
+
+        // and or or function based on filter mode
         var filterAction = this.filterGroupModes[this.filterGroupMode];
         return this.subjects.filter(function(subject) {
-          for(var attr in filters) {
-            if(!(attr in subject)){
-              continue;
-            }
+          for(var attrs in filters) {
             //each test function in a filter group
-            var testers = filters[attr];
+            var testers = filters[attrs];
             if(testers.length) {
-              //start with false for OR mode, and true for AND mode
-              var passesAttributeGroup = !filterAction(false, true);
-              //use the filter mode function (OR or AND) and test all filters in a group
-              for(var t = 0; t < testers.length; t++) {
-                passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subject[attr]));
+              //if a single attribute group in a set returns true, the filter will match it
+              var passesAnyAttributeGroupInSet = false;
+              var attrSet = attrs.split(",");
+              for(var a = 0; a < attrSet.length; a++) {
+                var attr = attrSet[a];
+                //start with false for OR mode, and true for AND mode
+                var passesAttributeGroup = !filterAction(false, true);
+                //use the filter mode function (OR or AND) and test all filters in a group
+                for(var t = 0; t < testers.length; t++) {
+                  passesAttributeGroup = filterAction(passesAttributeGroup, subject[attr]!=undefined&&testers[t](subject[attr]));
+                }
+                if(passesAttributeGroup) {
+                  passesAnyAttributeGroupInSet = true;
+                }
               }
-              if(!passesAttributeGroup) {
-                //if the subject doesn't pass a group, don't include it in the list
+              //if the subject passes no attribute group in the set, don't include it
+              if(!passesAnyAttributeGroupInSet) {
                 return false;
               }
+
             }
 
           }
