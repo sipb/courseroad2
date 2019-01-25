@@ -5,7 +5,7 @@
     <v-card
       :class="{classbox: true, satisfied: isSatisfied}"
     >
-      <v-card-text class="">{{classInfo.id}} {{classInfo.title}}</v-card-text>
+      <v-card-text class="">{{classInfo.id}}: {{classInfo.title}}</v-card-text>
 <!--
      <v-container
       height="200px"

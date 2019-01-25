@@ -1,3 +1,4 @@
+<!-- direct from the Vuetify website: this is the proper nesting: v-container » v-layout » v-flex (» v-card) -->
 <template>
   <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
   <v-app id="app-wrapper">
@@ -24,7 +25,7 @@
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
 
-    <v-content id="center-panel">
+    <v-content app id="center-panel">
       <road></road>
     </v-content>
 
@@ -128,7 +129,7 @@ export default {
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
-    axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://fireroad-dev.mit.edu/courses/all?full=true`)
+    axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
         this.subjectsInfo = response.data
       });
