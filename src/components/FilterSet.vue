@@ -6,6 +6,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   name: "FilterSet",
@@ -48,6 +49,7 @@ export default {
   }
 }
 </script>
+
 <style>
 * {
   --button-dark: #79c879;

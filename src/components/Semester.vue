@@ -8,7 +8,7 @@
       grid-list-md
       :class="semesterStyles"
     >
-      <v-layout wrap align-center justify-center row fill-height>
+      <v-layout wrap align-center justify-center row>
         <class
           v-for="subject in semesterSubjects"
           v-bind:classInfo="subject"
