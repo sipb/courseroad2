@@ -10,9 +10,12 @@
     <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
-    <ul>
-      <li v-for="subjectName in autocomplete">{{ subjectName }}</li>
-    </ul>
+    <v-data-table  :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
+      <template slot = "items" slot-scope = "props">
+        <td>{{props.item.subject_id}}</td>
+        <td>{{props.item.title}}</td>
+      </template>
+    </v-data-table>
   </v-container>
 </template>
 
@@ -65,13 +68,13 @@ export default {
           {name: "Graduate", short: "G", filterString: "G"}
         ],
         unitInput: [
-          {name: "<6", short: "<6", filterString: "$<6"},
-          {name: "6", short: "6", filterString: "$==6"},
-          {name: "9", short: "9", filterString: "$==9"},
-          {name: "12", short: "12", filterString: "$==12"},
-          {name: "15", short: "15", filterString:"$==15"},
-          {name: "6-15", short: "6-15", filterString:"$>=6&&$<=15"},
-          {name: ">=15", short: ">15", filterString:"$>15"}
+          {name: "<6", short: "<6", filterString: "^[0-5]$"},
+          {name: "6", short: "6", filterString: "^6$"},
+          {name: "9", short: "9", filterString: "^9$"},
+          {name: "12", short: "12", filterString: "^12$"},
+          {name: "15", short: "15", filterString:"^15$"},
+          {name: "6-15", short: "6-15", filterString:"^([7-9]|1[0-5])$"},
+          {name: ">=15", short: ">15", filterString:"([2-9][0-9]|1[6-9])$"}
         ]
       },
       //modes to filter by across a filter group
@@ -81,7 +84,10 @@ export default {
       },
       //set this to AND to get subjects that match all filters turned on in a group
       //set this to OR to get subjects that match any filter turned on in a group
-      filterGroupMode: "OR"
+      filterGroupMode: "OR",
+      pagination: {
+        rowsPerPage: -1
+      }
     }
   },
   computed: {
@@ -91,7 +97,6 @@ export default {
       for(var filterName in this.chosenFilters) {
         returnAny = returnAny || this.chosenFilters[filterName].length;
       }
-      var returnAny = this.chosenFilters.nameInput.length || this.chosenFilters.girInput.length || this.chosenFilters.hassInput.length || this.chosenFilters.ciInput.length || this.chosenFilters.levelInput.length || this.chosenFilters.unitInput.length;
       if(returnAny) {
         //escapes special characters for regex in a string
         function escapeRegExp(string) {
@@ -116,16 +121,15 @@ export default {
         }
         //gets functions that return a boolean if a filter is true
         var filters = {
-          "subject_id": getRegexFuncs([this.chosenFilters.nameInput]),
-          // commenting in matches almost nothing, needs to be OR
-          // "title": getRegexFuncs([this.chosenFilters.nameInput]),
+          "subject_id,title": getRegexFuncs([this.chosenFilters.nameInput]),
           "gir_attribute": getRegexFuncs(this.chosenFilters.girInput),
           "hass_attribute": getRegexFuncs(this.chosenFilters.hassInput),
           "communication_requirement": getRegexFuncs(this.chosenFilters.ciInput),
           "level": getRegexFuncs(this.chosenFilters.levelInput),
-          "total_units": getMathFuncs(this.chosenFilters.unitInput)
+          "total_units": getRegexFuncs(this.chosenFilters.unitInput)
         }
-        //gets all possible values of an attribute
+        // gets all possible values of an attribute
+
         // var allSubjects = this.subjects;
         // function unique(arr) {
         //   return [... new Set(arr)]
@@ -133,32 +137,44 @@ export default {
         // function allAttr(attr) {
         //   return unique(allSubjects.map(s=>s[attr]));
         // }
-        // console.log(allAttr("total-units"));
-        //and or or function based on filter mode
+        // console.log(allAttr("preparation_units"));
+
+        // and or or function based on filter mode
         var filterAction = this.filterGroupModes[this.filterGroupMode];
         return this.subjects.filter(function(subject) {
-          for(var attr in filters) {
-            if(!(attr in subject)){
-              continue;
-            }
+          for(var attrs in filters) {
             //each test function in a filter group
-            var testers = filters[attr];
+            var testers = filters[attrs];
             if(testers.length) {
-              //start with false for OR mode, and true for AND mode
-              var passesAttributeGroup = !filterAction(false, true);
-              //use the filter mode function (OR or AND) and test all filters in a group
-              for(var t = 0; t < testers.length; t++) {
-                passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subject[attr]));
+              //if a single attribute group in a set returns true, the filter will match it
+              var passesAnyAttributeGroupInSet = false;
+              var attrSet = attrs.split(",");
+              for(var a = 0; a < attrSet.length; a++) {
+                var attr = attrSet[a];
+                var subjectattr = subject[attr]
+                if(!subject[attr]) {
+                  subjectattr = ""
+                }
+                //start with false for OR mode, and true for AND mode
+                var passesAttributeGroup = !filterAction(false, true);
+                //use the filter mode function (OR or AND) and test all filters in a group
+                for(var t = 0; t < testers.length; t++) {
+                  passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subjectattr));
+                }
+                if(passesAttributeGroup) {
+                  passesAnyAttributeGroupInSet = true;
+                }
               }
-              if(!passesAttributeGroup) {
-                //if the subject doesn't pass a group, don't include it in the list
+              //if the subject passes no attribute group in the set, don't include it
+              if(!passesAnyAttributeGroupInSet) {
                 return false;
               }
+
             }
 
           }
           return true;
-        }).map(s=>s.subject_id);
+        })
       } else {
         return [];
       }
