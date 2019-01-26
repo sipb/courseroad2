@@ -68,13 +68,13 @@ export default {
           {name: "Graduate", short: "G", filterString: "G"}
         ],
         unitInput: [
-          {name: "<6", short: "<6", filterString: "$<6"},
-          {name: "6", short: "6", filterString: "$==6"},
-          {name: "9", short: "9", filterString: "$==9"},
-          {name: "12", short: "12", filterString: "$==12"},
-          {name: "15", short: "15", filterString:"$==15"},
-          {name: "6-15", short: "6-15", filterString:"$>=6&&$<=15"},
-          {name: ">=15", short: ">15", filterString:"$>15"}
+          {name: "<6", short: "<6", filterString: "^[0-5]$"},
+          {name: "6", short: "6", filterString: "^6$"},
+          {name: "9", short: "9", filterString: "^9$"},
+          {name: "12", short: "12", filterString: "^12$"},
+          {name: "15", short: "15", filterString:"^15$"},
+          {name: "6-15", short: "6-15", filterString:"^([7-9]|1[0-5])$"},
+          {name: ">=15", short: ">15", filterString:"([2-9][0-9]|1[6-9])$"}
         ]
       },
       //modes to filter by across a filter group
@@ -126,7 +126,7 @@ export default {
           "hass_attribute": getRegexFuncs(this.chosenFilters.hassInput),
           "communication_requirement": getRegexFuncs(this.chosenFilters.ciInput),
           "level": getRegexFuncs(this.chosenFilters.levelInput),
-          "total_units": getMathFuncs(this.chosenFilters.unitInput)
+          "total_units": getRegexFuncs(this.chosenFilters.unitInput)
         }
         // gets all possible values of an attribute
 
