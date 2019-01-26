@@ -9,9 +9,12 @@
     <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
-    <ul>
-      <li v-for="subjectName in autocomplete">{{ subjectName }}</li>
-    </ul>
+    <v-data-table  :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
+      <template slot = "items" slot-scope = "props">
+        <td>{{props.item.subject_id}}</td>
+        <td>{{props.item.title}}</td>
+      </template>
+    </v-data-table>
   </div>
 </template>
 
@@ -80,7 +83,10 @@ export default {
       },
       //set this to AND to get subjects that match all filters turned on in a group
       //set this to OR to get subjects that match any filter turned on in a group
-      filterGroupMode: "OR"
+      filterGroupMode: "OR",
+      pagination: {
+        rowsPerPage: -1
+      }
     }
   },
   computed: {
@@ -90,7 +96,6 @@ export default {
       for(var filterName in this.chosenFilters) {
         returnAny = returnAny || this.chosenFilters[filterName].length;
       }
-      var returnAny = this.chosenFilters.nameInput.length || this.chosenFilters.girInput.length || this.chosenFilters.hassInput.length || this.chosenFilters.ciInput.length || this.chosenFilters.levelInput.length || this.chosenFilters.unitInput.length;
       if(returnAny) {
         //escapes special characters for regex in a string
         function escapeRegExp(string) {
@@ -168,7 +173,7 @@ export default {
 
           }
           return true;
-        }).map(s=>s.subject_id);
+        })
       } else {
         return [];
       }
