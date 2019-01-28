@@ -14,7 +14,7 @@
       id="left-panel"
       width="350"
       mobile-break-point="800"
-      class="side-panel elevation-5"
+      class="side-panel elevation-5 scroller"
       v-model="leftDrawer"
       app
     >
@@ -63,6 +63,22 @@ import Audit from './components/Audit.vue'
 import ClassSearch from './components/ClassSearch.vue'
 import Road from './components/Road.vue'
 import FilterSet from "./components/FilterSet.vue"
+import $ from 'jquery'
+
+$(document).ready(function() {
+  var borders = $(".v-navigation-drawer__border")
+  var scrollers = $(".scroller")
+  var scrollWidth = scrollers.width()
+  //moves nav drawer border with scroll
+  //if the effect proves too annoying we can remove the borders instead
+  //(commented out below)
+  scrollers.scroll(function() {
+    var scrollPosition = scrollers.scrollLeft()
+    borders.css({top: 0, left: scrollWidth-1+scrollPosition})
+  })
+  // borders.remove()
+})
+
 
 export default {
   components: {
@@ -112,6 +128,7 @@ export default {
         console.log(response.data);
         this.reqList = response.data;
       });
+
     axios.get(`https://fireroad-dev.mit.edu/requirements/get_json/girs`)
       .then(response => {
         this.reqTrees['girs'] = response.data;
@@ -124,6 +141,7 @@ export default {
     axios.get(`https://fireroad-dev.mit.edu/requirements/get_json/minor2`)
       .then(response => {
         this.reqTrees['minor2'] = response.data;
+        console.log(this.reqTrees)
       });
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
@@ -136,3 +154,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .scroller {
+    overflow-x: scroll;
+  }
+  .v-navigation-drawer__border {
+    display: none !important;
+  }
+</style>

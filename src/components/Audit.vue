@@ -13,19 +13,22 @@
       <!-- TODO: useful icons can go here if you can figure out how -->
       <template slot="prepend" slot-scope="{ item, leaf, open }">
         <v-icon v-if="'reqs' in item">
-          {{ open ? 'folder_open' : 'folder' }}
+          {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }}
         </v-icon>
         <v-icon v-else>
-          {{ item['plain-string'] ? item.fulfilled ? "star" : "star_outline": item.fulfilled ? "radio_button_checked" : "radio_button_unchecked"}}
+          {{ item['plain-string'] ? item.fulfilled ? "star" : "star_outline": item.fulfilled ? "check_box" : "check_box_outline_blank"}}
         </v-icon>
       </template>
-      <template slot="label" slot-scope="{ item, leaf }">
+      <template slot = "label" slot-scope = "{ item, leaf}">
         <requirement
+          class = "hi"
           v-bind:req="item"
           v-bind:leaf="leaf"
         >
         </requirement>
       </template>
+
+
     </v-treeview>
   </v-container>
 </template>
@@ -33,7 +36,6 @@
 
 <script>
 import Requirement from './Requirement.vue'
-
 export default {
   name: 'audit',
   components: {
@@ -62,5 +64,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+  .hi {
+    /* background-color: green; */
+    /* overflow: hidden; */
+    /* width: 100%; */
+  }
 </style>

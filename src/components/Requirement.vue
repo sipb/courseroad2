@@ -3,10 +3,12 @@
   <div class = "requirement">
     <div v-if="!leaf">
 
-      <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}  <span style = "font-style:italic">{{ req['threshold-desc'] }}</span></span>
+      <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
       <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
-      <span v-else-if = "'title' in req">{{ req["title"] }}  <span style = "font-style:italic">{{ req['threshold-desc'] }}</span></span>
-      <span v-else style="font-style:italic">{{ req['threshold-desc'] }}</span>
+      <span v-else-if = "'title' in req">{{ req["title"] }}</span>
+      <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
+      <!--fake padding for scroll-->
+      &nbsp &nbsp &nbsp
     </div>
 
     <span v-else>
