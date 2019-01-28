@@ -1,21 +1,26 @@
 
 <template>
-  <div>
+  <div class = "requirement">
     <div v-if="!leaf">
-      <span v-if="'title' in req">{{ req.title }}
-        <div style="font-style:italic">{{ req['threshold-desc'] }}</div>
-      </span>
+
+      <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}  <span style = "font-style:italic">{{ req['threshold-desc'] }}</span></span>
+      <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
+      <span v-else-if = "'title' in req">{{ req["title"] }}  <span style = "font-style:italic">{{ req['threshold-desc'] }}</span></span>
       <span v-else style="font-style:italic">{{ req['threshold-desc'] }}</span>
     </div>
 
-    <div v-else>
+    <span v-else>
       <span v-if="'title' in req">{{ req.title }}</span>
-    </div>
+    </span>
 
-    <div>
-      <span v-if="!('title' in req) && 'req' in req"></span>
-      <span :class="reqFulfilledHash">{{ req.req }}</span>
-    </div>
+    <span v-if = "!req['plain-string']">
+      <span v-if="!('title' in req) && 'req' in req">
+        <span :class="reqFulfilledHash">{{ req.req }}</span>
+      </span>
+    </span>
+    <span v-else>
+      | <span style = "text-transform: cursive">{{ req.req }}</span>
+    </span>
   </div>
 </template>
 
@@ -26,6 +31,7 @@ export default {
   props: ['req', 'leaf'],
   data: function() {
     return {
+      open: []
     }
   },
   computed: {
@@ -39,7 +45,7 @@ export default {
       };
 
       return {
-        green: this.req.req && hashCode(this.req.req) % 3 === 0,
+        fulfilled: this.req.req && hashCode(this.req.req) % 3 === 0,
       }
     },
   }
@@ -48,7 +54,10 @@ export default {
 
 
 <style scoped>
-  .green {
+  .fulfilled {
     color: green;
+  }
+  .requirement {
+    font-size: 0.75em;
   }
 </style>
