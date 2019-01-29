@@ -178,40 +178,38 @@ export default {
       },
     }
   }},
-  // computed: { // tried this to fix the thing above but it didn't update reactively
-  //   loadedReqs: function () {
-  //     return this.selectedReqs.filter(function(r) {
-  //       return this.reqTrees && (r in this.reqTrees);
-  //     })
-  //   }
-  // },
+  watch: {
+    activeRoad: function(newRoad,oldRoad) {
+      this.updateFulfillment();
+    },
+    road: function(newRoads,oldRoads) {
+      this.updateFulfillment();
+    }
+  },
+  methods: {
+    updateFulfillment: function() {
+      var subjectIDs = this.roads[this.activeRoad].selectedSubjects.map((s)=>s.id.toString()).join(",")
+      for (var r = 0; r < this.roads[this.activeRoad].selectedReqs.length; r++) {
+        var req = this.roads[this.activeRoad].selectedReqs[r];
+        axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
+          this.data.reqTrees[this.req] = response.data;
+        }.bind({data: this, req:req}))
+      }
+    }
+  },
   mounted() {
     // TODO: this is kind of janky, and should not happen ideally:
     //  I'm bouncing the request through this proxy to avoid some issue with CORS
-    //  see this issue for more: https://github.com/axios/axios/issues/853
-    var subjectIDs = this.roads[this.activeRoad].selectedSubjects.map((s)=>s.id.toString()).join(",")
-    console.log("subject ids")
-    console.log(subjectIDs)
+    // see this issue for more: https://github.com/axios/axios/issues/853
+
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
         console.log(response.data);
         this.reqList = response.data;
       });
 
-    axios.get(`https://fireroad-dev.mit.edu/requirements/progress/girs/`+subjectIDs)
-      .then(response => {
-        this.reqTrees['girs'] = response.data;
-      });
-    axios.get(`https://fireroad-dev.mit.edu/requirements/progress/major6-3/`+subjectIDs)
-      .then(response => {
-        console.log(response.data['major6-3']);
-        this.reqTrees['major6-3'] = response.data;
-      });
-    axios.get(`https://fireroad-dev.mit.edu/requirements/progress/minor2/`+subjectIDs)
-      .then(response => {
-        this.reqTrees['minor2'] = response.data;
-        console.log(this.reqTrees)
-      });
+    this.updateFulfillment();
+
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
