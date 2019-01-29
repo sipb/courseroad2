@@ -111,6 +111,50 @@ export default {
     subjectsInfo: [{"subject_id": "6.00"},],
     leftDrawer: true,
     rightDrawer: true,
+    selectedSubjects : [
+      {
+        overrideWarnings : false,
+        semester : 0,
+        title : "Generic Physics I GIR",
+        id : "PHY1",
+        units : 12
+      },
+      {
+        overrideWarnings : false,
+        semester : 1,
+        title : "Principles of Chemical Science",
+        id : "5.112",
+        units : 12
+      },
+      {
+        overrideWarnings : false,
+        semester : 4,
+        title : "Fundamentals of Programming",
+        id : "6.009",
+        units : 12
+      },
+      {
+        overrideWarnings : false,
+        semester : 0,
+        title : "Intro to EECS",
+        id : "6.01",
+        units : 12
+      },
+      {
+        overrideWarnings : false,
+        semester : 4,
+        title : "Advanced Music Performance",
+        id : "21M.480",
+        units : 6
+      },
+      {
+        overrideWarnings : false,
+        semester : 6,
+        title : "Advanced Music Performance",
+        id : "21M.480",
+        units : 6
+      }
+    ]
   }},
   // computed: { // tried this to fix the thing above but it didn't update reactively
   //   loadedReqs: function () {
@@ -123,22 +167,25 @@ export default {
     // TODO: this is kind of janky, and should not happen ideally:
     //  I'm bouncing the request through this proxy to avoid some issue with CORS
     //  see this issue for more: https://github.com/axios/axios/issues/853
+    var subjectIDs = this.selectedSubjects.map((s)=>s.id.toString()).join(",")
+    console.log("subject ids")
+    console.log(subjectIDs)
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
         console.log(response.data);
         this.reqList = response.data;
       });
 
-    axios.get(`https://fireroad-dev.mit.edu/requirements/get_json/girs`)
+    axios.get(`https://fireroad-dev.mit.edu/requirements/progress/girs/`+subjectIDs)
       .then(response => {
         this.reqTrees['girs'] = response.data;
       });
-    axios.get(`https://fireroad-dev.mit.edu/requirements/get_json/major6-3`)
+    axios.get(`https://fireroad-dev.mit.edu/requirements/progress/major6-3/`+subjectIDs)
       .then(response => {
         console.log(response.data['major6-3']);
         this.reqTrees['major6-3'] = response.data;
       });
-    axios.get(`https://fireroad-dev.mit.edu/requirements/get_json/minor2`)
+    axios.get(`https://fireroad-dev.mit.edu/requirements/progress/minor2/`+subjectIDs)
       .then(response => {
         this.reqTrees['minor2'] = response.data;
         console.log(this.reqTrees)

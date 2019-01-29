@@ -137,7 +137,7 @@ export default {
         // function allAttr(attr) {
         //   return unique(allSubjects.map(s=>s[attr]));
         // }
-        // console.log(allAttr("preparation_units"));
+        // console.log(allAttr("hass_attribute"));
 
         // and or or function based on filter mode
         var filterAction = this.filterGroupModes[this.filterGroupMode];

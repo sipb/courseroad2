@@ -17,7 +17,7 @@
 
     <span v-if = "!req['plain-string']">
       <span v-if="!('title' in req) && 'req' in req">
-        <span :class="reqFulfilledHash">{{ req.req }}</span>
+        <span :class="reqFulfilled">{{ req.req }}</span>
       </span>
     </span>
     <span v-else>
@@ -37,19 +37,17 @@ export default {
     }
   },
   computed: {
-    reqFulfilledHash: function() {
-      let hashCode = (s) => {
-        var h = 0, l = s.length, i = 0;
-        if ( l > 0 )
-          while (i < l)
-            h = (h << 5) - h + s.charCodeAt(i++) | 0;
-        return h;
-      };
-
-      return {
-        fulfilled: this.req.req && hashCode(this.req.req) % 3 === 0,
+    reqFulfilled: function() {
+      if(this.req.fulfilled) {
+        return {
+          fulfilled: true
+        }
+      } else {
+        return {
+          fulfilled: false
+        }
       }
-    },
+    }
   }
 }
 </script>

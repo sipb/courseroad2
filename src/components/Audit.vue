@@ -51,15 +51,6 @@ export default {
         return this.reqTrees[req];
       }, this);
     }
-
-  },
-  methods: {
-    icon_for_req: function(req) {
-      console.log("calculating")
-      return {
-        outlined: true
-      }
-    }
   }
 }
 </script>
