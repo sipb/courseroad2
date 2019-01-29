@@ -29,6 +29,7 @@
       <audit
         v-bind:reqTrees="reqTrees"
         v-bind:selectedReqs="roads[activeRoad].selectedReqs"
+        v-bind:selectedSubjects = "roads[activeRoad].selectedSubjects"
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
@@ -188,7 +189,7 @@ export default {
     // TODO: this is kind of janky, and should not happen ideally:
     //  I'm bouncing the request through this proxy to avoid some issue with CORS
     //  see this issue for more: https://github.com/axios/axios/issues/853
-    var subjectIDs = this.selectedSubjects.map((s)=>s.id.toString()).join(",")
+    var subjectIDs = this.roads[this.activeRoad].selectedSubjects.map((s)=>s.id.toString()).join(",")
     console.log("subject ids")
     console.log(subjectIDs)
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
