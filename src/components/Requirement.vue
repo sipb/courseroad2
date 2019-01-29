@@ -16,6 +16,7 @@
     <span v-if = "!req['plain-string']">
       <span v-if="!('title' in req) && 'req' in req">
         <span :class="reqFulfilled">{{ req.req }}</span>
+        <span style = "font-style:italic" v-if = "'threshold-desc' in req">({{ req['threshold-desc']}})</span>
       </span>
     </span>
     <span v-else>
@@ -70,6 +71,7 @@ export default {
 <style scoped>
   .fulfilled {
     background:  radial-gradient(#98fb98,white);
+    /* background: #98fb98; */
   }
   .requirement {
     font-size: 0.75em;
