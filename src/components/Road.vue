@@ -7,11 +7,12 @@
   >
     <!-- v-for index in N starts at 1... -->
     <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
-    <semester 
+    <semester
       v-for="index in 8"
       :key="index-1"
       v-bind:index="index-1"
-      v-bind:selectedSubjects="selectedSubjects">
+      v-bind:selectedSubjects="selectedSubjects"
+      >
     </semester>
   </v-expansion-panel>
 </template>

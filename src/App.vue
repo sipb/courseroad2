@@ -48,7 +48,7 @@
       right
       app
     >
-      <class-search v-bind:subjects="subjectsInfo"></class-search>
+      <class-search v-bind:subjects="subjectsInfo" @add-class="addClass"></class-search>
     </v-navigation-drawer>
   </v-app>
 </template>
@@ -168,6 +168,11 @@ export default {
   //     })
   //   }
   // },
+  methods: {
+    addClass: function(newClass) {
+      this.roads[this.activeRoad].selectedSubjects.push(newClass);
+    }
+  },
   mounted() {
     // TODO: this is kind of janky, and should not happen ideally:
     //  I'm bouncing the request through this proxy to avoid some issue with CORS

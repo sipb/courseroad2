@@ -1,12 +1,14 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content>
-    <div slot="header">Semester {{index}}</div>
+    <div slot="header" :id = "'semester drop ' + index">Semester {{index}}</div>
     <v-container
-      class="grey lighten-3" 
+      class="grey lighten-3"
       fluid
       grid-list-md
       :class="semesterStyles"
+      :id = "'semester bin '+ index"
+      dropzone = "copy"
     >
       <v-layout wrap align-center justify-center row>
         <class

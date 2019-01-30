@@ -12,8 +12,10 @@
     <h4> Results: </h4>
     <v-data-table  :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
       <template slot = "items" slot-scope = "props">
-        <td>{{props.item.subject_id}}</td>
-        <td>{{props.item.title}}</td>
+        <tr draggable = "true" v-on:dragend ="addClass($event, props)">
+          <td>{{props.item.subject_id}}</td>
+          <td>{{props.item.title}}</td>
+        </tr>
       </template>
     </v-data-table>
   </v-container>
@@ -177,6 +179,31 @@ export default {
         })
       } else {
         return [];
+      }
+    }
+  },
+  methods: {
+    addClass: function(event, classItem) {
+      var semesterID = document.elementFromPoint(event.x,event.y).id;
+      var semesterTester = /semester (drag|bin) (\d+)/;
+      var semesterMatches = semesterID.match(semesterTester);
+      if(semesterMatches != null) {
+        var semesterNum = parseInt(semesterMatches[2]);
+        var semesterType = semesterNum % 2;
+        var isOffered = (semesterType == 0 && classItem.item.offered_fall)
+                        || (semesterType == 1 && classItem.item.offered_spring);
+        if (isOffered) {
+          var newClass = {
+            overrideWarnings : false,
+            semester : semesterNum,
+            title : classItem.item.title,
+            id : classItem.item.subject_id,
+            units : classItem.item.total_units
+          }
+          console.log(newClass);
+          this.$emit("add-class",newClass)
+        }
+
       }
     }
   }
