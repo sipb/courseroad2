@@ -30,6 +30,8 @@
         v-bind:reqTrees="reqTrees"
         v-bind:selectedReqs="roads[activeRoad].selectedReqs"
         v-bind:selectedSubjects = "roads[activeRoad].selectedSubjects"
+        v-bind:reqList="reqList"
+        @add-req = "addReq"
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
@@ -171,8 +173,12 @@ export default {
     activeRoad: function(newRoad,oldRoad) {
       this.updateFulfillment();
     },
-    road: function(newRoads,oldRoads) {
-      this.updateFulfillment();
+    roads: {
+      handler: function(newRoads,oldRoads) {
+        console.log("updating road");
+        this.updateFulfillment();
+      },
+      deep: true
     }
   },
   methods: {
@@ -185,6 +191,10 @@ export default {
           Vue.set(this.data.reqTrees, this.req, response.data);
         }.bind({data: this, req:req}))
       }
+    },
+    addReq: function(event) {
+      this.roads[this.activeRoad].selectedReqs.push(event);
+      Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
     }
   },
   mounted() {
@@ -195,6 +205,9 @@ export default {
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
         this.reqList = response.data;
+        for(var r in this.reqList) {
+          Vue.set(this.reqList, r, this.reqList[r]);
+        }
       })
 
 

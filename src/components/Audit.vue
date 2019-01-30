@@ -1,6 +1,19 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
   <v-container>
+    <v-menu style = "float:right">
+      <v-btn outline style = "float:right" slot = "activator">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-list scrollable>
+        <v-list-tile
+           v-for= "(item, index) in reqList"
+           @click = "addReqTree(index)"
+           >
+           <v-list-tile-title style = "font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
+         </v-list-tile>
+       </v-list>
+    </v-menu>
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
@@ -45,7 +58,7 @@ export default {
   components: {
     'requirement': Requirement,
   },
-  props: ['selectedReqs', 'reqTrees'],
+  props: ['selectedReqs', 'reqTrees', 'reqList'],
   data: function() { return {
     tree: []
   }},
@@ -72,6 +85,9 @@ export default {
       } else {
         return "";
       }
+    },
+    addReqTree: function(req) {
+      this.$emit("add-req",req)
     }
   },
 
