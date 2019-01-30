@@ -11,8 +11,8 @@
       height="200px"
       fluid
       pa-2
-    >
- --->
+    > -->
+
     </v-card>
   </v-flex>
 </template>
@@ -20,7 +20,7 @@
 <script>
 export default {
   name: "class",
-  props: ['classInfo'],
+  props: ['classInfo','semesterIndex'],
   data() {
     return {
       isSatisfied: true
