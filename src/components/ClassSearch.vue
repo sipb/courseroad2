@@ -2,7 +2,7 @@
   <v-container class="searchdiv">
     <!-- this is probably a good place for v-container » v-layout » v-flex -->
     <h1>Class Search</h1>
-    <v-text-field v-model="chosenFilters.nameInput" label="6.0061 Silly Systems"/>
+    <v-text-field v-model="chosenFilters.nameInput" placeholder = "6.0061 Silly Systems"/>
     <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
     <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
     <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
@@ -109,7 +109,7 @@ export default {
         //gets the .test function (which tests if a string matches regex) from each regex filter in a group
         function getRegexFuncs(regexStrings) {
           return regexStrings.map(function(rs) {
-            var r = new RegExp(rs);
+            var r = new RegExp(escapeRegExp(rs));
             var t = r.test.bind(r);
             return t;
           });
