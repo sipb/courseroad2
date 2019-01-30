@@ -47,12 +47,21 @@ export default {
   },
   props: ['selectedReqs', 'reqTrees'],
   data: function() { return {
-    tree: [],
+    tree: []
   }},
   computed: {
     selectedTrees: function() {
+      // console.log("calculting selected trees");
+      // console.log(this.reqTrees.girs);
       return this.selectedReqs.map(function(req){
-        return this.reqTrees[req];
+        if(req in this.reqTrees) {
+          return this.reqTrees[req];
+        } else {
+          return {
+            title: "loading...",
+            reqs: []
+          }
+        }
       }, this);
     },
   },
@@ -64,7 +73,8 @@ export default {
         return "";
       }
     }
-  }
+  },
+
 }
 </script>
 

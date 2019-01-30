@@ -75,6 +75,7 @@ import ClassSearch from './components/ClassSearch.vue'
 import Road from './components/Road.vue'
 import FilterSet from "./components/FilterSet.vue"
 import $ from 'jquery'
+import Vue from 'vue'
 
 $(document).ready(function() {
   var borders = $(".v-navigation-drawer__border")
@@ -99,22 +100,8 @@ export default {
     'filter-set': FilterSet
   },
   data: function(){ return {
-    reqTrees: {
-      // unfortunately have to have this here or it crashes on key lookup in the beginning...
-      // TODO: make that ^ not the case. Probably by using the Vue key system properly/at all
-      'girs': {
-          title: 'loading...',
-          reqs: []
-        },
-      'major6-3': {
-          title: 'loading....',
-          reqs: []
-        },
-      'minor2': {
-          title: 'loading.....',
-          reqs: []
-        },
-      },
+    // reqTreesLoaded: false,
+    reqTrees: {},
     reqList: [],
 
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
@@ -192,7 +179,8 @@ export default {
       for (var r = 0; r < this.roads[this.activeRoad].selectedReqs.length; r++) {
         var req = this.roads[this.activeRoad].selectedReqs[r];
         axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
-          this.data.reqTrees[this.req] = response.data;
+          //This is necessary so Vue knows about the new property on reqTrees
+          Vue.set(this.data.reqTrees, this.req, response.data);
         }.bind({data: this, req:req}))
       }
     }
@@ -204,9 +192,10 @@ export default {
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
-        console.log(response.data);
         this.reqList = response.data;
-      });
+      })
+
+
 
     this.updateFulfillment();
 
