@@ -100,17 +100,18 @@ export default {
     'filter-set': FilterSet
   },
   data: function(){ return {
-    // reqTreesLoaded: false,
     reqTrees: {},
     reqList: [],
 
-    // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
-    subjectsInfo: [{"subject_id": "6.00"},],
+    // A list of dictionaries containing info on current mit subjects. (actually filled in below)
+    subjectsInfo: [],
     leftDrawer: true,
     rightDrawer: true,
     activeRoad: "road-one",
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
+
+    //note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
     roads: {
       'road-one': {
         selectedReqs: ['girs',],
@@ -166,6 +167,7 @@ export default {
     }
   }},
   watch: {
+    //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
       this.updateFulfillment();
     },
