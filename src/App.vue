@@ -22,13 +22,16 @@
       id="left-panel"
       width="350"
       mobile-break-point="800"
-      class="side-panel elevation-5"
+      class="side-panel elevation-5 scroller"
       v-model="leftDrawer"
       app
     >
       <audit
         v-bind:reqTrees="reqTrees"
         v-bind:selectedReqs="roads[activeRoad].selectedReqs"
+        v-bind:selectedSubjects = "roads[activeRoad].selectedSubjects"
+        v-bind:reqList="reqList"
+        @add-req = "addReq"
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
@@ -73,6 +76,23 @@ import Audit from './components/Audit.vue'
 import ClassSearch from './components/ClassSearch.vue'
 import Road from './components/Road.vue'
 import FilterSet from "./components/FilterSet.vue"
+import $ from 'jquery'
+import Vue from 'vue'
+
+$(document).ready(function() {
+  var borders = $(".v-navigation-drawer__border")
+  var scrollers = $(".scroller")
+  var scrollWidth = scrollers.width()
+  //moves nav drawer border with scroll
+  //if the effect proves too annoying we can remove the borders instead
+  //(commented out below)
+  scrollers.scroll(function() {
+    var scrollPosition = scrollers.scrollLeft()
+    borders.css({top: 0, left: scrollWidth-1+scrollPosition})
+  })
+  // borders.remove()
+})
+
 
 export default {
   components: {
@@ -82,31 +102,18 @@ export default {
     'filter-set': FilterSet
   },
   data: function(){ return {
-    reqTrees: {
-      // unfortunately have to have this here or it crashes on key lookup in the beginning...
-      // TODO: make that ^ not the case. Probably by using the Vue key system properly/at all
-      'girs': {
-          title: 'loading...',
-          reqs: []
-        },
-      'major6-3': {
-          title: 'loading....',
-          reqs: []
-        },
-      'minor2': {
-          title: 'loading.....',
-          reqs: []
-        },
-      },
+    reqTrees: {},
     reqList: [],
 
-    // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
-    subjectsInfo: [{"subject_id": "6.00"},],
+    // A list of dictionaries containing info on current mit subjects. (actually filled in below)
+    subjectsInfo: [],
     leftDrawer: true,
     rightDrawer: true,
     activeRoad: "road-one",
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
+
+    //note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
     roads: {
       'road-one': {
         selectedReqs: ['girs',],
@@ -161,35 +168,52 @@ export default {
       },
     }
   }},
-  // computed: { // tried this to fix the thing above but it didn't update reactively
-  //   loadedReqs: function () {
-  //     return this.selectedReqs.filter(function(r) {
-  //       return this.reqTrees && (r in this.reqTrees);
-  //     })
-  //   }
-  // },
+  watch: {
+    //call fireroad to check fulfillment if you change active roads or change something about a road
+    activeRoad: function(newRoad,oldRoad) {
+      this.updateFulfillment();
+    },
+    roads: {
+      handler: function(newRoads,oldRoads) {
+        console.log("updating road");
+        this.updateFulfillment();
+      },
+      deep: true
+    }
+  },
+  methods: {
+    updateFulfillment: function() {
+      var subjectIDs = this.roads[this.activeRoad].selectedSubjects.map((s)=>s.id.toString()).join(",")
+      for (var r = 0; r < this.roads[this.activeRoad].selectedReqs.length; r++) {
+        var req = this.roads[this.activeRoad].selectedReqs[r];
+        axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
+          //This is necessary so Vue knows about the new property on reqTrees
+          Vue.set(this.data.reqTrees, this.req, response.data);
+        }.bind({data: this, req:req}))
+      }
+    },
+    addReq: function(event) {
+      this.roads[this.activeRoad].selectedReqs.push(event);
+      Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
+    }
+  },
   mounted() {
     // TODO: this is kind of janky, and should not happen ideally:
     //  I'm bouncing the request through this proxy to avoid some issue with CORS
-    //  see this issue for more: https://github.com/axios/axios/issues/853
+    // see this issue for more: https://github.com/axios/axios/issues/853
+
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
-        console.log(response.data);
         this.reqList = response.data;
-      });
-    axios.get(`https://fireroad-dev.mit.edu/requirements/get_json/girs`)
-      .then(response => {
-        this.reqTrees['girs'] = response.data;
-      });
-    axios.get(`https://fireroad-dev.mit.edu/requirements/get_json/major6-3`)
-      .then(response => {
-        console.log(response.data['major6-3']);
-        this.reqTrees['major6-3'] = response.data;
-      });
-    axios.get(`https://fireroad-dev.mit.edu/requirements/get_json/minor2`)
-      .then(response => {
-        this.reqTrees['minor2'] = response.data;
-      });
+        for(var r in this.reqList) {
+          Vue.set(this.reqList, r, this.reqList[r]);
+        }
+      })
+
+
+
+    this.updateFulfillment();
+
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
@@ -201,3 +225,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .scroller {
+    overflow-x: scroll;
+  }
+  .v-navigation-drawer__border {
+    display: none !important;
+  }
+</style>
