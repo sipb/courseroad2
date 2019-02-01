@@ -8,8 +8,9 @@
       v-on:drag = "drag"
       v-on:dragend = "drop"
     >
-      <!-- <v-icon @click = "$emit('remove-class',)">cancel</v-icon> -->
-      <v-card-text class="">{{classInfo.id}}: {{classInfo.title}}</v-card-text>
+      <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo)">cancel</v-icon>
+      <v-card-text>{{classInfo.id}}: {{classInfo.title}}</v-card-text>
+
 <!--
      <v-container
       height="200px"

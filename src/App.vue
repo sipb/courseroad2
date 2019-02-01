@@ -44,6 +44,7 @@
         v-bind:subjects = "subjectsInfo"
         @drop-class="dropClass"
         @drag-class="testClass"
+        @remove-class = "removeClass"
       ></road>
     </v-content>
 
@@ -186,7 +187,11 @@ export default {
     },
     moveClass: function(classIndex, newSem) {
       this.roads[this.activeRoad].selectedSubjects[classIndex].semester = newSem;
-      Vue.set(this.roads[this.activeRoad],"selectedSubjects",this.roads[this.activeRoad].selectedSubjects);
+      Vue.set(this.roads[this.activeRoad].selectedSubjects, classIndex, this.roads[this.activeRoad].selectedSubjects[classIndex]);
+    },
+    removeClass: function(classInfo) {
+      var classIndex = this.roads[this.activeRoad].selectedSubjects.indexOf(classInfo);
+      this.roads[this.activeRoad].selectedSubjects.splice(classIndex,1);
     },
     getRelevantObjects: function(position) {
       var semesterElem = document.elementFromPoint(position.x,position.y);
@@ -257,7 +262,6 @@ export default {
       }
     },
     dropClass: function(event) {
-      console.log("drop class");
       var semesterObjects = this.getRelevantObjects(event.drop);
       this.resetSemesterBox(semesterObjects.semesterBox);
       var semInfo = this.classIsOffered(semesterObjects, event);
