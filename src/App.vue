@@ -1,7 +1,8 @@
 <!-- direct from the Vuetify website: this is the proper nesting: v-container » v-layout » v-flex (» v-card) -->
 <template>
   <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
-  <v-app id="app-wrapper">
+  <v-app id="app-wrapper"
+  >
     <v-toolbar fixed app dense>
         <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
         <v-toolbar-title>Audit</v-toolbar-title>
@@ -34,8 +35,15 @@
     </v-navigation-drawer>
 
     <v-content app id="center-panel">
+      <div class = "text-xs-center" v-if = "!subjectsLoaded">
+        <v-progress-circular indeterminate>
+        </v-progress-circular>
+      </div>
       <road
         v-bind:selectedSubjects="roads[activeRoad].selectedSubjects"
+        v-bind:subjects = "subjectsInfo"
+        @drop-class="dropClass"
+        @drag-class="testClass"
       ></road>
     </v-content>
 
@@ -48,7 +56,7 @@
       right
       app
     >
-      <class-search v-bind:subjects="subjectsInfo" @add-class="addClass"></class-search>
+      <class-search v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
     </v-navigation-drawer>
   </v-app>
 </template>
@@ -73,6 +81,9 @@ import Audit from './components/Audit.vue'
 import ClassSearch from './components/ClassSearch.vue'
 import Road from './components/Road.vue'
 import FilterSet from "./components/FilterSet.vue"
+import $ from "jquery"
+import Vue from 'vue'
+
 
 export default {
   components: {
@@ -99,7 +110,8 @@ export default {
         },
       },
     reqList: [],
-
+    dragSemesterNum: -1,
+    subjectsLoaded: false,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [{"subject_id": "6.00"},],
     leftDrawer: true,
@@ -171,7 +183,121 @@ export default {
   methods: {
     addClass: function(newClass) {
       this.roads[this.activeRoad].selectedSubjects.push(newClass);
-    }
+    },
+    moveClass: function(classIndex, newSem) {
+      this.roads[this.activeRoad].selectedSubjects[classIndex].semester = newSem;
+      Vue.set(this.roads[this.activeRoad],"selectedSubjects",this.roads[this.activeRoad].selectedSubjects);
+    },
+    getRelevantObjects: function(position) {
+      var semesterElem = document.elementFromPoint(position.x,position.y);
+      var semesterParent = $(semesterElem).parents(".semester-container");
+      var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
+      return {
+        semesterParent: semesterParent,
+        semesterBox: semesterBox
+      }
+    },
+    resetSemesterBox: function(semesterBox) {
+      semesterBox.addClass("grey");
+      semesterBox.removeClass("red");
+      semesterBox.removeClass("green");
+    },
+    classIsOffered: function(semesterObjects, event) {
+      if(semesterObjects.semesterParent.length) {
+        var semesterID = semesterObjects.semesterParent.attr("id");
+        if(semesterID.substring(0,9)=="semester_") {
+          var semesterNum = parseInt(semesterID.substring(9))
+          var semesterType = semesterNum % 2;
+          var classInfo = event.classInfo;
+          if(classInfo == undefined) {
+            if(this.subjectsLoaded) {
+              var filteredSubjects = this.subjectsInfo.filter(function(s) {
+                return s.subject_id == event.basicClass.id
+              });
+              if(filteredSubjects.length) {
+                classInfo = filteredSubjects[0];
+              } else {
+                //not in catalog, might be a generic course (like PHY1 or HASS)
+                var matchingClasses = this.subjectsInfo.filter(function(subject) {
+                  var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
+                  return possible_attributes.includes(event.basicClass.id);
+                });
+                if(matchingClasses.length) {
+                  classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
+                    return {
+                      offered_fall: subjectA.offered_fall || subjectB.offeredFall,
+                      offered_spring: subjectA.offered_spring || subjectB.offered_spring
+                    }
+                  });
+                } else {
+                  classInfo = {
+                    offered_fall: false,
+                    offered_spring: false
+                  }
+                }
+              }
+            } else {
+              classInfo = undefined;
+            }
+
+          }
+          var isOffered;
+          if(classInfo != undefined) {
+            isOffered = (semesterType == 0 && classInfo.offered_fall)
+                            || (semesterType == 1 && classInfo.offered_spring);
+          }
+          return {
+            isOffered: isOffered,
+            semesterNum: semesterNum
+          }
+        }
+      }
+      return {
+        isOffered: undefined
+      }
+    },
+    dropClass: function(event) {
+      console.log("drop class");
+      var semesterObjects = this.getRelevantObjects(event.drop);
+      this.resetSemesterBox(semesterObjects.semesterBox);
+      var semInfo = this.classIsOffered(semesterObjects, event);
+      if(semInfo.isOffered) {
+        event.drop.preventDefault();
+        if(event.isNew) {
+          var newClass = {
+            overrideWarnings : false,
+            semester : semInfo.semesterNum,
+            title : event.classInfo.title,
+            id : event.classInfo.subject_id,
+            units : event.classInfo.total_units
+          }
+          this.addClass(newClass);
+        } else {
+          var currentIndex = this.roads[this.activeRoad].selectedSubjects.indexOf(event.basicClass);
+          this.moveClass(currentIndex, semInfo.semesterNum)
+        }
+      }
+      this.dragSemesterNum = -1;
+    },
+    testClass: function(event) {
+      var semesterObjects = this.getRelevantObjects(event.drag);
+      var semInfo = this.classIsOffered(semesterObjects, event);
+      if(semInfo.isOffered != undefined) {
+        if (!semInfo.isOffered) {
+          semesterObjects.semesterBox.removeClass("grey");
+          semesterObjects.semesterBox.addClass("red");
+        } else {
+          semesterObjects.semesterBox.removeClass("grey");
+          semesterObjects.semesterBox.addClass("green");
+        }
+      }
+      if(this.dragSemesterNum != semInfo.semesterNum) {
+        var lastSemester = $("#semester_" + this.dragSemesterNum);
+        var lastSemesterBox = lastSemester.find(".semester-drop-container");
+        this.resetSemesterBox(lastSemesterBox)
+      }
+      this.dragSemesterNum = semInfo.semesterNum;
+    },
   },
   mounted() {
     // TODO: this is kind of janky, and should not happen ideally:
@@ -202,6 +328,7 @@ export default {
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
         this.subjectsInfo = response.data
+        this.subjectsLoaded = true;
       });
   },
 };

@@ -7,7 +7,6 @@
       fluid
       grid-list-md
       :class="semesterStyles"
-      v-on:dragenter = "dragenter"
     >
       <v-layout wrap align-center justify-center row>
         <class
@@ -15,6 +14,8 @@
           v-bind:classInfo="subject"
           v-bind:semesterIndex="index"
           :key="subject.id + index"
+          @drag-class="$emit('drag-class',$event)"
+          @drop-class="$emit('drop-class',$event)"
         />
       </v-layout>
     </v-container>
@@ -33,7 +34,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index'],
+  props:['selectedSubjects','index',"allSubjects"],
   components: {
     'class': Class
   },
@@ -52,15 +53,20 @@ export default {
     },
   },
   methods: {
-    dropped: function(event) {
-      // console.log("dropped");
-      // console.log(event);
+    dropRoadSubject: function(event, subject) {
+      console.log("drop road subject");
+      console.log(event);
     },
-    dragenter: function(event) {
-      // console.log("drag enter");
-      // console.log(event);
-      // event.preventDefault();
-    }
+
+    // dropped: function(event) {
+    //   // console.log("dropped");
+    //   // console.log(event);
+    // },
+    // dragenter: function(event) {
+    //   // console.log("drag enter");
+    //   // console.log(event);
+    //   // event.preventDefault();
+    // }
   }
 }
 </script>

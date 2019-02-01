@@ -12,7 +12,7 @@
     <h4> Results: </h4>
     <v-data-table  :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
       <template slot = "items" slot-scope = "props">
-        <tr draggable = "true" v-on:dragend ="addClass($event, props)" v-on:drag = "testClass($event, props)">
+        <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)">
           <td>{{props.item.subject_id}}</td>
           <td>{{props.item.title}}</td>
         </tr>
@@ -109,7 +109,7 @@ export default {
         //gets the .test function (which tests if a string matches regex) from each regex filter in a group
         function getRegexFuncs(regexStrings) {
           return regexStrings.map(function(rs) {
-            var r = new RegExp(escapeRegExp(rs));
+            var r = new RegExp(rs);
             var t = r.test.bind(r);
             return t;
           });
@@ -185,6 +185,20 @@ export default {
     }
   },
   methods: {
+    drag: function(event, classItem) {
+      this.$emit("drag-class", {
+        drag: event,
+        classInfo: classItem.item,
+        isNew: true
+      });
+    },
+    drop: function(event, classItem) {
+      this.$emit("drop-class", {
+        drop: event,
+        classInfo: classItem.item,
+        isNew: true
+      });
+    },
     addClass: function(event, classItem) {
       var semesterElem = document.elementFromPoint(event.x,event.y);
       var semesterParent = $(semesterElem).parents(".semester-container");

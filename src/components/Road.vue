@@ -12,6 +12,9 @@
       :key="index-1"
       v-bind:index="index-1"
       v-bind:selectedSubjects="selectedSubjects"
+      v-bind:allSubjects = "subjects"
+      @drag-class = "$emit('drag-class',$event)"
+      @drop-class = "$emit('drop-class',$event)"
       >
     </semester>
   </v-expansion-panel>
@@ -26,11 +29,13 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects'],
+  props: ['selectedSubjects',"subjects"],
   data: function () { return {
       visibleList: Array(8).fill(true),
     }
   },
+  methods: {
+  }
 }
 </script>
 
