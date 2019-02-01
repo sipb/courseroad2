@@ -14,6 +14,9 @@
             {{name}}
           </v-btn>
         </v-btn-toggle>
+        <v-btn @click="loginUser">
+          Login
+        </v-btn>
       <v-spacer></v-spacer>
         <v-toolbar-title>Class Search</v-toolbar-title>
         <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
@@ -88,20 +91,18 @@ import FilterSet from "./components/FilterSet.vue"
 import $ from 'jquery'
 import Vue from 'vue'
 
-$(document).ready(function() {
-  var borders = $(".v-navigation-drawer__border")
-  var scrollers = $(".scroller")
-  var scrollWidth = scrollers.width()
-  //moves nav drawer border with scroll
-  //if the effect proves too annoying we can remove the borders instead
-  //(commented out below)
-  scrollers.scroll(function() {
-    var scrollPosition = scrollers.scrollLeft()
-    borders.css({top: 0, left: scrollWidth-1+scrollPosition})
-  })
-  // borders.remove()
-})
+var MAIN_URL = "http://localhost:8080"
 
+function getQueryObject() {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  var queryObject = {}
+  for(var i = 0; i < vars.length; i++) {
+    var keyValuePair = vars[i].split("=");
+    queryObject[keyValuePair[0]] = keyValuePair[1];
+  }
+  return queryObject;
+}
 
 export default {
   components: {
@@ -119,6 +120,7 @@ export default {
     subjectsInfo: [],
     leftDrawer: true,
     rightDrawer: true,
+    accessInfo: undefined,
     activeRoad: "road-one",
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
@@ -319,6 +321,41 @@ export default {
     addReq: function(event) {
       this.roads[this.activeRoad].selectedReqs.push(event);
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
+    },
+    loginUser: function(event) {
+      window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
+    },
+    getUserData: function() {
+      //note: TODO: fix the cors problem
+      axios.get(`https://cors-anywhere.herokuapp.com/https://fireroad-dev.mit.edu/sync/roads/`, {
+        headers: {
+          "Authorization": 'Bearer ' + this.accessInfo.access_token,
+          "Access-Control-Allow-Origin": "*",
+
+        }
+      }).then(function(response) {
+        console.log(response);
+      })
+    },
+    getAuthorizationToken: function(code) {
+      axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
+        if(response.data.success) {
+          console.log("success");
+          console.log(this);
+          this.data.accessInfo = response.data.access_info;
+          console.log(this.accessInfo);
+          this.data.getUserData();
+        }
+      }.bind({data:this}))
+    },
+    attemptLogin: function() {
+      var queryObject = getQueryObject();
+      if("code" in queryObject) {
+        var code = queryObject["code"];
+        // window.location.href = MAIN_URL;
+        console.log(code);
+        this.getAuthorizationToken(code);
+      }
     }
   },
   watch: {
@@ -335,6 +372,18 @@ export default {
     }
   },
   mounted() {
+    var borders = $(".v-navigation-drawer__border")
+    var scrollers = $(".scroller")
+    var scrollWidth = scrollers.width()
+    //moves nav drawer border with scroll
+    //if the effect proves too annoying we can remove the borders instead
+    //(commented out below)
+    scrollers.scroll(function() {
+      var scrollPosition = scrollers.scrollLeft()
+      borders.css({top: 0, left: scrollWidth-1+scrollPosition})
+    })
+
+    this.attemptLogin();
     // TODO: this is kind of janky, and should not happen ideally:
     //  I'm bouncing the request through this proxy to avoid some issue with CORS
     // see this issue for more: https://github.com/axios/axios/issues/853
