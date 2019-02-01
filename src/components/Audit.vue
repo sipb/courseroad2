@@ -1,6 +1,19 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
   <v-container>
+    <v-menu style = "float:right">
+      <v-btn outline style = "float:right" slot = "activator">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-list scrollable>
+        <v-list-tile
+           v-for= "(item, index) in reqList"
+           @click = "addReqTree(index)"
+           >
+           <v-list-tile-title style = "font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
+         </v-list-tile>
+       </v-list>
+    </v-menu>
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
@@ -8,23 +21,31 @@
       item-key="title"
       item-children="reqs"
       open-on-click
+      :activatable = "false"
     >
       <!-- TODO: useful icons can go here if you can figure out how -->
-      <!-- <template slot="prepend" slot-scope="{ item, leaf }">
-        <v-icon v-if="item.reqs">
-          {{ true ? 'mdi-folder-open' : 'mdi-folder' }}
-        </v-icon>
-        <v-icon v-else>
-          {{ files[item.file] }}
-        </v-icon>
-      </template> -->
-      <template slot="label" slot-scope="{ item, leaf }">
+      <template slot="prepend" slot-scope="{ item, leaf, open }">
+        <v-tooltip left>
+          <template slot = "activator">
+            <v-icon v-if="'reqs' in item" :style = "fulfilledIcon(item)">
+              {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }}
+            </v-icon>
+            <v-icon v-else :style = "fulfilledIcon(item)">
+              {{ item['plain-string'] ? item.fulfilled ? "star" : "star_outline": item.fulfilled ? "check_box" : "check_box_outline_blank"}}
+            </v-icon>
+          </template>
+          <span>{{item.percent_fulfilled}}%</span>
+        </v-tooltip>
+      </template>
+      <template slot = "label" slot-scope = "{ item, leaf}">
         <requirement
           v-bind:req="item"
           v-bind:leaf="leaf"
         >
         </requirement>
       </template>
+
+
     </v-treeview>
   </v-container>
 </template>
@@ -32,22 +53,46 @@
 
 <script>
 import Requirement from './Requirement.vue'
-
 export default {
   name: 'audit',
   components: {
     'requirement': Requirement,
   },
-  props: ['selectedReqs', 'reqTrees'],
+  props: ['selectedReqs', 'reqTrees', 'reqList'],
   data: function() { return {
-    tree: [],
+    tree: []
   }},
   computed: {
     selectedTrees: function() {
+      // console.log("calculting selected trees");
+      // console.log(this.reqTrees.girs);
       return this.selectedReqs.map(function(req){
-        return this.reqTrees[req];
+        if(req in this.reqTrees) {
+          return this.reqTrees[req];
+        } else {
+          return {
+            title: "loading...",
+            reqs: []
+          }
+        }
       }, this);
     },
   },
+  methods: {
+    fulfilledIcon: function(req) {
+      if(req.fulfilled) {
+        return "color: #52e052;";
+      } else {
+        return "";
+      }
+    },
+    addReqTree: function(req) {
+      this.$emit("add-req",req)
+    }
+  },
+
 }
 </script>
+
+<style scoped>
+</style>
