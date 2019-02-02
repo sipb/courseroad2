@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     fulfilledIcon: function(req) {
-      if(req.fulfilled) {
+      if(req.fulfilled && (req.req != undefined || req.sat_courses.length>0)) {
         return "color: #52e052;";
       } else {
         return "";
