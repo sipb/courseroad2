@@ -8,10 +8,10 @@
         <v-toolbar-title>Audit</v-toolbar-title>
       <v-spacer></v-spacer>
         <v-btn-toggle v-model="activeRoad" mandatory>
-          <v-btn v-for="(road, name) in roads"
-            :value="name"
+          <v-btn v-for="(road,index) in roads"
+            :value="index"
           >
-            {{name}}
+            {{road.name}}
           </v-btn>
         </v-btn-toggle>
         <v-btn @click="loginUser">
@@ -32,8 +32,8 @@
     >
       <audit
         v-bind:reqTrees="reqTrees"
-        v-bind:selectedReqs="roads[activeRoad].selectedReqs"
-        v-bind:selectedSubjects = "roads[activeRoad].selectedSubjects"
+        v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
+        v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
         v-bind:reqList="reqList"
         @add-req = "addReq"
       ></audit>
@@ -46,7 +46,7 @@
         </v-progress-circular>
       </div>
       <road
-        v-bind:selectedSubjects="roads[activeRoad].selectedSubjects"
+        v-bind:selectedSubjects="roads[activeRoad].contents.selectedSubjects"
         v-bind:subjects = "subjectsInfo"
         @drop-class="dropClass"
         @drag-class="testClass"
@@ -121,83 +121,95 @@ export default {
     leftDrawer: true,
     rightDrawer: true,
     accessInfo: undefined,
-    activeRoad: "road-one",
+    activeRoad: 0,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
     //note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
-    roads: {
-      'road-one': {
-        selectedReqs: ['girs',],
-        selectedSubjects: [],
-      },
-      'test_road1': {
-        selectedReqs: ['girs','major6-3','minor2',],
-        selectedSubjects : [
-          {
-            overrideWarnings : false,
-            semester : 0,
-            title : "Generic Physics I GIR",
-            id : "PHY1",
-            units : 12
-          },
-          {
-            overrideWarnings : false,
-            semester : 1,
-            title : "Principles of Chemical Science",
-            id : "5.112",
-            units : 12
-          },
-          {
-            overrideWarnings : false,
-            semester : 4,
-            title : "Fundamentals of Programming",
-            id : "6.009",
-            units : 12
-          },
-          {
-            overrideWarnings : false,
-            semester : 0,
-            title : "Intro to EECS",
-            id : "6.01",
-            units : 12
-          },
-          {
-            overrideWarnings : false,
-            semester : 4,
-            title : "Advanced Music Performance",
-            id : "21M.480",
-            units : 6
-          },
-          {
-            overrideWarnings : false,
-            semester : 6,
-            title : "Advanced Music Performance",
-            id : "21M.480",
-            units : 6
-          }
-        ],
-      },
-    }
+    roads: [
+      {
+        downloaded: Date.now().toString(),
+        changed: Date.now().toString(),
+        name: "My First Road",
+        agent: "My Computer",
+        contents: {
+          coursesOfStudy: ['girs'],
+          selectedSubjects: []
+        }
+      }
+    ],
+    //  {
+    //   'road-one': {
+    //     coursesOfStudy: ['girs',],
+    //     selectedSubjects: [],
+    //   },
+    //   'test_road1': {
+    //     coursesOfStudy: ['girs','major6-3','minor2',],
+    //     selectedSubjects : [
+    //       {
+    //         overrideWarnings : false,
+    //         semester : 0,
+    //         title : "Generic Physics I GIR",
+    //         id : "PHY1",
+    //         units : 12
+    //       },
+    //       {
+    //         overrideWarnings : false,
+    //         semester : 1,
+    //         title : "Principles of Chemical Science",
+    //         id : "5.112",
+    //         units : 12
+    //       },
+    //       {
+    //         overrideWarnings : false,
+    //         semester : 4,
+    //         title : "Fundamentals of Programming",
+    //         id : "6.009",
+    //         units : 12
+    //       },
+    //       {
+    //         overrideWarnings : false,
+    //         semester : 0,
+    //         title : "Intro to EECS",
+    //         id : "6.01",
+    //         units : 12
+    //       },
+    //       {
+    //         overrideWarnings : false,
+    //         semester : 4,
+    //         title : "Advanced Music Performance",
+    //         id : "21M.480",
+    //         units : 6
+    //       },
+    //       {
+    //         overrideWarnings : false,
+    //         semester : 6,
+    //         title : "Advanced Music Performance",
+    //         id : "21M.480",
+    //         units : 6
+    //       }
+    //     ],
+    //   },
+    // }
   }},
   // computed: { // tried this to fix the thing above but it didn't update reactively
   //   loadedReqs: function () {
-  //     return this.selectedReqs.filter(function(r) {
+  //     return this.coursesOfStudy.filter(function(r) {
   //       return this.reqTrees && (r in this.reqTrees);
   //     })
   //   }
   // },
   methods: {
     addClass: function(newClass) {
-      this.roads[this.activeRoad].selectedSubjects.push(newClass);
+      this.roads[this.activeRoad].contents.selectedSubjects.push(newClass);
     },
     moveClass: function(classIndex, newSem) {
-      this.roads[this.activeRoad].selectedSubjects[classIndex].semester = newSem;
-      Vue.set(this.roads[this.activeRoad].selectedSubjects, classIndex, this.roads[this.activeRoad].selectedSubjects[classIndex]);
+      this.roads[this.activeRoad].contents.selectedSubjects[classIndex].semester = newSem;
+      Vue.set(this.roads[this.activeRoad].contents.selectedSubjects, classIndex, this.roads[this.activeRoad].selectedSubjects[classIndex]);
     },
     removeClass: function(classInfo) {
-      var classIndex = this.roads[this.activeRoad].selectedSubjects.indexOf(classInfo);
-      this.roads[this.activeRoad].selectedSubjects.splice(classIndex,1);
+      var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      this.roads[this.activeRoad].contents.selectedSubjects.splice(classIndex,1);
     },
     getRelevantObjects: function(position) {
       var semesterElem = document.elementFromPoint(position.x,position.y);
@@ -283,7 +295,7 @@ export default {
           }
           this.addClass(newClass);
         } else {
-          var currentIndex = this.roads[this.activeRoad].selectedSubjects.indexOf(event.basicClass);
+          var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
           this.moveClass(currentIndex, semInfo.semesterNum)
         }
       }
@@ -309,9 +321,9 @@ export default {
       this.dragSemesterNum = semInfo.semesterNum;
     },
     updateFulfillment: function() {
-      var subjectIDs = this.roads[this.activeRoad].selectedSubjects.map((s)=>s.id.toString()).join(",")
-      for (var r = 0; r < this.roads[this.activeRoad].selectedReqs.length; r++) {
-        var req = this.roads[this.activeRoad].selectedReqs[r];
+      var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
+      for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
+        var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
         axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
           //This is necessary so Vue knows about the new property on reqTrees
           Vue.set(this.data.reqTrees, this.req, response.data);
@@ -319,7 +331,7 @@ export default {
       }
     },
     addReq: function(event) {
-      this.roads[this.activeRoad].selectedReqs.push(event);
+      this.roads[this.activeRoad].contents.coursesOfStudy.push(event);
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
     },
     loginUser: function(event) {
@@ -334,7 +346,35 @@ export default {
 
         }
       }).then(function(response) {
-        console.log(response);
+        if(response.status == 200 && response.data.success) {
+          return Object.keys(response.data.files)
+        } else {
+          return Promise.reject();
+        }
+        return response;
+      }).then(function(fileKeys) {
+        console.log("all my files:");
+        console.log(fileKeys)
+        if(fileLinks.length) {
+          var fileLinks = fileKeys.map(function(fk) {
+            return axios.get(`https://cors-anywhere.herokuapp.com/https://fireroad-dev.mit.edu/sync/roads/?id=` + fk, {
+              headers: {
+                "Authorization": 'Bearer ' + this.accessInfo.access_token,
+                "Access-Control-Allow-Origin": "*",
+              }
+            })
+          });
+          return Promise.all(fileLinks);
+        } else {
+          return undefined;
+        }
+
+      }).then(function(roads) {
+        if(roads != undefined) {
+          this.roads = roads;
+        }
+      }).catch(function(err) {
+        console.log(err);
       })
     },
     getAuthorizationToken: function(code) {
