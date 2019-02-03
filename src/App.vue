@@ -414,6 +414,7 @@ export default {
           }
         }.bind({oldid: roadID,data:this}))
       }
+    }
 
     },
     getAgent: function() {
