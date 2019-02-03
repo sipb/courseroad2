@@ -17,6 +17,9 @@
         <v-btn @click="loginUser">
           Login
         </v-btn>
+        <v-btn v-if = "loggedIn" @click="saveRoad">
+          Save
+        </v-btn>
       <v-spacer></v-spacer>
         <v-toolbar-title>Class Search</v-toolbar-title>
         <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
@@ -92,6 +95,7 @@ import $ from 'jquery'
 import Vue from 'vue'
 
 var MAIN_URL = "http://localhost:8080"
+var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSSZ"
 
 function getQueryObject() {
   var query = window.location.search.substring(1);
@@ -116,28 +120,29 @@ export default {
     reqList: [],
     dragSemesterNum: -1,
     subjectsLoaded: false,
+    loggedIn: false,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
     leftDrawer: true,
     rightDrawer: true,
     accessInfo: undefined,
-    activeRoad: 0,
+    activeRoad: "#defaultroad#",
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
     //note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
-    roads: [
-      {
-        downloaded: Date.now().toString(),
-        changed: Date.now().toString(),
+    roads: {
+      "#defaultroad#": {
+        downloaded: moment().format(DATE_FORMAT),
+        changed: moment().format(DATE_FORMAT),
         name: "My First Road",
-        agent: "My Computer",
+        agent: this.getAgent(),
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: []
         }
       }
-    ],
+    },
     //  {
     //   'road-one': {
     //     coursesOfStudy: ['girs',],
@@ -353,9 +358,7 @@ export default {
         }
         return response;
       }).then(function(fileKeys) {
-        console.log("all my files:");
-        console.log(fileKeys)
-        if(fileLinks.length) {
+        if(fileKeys.length) {
           var fileLinks = fileKeys.map(function(fk) {
             return axios.get(`https://cors-anywhere.herokuapp.com/https://fireroad-dev.mit.edu/sync/roads/?id=` + fk, {
               headers: {
@@ -363,27 +366,30 @@ export default {
                 "Access-Control-Allow-Origin": "*",
               }
             })
-          });
-          return Promise.all(fileLinks);
+          }.bind(this));
+          return Promise.all(fileLinks).then((fl) => [fileKeys, fl]);
         } else {
-          return undefined;
+          return [fileKeys, undefined];
         }
-
-      }).then(function(roads) {
-        if(roads != undefined) {
-          this.roads = roads;
+      }.bind(this)).then(function([roadIDs,roadData]) {
+        if(roadData != undefined) {
+          for(var r = 0; r < roadIDs.length; r++) {
+            if(roadData[r].status==200 && roadData[r].data.success) {
+              Vue.set(this.roads, roadIDs[r], roadData[r].data.file);
+            }
+          }
+          Vue.delete(this.roads, "#defaultroad#")
+          this.activeRoad = Object.keys(this.roads)[0];
         }
-      }).catch(function(err) {
+      }.bind(this)).catch(function(err) {
         console.log(err);
       })
     },
     getAuthorizationToken: function(code) {
       axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
         if(response.data.success) {
-          console.log("success");
-          console.log(this);
           this.data.accessInfo = response.data.access_info;
-          console.log(this.accessInfo);
+          this.data.loggedIn = true;
           this.data.getUserData();
         }
       }.bind({data:this}))
@@ -392,10 +398,35 @@ export default {
       var queryObject = getQueryObject();
       if("code" in queryObject) {
         var code = queryObject["code"];
+        window.history.pushState("Hi","Hello","/");
         // window.location.href = MAIN_URL;
         console.log(code);
         this.getAuthorizationToken(code);
       }
+    },
+    saveRoad: function() {
+      var newRoad = Object.assign({override: false}, this.roads[this.activeRoad]);
+      console.log("new road:");
+      console.log(newRoad);
+      console.log(this.accessInfo);
+      axios.post(`https://cors-anywhere.herokuapp.com/https://fireroad-dev.mit.edu/sync/sync_road/`,
+        newRoad,
+        {
+          headers: {
+            "Authorization": "Bearer " + this.accessInfo.access_token,
+            "Access-Control-Allow-Origin": "*"
+          }
+        }
+      ).then(function(response) {
+        console.log("sync response:");
+        console.log(response);
+      })
+      // console.log(this.roads[this.activeRoad])
+      // console.log(this.roads[this.activeRoad].agent);
+      // console.log(this.activeRoad);
+    },
+    getAgent: function() {
+      return navigator.platform;
     }
   },
   watch: {
