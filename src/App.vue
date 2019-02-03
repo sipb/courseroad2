@@ -19,13 +19,24 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-        <v-btn-toggle v-model="activeRoad" mandatory>
+        <!-- <v-btn-toggle v-model="activeRoad" mandatory>
           <v-btn v-for="(road,index) in roads"
             :value="index"
           >
             {{road.name}}
           </v-btn>
-        </v-btn-toggle>
+        </v-btn-toggle> -->
+        <v-select
+          v-model = "activeRoad"
+          :items = "Object.keys(roads)"
+        >
+          <template slot = "item" slot-scope = "{item}">
+            {{roads[item].name}}
+          </template>
+          <template slot = "selection" slot-scope = "{item}">
+            {{roads[item].name}}
+          </template>
+        </v-select>
         <v-btn @click="loginUser">
           Login
         </v-btn>
@@ -385,7 +396,6 @@ export default {
         var assignKeys = {override: false}
         if(!roadID.includes("#")) {
           assignKeys.id = roadID
-        }
         var newRoad = Object.assign(assignKeys, this.roads[roadID]);
         this.postSecure("sync/sync_road/",newRoad)
         .then(function(response) {
@@ -393,8 +403,16 @@ export default {
           //TODO: get actual ID from server
           if(response.status!=200) {
             alert("Did not save")
+          } else {
+            if(response.data.id != undefined) {
+              Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
+              Vue.delete(this.data.roads, this.oldid);
+              if(this.data.activeRoad==this.oldid) {
+                this.data.activeRoad = response.data.id;
+              }
+            }
           }
-        })
+        }.bind({oldid: roadID,data:this}))
       }
 
     },
