@@ -142,79 +142,21 @@ export default {
           selectedSubjects: []
         }
       }
-    },
-    //  {
-    //   'road-one': {
-    //     coursesOfStudy: ['girs',],
-    //     selectedSubjects: [],
-    //   },
-    //   'test_road1': {
-    //     coursesOfStudy: ['girs','major6-3','minor2',],
-    //     selectedSubjects : [
-    //       {
-    //         overrideWarnings : false,
-    //         semester : 0,
-    //         title : "Generic Physics I GIR",
-    //         id : "PHY1",
-    //         units : 12
-    //       },
-    //       {
-    //         overrideWarnings : false,
-    //         semester : 1,
-    //         title : "Principles of Chemical Science",
-    //         id : "5.112",
-    //         units : 12
-    //       },
-    //       {
-    //         overrideWarnings : false,
-    //         semester : 4,
-    //         title : "Fundamentals of Programming",
-    //         id : "6.009",
-    //         units : 12
-    //       },
-    //       {
-    //         overrideWarnings : false,
-    //         semester : 0,
-    //         title : "Intro to EECS",
-    //         id : "6.01",
-    //         units : 12
-    //       },
-    //       {
-    //         overrideWarnings : false,
-    //         semester : 4,
-    //         title : "Advanced Music Performance",
-    //         id : "21M.480",
-    //         units : 6
-    //       },
-    //       {
-    //         overrideWarnings : false,
-    //         semester : 6,
-    //         title : "Advanced Music Performance",
-    //         id : "21M.480",
-    //         units : 6
-    //       }
-    //     ],
-    //   },
-    // }
+    }
   }},
-  // computed: { // tried this to fix the thing above but it didn't update reactively
-  //   loadedReqs: function () {
-  //     return this.coursesOfStudy.filter(function(r) {
-  //       return this.reqTrees && (r in this.reqTrees);
-  //     })
-  //   }
-  // },
   methods: {
     addClass: function(newClass) {
       this.roads[this.activeRoad].contents.selectedSubjects.push(newClass);
+      Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     moveClass: function(classIndex, newSem) {
       this.roads[this.activeRoad].contents.selectedSubjects[classIndex].semester = newSem;
-      Vue.set(this.roads[this.activeRoad].contents.selectedSubjects, classIndex, this.roads[this.activeRoad].selectedSubjects[classIndex]);
+      Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     removeClass: function(classInfo) {
       var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
       this.roads[this.activeRoad].contents.selectedSubjects.splice(classIndex,1);
+      Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     getRelevantObjects: function(position) {
       var semesterElem = document.elementFromPoint(position.x,position.y);
@@ -342,15 +284,38 @@ export default {
     loginUser: function(event) {
       window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
     },
-    getUserData: function() {
+    doSecure: function(axiosFunc,link, params) {
+      var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
+      var FIREROAD_LINK = `https://fireroad-dev.mit.edu/`;
+      var headerList = {headers: {
+        "Authorization": 'Bearer ' + this.accessInfo.access_token,
+        "Access-Control-Allow-Origin": "*"
+        }};
       //note: TODO: fix the cors problem
-      axios.get(`https://cors-anywhere.herokuapp.com/https://fireroad-dev.mit.edu/sync/roads/`, {
-        headers: {
-          "Authorization": 'Bearer ' + this.accessInfo.access_token,
-          "Access-Control-Allow-Origin": "*",
-
+      return axios.get(CORS_LINK+FIREROAD_LINK+"/verify/", headerList)
+      .then(function(verifyResponse){
+        console.log(verifyResponse);
+        if(verifyResponse.data.success) {
+          if(params==false) {
+            console.log("no params");
+            return axiosFunc(CORS_LINK+FIREROAD_LINK+link,headerList);
+          } else {
+            return axiosFunc(CORS_LINK+FIREROAD_LINK+link,params,headerList);
+          }
+        } else {
+          return Promise.reject("Token not valid")
         }
-      }).then(function(response) {
+      });
+    },
+    getSecure: function(link) {
+      return this.doSecure(axios.get,link,false);
+    },
+    postSecure: function(link, params) {
+      return this.doSecure(axios.post,link,params);
+    },
+    getUserData: function() {
+      this.getSecure("/sync/roads/")
+      .then(function(response) {
         if(response.status == 200 && response.data.success) {
           return Object.keys(response.data.files)
         } else {
@@ -360,12 +325,7 @@ export default {
       }).then(function(fileKeys) {
         if(fileKeys.length) {
           var fileLinks = fileKeys.map(function(fk) {
-            return axios.get(`https://cors-anywhere.herokuapp.com/https://fireroad-dev.mit.edu/sync/roads/?id=` + fk, {
-              headers: {
-                "Authorization": 'Bearer ' + this.accessInfo.access_token,
-                "Access-Control-Allow-Origin": "*",
-              }
-            })
+            return this.getSecure("/sync/roads/?id="+fk)
           }.bind(this));
           return Promise.all(fileLinks).then((fl) => [fileKeys, fl]);
         } else {
@@ -375,6 +335,8 @@ export default {
         if(roadData != undefined) {
           for(var r = 0; r < roadIDs.length; r++) {
             if(roadData[r].status==200 && roadData[r].data.success) {
+              roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
+              roadData[r].data.file.changed = moment().format(DATE_FORMAT);
               Vue.set(this.roads, roadIDs[r], roadData[r].data.file);
             }
           }
@@ -382,7 +344,9 @@ export default {
           this.activeRoad = Object.keys(this.roads)[0];
         }
       }.bind(this)).catch(function(err) {
-        console.log(err);
+        if(err=="Token not valid") {
+          //login
+        }
       })
     },
     getAuthorizationToken: function(code) {
@@ -398,32 +362,23 @@ export default {
       var queryObject = getQueryObject();
       if("code" in queryObject) {
         var code = queryObject["code"];
-        window.history.pushState("Hi","Hello","/");
-        // window.location.href = MAIN_URL;
+        window.history.pushState("CourseRoad Home","CourseRoad Home","/");
         console.log(code);
         this.getAuthorizationToken(code);
       }
     },
     saveRoad: function() {
-      var newRoad = Object.assign({override: false}, this.roads[this.activeRoad]);
-      console.log("new road:");
-      console.log(newRoad);
-      console.log(this.accessInfo);
-      axios.post(`https://cors-anywhere.herokuapp.com/https://fireroad-dev.mit.edu/sync/sync_road/`,
-        newRoad,
-        {
-          headers: {
-            "Authorization": "Bearer " + this.accessInfo.access_token,
-            "Access-Control-Allow-Origin": "*"
-          }
+      var assignKeys = {override: false}
+      if(this.activeRoad != "#defaultroad#") {
+        assignKeys.id = this.activeRoad
+      }
+      var newRoad = Object.assign(assignKeys, this.roads[this.activeRoad]);
+      this.postSecure("sync/sync_road/",newRoad)
+      .then(function(response) {
+        if(response.status!=200) {
+          alert("Did not save")
         }
-      ).then(function(response) {
-        console.log("sync response:");
-        console.log(response);
       })
-      // console.log(this.roads[this.activeRoad])
-      // console.log(this.roads[this.activeRoad].agent);
-      // console.log(this.activeRoad);
     },
     getAgent: function() {
       return navigator.platform;
