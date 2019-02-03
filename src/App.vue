@@ -7,6 +7,18 @@
         <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
         <v-toolbar-title>Audit</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-dialog v-model = "addDialog" width = "500">
+        <v-btn slot = "activator">
+          <v-icon>add</v-icon>
+        </v-btn>
+        <v-card style = "padding: 2em">
+          <v-card-title>Create Road</v-card-title>
+          <v-text-field v-model = "newRoadName"></v-text-field>
+          <v-card-actions>
+            <v-btn color = "primary" @click="addRoad(newRoadName); addDialog=false">Create</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
         <v-btn-toggle v-model="activeRoad" mandatory>
           <v-btn v-for="(road,index) in roads"
             :value="index"
@@ -127,6 +139,9 @@ export default {
     rightDrawer: true,
     accessInfo: undefined,
     activeRoad: "#defaultroad#",
+    newRoads: [],
+    newRoadName: "",
+    addDialog: false,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -294,10 +309,8 @@ export default {
       //note: TODO: fix the cors problem
       return axios.get(CORS_LINK+FIREROAD_LINK+"/verify/", headerList)
       .then(function(verifyResponse){
-        console.log(verifyResponse);
         if(verifyResponse.data.success) {
           if(params==false) {
-            console.log("no params");
             return axiosFunc(CORS_LINK+FIREROAD_LINK+link,headerList);
           } else {
             return axiosFunc(CORS_LINK+FIREROAD_LINK+link,params,headerList);
@@ -368,20 +381,39 @@ export default {
       }
     },
     saveRoad: function() {
-      var assignKeys = {override: false}
-      if(this.activeRoad != "#defaultroad#") {
-        assignKeys.id = this.activeRoad
-      }
-      var newRoad = Object.assign(assignKeys, this.roads[this.activeRoad]);
-      this.postSecure("sync/sync_road/",newRoad)
-      .then(function(response) {
-        if(response.status!=200) {
-          alert("Did not save")
+      for(var roadID in this.roads) {
+        var assignKeys = {override: false}
+        if(!roadID.includes("#")) {
+          assignKeys.id = roadID
         }
-      })
+        var newRoad = Object.assign(assignKeys, this.roads[roadID]);
+        this.postSecure("sync/sync_road/",newRoad)
+        .then(function(response) {
+          console.log(response);
+          //TODO: get actual ID from server
+          if(response.status!=200) {
+            alert("Did not save")
+          }
+        })
+      }
+
     },
     getAgent: function() {
       return navigator.platform;
+    },
+    addRoad: function(roadName) {
+      var tempRoadID = "#" + this.newRoads.length + "#";
+      Vue.set(this.roads, tempRoadID, {
+        downloaded: moment().format(DATE_FORMAT),
+        changed: moment().format(DATE_FORMAT),
+        name: roadName,
+        agent: this.getAgent(),
+        contents: {
+          coursesOfStudy: ['girs'],
+          selectedSubjects: []
+        }
+      });
+      this.newRoads.push(tempRoadID);
     }
   },
   watch: {
