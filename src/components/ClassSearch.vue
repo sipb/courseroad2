@@ -2,7 +2,7 @@
   <v-container class="searchdiv">
     <!-- this is probably a good place for v-container » v-layout » v-flex -->
     <h1>Class Search</h1>
-    <v-text-field v-model="chosenFilters.nameInput" label="6.0061 Silly Systems"/>
+    <v-text-field v-model="chosenFilters.nameInput" placeholder = "6.0061 Silly Systems"/>
     <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
     <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
     <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
@@ -12,8 +12,10 @@
     <h4> Results: </h4>
     <v-data-table  :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
       <template slot = "items" slot-scope = "props">
-        <td>{{props.item.subject_id}}</td>
-        <td>{{props.item.title}}</td>
+        <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)">
+          <td>{{props.item.subject_id}}</td>
+          <td>{{props.item.title}}</td>
+        </tr>
       </template>
     </v-data-table>
   </v-container>
@@ -22,6 +24,7 @@
 
 <script>
 import FilterSet from "./FilterSet.vue";
+import $ from 'jquery';
 
 export default {
   name: "ClassSearch",
@@ -31,6 +34,7 @@ export default {
   props: ['subjects'],
   data: function () {
     return {
+      dragSemesterNum: -1,
       //lists of the filters turned on in each filter group
       chosenFilters: {
         nameInput: "",
@@ -177,6 +181,83 @@ export default {
         })
       } else {
         return [];
+      }
+    }
+  },
+  methods: {
+    drag: function(event, classItem) {
+      this.$emit("drag-class", {
+        drag: event,
+        classInfo: classItem.item,
+        isNew: true
+      });
+    },
+    drop: function(event, classItem) {
+      this.$emit("drop-class", {
+        drop: event,
+        classInfo: classItem.item,
+        isNew: true
+      });
+    },
+    addClass: function(event, classItem) {
+      var semesterElem = document.elementFromPoint(event.x,event.y);
+      var semesterParent = $(semesterElem).parents(".semester-container");
+      var classElem = $(event.target);
+      // var semesterBox = semesterParent.find(".semester-drop-container");
+      var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
+      semesterBox.addClass("grey");
+      semesterBox.removeClass("red");
+      semesterBox.removeClass("green");
+      if(semesterParent.length) {
+        var semesterID = semesterParent.attr("id");
+        if(semesterID.substring(0,9)=="semester_") {
+          var semesterNum = parseInt(semesterID.substring(9))
+          var semesterType = semesterNum % 2;
+          var isOffered = (semesterType == 0 && classItem.item.offered_fall)
+                          || (semesterType == 1 && classItem.item.offered_spring);
+          if (isOffered) {
+            var newClass = {
+              overrideWarnings : false,
+              semester : semesterNum,
+              title : classItem.item.title,
+              id : classItem.item.subject_id,
+              units : classItem.item.total_units
+            }
+            console.log(newClass);
+            this.$emit("add-class",newClass)
+          }
+        }
+      }
+      this.dragSemesterNum = -1;
+    },
+    testClass: function(event, classItem) {
+      var semesterElem = $(document.elementFromPoint(event.x,event.y));
+      var semesterParent = semesterElem.parents(".semester-container");
+      var classElem = $(event.target);
+      var semesterBox = semesterParent.find(".semester-drop-container");
+      if(semesterParent.length) {
+        var semesterID = semesterParent.attr("id");
+        if(semesterID.substring(0,9)=="semester_") {
+          var semesterNum = parseInt(semesterID.substring(9))
+          if(this.dragSemesterNum != semesterNum) {
+            var semesterType = semesterNum % 2;
+            var isOffered = (semesterType == 0 && classItem.item.offered_fall)
+                            || (semesterType == 1 && classItem.item.offered_spring);
+            if (!isOffered) {
+              semesterBox.removeClass("grey");
+              semesterBox.addClass("red");
+            } else {
+              semesterBox.removeClass("grey");
+              semesterBox.addClass("green");
+            }
+            var lastSemester = $("#semester_" + this.dragSemesterNum);
+            var lastSemesterBox = lastSemester.find(".semester-drop-container");
+            lastSemesterBox.addClass("grey");
+            lastSemesterBox.removeClass("red");
+            lastSemesterBox.removeClass("green");
+          }
+          this.dragSemesterNum = semesterNum;
+        }
       }
     }
   }

@@ -4,15 +4,20 @@
   <v-flex md3>
     <v-card
       :class="{classbox: true, satisfied: isSatisfied}"
+      draggable
+      v-on:drag = "drag"
+      v-on:dragend = "drop"
     >
-      <v-card-text class="">{{classInfo.id}}: {{classInfo.title}}</v-card-text>
+      <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo)">cancel</v-icon>
+      <v-card-text>{{classInfo.id}}: {{classInfo.title}}</v-card-text>
+
 <!--
      <v-container
       height="200px"
       fluid
       pa-2
-    >
- --->
+    > -->
+
     </v-card>
   </v-flex>
 </template>
@@ -20,12 +25,31 @@
 <script>
 export default {
   name: "class",
-  props: ['classInfo'],
+  props: ['classInfo','semesterIndex'],
   data() {
     return {
-      isSatisfied: true
+      isSatisfied: true,
+      dragSemesterNum: -1
     }
   },
+  methods: {
+    drag: function(event) {
+      this.$emit("drag-class",{
+        drag: event,
+        basicClass: this.classInfo,
+        isNew: false,
+        currentSem: this.semesterIndex
+      });
+    },
+    drop: function(event) {
+      this.$emit("drop-class",{
+        drop: event,
+        basicClass: this.classInfo,
+        isNew: false,
+        currentSem: this.semesterIndex
+      });
+    }
+  }
 }
 </script>
 

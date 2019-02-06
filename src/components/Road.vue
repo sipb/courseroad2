@@ -7,11 +7,16 @@
   >
     <!-- v-for index in N starts at 1... -->
     <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
-    <semester 
+    <semester
       v-for="index in 8"
       :key="index-1"
       v-bind:index="index-1"
-      v-bind:selectedSubjects="selectedSubjects">
+      v-bind:selectedSubjects="selectedSubjects"
+      v-bind:allSubjects = "subjects"
+      @drag-class = "$emit('drag-class',$event)"
+      @drop-class = "$emit('drop-class',$event)"
+      @remove-class = "$emit('remove-class', $event)"
+      >
     </semester>
   </v-expansion-panel>
 </template>
@@ -25,11 +30,13 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects'],
+  props: ['selectedSubjects',"subjects"],
   data: function () { return {
       visibleList: Array(8).fill(true),
     }
   },
+  methods: {
+  }
 }
 </script>
 

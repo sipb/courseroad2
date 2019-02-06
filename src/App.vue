@@ -1,7 +1,8 @@
 <!-- direct from the Vuetify website: this is the proper nesting: v-container » v-layout » v-flex (» v-card) -->
 <template>
   <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
-  <v-app id="app-wrapper">
+  <v-app id="app-wrapper"
+  >
     <v-toolbar fixed app dense>
         <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
         <v-toolbar-title>Audit</v-toolbar-title>
@@ -37,8 +38,16 @@
     </v-navigation-drawer>
 
     <v-content app id="center-panel">
+      <div class = "text-xs-center" v-if = "!subjectsLoaded">
+        <v-progress-circular indeterminate>
+        </v-progress-circular>
+      </div>
       <road
         v-bind:selectedSubjects="roads[activeRoad].selectedSubjects"
+        v-bind:subjects = "subjectsInfo"
+        @drop-class="dropClass"
+        @drag-class="testClass"
+        @remove-class = "removeClass"
       ></road>
     </v-content>
 
@@ -51,7 +60,7 @@
       right
       app
     >
-      <class-search v-bind:subjects="subjectsInfo"></class-search>
+      <class-search v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
     </v-navigation-drawer>
   </v-app>
 </template>
@@ -104,8 +113,9 @@ export default {
   data: function(){ return {
     reqTrees: {},
     reqList: [],
-
-    // A list of dictionaries containing info on current mit subjects. (actually filled in below)
+    dragSemesterNum: -1,
+    subjectsLoaded: false,
+    // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
     leftDrawer: true,
     rightDrawer: true,
@@ -168,20 +178,134 @@ export default {
       },
     }
   }},
-  watch: {
-    //call fireroad to check fulfillment if you change active roads or change something about a road
-    activeRoad: function(newRoad,oldRoad) {
-      this.updateFulfillment();
-    },
-    roads: {
-      handler: function(newRoads,oldRoads) {
-        console.log("updating road");
-        this.updateFulfillment();
-      },
-      deep: true
-    }
-  },
+  // computed: { // tried this to fix the thing above but it didn't update reactively
+  //   loadedReqs: function () {
+  //     return this.selectedReqs.filter(function(r) {
+  //       return this.reqTrees && (r in this.reqTrees);
+  //     })
+  //   }
+  // },
   methods: {
+    addClass: function(newClass) {
+      this.roads[this.activeRoad].selectedSubjects.push(newClass);
+    },
+    moveClass: function(classIndex, newSem) {
+      this.roads[this.activeRoad].selectedSubjects[classIndex].semester = newSem;
+      Vue.set(this.roads[this.activeRoad].selectedSubjects, classIndex, this.roads[this.activeRoad].selectedSubjects[classIndex]);
+    },
+    removeClass: function(classInfo) {
+      var classIndex = this.roads[this.activeRoad].selectedSubjects.indexOf(classInfo);
+      this.roads[this.activeRoad].selectedSubjects.splice(classIndex,1);
+    },
+    getRelevantObjects: function(position) {
+      var semesterElem = document.elementFromPoint(position.x,position.y);
+      var semesterParent = $(semesterElem).parents(".semester-container");
+      var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
+      return {
+        semesterParent: semesterParent,
+        semesterBox: semesterBox
+      }
+    },
+    resetSemesterBox: function(semesterBox) {
+      semesterBox.addClass("grey");
+      semesterBox.removeClass("red");
+      semesterBox.removeClass("green");
+    },
+    classIsOffered: function(semesterObjects, event) {
+      if(semesterObjects.semesterParent.length) {
+        var semesterID = semesterObjects.semesterParent.attr("id");
+        if(semesterID.substring(0,9)=="semester_") {
+          var semesterNum = parseInt(semesterID.substring(9))
+          var semesterType = semesterNum % 2;
+          var classInfo = event.classInfo;
+          if(classInfo == undefined) {
+            if(this.subjectsLoaded) {
+              var filteredSubjects = this.subjectsInfo.filter(function(s) {
+                return s.subject_id == event.basicClass.id
+              });
+              if(filteredSubjects.length) {
+                classInfo = filteredSubjects[0];
+              } else {
+                //not in catalog, might be a generic course (like PHY1 or HASS)
+                var matchingClasses = this.subjectsInfo.filter(function(subject) {
+                  var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
+                  return possible_attributes.includes(event.basicClass.id);
+                });
+                if(matchingClasses.length) {
+                  classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
+                    return {
+                      offered_fall: subjectA.offered_fall || subjectB.offeredFall,
+                      offered_spring: subjectA.offered_spring || subjectB.offered_spring
+                    }
+                  });
+                } else {
+                  classInfo = {
+                    offered_fall: false,
+                    offered_spring: false
+                  }
+                }
+              }
+            } else {
+              classInfo = undefined;
+            }
+
+          }
+          var isOffered;
+          if(classInfo != undefined) {
+            isOffered = (semesterType == 0 && classInfo.offered_fall)
+                            || (semesterType == 1 && classInfo.offered_spring);
+          }
+          return {
+            isOffered: isOffered,
+            semesterNum: semesterNum
+          }
+        }
+      }
+      return {
+        isOffered: undefined
+      }
+    },
+    dropClass: function(event) {
+      var semesterObjects = this.getRelevantObjects(event.drop);
+      this.resetSemesterBox(semesterObjects.semesterBox);
+      var semInfo = this.classIsOffered(semesterObjects, event);
+      if(semInfo.isOffered) {
+        event.drop.preventDefault();
+        if(event.isNew) {
+          var newClass = {
+            overrideWarnings : false,
+            semester : semInfo.semesterNum,
+            title : event.classInfo.title,
+            id : event.classInfo.subject_id,
+            units : event.classInfo.total_units
+          }
+          this.addClass(newClass);
+        } else {
+          var currentIndex = this.roads[this.activeRoad].selectedSubjects.indexOf(event.basicClass);
+          this.moveClass(currentIndex, semInfo.semesterNum)
+        }
+      }
+      this.dragSemesterNum = -1;
+    },
+    testClass: function(event) {
+      var semesterObjects = this.getRelevantObjects(event.drag);
+      var semInfo = this.classIsOffered(semesterObjects, event);
+      if(semInfo.isOffered != undefined) {
+        if (!semInfo.isOffered) {
+          semesterObjects.semesterBox.removeClass("grey");
+          semesterObjects.semesterBox.addClass("red");
+        } else {
+          semesterObjects.semesterBox.removeClass("grey");
+          semesterObjects.semesterBox.addClass("green");
+        }
+      }
+      if(this.dragSemesterNum != semInfo.semesterNum) {
+        var lastSemester = $("#semester_" + this.dragSemesterNum);
+        var lastSemesterBox = lastSemester.find(".semester-drop-container");
+        this.resetSemesterBox(lastSemesterBox)
+      }
+      this.dragSemesterNum = semInfo.semesterNum;
+    },
     updateFulfillment: function() {
       var subjectIDs = this.roads[this.activeRoad].selectedSubjects.map((s)=>s.id.toString()).join(",")
       for (var r = 0; r < this.roads[this.activeRoad].selectedReqs.length; r++) {
@@ -195,6 +319,19 @@ export default {
     addReq: function(event) {
       this.roads[this.activeRoad].selectedReqs.push(event);
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
+    }
+  },
+  watch: {
+    //call fireroad to check fulfillment if you change active roads or change something about a road
+    activeRoad: function(newRoad,oldRoad) {
+      this.updateFulfillment();
+    },
+    roads: {
+      handler: function(newRoads,oldRoads) {
+        console.log("updating road");
+        this.updateFulfillment();
+      },
+      deep: true
     }
   },
   mounted() {
@@ -221,6 +358,7 @@ export default {
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
         this.subjectsInfo = response.data
+        this.subjectsLoaded = true;
       });
   },
 };
