@@ -1,3 +1,39 @@
+<!-- Style notes from meeting with FireRoad team 2/6/19
+
+when doing the search thing, have a little bar like [favorites | recents | search ] (serach selected by default)
+
+add requirements editor link at bottom of audit
+
+don't have different colors for the collapsable semesters
+
+road choosing is a dropdown maybe...
+
+colors: dept-based colors like fireRoad -- android repo has class called "color manager"
+
+see photo but here it is in english
+
+audit always on the left side panel. logo and about link at the top, feedback/edit reqs at the bottom
+
+courses in the middle as usual, stuff on the top bar, still collapsable but ditch the multiple colors
+
+*SEARCH* is now a little bar on the right of the toolbar that brings up a floaty search window thing on the right side,
+that window has:
+- [favorites | recents | search ] (serach selected by default)
+- shortlist of filters, which can be made bigger
+- all the search results
+also search remembers what you've searched so when you click back you see the same results you were looking at
+search disappears if you click on the up arrow at the top or click on the road
+definitely want a smooth animation for this (dropping down from top)
+
+*CLASS INFO* is a floaty box in the bottom right, comes up whenever you click a class, goes away when you click the X
+- also has a back button, so must keep track of all previously viewed class info (since last X)
+
+search and class info go on top of the road
+
+ -->
+
+
+
 <!-- direct from the Vuetify website: this is the proper nesting: v-container » v-layout » v-flex (» v-card) -->
 <template>
   <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
