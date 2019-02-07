@@ -13,6 +13,7 @@
       v-bind:index="index-1"
       v-bind:selectedSubjects="selectedSubjects"
       v-bind:allSubjects = "subjects"
+      v-bind:roadID = "roadID"
       @drag-class = "$emit('drag-class',$event)"
       @drop-class = "$emit('drop-class',$event)"
       @remove-class = "$emit('remove-class', $event)"
@@ -30,7 +31,7 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects',"subjects"],
+  props: ['selectedSubjects',"subjects","roadID"],
   data: function () { return {
       visibleList: Array(8).fill(true),
     }

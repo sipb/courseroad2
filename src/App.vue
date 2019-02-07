@@ -20,23 +20,40 @@
         </v-card>
       </v-dialog>
         <!-- <v-btn-toggle v-model="activeRoad" mandatory>
+          <v-tabs-slider></v-tabs-slider>
           <v-btn v-for="(road,index) in roads"
             :value="index"
           >
             {{road.name}}
           </v-btn>
         </v-btn-toggle> -->
-        <v-select
+        <!-- <v-select
           v-model = "activeRoad"
           :items = "Object.keys(roads)"
         >
           <template slot = "item" slot-scope = "{item}">
             {{roads[item].name}}
+            <v-icon @click = "deleteRoad($event, item)">delete</v-icon>
           </template>
           <template slot = "selection" slot-scope = "{item}">
             {{roads[item].name}}
           </template>
-        </v-select>
+        </v-select> -->
+        <v-tabs
+          show-arrows
+          mandatory
+          v-model = "activeRoad"
+        >
+          <v-tabs-slider></v-tabs-slider>
+          <v-tab
+            v-for = "roadid in Object.keys(roads)"
+            :key = "roadid"
+            :href = "`#${roadid}`"
+            >
+            {{roads[roadid].name}}
+          </v-tab>
+        </v-tabs>
+
         <v-btn @click="loginUser">
           Login
         </v-btn>
@@ -47,6 +64,8 @@
         <v-toolbar-title>Class Search</v-toolbar-title>
         <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
     </v-toolbar>
+
+
 
     <v-navigation-drawer
       id="left-panel"
@@ -67,17 +86,28 @@
     </v-navigation-drawer>
 
     <v-content app id="center-panel">
+      <v-tabs-items v-model = "activeRoad">
+        <v-tab-item
+          v-for = "roadid in Object.keys(roads)"
+          :key = "roadid"
+          :value = "roadid"
+          >
+          <road
+            v-bind:selectedSubjects="roads[roadid].contents.selectedSubjects"
+            v-bind:subjects = "subjectsInfo"
+            v-bind:roadID = "roadid"
+            @drop-class="dropClass"
+            @drag-class="testClass"
+            @remove-class = "removeClass"
+          ></road>
+        </v-tab-item>
+      </v-tabs-items>
+
       <div class = "text-xs-center" v-if = "!subjectsLoaded">
         <v-progress-circular indeterminate>
         </v-progress-circular>
       </div>
-      <road
-        v-bind:selectedSubjects="roads[activeRoad].contents.selectedSubjects"
-        v-bind:subjects = "subjectsInfo"
-        @drop-class="dropClass"
-        @drag-class="testClass"
-        @remove-class = "removeClass"
-      ></road>
+
     </v-content>
 
     <v-navigation-drawer
@@ -149,7 +179,7 @@ export default {
     leftDrawer: true,
     rightDrawer: true,
     accessInfo: undefined,
-    activeRoad: "#defaultroad#",
+    activeRoad: "$defaultroad$",
     newRoads: [],
     newRoadName: "",
     addDialog: false,
@@ -158,7 +188,7 @@ export default {
 
     //note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
     roads: {
-      "#defaultroad#": {
+      "$defaultroad$": {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: "My First Road",
@@ -170,6 +200,11 @@ export default {
       }
     }
   }},
+  computed: {
+    roadref: function() {
+      return "#road" + this.activeRoad
+    }
+  },
   methods: {
     addClass: function(newClass) {
       this.roads[this.activeRoad].contents.selectedSubjects.push(newClass);
@@ -187,7 +222,8 @@ export default {
     getRelevantObjects: function(position) {
       var semesterElem = document.elementFromPoint(position.x,position.y);
       var semesterParent = $(semesterElem).parents(".semester-container");
-      var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
+      var semesterBox = semesterParent.find(".semester-drop-container");
+      // var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
       return {
         semesterParent: semesterParent,
         semesterBox: semesterBox
@@ -201,8 +237,8 @@ export default {
     classIsOffered: function(semesterObjects, event) {
       if(semesterObjects.semesterParent.length) {
         var semesterID = semesterObjects.semesterParent.attr("id");
-        if(semesterID.substring(0,9)=="semester_") {
-          var semesterNum = parseInt(semesterID.substring(9))
+        if(semesterID.split("_")[2]=="semester") {
+          var semesterNum = parseInt(semesterID.split("_")[3]);
           var semesterType = semesterNum % 2;
           var classInfo = event.classInfo;
           if(classInfo == undefined) {
@@ -286,12 +322,14 @@ export default {
           semesterObjects.semesterBox.addClass("green");
         }
       }
-      if(this.dragSemesterNum != semInfo.semesterNum) {
-        var lastSemester = $("#semester_" + this.dragSemesterNum);
+      if(this.dragSemesterNum != semInfo.semesterNum && this.dragSemesterNum != -1) {
+        var lastSemester = $("#road_"+$.escapeSelector(this.activeRoad)+"_semester_" + this.dragSemesterNum);
         var lastSemesterBox = lastSemester.find(".semester-drop-container");
         this.resetSemesterBox(lastSemesterBox)
       }
-      this.dragSemesterNum = semInfo.semesterNum;
+      if(semInfo.semesterNum != undefined) {
+        this.dragSemesterNum = semInfo.semesterNum;
+      }
     },
     updateFulfillment: function() {
       var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
@@ -310,9 +348,10 @@ export default {
     loginUser: function(event) {
       window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
     },
-    doSecure: function(axiosFunc,link, params) {
+    doSecure: function(axiosFunc, link, params) {
+      // var CORS_LINK = '';
       var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
-      var FIREROAD_LINK = `https://fireroad-dev.mit.edu/`;
+      var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
       var headerList = {headers: {
         "Authorization": 'Bearer ' + this.accessInfo.access_token,
         "Access-Control-Allow-Origin": "*"
@@ -364,8 +403,9 @@ export default {
               Vue.set(this.roads, roadIDs[r], roadData[r].data.file);
             }
           }
-          Vue.delete(this.roads, "#defaultroad#")
+          Vue.delete(this.roads, "$defaultroad$")
           this.activeRoad = Object.keys(this.roads)[0];
+          // window.history.pushState("CourseRoad Home","CourseRoad Home","/#road"+this.activeRoad);
         }
       }.bind(this)).catch(function(err) {
         if(err=="Token not valid") {
@@ -386,21 +426,32 @@ export default {
       var queryObject = getQueryObject();
       if("code" in queryObject) {
         var code = queryObject["code"];
-        window.history.pushState("CourseRoad Home","CourseRoad Home","/");
-        console.log(code);
+        window.history.pushState("CourseRoad Home","CourseRoad Home","/#"+this.activeRoad);
         this.getAuthorizationToken(code);
       }
     },
+    setActiveRoad: function() {
+      var roadHash = window.location.hash;
+      if(roadHash.length&&roadHash.substring(0,5)=="#road") {
+        var roadRequested = roadHash.substring(5);
+        if(roadRequested in this.roads) {
+          this.activeRoad = roadHash.substring(5);
+          return true;
+        }
+      }
+      window.location.hash = "#road" + this.activeRoad;
+      return false;
+    },
     saveRoad: function() {
       for(var roadID in this.roads) {
+        console.log("Saving " + roadID);
         var assignKeys = {override: false}
-        if(!roadID.includes("#")) {
+        if(!roadID.includes("$")) {
           assignKeys.id = roadID
+        }
         var newRoad = Object.assign(assignKeys, this.roads[roadID]);
-        this.postSecure("sync/sync_road/",newRoad)
+        this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
-          console.log(response);
-          //TODO: get actual ID from server
           if(response.status!=200) {
             alert("Did not save")
           } else {
@@ -414,14 +465,12 @@ export default {
           }
         }.bind({oldid: roadID,data:this}))
       }
-    }
-
     },
     getAgent: function() {
       return navigator.platform;
     },
     addRoad: function(roadName) {
-      var tempRoadID = "#" + this.newRoads.length + "#";
+      var tempRoadID = "$" + this.newRoads.length + "$";
       Vue.set(this.roads, tempRoadID, {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
@@ -433,11 +482,29 @@ export default {
         }
       });
       this.newRoads.push(tempRoadID);
+    },
+    deleteRoad: function(event, roadID) {
+      event.preventDefault();
+      if(this.loggedIn) {
+        var confirmed = confirm("Delete " + this.roads[roadID].name + " forever?");
+        if(confirmed) {
+          this.postSecure("/sync/delete_road/",{id: roadID});
+          Vue.delete(this.roads, roadID);
+          if(this.activeRoad == roadID) {
+            if(this.roads.length) {
+              this.activeRoad = Object.keys(this.roads)[0];
+            } else {
+              this.activeRoad = undefined;
+            }
+          }
+        }
+      }
     }
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
+      window.history.pushState("CourseRoad Home","CourseRoad Home","/#road"+newRoad);
       this.updateFulfillment();
     },
     roads: {
@@ -452,6 +519,10 @@ export default {
     var borders = $(".v-navigation-drawer__border")
     var scrollers = $(".scroller")
     var scrollWidth = scrollers.width()
+
+    $(window).on("hashchange", function() {
+      this.setActiveRoad();
+    }.bind(this))
     //moves nav drawer border with scroll
     //if the effect proves too annoying we can remove the borders instead
     //(commented out below)
@@ -460,6 +531,7 @@ export default {
       borders.css({top: 0, left: scrollWidth-1+scrollPosition})
     })
 
+    this.setActiveRoad();
     this.attemptLogin();
     // TODO: this is kind of janky, and should not happen ideally:
     //  I'm bouncing the request through this proxy to avoid some issue with CORS
