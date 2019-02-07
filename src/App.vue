@@ -19,30 +19,11 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-        <!-- <v-btn-toggle v-model="activeRoad" mandatory>
-          <v-tabs-slider></v-tabs-slider>
-          <v-btn v-for="(road,index) in roads"
-            :value="index"
-          >
-            {{road.name}}
-          </v-btn>
-        </v-btn-toggle> -->
-        <!-- <v-select
-          v-model = "activeRoad"
-          :items = "Object.keys(roads)"
-        >
-          <template slot = "item" slot-scope = "{item}">
-            {{roads[item].name}}
-            <v-icon @click = "deleteRoad($event, item)">delete</v-icon>
-          </template>
-          <template slot = "selection" slot-scope = "{item}">
-            {{roads[item].name}}
-          </template>
-        </v-select> -->
         <v-tabs
           show-arrows
           mandatory
           v-model = "activeRoad"
+          slot = "extension"
         >
           <v-tabs-slider></v-tabs-slider>
           <v-tab
@@ -57,7 +38,7 @@
         <v-btn @click="loginUser">
           Login
         </v-btn>
-        <v-btn v-if = "loggedIn" @click="saveRoad">
+        <v-btn v-if = "loggedIn" @click="save">
           Save
         </v-btn>
       <v-spacer></v-spacer>
@@ -442,9 +423,8 @@ export default {
       window.location.hash = "#road" + this.activeRoad;
       return false;
     },
-    saveRoad: function() {
+    save: function() {
       for(var roadID in this.roads) {
-        console.log("Saving " + roadID);
         var assignKeys = {override: false}
         if(!roadID.includes("$")) {
           assignKeys.id = roadID
@@ -453,8 +433,9 @@ export default {
         this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
           if(response.status!=200) {
-            alert("Did not save")
+            console.log("Unable to save road " + this.oldid);
           } else {
+            console.log("Saved road " + this.oldid);
             if(response.data.id != undefined) {
               Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
               Vue.delete(this.data.roads, this.oldid);
@@ -504,13 +485,16 @@ export default {
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
-      window.history.pushState("CourseRoad Home","CourseRoad Home","/#road"+newRoad);
+      window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
       this.updateFulfillment();
     },
     roads: {
       handler: function(newRoads,oldRoads) {
         console.log("updating road");
         this.updateFulfillment();
+        if(this.loggedIn) {
+          this.save();
+        }
       },
       deep: true
     }
