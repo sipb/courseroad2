@@ -7,7 +7,6 @@
         <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
         <v-toolbar-title>Audit</v-toolbar-title>
       <v-spacer></v-spacer>
-
         <v-tabs
           show-arrows
           v-model = "activeRoad"
@@ -183,6 +182,7 @@ export default {
     dragSemesterNum: -1,
     subjectsLoaded: false,
     loggedIn: false,
+    cookieName: "Default Cookie",
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
     leftDrawer: true,
@@ -430,6 +430,7 @@ export default {
       axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
         if(response.data.success) {
           this.data.accessInfo = response.data.access_info;
+          this.data.$cookies.set("accessInfo", this.data.accessInfo);
           this.data.loggedIn = true;
           this.data.getUserData();
         }
@@ -541,6 +542,17 @@ export default {
     }
   },
   mounted() {
+
+    if(this.$cookies.isKey("name")) {
+      this.cookieName = this.$cookies.remove("name");
+    }
+
+    if(this.$cookies.isKey("accessInfo")) {
+      this.accessInfo = this.$cookies.get("accessInfo");
+      this.loggedIn = true;
+      this.getUserData();
+    }
+
     var borders = $(".v-navigation-drawer__border")
     var scrollers = $(".scroller")
     var scrollWidth = scrollers.width()
