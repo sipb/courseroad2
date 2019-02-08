@@ -7,33 +7,60 @@
         <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
         <v-toolbar-title>Audit</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-dialog v-model = "addDialog" width = "500">
-        <v-btn slot = "activator">
-          <v-icon>add</v-icon>
-        </v-btn>
-        <v-card style = "padding: 2em">
-          <v-card-title>Create Road</v-card-title>
-          <v-text-field v-model = "newRoadName"></v-text-field>
-          <v-card-actions>
-            <v-btn color = "primary" @click="addRoad(newRoadName); addDialog=false">Create</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+
         <v-tabs
           show-arrows
-          mandatory
           v-model = "activeRoad"
           slot = "extension"
         >
           <v-tabs-slider></v-tabs-slider>
           <v-tab
-            v-for = "roadid in Object.keys(roads)"
             :key = "roadid"
             :href = "`#${roadid}`"
+            v-for = "roadid in Object.keys(roads)"
             >
-            {{roads[roadid].name}}
+              {{roads[roadid].name}}
+
+              <v-dialog v-model = "editDialog[roadid]">
+                <v-btn slot = "activator" icon flat v-show = "roadid == activeRoad" @click = "$event.preventDefault()">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+                <v-card style = "padding: 2em">
+                  <v-card-title>Edit Road</v-card-title>
+                  <v-text-field v-model = "roads[roadid].name" label = "Road Name"></v-text-field>
+                  <v-card-actions>
+                    <v-btn color = "primary" @click = "editDialog[roadid] = false;">Submit</v-btn>
+                    <v-dialog v-model = "deleteDialog[roadid]">
+                      <v-btn slot = "activator" color = "error" @click = "editDialog[roadid]=false; deleteDialog[roadid] = true">
+                        Delete Road
+                        <v-icon>delete</v-icon>
+                      </v-btn>
+                      <v-card style = "padding: 2em">
+                        <v-card-title>Permanently Delete {{roads[roadid].name}}?</v-card-title>
+                        <v-card-text>This action cannot be undone.</v-card-text>
+                        <v-card-actions>
+                          <v-btn @click = "deleteDialog[roadid]=false;editDialog[roadid]=true;">Cancel</v-btn>
+                          <v-btn @click = "deleteRoad($event, roadid);" color = "error">Delete</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
           </v-tab>
         </v-tabs>
+        <v-dialog v-model = "addDialog" width = "500" slot = "extension">
+          <v-btn icon flat style = "padding: 0" color = "primary" slot = "activator">
+            <v-icon>add</v-icon>
+          </v-btn>
+          <v-card style = "padding: 2em">
+            <v-card-title>Create Road</v-card-title>
+            <v-text-field v-model = "newRoadName"></v-text-field>
+            <v-card-actions>
+              <v-btn color = "primary" @click="addRoad(newRoadName); addDialog=false; newRoadName = ''">Create</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
         <v-btn @click="loginUser">
           Login
@@ -57,6 +84,7 @@
       app
     >
       <audit
+        v-if = "activeRoad != ''"
         v-bind:reqTrees="reqTrees"
         v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
         v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
@@ -164,6 +192,8 @@ export default {
     newRoads: [],
     newRoadName: "",
     addDialog: false,
+    editDialog: {"$defaultroad$":false},
+    deleteDialog: {"$defaultroad$": false},
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -325,6 +355,8 @@ export default {
     addReq: function(event) {
       this.roads[this.activeRoad].contents.coursesOfStudy.push(event);
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
+      Vue.set(this.editDialog, this.activeRoad, false);
+      Vue.set(this.deleteDialog, this.activeRoad, false);
     },
     loginUser: function(event) {
       window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
@@ -463,21 +495,27 @@ export default {
         }
       });
       this.newRoads.push(tempRoadID);
+      this.activeRoad = tempRoadID;
     },
     deleteRoad: function(event, roadID) {
-      event.preventDefault();
+
+      if(this.activeRoad == roadID) {
+        var roadIndex = Object.keys(this.roads).indexOf(roadID);
+        var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
+        if(withoutRoad.length) {
+          this.activeRoad = withoutRoad[0];
+        } else {
+          this.activeRoad = "";
+        }
+      }
+
+      Vue.delete(this.roads, roadID);
+      Vue.delete(this.editDialog, roadID);
+      Vue.delete(this.deleteDialog, roadID);
+
       if(this.loggedIn) {
-        var confirmed = confirm("Delete " + this.roads[roadID].name + " forever?");
-        if(confirmed) {
+        if(!("$" in roadID)) {
           this.postSecure("/sync/delete_road/",{id: roadID});
-          Vue.delete(this.roads, roadID);
-          if(this.activeRoad == roadID) {
-            if(this.roads.length) {
-              this.activeRoad = Object.keys(this.roads)[0];
-            } else {
-              this.activeRoad = undefined;
-            }
-          }
         }
       }
     }
@@ -485,13 +523,16 @@ export default {
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
-      window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
-      this.updateFulfillment();
+      if(newRoad != "") {
+        window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
+        this.updateFulfillment();
+      }
     },
     roads: {
       handler: function(newRoads,oldRoads) {
-        console.log("updating road");
-        this.updateFulfillment();
+        if(this.activeRoad != "") {
+          this.updateFulfillment();
+        }
         if(this.loggedIn) {
           this.save();
         }
@@ -528,8 +569,6 @@ export default {
           Vue.set(this.reqList, r, this.reqList[r]);
         }
       })
-
-
 
     this.updateFulfillment();
 
