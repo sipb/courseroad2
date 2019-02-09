@@ -193,6 +193,7 @@ export default {
     newRoadName: "",
     justLoaded: true,
     currentlySaving: false,
+    saveWarnings: [],
     addDialog: false,
     editDialog: {"$defaultroad$":false},
     deleteDialog: {"$defaultroad$": false},
@@ -416,6 +417,7 @@ export default {
           return [fileKeys, undefined];
         }
       }.bind(this)).then(function([roadIDs,roadData]) {
+        this.renumberRoads(roadData);
         if(roadData != undefined) {
           if(this.justLoaded) {
             Vue.delete(this.roads, "$defaultroad$");
@@ -434,6 +436,33 @@ export default {
           //login
         }
       })
+    },
+    renumber: function(name, otherNames) {
+      var newName = undefined;
+      var copyIndex = 2;
+      while(newName == undefined) {
+        var copyName = name + " ("+copyIndex+")";
+        if(otherNames.indexOf(copyName)==-1) {
+          newName = copyName;
+        }
+      }
+      return newName;
+    },
+    renumberRoads: function(cloudRoads) {
+      var cloudNames = cloudRoads.map(function(cr) {
+        try {
+          return cr.data.file.name
+        } catch (err) {
+          return undefined;
+        }
+      });
+      for(var roadID in this.roads) {
+        var localName = this.roads[roadID].name;
+        if(cloudNames.indexOf(localName)>=0) {
+          var renumberedName = this.renumber(localName, cloudNames);
+          Vue.set(this.roads[roadID], "name", renumberedName);
+        }
+      }
     },
     getAuthorizationToken: function(code) {
       axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
@@ -476,9 +505,13 @@ export default {
         var newRoad = Object.assign(assignKeys, this.roads[roadID]);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
+          console.log(response);
           if(response.status!=200) {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {
+            if(response.data.success == false) {
+              this.saveWarnings.push({id: (response.data.id!=undefined ? response.data.id : this.oldid), error: response.data.error_msg, name: this.roads[this.oldid].name});
+            }
             if(response.data.id != undefined) {
               Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
               Vue.delete(this.data.roads, this.oldid);
