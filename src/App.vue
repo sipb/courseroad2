@@ -66,9 +66,21 @@
         <v-btn v-if = "loggedIn" outline round color = "primary" @click = "logoutUser">
           Logout
         </v-btn>
-        <v-btn v-if = "loggedIn" @click="save">
+        <v-tooltip bottom :disabled = "saveWarnings.length==0">
+          <v-icon slot = "activator" v-if = "!currentlySaving" :color = "saveColor">
+            {{saveIcon}}
+          </v-icon>
+          <div>
+            <p v-for = "saveWarning in saveWarnings">{{saveWarning.name}}: {{saveWarning.error}}</p>
+          </div>
+        </v-tooltip>
+        <div v-if = "currentlySaving">
+          <v-progress-circular :size = "18" indeterminate>
+          </v-progress-circular>
+        </div>
+        <!-- <v-btn v-if = "loggedIn" @click="save">
           Save
-        </v-btn>
+        </v-btn> -->
       <v-spacer></v-spacer>
         <v-toolbar-title>Class Search</v-toolbar-title>
         <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
@@ -114,10 +126,6 @@
         </v-tab-item>
       </v-tabs-items>
 
-      <div class = "text-xs-center" v-if = "!subjectsLoaded">
-        <v-progress-circular indeterminate>
-        </v-progress-circular>
-      </div>
       <v-dialog v-if = "conflictInfo != undefined" v-model = "conflictDialog">
         <v-card>
           <v-card-title>Save Conflict</v-card-title>
@@ -257,6 +265,20 @@ export default {
   computed: {
     roadref: function() {
       return "#road" + this.activeRoad
+    },
+    saveColor: function() {
+      if(this.saveWarnings.length) {
+        return "warning";
+      } else {
+        return "primary";
+      }
+    },
+    saveIcon: function() {
+      if(this.saveWarnings.length) {
+        return "warning";
+      } else {
+        return "save";
+      }
     }
   },
   methods: {
@@ -558,7 +580,7 @@ export default {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {
             if(response.data.success == false) {
-              this.saveWarnings.push({id: (response.data.id!=undefined ? response.data.id : this.oldid), error: response.data.error_msg, name: this.roads[this.oldid].name});
+              this.data.saveWarnings.push({id: (response.data.id!=undefined ? response.data.id : this.oldid), error: response.data.error_msg, name: this.data.roads[this.oldid].name});
             }
             console.log(response.data.result);
             if(response.data.result == "conflict") {
@@ -596,6 +618,7 @@ export default {
           this.$cookies.remove("newRoads");
         }
         this.currentlySaving = false;
+        console.log(this.saveWarnings);
       }.bind(this)).catch(function(err) {
         console.log(err);
         this.currentlySaving = false;
