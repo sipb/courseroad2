@@ -8,6 +8,7 @@
       <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
       <!--fake padding for scroll-->
       &nbsp &nbsp &nbsp
+      <v-btn icon flat fixed v-if = "showDelete" @click = "viewDialog = true;"><v-icon>delete</v-icon></v-btn>
     </div>
     <span v-else>
       <span v-if="'title' in req">{{ req.title }}</span>
@@ -37,7 +38,9 @@ export default {
   props: ['req', 'leaf'],
   data: function() {
     return {
-      open: []
+      open: [],
+      viewDialog: false,
+      showDelete: false
     }
   },
   computed: {

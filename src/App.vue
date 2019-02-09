@@ -89,6 +89,7 @@
         v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
         v-bind:reqList="reqList"
         @add-req = "addReq"
+        @remove-req = "removeReq"
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
@@ -360,6 +361,12 @@ export default {
       Vue.set(this.editDialog, this.activeRoad, false);
       Vue.set(this.deleteDialog, this.activeRoad, false);
     },
+    removeReq: function(event) {
+      console.log(event);
+      console.log(this.roads[this.activeRoad].contents.coursesOfStudy);
+      var reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
+      this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex);
+    },
     loginUser: function(event) {
       window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
     },
@@ -464,12 +471,8 @@ export default {
       var savePromises = [];
       for(var roadID in this.roads) {
         var assignKeys = {override: false}
-        console.log(roadID);
         if(!roadID.includes("$")) {
           assignKeys.id = roadID
-          console.log("old road");
-        } else {
-          console.log("new road");
         }
         var newRoad = Object.assign(assignKeys, this.roads[roadID]);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
@@ -477,7 +480,6 @@ export default {
           if(response.status!=200) {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {
-            console.log(response);
             if(response.data.id != undefined) {
               Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
               Vue.delete(this.data.roads, this.oldid);
