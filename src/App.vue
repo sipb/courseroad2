@@ -54,6 +54,21 @@
           <v-card style = "padding: 2em">
             <v-card-title>Create Road</v-card-title>
             <v-text-field v-model = "newRoadName"></v-text-field>
+            <v-layout row>
+              <v-flex xs6>
+                <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
+              </v-flex>
+              <v-flex>
+                <v-select :disabled = "!duplicateRoad" :items = "Object.keys(roads)" v-model = "duplicateRoadSource">
+                  <template slot = "item" slot-scope = "{item}">
+                    {{roads[item].name}}
+                  </template>
+                  <template slot = "selection" slot-scope = "{item}">
+                    {{roads[item].name}}
+                  </template>
+                </v-select>
+              </v-flex>
+            </v-layout>
             <v-card-actions>
               <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="addRoad(newRoadName); addDialog=false;">Create</v-btn>
             </v-card-actions>
@@ -239,6 +254,8 @@ export default {
     justLoaded: true,
     currentlySaving: false,
     saveWarnings: [],
+    duplicateRoad: false,
+    duplicateRoadSource: "$defaultroad$",
     addDialog: false,
     editDialog: {"$defaultroad$":false},
     deleteDialog: {"$defaultroad$": false},
@@ -437,7 +454,6 @@ export default {
       window.location.reload();
     },
     doSecure: function(axiosFunc, link, params) {
-      // var CORS_LINK = '';
       if(this.loggedIn && this.$cookies.isKey("accessInfo")) {
         var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
         var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
@@ -659,16 +675,24 @@ export default {
     },
     addRoad: function(roadName) {
       var tempRoadID = "$" + this.newRoads.length + "$";
-      Vue.set(this.roads, tempRoadID, {
+      var newContents;
+      if(!this.duplicateRoad) {
+        newContents = {
+          coursesOfStudy: ["girs"],
+          selectedSubjects: []
+        }
+      } else {
+        newContents = JSON.parse(JSON.stringify(this.roads[this.duplicateRoadSource].contents));
+      }
+
+      var newRoad = {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: roadName,
         agent: this.getAgent(),
-        contents: {
-          coursesOfStudy: ['girs'],
-          selectedSubjects: []
-        }
-      });
+        contents: newContents
+      }
+      Vue.set(this.roads, tempRoadID, newRoad);
       this.newRoads.push(tempRoadID);
       this.activeRoad = tempRoadID;
     },
@@ -726,6 +750,7 @@ export default {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
       this.justLoaded = false;
+      this.duplicateRoadSource = newRoad;
       if(newRoad != "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
         this.updateFulfillment();
