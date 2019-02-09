@@ -19,36 +19,35 @@
             v-for = "roadid in Object.keys(roads)"
             >
               {{roads[roadid].name}}
-
-              <v-dialog v-model = "editDialog[roadid]">
-                <v-btn slot = "activator" icon flat v-show = "roadid == activeRoad" @click = "$event.preventDefault()">
-                  <v-icon>edit</v-icon>
-                </v-btn>
+              <v-btn icon flat v-show = "roadid == activeRoad" @click = "$event.preventDefault(); newRoadName = roads[roadid].name; showDialog(editDialog, roadid);">
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <v-dialog v-model = "editDialog[roadid]" @input = "newRoadName = ''">
                 <v-card style = "padding: 2em">
                   <v-card-title>Edit Road</v-card-title>
-                  <v-text-field v-model = "roads[roadid].name" label = "Road Name"></v-text-field>
+                  <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
                   <v-card-actions>
-                    <v-btn color = "primary" @click = "editDialog[roadid] = false;">Submit</v-btn>
-                    <v-dialog v-model = "deleteDialog[roadid]">
-                      <v-btn slot = "activator" color = "error" @click = "editDialog[roadid]=false; deleteDialog[roadid] = true">
-                        Delete Road
-                        <v-icon>delete</v-icon>
-                      </v-btn>
-                      <v-card style = "padding: 2em">
-                        <v-card-title>Permanently Delete {{roads[roadid].name}}?</v-card-title>
-                        <v-card-text>This action cannot be undone.</v-card-text>
-                        <v-card-actions>
-                          <v-btn @click = "deleteDialog[roadid]=false;editDialog[roadid]=true;">Cancel</v-btn>
-                          <v-btn @click = "deleteRoad($event, roadid);" color = "error">Delete</v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
+                    <v-btn color = "primary" :disabled = "otherRoadHasName(roadid, newRoadName)" @click = "setRoadName(roadid, newRoadName); hideDialog(editDialog, roadid); newRoadName = ''">Submit</v-btn>
+                    <v-btn color = "error" @click = "hideDialog(editDialog, roadid); showDialog(deleteDialog, roadid)">
+                      Delete Road
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model = "deleteDialog[roadid]">
+                <v-card style = "padding: 2em">
+                  <v-card-title>Permanently Delete {{roads[roadid].name}}?</v-card-title>
+                  <v-card-text>This action cannot be undone.</v-card-text>
+                  <v-card-actions>
+                    <v-btn @click = "hideDialog(deleteDialog, roadid);showDialog(editDialog, roadid)">Cancel</v-btn>
+                    <v-btn @click = "deleteRoad($event, roadid);" color = "error">Delete</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
           </v-tab>
         </v-tabs>
-        <v-dialog v-model = "addDialog" width = "500" slot = "extension">
+        <v-dialog v-model = "addDialog" width = "500" slot = "extension" @input = "newRoadName = ''">
           <v-btn icon flat style = "padding: 0" color = "primary" slot = "activator">
             <v-icon>add</v-icon>
           </v-btn>
@@ -56,7 +55,7 @@
             <v-card-title>Create Road</v-card-title>
             <v-text-field v-model = "newRoadName"></v-text-field>
             <v-card-actions>
-              <v-btn color = "primary" @click="addRoad(newRoadName); addDialog=false; newRoadName = ''">Create</v-btn>
+              <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="addRoad(newRoadName); addDialog=false;">Create</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -575,6 +574,30 @@ export default {
           this.postSecure("/sync/delete_road/",{id: roadID});
         }
       }
+    },
+    setRoadName: function(roadID, roadName) {
+      console.log(roadID);
+      console.log(roadName);
+      Vue.set(this.roads[roadID], "name", roadName);
+    },
+    otherRoadHasName: function(roadID, roadName) {
+      var otherRoadNames = Object.keys(this.roads).map(function(road) {
+        if(road == roadID) {
+          return undefined;
+        } else {
+          return this.roads[road].name
+        }
+      }.bind(this));
+      return otherRoadNames.indexOf(roadName) >= 0;
+    },
+    hideDialog: function(dialog, roadID) {
+      console.log(dialog);
+      Vue.set(dialog, roadID, false);
+      console.log(this.editDialog);
+      console.log(this.deleteDialog);
+    },
+    showDialog: function(dialog, roadID) {
+      Vue.set(dialog, roadID, true);
     }
   },
   watch: {
