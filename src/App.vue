@@ -233,7 +233,6 @@ export default {
     subjectsInfo: [],
     leftDrawer: true,
     rightDrawer: true,
-    accessInfo: undefined,
     activeRoad: "$defaultroad$",
     newRoads: ["$defaultroad$"],
     newRoadName: "",
@@ -439,26 +438,31 @@ export default {
     },
     doSecure: function(axiosFunc, link, params) {
       // var CORS_LINK = '';
-      var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
-      var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
-      var headerList = {headers: {
-        "Authorization": 'Bearer ' + this.accessInfo.access_token,
-        "Access-Control-Allow-Origin": "*"
-        }};
-      //note: TODO: fix the cors problem
-      return axios.get(CORS_LINK+FIREROAD_LINK+"/verify/", headerList)
-      .then(function(verifyResponse){
-        if(verifyResponse.data.success) {
-          if(params==false) {
-            return axiosFunc(CORS_LINK+FIREROAD_LINK+link,headerList);
+      if(this.loggedIn && this.$cookies.isKey("accessInfo")) {
+        var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
+        var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
+        var headerList = {headers: {
+          "Authorization": 'Bearer ' + this.$cookies.get("accessInfo").access_token,
+          "Access-Control-Allow-Origin": "*"
+          }};
+        //note: TODO: fix the cors problem
+        return axios.get(CORS_LINK+FIREROAD_LINK+"/verify/", headerList)
+        .then(function(verifyResponse){
+          if(verifyResponse.data.success) {
+            if(params==false) {
+              return axiosFunc(CORS_LINK+FIREROAD_LINK+link,headerList);
+            } else {
+              return axiosFunc(CORS_LINK+FIREROAD_LINK+link,params,headerList);
+            }
           } else {
-            return axiosFunc(CORS_LINK+FIREROAD_LINK+link,params,headerList);
+            this.logoutUser();
+            return Promise.reject("Token not valid")
           }
-        } else {
-          this.logoutUser();
-          return Promise.reject("Token not valid")
-        }
-      });
+        });
+      } else {
+        return Promise.reject("No auth information");
+      }
+
     },
     getSecure: function(link) {
       return this.doSecure(axios.get,link,false);
@@ -536,7 +540,6 @@ export default {
     getAuthorizationToken: function(code) {
       axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
         if(response.data.success) {
-          this.data.accessInfo = response.data.access_info;
           this.data.$cookies.set("accessInfo", this.data.accessInfo);
           this.data.loggedIn = true;
           this.data.getUserData();
@@ -746,7 +749,6 @@ export default {
   mounted() {
 
     if(this.$cookies.isKey("accessInfo")) {
-      this.accessInfo = this.$cookies.get("accessInfo");
       this.loggedIn = true;
       this.getUserData();
     }
