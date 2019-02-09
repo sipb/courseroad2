@@ -189,8 +189,10 @@ export default {
     rightDrawer: true,
     accessInfo: undefined,
     activeRoad: "$defaultroad$",
-    newRoads: [],
+    newRoads: ["$defaultroad$"],
     newRoadName: "",
+    justLoaded: true,
+    currentlySaving: false,
     addDialog: false,
     editDialog: {"$defaultroad$":false},
     deleteDialog: {"$defaultroad$": false},
@@ -409,6 +411,9 @@ export default {
         }
       }.bind(this)).then(function([roadIDs,roadData]) {
         if(roadData != undefined) {
+          if(this.justLoaded) {
+            Vue.delete(this.roads, "$defaultroad$");
+          }
           for(var r = 0; r < roadIDs.length; r++) {
             if(roadData[r].status==200 && roadData[r].data.success) {
               roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
@@ -416,9 +421,7 @@ export default {
               Vue.set(this.roads, roadIDs[r], roadData[r].data.file);
             }
           }
-          Vue.delete(this.roads, "$defaultroad$")
           this.activeRoad = Object.keys(this.roads)[0];
-          // window.history.pushState("CourseRoad Home","CourseRoad Home","/#road"+this.activeRoad);
         }
       }.bind(this)).catch(function(err) {
         if(err=="Token not valid") {
@@ -457,27 +460,70 @@ export default {
       return false;
     },
     save: function() {
+      this.currentlySaving = true;
+      var savePromises = [];
       for(var roadID in this.roads) {
         var assignKeys = {override: false}
+        console.log(roadID);
         if(!roadID.includes("$")) {
           assignKeys.id = roadID
+          console.log("old road");
+        } else {
+          console.log("new road");
         }
         var newRoad = Object.assign(assignKeys, this.roads[roadID]);
-        this.postSecure("/sync/sync_road/",newRoad)
+        var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
           if(response.status!=200) {
-            console.log("Unable to save road " + this.oldid);
+            return Promise.reject("Unable to save road " + this.oldid);
           } else {
-            console.log("Saved road " + this.oldid);
+            console.log(response);
             if(response.data.id != undefined) {
               Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
               Vue.delete(this.data.roads, this.oldid);
               if(this.data.activeRoad==this.oldid) {
                 this.data.activeRoad = response.data.id;
               }
+              console.log(this.oldid + " " + response.data.id);
+              return Promise.resolve({oldid: this.oldid, newid: response.data.id, state: "changed"});
+            } else {
+              return Promise.resolve({oldid: this.oldid, newid: this.oldid, state: "same"});
             }
           }
         }.bind({oldid: roadID,data:this}))
+        savePromises.push(savePromise);
+      }
+      Promise.all(savePromises)
+      .then(function(saveResults) {
+        console.log(saveResults.map((sr)=>"Saved road " + sr.oldid + (sr.state=="changed" ? (" as " + sr.newid) : "")));
+        for(var s = 0; s < saveResults.length; s++) {
+          var savedResult = saveResults[s];
+          if(savedResult.state == "changed") {
+            var oldIdIndex = this.newRoads.indexOf(savedResult.oldid);
+            if(oldIdIndex>=0) {
+              this.newRoads.splice(oldIdIndex);
+            }
+          }
+        }
+        if(this.$cookies.isKey("newRoads")) {
+          this.$cookies.remove("newRoads");
+        }
+        this.currentlySaving = false;
+      }.bind(this)).catch(function(err) {
+        console.log(err);
+        this.currentlySaving = false;
+      }.bind(this));
+    },
+    saveLocal: function() {
+      if(this.newRoads.length) {
+        var newRoadData = {}
+        for (var r=0; r < this.newRoads.length; r++) {
+          var roadID = this.newRoads[r];
+          if(roadID in this.roads) {
+            newRoadData[roadID] = this.roads[roadID];
+          }
+        }
+        this.$cookies.set("newRoads", newRoadData, "7d");
       }
     },
     getAgent: function() {
@@ -499,12 +545,15 @@ export default {
       this.activeRoad = tempRoadID;
     },
     deleteRoad: function(event, roadID) {
-
       if(this.activeRoad == roadID) {
         var roadIndex = Object.keys(this.roads).indexOf(roadID);
         var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
         if(withoutRoad.length) {
-          this.activeRoad = withoutRoad[0];
+          if(withoutRoad.length>roadIndex) {
+            this.activeRoad = withoutRoad[roadIndex];
+          } else {
+            this.activeRoad = withoutRoad[roadIndex-1];
+          }
         } else {
           this.activeRoad = "";
         }
@@ -514,8 +563,13 @@ export default {
       Vue.delete(this.editDialog, roadID);
       Vue.delete(this.deleteDialog, roadID);
 
+      if(roadID in this.newRoads) {
+        roadIndex = this.newRoads.indexOf(roadID);
+        this.newRoads.splice(roadID);
+      }
+
       if(this.loggedIn) {
-        if(!("$" in roadID)) {
+        if(roadID.indexOf("$")<0) {
           this.postSecure("/sync/delete_road/",{id: roadID});
         }
       }
@@ -524,6 +578,7 @@ export default {
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
+      this.justLoaded = false;
       if(newRoad != "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
         this.updateFulfillment();
@@ -534,26 +589,38 @@ export default {
         if(this.activeRoad != "") {
           this.updateFulfillment();
         }
-        if(this.loggedIn) {
+        if(this.loggedIn && !this.currentlySaving) {
           this.save();
+        } else {
+          this.saveLocal();
         }
+        this.justLoaded = false;
       },
       deep: true
     }
   },
   mounted() {
 
-    if(this.$cookies.isKey("name")) {
-      this.cookieName = this.$cookies.remove("name");
+    // if(this.$cookies.isKey("accessInfo")) {
+    //   this.accessInfo = this.$cookies.get("accessInfo");
+    //   this.loggedIn = true;
+    //   this.getUserData();
+    // }
+
+    if(this.$cookies.isKey("newRoads")) {
+      var newRoads = this.$cookies.get("newRoads");
+      if(this.justLoaded) {
+        if(!(this.activeRoad in newRoads)) {
+          this.activeRoad = Object.keys(newRoads)[0];
+        }
+        this.roads = newRoads;
+      } else {
+        this.roads = Object.assign(newRoads, this.roads);
+      }
+      this.newRoads = Object.keys(newRoads);
     }
 
-    if(this.$cookies.isKey("accessInfo")) {
-      this.accessInfo = this.$cookies.get("accessInfo");
-      this.loggedIn = true;
-      this.getUserData();
-    }
-
-    var borders = $(".v-navigation-drawer__border")
+    var borders = $(".v-navigatio   n-drawer__border")
     var scrollers = $(".scroller")
     var scrollWidth = scrollers.width()
 
