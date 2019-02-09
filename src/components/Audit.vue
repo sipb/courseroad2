@@ -59,6 +59,12 @@
             <v-card-text v-if = "'req' in dialogReq">
               {{dialogReq["req"]}}
             </v-card-text>
+            <v-card-text >
+              <b>Satisfied Courses</b>
+              <div v-for = "course in dialogReq['sat_courses']">
+                {{course}}
+              </div>
+            </v-card-text>
             <v-card-actions>
               <v-btn color = "error" v-if = "'title-no-degree' in dialogReq" @click = "deleteReq(dialogReq); viewDialog = false; dialogReq = undefined;">Remove Requirement</v-btn>
             </v-card-actions>
