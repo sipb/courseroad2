@@ -60,8 +60,11 @@
           </v-card>
         </v-dialog>
 
-        <v-btn @click="loginUser">
+        <v-btn v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
           Login
+        </v-btn>
+        <v-btn v-if = "loggedIn" outline round color = "primary" @click = "logoutUser">
+          Logout
         </v-btn>
         <v-btn v-if = "loggedIn" @click="save">
           Save
@@ -115,6 +118,41 @@
         <v-progress-circular indeterminate>
         </v-progress-circular>
       </div>
+      <v-dialog v-if = "conflictInfo != undefined" v-model = "conflictDialog">
+        <v-card>
+          <v-card-title>Save Conflict</v-card-title>
+          <v-layout row>
+            <v-flex xs6 style = "padding: 2em">
+              <b>Local</b>
+              <v-list>
+                <v-card style = "padding: 1em">Name: conflictInfo.other_name</v-card>
+                <v-card style = "padding: 1em">Agent: conflictInfo.other_agent</v-card>
+                <v-card style = "padding: 1em">Date: conflictInfo.other_date</v-card>
+                <v-card style = "padding: 1em">
+                  <p>Contents:</p>
+                  <p>Courses of Study: <span v-for = "req in conflictInfo.other_contents.coursesOfStudy"> {{req}} </span></p>
+                  <p>Selected Subjects: <span v-for = "course in conflictInfo.other_contents.selectedSubjects"> {{course}} </span></p>
+                </v-card>
+              </v-list>
+              <v-btn color = "primary" @click = "updateLocal(conflictInfo.id); conflictInfo = {}; conflictDialog = false;">Keep Remote</v-btn>
+            </v-flex>
+            <v-flex xs6>
+              <b>Cloud</b>
+              <v-list>
+                <v-card style = "padding: 1em">Name: roads[conflictInfo.id].name</v-card>
+                <v-card style = "padding: 1em">Agent: roads[conflictInfo.id].agent</v-card>
+                <v-card style = "padding: 1em">Date: roads[conflictInfo.id].changed_date</v-card>
+                <v-card style = "padding: 1em">
+                  <p>Contents:</p>
+                  <p>Courses of Study: <span v-for = "req in roads[conflictInfo.id].contents.coursesOfStudy"> {{req}} </span></p>
+                  <p>Selected Subjects: <span v-for = "course in roads[conflictInfo.id].contents.selectedSubjects"> {{course}} </span></p>
+                </v-card>
+              </v-list>
+              <v-btn color = "primary" @click = "updateRemote(conflictInfo.id); conflictInfo = {}; conflictDialog = false;">Keep Local</v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card>
+      </v-dialog>
 
     </v-content>
 
@@ -197,6 +235,8 @@ export default {
     addDialog: false,
     editDialog: {"$defaultroad$":false},
     deleteDialog: {"$defaultroad$": false},
+    conflictDialog: false,
+    conflictInfo: undefined,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -370,6 +410,11 @@ export default {
     loginUser: function(event) {
       window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
     },
+    logoutUser: function(event) {
+      this.$cookies.remove("accessInfo");
+      this.loggedIn = false;
+      window.location.reload();
+    },
     doSecure: function(axiosFunc, link, params) {
       // var CORS_LINK = '';
       var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
@@ -388,6 +433,7 @@ export default {
             return axiosFunc(CORS_LINK+FIREROAD_LINK+link,params,headerList);
           }
         } else {
+          this.logoutUser();
           return Promise.reject("Token not valid")
         }
       });
@@ -433,7 +479,7 @@ export default {
         }
       }.bind(this)).catch(function(err) {
         if(err=="Token not valid") {
-          //login
+          alert("Your token has expired.  Please log in again.");
         }
       })
     },
@@ -445,6 +491,7 @@ export default {
         if(otherNames.indexOf(copyName)==-1) {
           newName = copyName;
         }
+        copyIndex++;
       }
       return newName;
     },
@@ -496,9 +543,10 @@ export default {
     },
     save: function() {
       this.currentlySaving = true;
+      this.saveWarnings = [];
       var savePromises = [];
       for(var roadID in this.roads) {
-        var assignKeys = {override: false}
+        var assignKeys = {override: false, agent: this.getAgent()}
         if(!roadID.includes("$")) {
           assignKeys.id = roadID
         }
@@ -511,6 +559,11 @@ export default {
           } else {
             if(response.data.success == false) {
               this.saveWarnings.push({id: (response.data.id!=undefined ? response.data.id : this.oldid), error: response.data.error_msg, name: this.roads[this.oldid].name});
+            }
+            console.log(response.data.result);
+            if(response.data.result == "conflict") {
+              this.conflictDialog = true;
+              this.conflictInfo = {id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date:response.data.other_date, other_contents: response.data.other_contents, this_agent:response.data.this_agent, this_date:response.data.this_date};
             }
             if(response.data.id != undefined) {
               Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
@@ -547,6 +600,21 @@ export default {
         console.log(err);
         this.currentlySaving = false;
       }.bind(this));
+    },
+    updateRemote: function(roadID) {
+      var newRoad = Object.assign({id: roadID, override: true, agent: this.getAgent()}, this.roads[roadID]);
+      this.postSecure("/sync/sync_road/",newRoad)
+      .then(function(response) {
+        if(!response.data.success) {
+          this.saveWarnings.push({error: response.data.error_msg, id: roadID, name: this.roads[roadID]});
+        }
+      })
+    },
+    updateLocal: function(roadID) {
+      Vue.set(this.roads[roadID], "name", this.conflictInfo.other_name);
+      Vue.set(this.roads[roadID], "agent", this.conflictInfo.other_agent);
+      Vue.set(this.roads[roadID], "changed_date", this.conflictInfo.other_date);
+      Vue.set(this.roads[roadID], "contents", this.conflictInfo.other_contents)
     },
     saveLocal: function() {
       if(this.newRoads.length) {
@@ -609,8 +677,6 @@ export default {
       }
     },
     setRoadName: function(roadID, roadName) {
-      console.log(roadID);
-      console.log(roadName);
       Vue.set(this.roads[roadID], "name", roadName);
     },
     otherRoadHasName: function(roadID, roadName) {
@@ -624,10 +690,7 @@ export default {
       return otherRoadNames.indexOf(roadName) >= 0;
     },
     hideDialog: function(dialog, roadID) {
-      console.log(dialog);
       Vue.set(dialog, roadID, false);
-      console.log(this.editDialog);
-      console.log(this.deleteDialog);
     },
     showDialog: function(dialog, roadID) {
       Vue.set(dialog, roadID, true);
@@ -659,11 +722,11 @@ export default {
   },
   mounted() {
 
-    // if(this.$cookies.isKey("accessInfo")) {
-    //   this.accessInfo = this.$cookies.get("accessInfo");
-    //   this.loggedIn = true;
-    //   this.getUserData();
-    // }
+    if(this.$cookies.isKey("accessInfo")) {
+      this.accessInfo = this.$cookies.get("accessInfo");
+      this.loggedIn = true;
+      this.getUserData();
+    }
 
     if(this.$cookies.isKey("newRoads")) {
       var newRoads = this.$cookies.get("newRoads");
