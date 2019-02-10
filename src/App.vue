@@ -82,14 +82,14 @@
           Logout
         </v-btn>
         <v-tooltip bottom :disabled = "saveWarnings.length==0">
-          <v-icon slot = "activator" v-if = "!currentlySaving" :color = "saveColor">
+          <v-icon slot = "activator" v-if = "!currentlySaving && !gettingUserData" :color = "saveColor">
             {{saveIcon}}
           </v-icon>
           <div>
             <p v-for = "saveWarning in saveWarnings">{{saveWarning.name}}: {{saveWarning.error}}</p>
           </div>
         </v-tooltip>
-        <div v-if = "currentlySaving">
+        <div v-if = "currentlySaving || gettingUserData">
           <v-progress-circular :size = "18" indeterminate>
           </v-progress-circular>
         </div>
@@ -190,6 +190,13 @@
     >
       <class-search v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
     </v-navigation-drawer>
+
+    <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
+      This site uses cookies to store your data and login information.  Click OK to consent to the use of cookies.
+      <v-btn small depressed color = "primary" @click = "allowCookies">
+        OK
+      </v-btn>
+    </v-footer>
   </v-app>
 </template>
 
@@ -243,7 +250,9 @@ export default {
     dragSemesterNum: -1,
     subjectsLoaded: false,
     loggedIn: false,
+    gettingUserData: false,
     cookieName: "Default Cookie",
+    accessInfo: undefined,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
     leftDrawer: true,
@@ -261,6 +270,7 @@ export default {
     deleteDialog: {"$defaultroad$": false},
     conflictDialog: false,
     conflictInfo: undefined,
+    cookiesAllowed: false,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -283,6 +293,9 @@ export default {
       return "#road" + this.activeRoad
     },
     saveColor: function() {
+      if(!this.cookiesAllowed && !this.loggedIn) {
+        return "gray";
+      }
       if(this.saveWarnings.length) {
         return "warning";
       } else {
@@ -451,14 +464,15 @@ export default {
     logoutUser: function(event) {
       this.$cookies.remove("accessInfo");
       this.loggedIn = false;
+      this.accessInfo = undefined;
       window.location.reload();
     },
     doSecure: function(axiosFunc, link, params) {
-      if(this.loggedIn && this.$cookies.isKey("accessInfo")) {
+      if(this.loggedIn && this.accessInfo != undefined) {
         var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
         var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
         var headerList = {headers: {
-          "Authorization": 'Bearer ' + this.$cookies.get("accessInfo").access_token,
+          "Authorization": 'Bearer ' + this.accessInfo.access_token,
           "Access-Control-Allow-Origin": "*"
           }};
         //note: TODO: fix the cors problem
@@ -487,6 +501,7 @@ export default {
       return this.doSecure(axios.post,link,params);
     },
     getUserData: function() {
+      this.gettingUserData = true;
       this.getSecure("/sync/roads/")
       .then(function(response) {
         if(response.status == 200 && response.data.success) {
@@ -519,6 +534,7 @@ export default {
           }
           this.activeRoad = Object.keys(this.roads)[0];
         }
+        this.gettingUserData = false;
       }.bind(this)).catch(function(err) {
         if(err=="Token not valid") {
           alert("Your token has expired.  Please log in again.");
@@ -556,7 +572,13 @@ export default {
     getAuthorizationToken: function(code) {
       axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
         if(response.data.success) {
-          this.data.$cookies.set("accessInfo", this.data.accessInfo);
+          console.log(response);
+          if(this.cookiesAllowed) {
+            this.data.$cookies.set("accessInfo", response.data.access_info);
+          }
+          this.data.accessInfo = response.data.access_info;
+          console.log("set accessInfo");
+          console.log(this.data.accessInfo);
           this.data.loggedIn = true;
           this.data.getUserData();
         }
@@ -601,7 +623,6 @@ export default {
             if(response.data.success == false) {
               this.data.saveWarnings.push({id: (response.data.id!=undefined ? response.data.id : this.oldid), error: response.data.error_msg, name: this.data.roads[this.oldid].name});
             }
-            console.log(response.data.result);
             if(response.data.result == "conflict") {
               this.conflictDialog = true;
               this.conflictInfo = {id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date:response.data.other_date, other_contents: response.data.other_contents, this_agent:response.data.this_agent, this_date:response.data.this_date};
@@ -744,6 +765,12 @@ export default {
     },
     showDialog: function(dialog, roadID) {
       Vue.set(dialog, roadID, true);
+    },
+    allowCookies: function() {
+      this.cookiesAllowed = true;
+      if(this.loggedIn) {
+        this.$cookies.set("accessInfo", this.accessInfo);
+      }
     }
   },
   watch: {
@@ -761,12 +788,12 @@ export default {
         if(this.activeRoad != "") {
           this.updateFulfillment();
         }
-        if(this.loggedIn && !this.currentlySaving) {
-          this.save();
-        } else {
-          this.saveLocal();
-        }
-        this.justLoaded = false;
+          if(this.loggedIn && !this.currentlySaving) {
+            this.save();
+          } else {
+            this.saveLocal();
+          }
+          this.justLoaded = false;
       },
       deep: true
     }
@@ -775,20 +802,28 @@ export default {
 
     if(this.$cookies.isKey("accessInfo")) {
       this.loggedIn = true;
+      this.cookiesAllowed = true;
+      this.accessInfo = this.$cookies.get("accessInfo");
       this.getUserData();
     }
 
     if(this.$cookies.isKey("newRoads")) {
+      this.cookiesAllowed = true;
       var newRoads = this.$cookies.get("newRoads");
-      if(this.justLoaded) {
-        if(!(this.activeRoad in newRoads)) {
-          this.activeRoad = Object.keys(newRoads)[0];
+      if(Object.keys(newRoads).length) {
+        if(this.justLoaded) {
+          if(!(this.activeRoad in newRoads)) {
+            this.activeRoad = Object.keys(newRoads)[0];
+          }
+          this.roads = newRoads;
+        } else {
+          this.roads = Object.assign(newRoads, this.roads);
         }
-        this.roads = newRoads;
+        this.newRoads = Object.keys(newRoads);
       } else {
-        this.roads = Object.assign(newRoads, this.roads);
+        this.$cookies.remove("newRoads");
       }
-      this.newRoads = Object.keys(newRoads);
+
     }
 
     var borders = $(".v-navigatio   n-drawer__border")
