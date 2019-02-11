@@ -80,41 +80,14 @@
         </v-tab-item>
       </v-tabs-items>
 
-      <v-dialog v-if = "conflictInfo != undefined" v-model = "conflictDialog">
-        <v-card>
-          <v-card-title>Save Conflict</v-card-title>
-          <v-layout row>
-            <v-flex xs6 style = "padding: 2em">
-              <b>Local</b>
-              <v-list>
-                <v-card style = "padding: 1em">Name: conflictInfo.other_name</v-card>
-                <v-card style = "padding: 1em">Agent: conflictInfo.other_agent</v-card>
-                <v-card style = "padding: 1em">Date: conflictInfo.other_date</v-card>
-                <v-card style = "padding: 1em">
-                  <p>Contents:</p>
-                  <p>Courses of Study: <span v-for = "req in conflictInfo.other_contents.coursesOfStudy"> {{req}} </span></p>
-                  <p>Selected Subjects: <span v-for = "course in conflictInfo.other_contents.selectedSubjects"> {{course}} </span></p>
-                </v-card>
-              </v-list>
-              <v-btn color = "primary" @click = "updateLocal(conflictInfo.id); conflictInfo = {}; conflictDialog = false;">Keep Remote</v-btn>
-            </v-flex>
-            <v-flex xs6>
-              <b>Cloud</b>
-              <v-list>
-                <v-card style = "padding: 1em">Name: roads[conflictInfo.id].name</v-card>
-                <v-card style = "padding: 1em">Agent: roads[conflictInfo.id].agent</v-card>
-                <v-card style = "padding: 1em">Date: roads[conflictInfo.id].changed_date</v-card>
-                <v-card style = "padding: 1em">
-                  <p>Contents:</p>
-                  <p>Courses of Study: <span v-for = "req in roads[conflictInfo.id].contents.coursesOfStudy"> {{req}} </span></p>
-                  <p>Selected Subjects: <span v-for = "course in roads[conflictInfo.id].contents.selectedSubjects"> {{course}} </span></p>
-                </v-card>
-              </v-list>
-              <v-btn color = "primary" @click = "updateRemote(conflictInfo.id); conflictInfo = {}; conflictDialog = false;">Keep Local</v-btn>
-            </v-flex>
-          </v-layout>
-        </v-card>
-      </v-dialog>
+      <conflict-dialog
+        v-if = "conflictInfo != undefined"
+        v-bind:conflictInfo = "conflictInfo"
+        v-bind:conflictDialog = "conflictDialog"
+        @update-local = "updateLocal"
+        @update-remote = "updateRemote"
+      >
+      </conflict-dialog>
 
     </v-content>
 
@@ -160,6 +133,7 @@ import ClassSearch from './components/ClassSearch.vue'
 import Road from './components/Road.vue'
 import FilterSet from "./components/FilterSet.vue"
 import RoadTabs from "./components/RoadTabs.vue"
+import ConflictDialog from "./components/ConflictDialog.vue"
 import $ from 'jquery'
 import Vue from 'vue'
 
@@ -183,7 +157,8 @@ export default {
     'class-search': ClassSearch,
     'road': Road,
     'filter-set': FilterSet,
-    'road-tabs': RoadTabs
+    'road-tabs': RoadTabs,
+    'conflict-dialog': ConflictDialog
   },
   data: function(){ return {
     reqTrees: {},
@@ -607,12 +582,16 @@ export default {
           this.saveWarnings.push({error: response.data.error_msg, id: roadID, name: this.roads[roadID]});
         }
       })
+      this.conflictInfo = {};
+      this.conflictDialog = false;
     },
     updateLocal: function(roadID) {
       Vue.set(this.roads[roadID], "name", this.conflictInfo.other_name);
       Vue.set(this.roads[roadID], "agent", this.conflictInfo.other_agent);
       Vue.set(this.roads[roadID], "changed_date", this.conflictInfo.other_date);
       Vue.set(this.roads[roadID], "contents", this.conflictInfo.other_contents)
+      this.conflictInfo = {};
+      this.conflictDialog = false;
     },
     saveLocal: function() {
       if(this.newRoads.length) {
@@ -690,9 +669,6 @@ export default {
       }
     },
     changeActiveRoad: function(event) {
-      console.log(event);
-      console.log("change active road");
-      console.log("changing to " + event);
       this.activeRoad = event;
     }
   },
