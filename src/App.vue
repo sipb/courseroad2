@@ -7,98 +7,37 @@
         <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
         <v-toolbar-title>Audit</v-toolbar-title>
       <v-spacer></v-spacer>
-        <v-tabs
-          show-arrows
-          v-model = "activeRoad"
-          slot = "extension"
-        >
-          <v-tabs-slider></v-tabs-slider>
-          <v-tab
-            :key = "roadid"
-            :href = "`#${roadid}`"
-            v-for = "roadid in Object.keys(roads)"
-            >
-              {{roads[roadid].name}}
-              <v-btn icon flat v-show = "roadid == activeRoad" @click = "$event.preventDefault(); newRoadName = roads[roadid].name; showDialog(editDialog, roadid);">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <v-dialog v-model = "editDialog[roadid]" @input = "newRoadName = ''">
-                <v-card style = "padding: 2em">
-                  <v-card-title>Edit Road</v-card-title>
-                  <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
-                  <v-card-actions>
-                    <v-btn color = "primary" :disabled = "otherRoadHasName(roadid, newRoadName)" @click = "setRoadName(roadid, newRoadName); hideDialog(editDialog, roadid); newRoadName = ''">Submit</v-btn>
-                    <v-btn color = "error" @click = "hideDialog(editDialog, roadid); showDialog(deleteDialog, roadid)">
-                      Delete Road
-                      <v-icon>delete</v-icon>
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-              <v-dialog v-model = "deleteDialog[roadid]">
-                <v-card style = "padding: 2em">
-                  <v-card-title>Permanently Delete {{roads[roadid].name}}?</v-card-title>
-                  <v-card-text>This action cannot be undone.</v-card-text>
-                  <v-card-actions>
-                    <v-btn @click = "hideDialog(deleteDialog, roadid);showDialog(editDialog, roadid)">Cancel</v-btn>
-                    <v-btn @click = "deleteRoad($event, roadid);" color = "error">Delete</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-          </v-tab>
-        </v-tabs>
-        <v-dialog v-model = "addDialog" width = "500" slot = "extension" @input = "newRoadName = ''">
-          <v-btn icon flat style = "padding: 0" color = "primary" slot = "activator">
-            <v-icon>add</v-icon>
-          </v-btn>
-          <v-card style = "padding: 2em">
-            <v-card-title>Create Road</v-card-title>
-            <v-text-field v-model = "newRoadName"></v-text-field>
-            <v-layout row>
-              <v-flex xs6>
-                <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
-              </v-flex>
-              <v-flex>
-                <v-select :disabled = "!duplicateRoad" :items = "Object.keys(roads)" v-model = "duplicateRoadSource">
-                  <template slot = "item" slot-scope = "{item}">
-                    {{roads[item].name}}
-                  </template>
-                  <template slot = "selection" slot-scope = "{item}">
-                    {{roads[item].name}}
-                  </template>
-                </v-select>
-              </v-flex>
-            </v-layout>
-            <v-card-actions>
-              <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="addRoad(newRoadName); addDialog=false;">Create</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <v-btn v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
-          Login
-        </v-btn>
-        <v-btn v-if = "loggedIn" outline round color = "primary" @click = "logoutUser">
-          Logout
-        </v-btn>
-        <v-tooltip bottom :disabled = "saveWarnings.length==0">
-          <v-icon slot = "activator" v-if = "!currentlySaving && !gettingUserData" :color = "saveColor">
-            {{saveIcon}}
-          </v-icon>
-          <div>
-            <p v-for = "saveWarning in saveWarnings">{{saveWarning.name}}: {{saveWarning.error}}</p>
-          </div>
-        </v-tooltip>
-        <div v-if = "currentlySaving || gettingUserData">
-          <v-progress-circular :size = "18" indeterminate>
-          </v-progress-circular>
+      <road-tabs
+        v-bind:roads = "roads"
+        v-bind:activeRoad = "activeRoad"
+        @delete-road = "deleteRoad"
+        @set-name = "setRoadName($event.road, $event.name)"
+        @add-road = "addRoad"
+        @change-active = "changeActiveRoad($event)"
+        slot = "extension"
+      >
+      </road-tabs>
+      <v-btn v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
+        Login
+      </v-btn>
+      <v-btn v-if = "loggedIn" outline round color = "primary" @click = "logoutUser">
+        Logout
+      </v-btn>
+      <v-tooltip bottom :disabled = "saveWarnings.length==0">
+        <v-icon slot = "activator" v-if = "!currentlySaving && !gettingUserData" :color = "saveColor">
+          {{saveIcon}}
+        </v-icon>
+        <div>
+          <p v-for = "saveWarning in saveWarnings">{{saveWarning.name}}: {{saveWarning.error}}</p>
         </div>
-        <!-- <v-btn v-if = "loggedIn" @click="save">
-          Save
-        </v-btn> -->
+      </v-tooltip>
+      <div v-if = "currentlySaving || gettingUserData">
+        <v-progress-circular :size = "18" indeterminate>
+        </v-progress-circular>
+      </div>
       <v-spacer></v-spacer>
-        <v-toolbar-title>Class Search</v-toolbar-title>
-        <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
+      <v-toolbar-title>Class Search</v-toolbar-title>
+      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
     </v-toolbar>
 
 
@@ -220,6 +159,7 @@ import Audit from './components/Audit.vue'
 import ClassSearch from './components/ClassSearch.vue'
 import Road from './components/Road.vue'
 import FilterSet from "./components/FilterSet.vue"
+import RoadTabs from "./components/RoadTabs.vue"
 import $ from 'jquery'
 import Vue from 'vue'
 
@@ -242,7 +182,8 @@ export default {
     'audit': Audit,
     'class-search': ClassSearch,
     'road': Road,
-    'filter-set': FilterSet
+    'filter-set': FilterSet,
+    'road-tabs': RoadTabs
   },
   data: function(){ return {
     reqTrees: {},
@@ -263,11 +204,6 @@ export default {
     justLoaded: true,
     currentlySaving: false,
     saveWarnings: [],
-    duplicateRoad: false,
-    duplicateRoadSource: "$defaultroad$",
-    addDialog: false,
-    editDialog: {"$defaultroad$":false},
-    deleteDialog: {"$defaultroad$": false},
     conflictDialog: false,
     conflictInfo: undefined,
     cookiesAllowed: false,
@@ -449,8 +385,6 @@ export default {
     addReq: function(event) {
       this.roads[this.activeRoad].contents.coursesOfStudy.push(event);
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
-      Vue.set(this.editDialog, this.activeRoad, false);
-      Vue.set(this.deleteDialog, this.activeRoad, false);
     },
     removeReq: function(event) {
       console.log(event);
@@ -536,6 +470,7 @@ export default {
         }
         this.gettingUserData = false;
       }.bind(this)).catch(function(err) {
+        alert(err);
         if(err=="Token not valid") {
           alert("Your token has expired.  Please log in again.");
         }
@@ -616,7 +551,7 @@ export default {
         var newRoad = Object.assign(assignKeys, this.roads[roadID]);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
-          console.log(response);
+          // console.log(response);
           if(response.status!=200) {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {
@@ -629,10 +564,10 @@ export default {
             }
             if(response.data.id != undefined) {
               Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
-              Vue.delete(this.data.roads, this.oldid);
               if(this.data.activeRoad==this.oldid) {
                 this.data.activeRoad = response.data.id;
               }
+              Vue.delete(this.data.roads, this.oldid);
               console.log(this.oldid + " " + response.data.id);
               return Promise.resolve({oldid: this.oldid, newid: response.data.id, state: "changed"});
             } else {
@@ -715,9 +650,11 @@ export default {
       }
       Vue.set(this.roads, tempRoadID, newRoad);
       this.newRoads.push(tempRoadID);
+      console.log("setting to temp");
       this.activeRoad = tempRoadID;
     },
-    deleteRoad: function(event, roadID) {
+    deleteRoad: function(roadID) {
+      console.log("deleting "  + roadID + " " + this.roads[roadID].name);
       if(this.activeRoad == roadID) {
         var roadIndex = Object.keys(this.roads).indexOf(roadID);
         var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
@@ -731,11 +668,7 @@ export default {
           this.activeRoad = "";
         }
       }
-
       Vue.delete(this.roads, roadID);
-      Vue.delete(this.editDialog, roadID);
-      Vue.delete(this.deleteDialog, roadID);
-
       if(roadID in this.newRoads) {
         roadIndex = this.newRoads.indexOf(roadID);
         this.newRoads.splice(roadID);
@@ -750,27 +683,17 @@ export default {
     setRoadName: function(roadID, roadName) {
       Vue.set(this.roads[roadID], "name", roadName);
     },
-    otherRoadHasName: function(roadID, roadName) {
-      var otherRoadNames = Object.keys(this.roads).map(function(road) {
-        if(road == roadID) {
-          return undefined;
-        } else {
-          return this.roads[road].name
-        }
-      }.bind(this));
-      return otherRoadNames.indexOf(roadName) >= 0;
-    },
-    hideDialog: function(dialog, roadID) {
-      Vue.set(dialog, roadID, false);
-    },
-    showDialog: function(dialog, roadID) {
-      Vue.set(dialog, roadID, true);
-    },
     allowCookies: function() {
       this.cookiesAllowed = true;
       if(this.loggedIn) {
         this.$cookies.set("accessInfo", this.accessInfo);
       }
+    },
+    changeActiveRoad: function(event) {
+      console.log(event);
+      console.log("change active road");
+      console.log("changing to " + event);
+      this.activeRoad = event;
     }
   },
   watch: {
@@ -813,6 +736,7 @@ export default {
       if(Object.keys(newRoads).length) {
         if(this.justLoaded) {
           if(!(this.activeRoad in newRoads)) {
+            console.log("mounted setting to 0th")
             this.activeRoad = Object.keys(newRoads)[0];
           }
           this.roads = newRoads;
