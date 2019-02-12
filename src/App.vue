@@ -30,6 +30,9 @@ definitely want a smooth animation for this (dropping down from top)
 
 search and class info go on top of the road
 
+
+show percentage next to majors when choosing a new one
+
  -->
 
 
