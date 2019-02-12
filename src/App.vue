@@ -420,10 +420,14 @@ export default {
         }
         return response;
       }).then(function(fileKeys) {
+        console.log("fileKeys:");
+        console.log(fileKeys);
         if(fileKeys.length) {
+          console.log("getting file links")
           var fileLinks = fileKeys.map(function(fk) {
             return this.getSecure("/sync/roads/?id="+fk)
           }.bind(this));
+          console.log("got file links");
           return Promise.all(fileLinks).then((fl) => [fileKeys, fl]);
         } else {
           return [fileKeys, undefined];
