@@ -138,7 +138,7 @@ import $ from 'jquery'
 import Vue from 'vue'
 
 var MAIN_URL = "http://localhost:8080"
-var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSSZ"
+var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
 
 function getQueryObject() {
   var query = window.location.search.substring(1);
@@ -378,11 +378,11 @@ export default {
     },
     doSecure: function(axiosFunc, link, params) {
       if(this.loggedIn && this.accessInfo != undefined) {
-        var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
+        // var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
+        var CORS_LINK = '';
         var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
         var headerList = {headers: {
           "Authorization": 'Bearer ' + this.accessInfo.access_token,
-          "Access-Control-Allow-Origin": "*"
           }};
         //note: TODO: fix the cors problem
         return axios.get(CORS_LINK+FIREROAD_LINK+"/verify/", headerList)
@@ -446,10 +446,12 @@ export default {
         this.gettingUserData = false;
       }.bind(this)).catch(function(err) {
         alert(err);
+        this.gettingUserData = false;
         if(err=="Token not valid") {
           alert("Your token has expired.  Please log in again.");
         }
-      })
+        this.logoutUser();
+      }.bind(this))
     },
     renumber: function(name, otherNames) {
       var newName = undefined;
@@ -530,24 +532,29 @@ export default {
           if(response.status!=200) {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {
+            console.log(response.data.result);
+            var newid = (response.data.id!=undefined ? response.data.id : this.oldid);
             if(response.data.success == false) {
-              this.data.saveWarnings.push({id: (response.data.id!=undefined ? response.data.id : this.oldid), error: response.data.error_msg, name: this.data.roads[this.oldid].name});
+              this.data.saveWarnings.push({id: newid, error: response.data.error_msg, name: this.data.roads[this.oldid].name});
             }
             if(response.data.result == "conflict") {
               this.conflictDialog = true;
               this.conflictInfo = {id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date:response.data.other_date, other_contents: response.data.other_contents, this_agent:response.data.this_agent, this_date:response.data.this_date};
-            }
-            if(response.data.id != undefined) {
-              Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
-              if(this.data.activeRoad==this.oldid) {
-                this.data.activeRoad = response.data.id;
-              }
-              Vue.delete(this.data.roads, this.oldid);
-              console.log(this.oldid + " " + response.data.id);
-              return Promise.resolve({oldid: this.oldid, newid: response.data.id, state: "changed"});
             } else {
-              return Promise.resolve({oldid: this.oldid, newid: this.oldid, state: "same"});
+              if(response.data.id != undefined) {
+                Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
+                if(this.data.activeRoad==this.oldid) {
+                  this.data.activeRoad = response.data.id;
+                }
+                Vue.delete(this.data.roads, this.oldid);
+                console.log(this.oldid + " " + response.data.id);
+                return Promise.resolve({oldid: this.oldid, newid: response.data.id, state: "changed"});
+              } else {
+                return Promise.resolve({oldid: this.oldid, newid: this.oldid, state: "same"});
+              }
+              // Vue.set(this.data.roads[newid], "downloaded", moment().format(DATE_FORMAT));
             }
+
           }
         }.bind({oldid: roadID,data:this}))
         savePromises.push(savePromise);
@@ -590,6 +597,7 @@ export default {
       Vue.set(this.roads[roadID], "agent", this.conflictInfo.other_agent);
       Vue.set(this.roads[roadID], "changed_date", this.conflictInfo.other_date);
       Vue.set(this.roads[roadID], "contents", this.conflictInfo.other_contents)
+      Vue.set(this.roads[roadID], "downloaded", moment().format(DATE_FORMAT));
       this.conflictInfo = {};
       this.conflictDialog = false;
     },
@@ -604,6 +612,7 @@ export default {
         }
         this.$cookies.set("newRoads", newRoadData, "7d");
       }
+      Vue.set(this.roads[roadID], "downloaded", moment().format(DATE_FORMAT));
     },
     getAgent: function() {
       return navigator.platform;
