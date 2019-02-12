@@ -552,7 +552,7 @@ export default {
               } else {
                 return Promise.resolve({oldid: this.oldid, newid: this.oldid, state: "same"});
               }
-              // Vue.set(this.data.roads[newid], "downloaded", moment().format(DATE_FORMAT));
+              Vue.set(this.data.roads[newid], "downloaded", moment().format(DATE_FORMAT));
             }
 
           }
