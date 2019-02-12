@@ -39,7 +39,7 @@ function getQueryObject() {
 export default {
   name: "Auth",
   components: {},
-  props: ["roads", "cookiesAllowed", "justLoaded", "getAgent"],
+  props: ["roads", "cookiesAllowed", "justLoaded", "getAgent", "activeRoad"],
   data: function() {return {
     accessInfo: undefined,
     loggedIn: false,
@@ -325,7 +325,6 @@ export default {
     },
 
     deleteRoad: function(roadID) {
-      console.log("deleting "  + roadID + " " + this.roads[roadID].name);
       if(this.activeRoad == roadID) {
         var roadIndex = Object.keys(this.roads).indexOf(roadID);
         var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
@@ -344,6 +343,7 @@ export default {
       }
       // Vue.delete(this.roads, roadID);
       this.$emit("delete-road", roadID);
+
       if(roadID in this.newRoads) {
         roadIndex = this.newRoads.indexOf(roadID);
         this.newRoads.splice(roadID);

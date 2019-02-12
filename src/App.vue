@@ -23,6 +23,7 @@
         v-bind:cookiesAllowed = "cookiesAllowed"
         v-bind:justLoaded = "justLoaded"
         v-bind:getAgent = "getAgent"
+        v-bind:activeRoad = "activeRoad"
         @delete-road = "deleteRoad"
         @set-road = "setRoad(...arguments)"
         @set-active = "setActive"
@@ -392,9 +393,15 @@ export default {
       this.activeRoad = event;
     },
     deleteRoad: function(roadID) {
+      console.log("about to delete " + roadID);
+      console.log("active road: " + this.activeRoad);
+      console.log(this.roads);
       Vue.delete(this.roads, roadID);
     },
     setRoad: function(roadID, newRoad) {
+      console.log("setting road");
+      console.log(roadID);
+      console.log(newRoad);
       Vue.set(this.roads, roadID, newRoad);
     },
     setActive: function(roadID) {
