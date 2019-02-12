@@ -433,8 +433,8 @@ export default {
           return [fileKeys, undefined];
         }
       }.bind(this)).then(function([roadIDs,roadData]) {
-        this.renumberRoads(roadData);
         if(roadData != undefined) {
+          this.renumberRoads(roadData);
           if(this.justLoaded) {
             Vue.delete(this.roads, "$defaultroad$");
           }
