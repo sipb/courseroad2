@@ -1,6 +1,6 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
-  <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'semester_' + index">
+  <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'road_'+roadID+'_semester_' + index">
     <div slot="header">Semester {{index}}</div>
     <v-container
       class="grey lighten-3 semester-drop-container"
@@ -35,7 +35,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects"],
+  props:['selectedSubjects','index',"allSubjects","roadID"],
   components: {
     'class': Class
   },

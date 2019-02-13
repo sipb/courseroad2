@@ -2,7 +2,7 @@
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
   <v-container>
     <v-menu style = "float:right">
-      <v-btn outline style = "float:right" slot = "activator">
+      <v-btn icon flat color = "primary" style = "float:right" slot = "activator">
         <v-icon>add</v-icon>
       </v-btn>
       <v-list scrollable>
@@ -44,7 +44,33 @@
         >
         </requirement>
       </template>
-
+      <template slot = "append" slot-scope = "{ item, leaf }">
+        <v-btn icon flat color = "info" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
+        <v-dialog v-if = "dialogReq != undefined" v-model = "viewDialog">
+          <v-card style = "padding: 2em">
+            <v-btn icon flat style = "float:right" @click = "viewDialog = false"><v-icon>close</v-icon></v-btn>
+            <v-card-title>{{dialogReq["title"]}}</v-card-title>
+            <v-card-text v-if = "'desc' in dialogReq">{{dialogReq["desc"]}}</v-card-text>
+            <v-card-text>
+              <div class = "percentage-bar" :style = "percentage(dialogReq)">
+                {{dialogReq["percent_fulfilled"]}}% fulfilled
+              </div>
+            </v-card-text>
+            <v-card-text v-if = "'req' in dialogReq">
+              {{dialogReq["req"]}}
+            </v-card-text>
+            <v-card-text >
+              <b>Satisfied Courses</b>
+              <div v-for = "course in dialogReq['sat_courses']">
+                {{course}}
+              </div>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color = "error" v-if = "'title-no-degree' in dialogReq" @click = "deleteReq(dialogReq); viewDialog = false; dialogReq = undefined;">Remove Requirement</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </template>
 
     </v-treeview>
   </v-container>
@@ -60,7 +86,9 @@ export default {
   },
   props: ['selectedReqs', 'reqTrees', 'reqList'],
   data: function() { return {
-    tree: []
+    tree: [],
+    viewDialog: false,
+    dialogReq: undefined
   }},
   computed: {
     selectedTrees: function() {
@@ -80,7 +108,7 @@ export default {
   },
   methods: {
     fulfilledIcon: function(req) {
-      if(req.fulfilled) {
+      if(req.fulfilled && (req.req != undefined || req.sat_courses.length>0)) {
         return "color: #52e052;";
       } else {
         return "";
@@ -88,6 +116,28 @@ export default {
     },
     addReqTree: function(req) {
       this.$emit("add-req",req)
+    },
+    reqInfo: function(event, req) {
+      event.preventDefault();
+      console.log(event);
+      console.log(req);
+      this.viewDialog = true;
+      this.dialogReq = req;
+    },
+    percentage: function(req) {
+      var pfulfilled = req.percent_fulfilled
+      var pstring = "--percent: " + req.percent_fulfilled+"%";
+      return pstring;
+    },
+    percentage_bar: function(req) {
+      var pblock = {
+        "percentage-bar": ("reqs" in req || "threshold" in req)
+      }
+      return pblock
+    },
+    deleteReq: function(req) {
+      var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
+      this.$emit("remove-req",reqName);
     }
   },
 
@@ -95,4 +145,12 @@ export default {
 </script>
 
 <style scoped>
+.percentage-bar {
+  height: 30px;
+  background: linear-gradient(90deg, #98fb98 var(--percent), rgba(255,255,255,0) var(--percent));
+  border: 1px solid gray;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
 </style>
