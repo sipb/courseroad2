@@ -29,7 +29,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model = "deleteDialog">
+      <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads">
         <v-card style = "padding: 2em">
           <v-card-title>Permanently Delete {{roads[tabRoad].name}}?</v-card-title>
           <v-card-text>This action cannot be undone.</v-card-text>

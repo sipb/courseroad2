@@ -30,6 +30,8 @@
         @conflict = "conflict"
         @resolve-conflict = "resolveConflict"
         @set-road-prop = "setRoadProp(...arguments)"
+        @cookies-allowed = "cookiesAllowed = true"
+        @reset-id = "resetID(...arguments)"
       >
       </auth>
       <v-spacer></v-spacer>
@@ -58,7 +60,10 @@
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
+    <!--the v-model here is the problem.
+    if i instead use v-if, active road does not change but it remains on the wrong tab.
 
+  -->
     <v-content app id="center-panel">
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
@@ -207,6 +212,14 @@ export default {
       this.roads[this.activeRoad].contents.selectedSubjects.splice(classIndex,1);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
+    resetID: function(oldid, newid) {
+      newid = newid.toString();
+      Vue.set(this.roads, newid, this.roads[oldid]);
+      if(this.activeRoad==oldid) {
+        this.activeRoad = newid;
+      }
+      Vue.delete(this.roads, oldid);
+    },
     getRelevantObjects: function(position) {
       var semesterElem = document.elementFromPoint(position.x,position.y);
       var semesterParent = $(semesterElem).parents(".semester-container");
@@ -334,8 +347,6 @@ export default {
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
     },
     removeReq: function(event) {
-      console.log(event);
-      console.log(this.roads[this.activeRoad].contents.coursesOfStudy);
       var reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
       this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex);
     },
@@ -388,20 +399,15 @@ export default {
       if(this.loggedIn) {
         this.$cookies.set("accessInfo", this.accessInfo);
       }
+      this.$refs.authcomponent.allowCookies();
     },
     changeActiveRoad: function(event) {
       this.activeRoad = event;
     },
     deleteRoad: function(roadID) {
-      console.log("about to delete " + roadID);
-      console.log("active road: " + this.activeRoad);
-      console.log(this.roads);
       Vue.delete(this.roads, roadID);
     },
     setRoad: function(roadID, newRoad) {
-      console.log("setting road");
-      console.log(roadID);
-      console.log(newRoad);
       Vue.set(this.roads, roadID, newRoad);
     },
     setActive: function(roadID) {
@@ -422,9 +428,10 @@ export default {
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
+      console.log("active road changed from " + oldRoad + " to " + newRoad);
       this.justLoaded = false;
       this.duplicateRoadSource = newRoad;
-      if(newRoad != "") {
+      if(newRoad !== "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
         this.updateFulfillment();
       }
