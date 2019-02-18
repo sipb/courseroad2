@@ -20,9 +20,7 @@
       <auth
         ref = "authcomponent"
         v-bind:roads = "roads"
-        v-bind:cookiesAllowed = "cookiesAllowed"
         v-bind:justLoaded = "justLoaded"
-        v-bind:getAgent = "getAgent"
         v-bind:activeRoad = "activeRoad"
         v-bind:conflictInfo = "conflictInfo"
         @delete-road = "deleteRoad"
@@ -31,8 +29,8 @@
         @conflict = "conflict"
         @resolve-conflict = "resolveConflict"
         @set-road-prop = "setRoadProp(...arguments)"
-        @cookies-allowed = "cookiesAllowed = true; setTabID()"
         @reset-id = "resetID(...arguments)"
+        @allow-cookies = "allowCookies"
       >
       </auth>
       <v-spacer></v-spacer>
@@ -108,7 +106,7 @@
     </v-navigation-drawer>
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
-      This site uses cookies to store your data and login information.  Click OK to consent to the use of cookies.
+      This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
       <v-btn small depressed color = "primary" @click = "allowCookies">
         OK
       </v-btn>
@@ -141,7 +139,6 @@ import ConflictDialog from "./components/ConflictDialog.vue"
 import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
-import UAParser from "ua-parser-js"
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
@@ -161,7 +158,6 @@ export default {
     reqList: [],
     dragSemesterNum: -1,
     subjectsLoaded: false,
-    loggedIn: false,
     gettingUserData: false,
     cookieName: "Default Cookie",
     accessInfo: undefined,
@@ -188,7 +184,7 @@ export default {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: "My First Road",
-        agent: this.getAgent(),
+        agent: "",
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: []
@@ -199,8 +195,7 @@ export default {
   computed: {
     roadref: function() {
       return "#road" + this.activeRoad
-    },
-
+    }
   },
   methods: {
     addClass: function(newClass) {
@@ -366,11 +361,6 @@ export default {
       window.location.hash = "#road" + this.activeRoad;
       return false;
     },
-
-    getAgent: function() {
-      var ua = UAParser(navigator.userAgent);
-      return ua.browser.name + " Tab " + this.tabID;
-    },
     addRoad: function(roadName) {
       var tempRoadID = "$" + this.newRoads.length + "$";
       var newContents;
@@ -387,7 +377,7 @@ export default {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: roadName,
-        agent: this.getAgent(),
+        agent: "",
         contents: newContents
       }
       Vue.set(this.roads, tempRoadID, newRoad);
@@ -398,13 +388,6 @@ export default {
 
     setRoadName: function(roadID, roadName) {
       Vue.set(this.roads[roadID], "name", roadName);
-    },
-    allowCookies: function() {
-      this.cookiesAllowed = true;
-      if(this.loggedIn) {
-        this.$cookies.set("accessInfo", this.accessInfo);
-      }
-      this.$refs.authcomponent.allowCookies();
     },
     changeActiveRoad: function(event) {
       this.activeRoad = event;
@@ -429,39 +412,15 @@ export default {
     setRoadProp: function(roadID, roadProp, propValue) {
       Vue.set(this.roads[roadID], roadProp, propValue);
     },
-    setTabID: function() {
-      if(this.cookiesAllowed) {
-        if(sessionStorage.tabID != undefined) {
-          this.tabID = sessionStorage.tabID;
-          if(this.$cookies.isKey("tabs")) {
-            var tabs = JSON.parse(this.$cookies.get("tabs"));
-            if(tabs.indexOf(this.tabID)===-1) {
-              tabs.push(this.tabID);
-              this.$cookies.set("tabs", JSON.stringify(tabs));
-            }
-          } else {
-            this.$cookies.set("tabs", JSON.stringify([this.tabID]));
-          }
-        } else {
-          if(this.$cookies.isKey("tabs") && (tabs = JSON.parse(this.$cookies.get("tabs"))).length) {
-            var maxTab = Math.max(...tabs);
-            var newTab = (maxTab + 1).toString();
-            sessionStorage.tabID = newTab;
-            this.tabID = newTab;
-            tabs.push(newTab);
-            this.$cookies.set("tabs", JSON.stringify(tabs));
-          } else {
-            sessionStorage.tabID = "1";
-            this.tabID = "1";
-            this.$cookies.set("tabs", "[\"1\"]");
-          }
-        }
-      }
+    allowCookies: function() {
+      this.$refs.authcomponent.allowCookies();
+      this.cookiesAllowed = true;
     }
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
+      window.activeRoad = newRoad;
       // console.log("active road changed from " + oldRoad + " to " + newRoad);
       this.justLoaded = false;
       this.duplicateRoadSource = newRoad;
@@ -481,6 +440,8 @@ export default {
     }
   },
   mounted() {
+    window.$refs = this.$refs;
+    window.activeRoad = this.activeRoad;
     var borders = $(".v-navigation-drawer__border")
     var scrollers = $(".scroller")
     var scrollWidth = scrollers.width()
@@ -494,20 +455,6 @@ export default {
       this.setActiveRoad();
     }.bind(this))
 
-    window.onbeforeunload = function() {
-      if(this.cookiesAllowed) {
-        var tabID = sessionStorage.tabID;
-        var tabs = JSON.parse(this.$cookies.get("tabs"));
-        var tabIndex = tabs.indexOf(tabID);
-        tabs.splice(tabIndex, 1);
-        this.$cookies.set("tabs", JSON.stringify(tabs));
-      }
-      if(this.currentlySaving) {
-        return "Are you sure you want to leave?  Your roads are not saved.";
-      } else {
-        return true;
-      }
-    }.bind(this);
     //moves nav drawer border with scroll
     //if the effect proves too annoying we can remove the borders instead
     //(commented out below)

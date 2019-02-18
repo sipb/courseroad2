@@ -23,6 +23,7 @@
 
 <script>
 import Vue from 'vue'
+import UAParser from "ua-parser-js"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
 
 function getQueryObject() {
@@ -39,7 +40,7 @@ function getQueryObject() {
 export default {
   name: "Auth",
   components: {},
-  props: ["roads", "cookiesAllowed", "justLoaded", "getAgent", "activeRoad", "conflictInfo"],
+  props: ["roads", "justLoaded", "activeRoad", "conflictInfo"],
   data: function() {return {
     accessInfo: undefined,
     loggedIn: false,
@@ -47,10 +48,11 @@ export default {
     saveWarnings: [],
     gettingUserData: false,
     currentlySaving: false,
+    authCookiesAllowed: false
   }},
   computed: {
     saveColor: function() {
-      if(!this.cookiesAllowed && !this.loggedIn) {
+      if(!this.authCookiesAllowed && !this.loggedIn) {
         return "gray";
       }
       if(this.saveWarnings.length) {
@@ -189,7 +191,7 @@ export default {
     getAuthorizationToken: function(code) {
       axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
         if(response.data.success) {
-          if(this.cookiesAllowed) {
+          if(this.data.authCookiesAllowed) {
             this.data.$cookies.set("accessInfo", response.data.access_info);
           } else {
             console.log("cookies not allowed; couldn't save")
@@ -286,7 +288,7 @@ export default {
     },
 
     saveLocal: function() {
-      if(this.cookiesAllowed) {
+      if(this.authCookiesAllowed) {
         this.$cookies.set("newRoads", this.getNewRoadData());
       }
       // Vue.set(this.roads[roadID], "downloaded", moment().format(DATE_FORMAT));
@@ -361,18 +363,59 @@ export default {
     },
     allowCookies: function() {
       this.$cookies.set("newRoads",this.getNewRoadData());
+      this.authCookiesAllowed = true;
+      if(this.loggedIn) {
+        this.$cookies.set("accessInfo", this.accessInfo);
+      }
+      this.setTabID();
+    },
+    getAgent: function() {
+      var ua = UAParser(navigator.userAgent);
+      return ua.browser.name + " Tab " + this.tabID;
+    },
+    setTabID: function() {
+      if(this.authCookiesAllowed) {
+        if(sessionStorage.tabID != undefined) {
+          this.tabID = sessionStorage.tabID;
+          if(this.$cookies.isKey("tabs")) {
+            var tabs = JSON.parse(this.$cookies.get("tabs"));
+            if(tabs.indexOf(this.tabID)===-1) {
+              tabs.push(this.tabID);
+              this.$cookies.set("tabs", JSON.stringify(tabs));
+            }
+          } else {
+            this.$cookies.set("tabs", JSON.stringify([this.tabID]));
+          }
+        } else {
+          if(this.$cookies.isKey("tabs") && (tabs = JSON.parse(this.$cookies.get("tabs"))).length) {
+            var maxTab = Math.max(...tabs);
+            var newTab = (maxTab + 1).toString();
+            sessionStorage.tabID = newTab;
+            this.tabID = newTab;
+            tabs.push(newTab);
+            this.$cookies.set("tabs", JSON.stringify(tabs));
+          } else {
+            sessionStorage.tabID = "1";
+            this.tabID = "1";
+            this.$cookies.set("tabs", "[\"1\"]");
+          }
+        }
+      }
     }
   },
   watch: {
-    tabRoad: function(newRoad, oldRoad) {
-      console.log("tab road changed");
+    authCookiesAllowed: function(newCA, oldCA) {
+      if(newCA) {
+        this.$emit("allow-cookies");
+      }
     }
   },
   mounted() {
     // this.$cookies.remove("newRoads");
     if(this.$cookies.isKey("newRoads")) {
       // this.cookiesAllowed = true;
-      this.$emit("cookies-allowed")
+      // this.$emit("allow-cookies")
+      this.authCookiesAllowed = true;
       var newRoads = this.$cookies.get("newRoads");
       if(Object.keys(newRoads).length) {
         if(this.justLoaded) {
@@ -393,15 +436,26 @@ export default {
 
     window.cookies = this.$cookies;
     if(this.$cookies.isKey("accessInfo")) {
-      console.log("has access info");
       this.loggedIn = true;
       // this.cookiesAllowed = true;
-      this.$emit("cookies-allowed");
+      // this.$emit("cookies-allowed");
       this.accessInfo = this.$cookies.get("accessInfo");
+      this.allowCookies();
       this.getUserData();
     }
 
-
+    window.onbeforeunload = function() {
+      if(this.authCookiesAllowed) {
+        var tabID = sessionStorage.tabID;
+        var tabs = JSON.parse(this.$cookies.get("tabs"));
+        var tabIndex = tabs.indexOf(tabID);
+        tabs.splice(tabIndex, 1);
+        this.$cookies.set("tabs", JSON.stringify(tabs));
+      }
+      if(this.currentlySaving) {
+        return "Are you sure you want to leave?  Your roads are not saved.";
+      }
+    }.bind(this);
 
     this.attemptLogin();
 
