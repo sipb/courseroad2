@@ -49,7 +49,7 @@
       app
     >
       <audit
-        v-if = "activeRoad != ''"
+        v-if = "activeRoad !== ''"
         v-bind:reqTrees="reqTrees"
         v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
         v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
@@ -82,7 +82,7 @@
       </v-tabs-items>
 
       <conflict-dialog
-        v-if = "conflictInfo != undefined"
+        v-if = "conflictInfo !== undefined"
         v-bind:conflictInfo = "conflictInfo"
         v-bind:conflictDialog = "conflictDialog"
         v-bind:roads = "roads"
@@ -214,7 +214,7 @@ export default {
     resetID: function(oldid, newid) {
       newid = newid.toString();
       Vue.set(this.roads, newid, this.roads[oldid]);
-      if(this.activeRoad==oldid) {
+      if(this.activeRoad===oldid) {
         this.activeRoad = newid;
       }
       Vue.delete(this.roads, oldid);
@@ -237,14 +237,14 @@ export default {
     classIsOffered: function(semesterObjects, event) {
       if(semesterObjects.semesterParent.length) {
         var semesterID = semesterObjects.semesterParent.attr("id");
-        if(semesterID.split("_")[2]=="semester") {
+        if(semesterID.split("_")[2]==="semester") {
           var semesterNum = parseInt(semesterID.split("_")[3]);
           var semesterType = semesterNum % 2;
           var classInfo = event.classInfo;
-          if(classInfo == undefined) {
+          if(classInfo === undefined) {
             if(this.subjectsLoaded) {
               var filteredSubjects = this.subjectsInfo.filter(function(s) {
-                return s.subject_id == event.basicClass.id
+                return s.subject_id === event.basicClass.id
               });
               if(filteredSubjects.length) {
                 classInfo = filteredSubjects[0];
@@ -274,9 +274,9 @@ export default {
 
           }
           var isOffered;
-          if(classInfo != undefined) {
-            isOffered = (semesterType == 0 && classInfo.offered_fall)
-                            || (semesterType == 1 && classInfo.offered_spring);
+          if(classInfo !== undefined) {
+            isOffered = (semesterType === 0 && classInfo.offered_fall)
+                            || (semesterType === 1 && classInfo.offered_spring);
           }
           return {
             isOffered: isOffered,
@@ -313,7 +313,7 @@ export default {
     testClass: function(event) {
       var semesterObjects = this.getRelevantObjects(event.drag);
       var semInfo = this.classIsOffered(semesterObjects, event);
-      if(semInfo.isOffered != undefined) {
+      if(semInfo.isOffered !== undefined) {
         if (!semInfo.isOffered) {
           semesterObjects.semesterBox.removeClass("grey");
           semesterObjects.semesterBox.addClass("red");
@@ -322,12 +322,12 @@ export default {
           semesterObjects.semesterBox.addClass("green");
         }
       }
-      if(this.dragSemesterNum != semInfo.semesterNum && this.dragSemesterNum != -1) {
+      if(this.dragSemesterNum !== semInfo.semesterNum && this.dragSemesterNum != -1) {
         var lastSemester = $("#road_"+$.escapeSelector(this.activeRoad)+"_semester_" + this.dragSemesterNum);
         var lastSemesterBox = lastSemester.find(".semester-drop-container");
         this.resetSemesterBox(lastSemesterBox)
       }
-      if(semInfo.semesterNum != undefined) {
+      if(semInfo.semesterNum !== undefined) {
         this.dragSemesterNum = semInfo.semesterNum;
       }
     },
@@ -351,7 +351,7 @@ export default {
     },
     setActiveRoad: function() {
       var roadHash = window.location.hash;
-      if(roadHash.length&&roadHash.substring(0,5)=="#road") {
+      if(roadHash.length&&roadHash.substring(0,5)==="#road") {
         var roadRequested = roadHash.substring(5);
         if(roadRequested in this.roads) {
           this.activeRoad = roadHash.substring(5);

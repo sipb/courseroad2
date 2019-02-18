@@ -6,7 +6,7 @@
     <v-btn v-if = "loggedIn" outline round color = "primary" @click = "logoutUser">
       Logout
     </v-btn>
-    <v-tooltip bottom :disabled = "saveWarnings.length==0">
+    <v-tooltip bottom :disabled = "saveWarnings.length===0">
       <v-icon slot = "activator" v-if = "!currentlySaving && !gettingUserData" :color = "saveColor">
         {{saveIcon}}
       </v-icon>
@@ -81,7 +81,7 @@ export default {
     },
 
     doSecure: function(axiosFunc, link, params) {
-      if(this.loggedIn && this.accessInfo != undefined) {
+      if(this.loggedIn && this.accessInfo !== undefined) {
         // var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
         var CORS_LINK = '';
         var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
@@ -92,7 +92,7 @@ export default {
         return axios.get(CORS_LINK+FIREROAD_LINK+"/verify/", headerList)
         .then(function(verifyResponse){
           if(verifyResponse.data.success) {
-            if(params==false) {
+            if(params===false) {
               return axiosFunc(CORS_LINK+FIREROAD_LINK+link,headerList);
             } else {
               return axiosFunc(CORS_LINK+FIREROAD_LINK+link,params,headerList);
@@ -119,7 +119,7 @@ export default {
       this.gettingUserData = true;
       this.getSecure("/sync/roads/")
       .then(function(response) {
-        if(response.status == 200 && response.data.success) {
+        if(response.status === 200 && response.data.success) {
           return Object.keys(response.data.files)
         } else {
           return Promise.reject();
@@ -131,14 +131,14 @@ export default {
           }.bind(this));
           return Promise.all(fileLinks).then((fl) => [fileKeys, fl]);
       }.bind(this)).then(function([roadIDs,roadData]) {
-        if(roadData != undefined) {
+        if(roadData !== undefined) {
           this.renumberRoads(roadData);
           if(this.justLoaded) {
             // Vue.delete(this.roads, "$defaultroad$");
             this.$emit("delete-road", "$defaultroad$")
           }
           for(var r = 0; r < roadIDs.length; r++) {
-            if(roadData[r].status==200 && roadData[r].data.success) {
+            if(roadData[r].status===200 && roadData[r].data.success) {
               roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
               roadData[r].data.file.changed = moment().format(DATE_FORMAT);
               this.$emit("set-road", roadIDs[r], roadData[r].data.file);
@@ -152,7 +152,7 @@ export default {
       }.bind(this)).catch(function(err) {
         alert(err);
         this.gettingUserData = false;
-        if(err=="Token not valid") {
+        if(err==="Token not valid") {
           alert("Your token has expired.  Please log in again.");
         }
         this.logoutUser();
@@ -162,9 +162,9 @@ export default {
     renumber: function(name, otherNames) {
       var newName = undefined;
       var copyIndex = 2;
-      while(newName == undefined) {
+      while(newName === undefined) {
         var copyName = name + " ("+copyIndex+")";
-        if(otherNames.indexOf(copyName)==-1) {
+        if(otherNames.indexOf(copyName)===-1) {
           newName = copyName;
         }
         copyIndex++;
@@ -233,21 +233,21 @@ export default {
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
           // console.log(response);
-          if(response.status!=200) {
+          if(response.status!==200) {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {
-            var newid = (response.data.id!=undefined ? response.data.id : this.oldid);
-            if(response.data.success == false) {
+            var newid = (response.data.id!==undefined ? response.data.id : this.oldid);
+            if(response.data.success === false) {
               this.data.saveWarnings.push({id: newid, error: response.data.error_msg, name: this.data.roads[this.oldid].name});
             }
-            if(response.data.result == "conflict") {
+            if(response.data.result === "conflict") {
               // this.conflictDialog = true;
               var conflictInfo = {id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date:response.data.other_date, other_contents: response.data.other_contents, this_agent:response.data.this_agent, this_date:response.data.this_date};
               // console.log(conflictInfo);
               // console.log(response.data);
               this.data.$emit("conflict", conflictInfo);
             } else {
-              if(response.data.id != undefined) {
+              if(response.data.id !== undefined) {
                 //note: code moved to app.vue for reset id
                 //this is to fix a problem where the activeroad gets reset to the first one
                 //i suspect this is because the three events required were not happening
@@ -270,7 +270,7 @@ export default {
         // console.log(saveResults.map((sr)=>"Saved road " + sr.oldid + (sr.state=="changed" ? (" as " + sr.newid) : "")));
         for(var s = 0; s < saveResults.length; s++) {
           var savedResult = saveResults[s];
-          if(savedResult.state == "changed") {
+          if(savedResult.state === "changed") {
             var oldIdIndex = this.newRoads.indexOf(savedResult.oldid);
             if(oldIdIndex>=0) {
               this.newRoads.splice(oldIdIndex);
@@ -331,7 +331,7 @@ export default {
     },
 
     deleteRoad: function(roadID) {
-      if(this.activeRoad == roadID) {
+      if(this.activeRoad === roadID) {
         var roadIndex = Object.keys(this.roads).indexOf(roadID);
         var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
         if(withoutRoad.length) {
@@ -375,7 +375,7 @@ export default {
     },
     setTabID: function() {
       if(this.authCookiesAllowed) {
-        if(sessionStorage.tabID != undefined) {
+        if(sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
           if(this.$cookies.isKey("tabs")) {
             var tabs = JSON.parse(this.$cookies.get("tabs"));
