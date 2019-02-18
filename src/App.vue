@@ -31,7 +31,7 @@
         @conflict = "conflict"
         @resolve-conflict = "resolveConflict"
         @set-road-prop = "setRoadProp(...arguments)"
-        @cookies-allowed = "cookiesAllowed = true"
+        @cookies-allowed = "cookiesAllowed = true; setTabID()"
         @reset-id = "resetID(...arguments)"
       >
       </auth>
@@ -141,6 +141,7 @@ import ConflictDialog from "./components/ConflictDialog.vue"
 import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
+import UAParser from "ua-parser-js"
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
@@ -177,6 +178,7 @@ export default {
     conflictDialog: false,
     conflictInfo: undefined,
     cookiesAllowed: false,
+    tabID: Math.floor(Math.random()*16**10).toString(16),
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -366,10 +368,16 @@ export default {
     },
 
     getAgent: function() {
+      var ua = UAParser(navigator.userAgent);
+      // console.log(ua.getBrowser());
       //using random number to test conflicts
       //only generates conflicts if the agent is different
-      console.log(Math.floor(Math.random()*100000).toString());
-      return navigator.platform + Math.floor(Math.random()*100000).toString()
+      // console.log(Math.floor(Math.random()*100000).toString());
+      // return navigator.platform + Math.floor(Math.random()*100000).toString()
+      // console.log(ua.browser.name + " Tab " + this.tabID);
+      console.log(this.$cookies.get("tabs"));
+      console.log(this.$cookies.get("tabCount"));
+      return ua.browser.name + " Tab " + this.tabID;
     },
     addRoad: function(roadName) {
       var tempRoadID = "$" + this.newRoads.length + "$";
@@ -428,6 +436,53 @@ export default {
     },
     setRoadProp: function(roadID, roadProp, propValue) {
       Vue.set(this.roads[roadID], roadProp, propValue);
+    },
+    setTabID: function() {
+      console.log("setting tab ID");
+      if(this.cookiesAllowed) {
+        if(sessionStorage.tabID != undefined) {
+          console.log("already had tab id");
+          this.tabID = sessionStorage.tabID;
+          var tabs = JSON.parse(this.$cookies.get("tabs"));
+          var tabCount = this.$cookies.get("tabCount");
+          if(!(this.tabID in tabs)) {
+            tabs.push(this.tabID);
+            this.$cookies.set("tabs", JSON.stringify(tabs));
+          }
+          if(this.tabID > tabCount) {
+            this.$cookies.set("tabCount", this.tabID);
+          }
+        } else {
+          console.log("did not already have");
+          if(this.$cookies.isKey("tabCount")) {
+            console.log("has tab count");
+            var numTabs = this.$cookies.get("tabCount");
+            console.log(numTabs);
+            numTabs++;
+            this.$cookies.set("tabCount", numTabs);
+            this.tabID = numTabs;
+            sessionStorage.tabID = this.tabID;
+            if(this.$cookies.isKey("tabs")) {
+              console.log("has tabs");
+              var tabs = JSON.parse(this.$cookies.get("tabs"));
+              console.log(tabs);
+              tabs.push(numTabs.toString());
+              console.log(tabs);
+              this.$cookies.set("tabs", JSON.stringify(tabs));
+            } else {
+              console.log("doesn't have tabs");
+              this.$cookies.set("tabs", JSON.stringify([numTabs]));
+            }
+          } else {
+            console.log("doesn't have tab count");
+            console.log("setting to 1");
+            this.tabID = 1;
+            sessionStorage.tabID = this.tabID;
+            this.$cookies.set("tabCount", "1");
+            this.$cookies.set("tabs", "[\"1\"]");
+          }
+        }
+      }
     }
   },
   watch: {
@@ -464,6 +519,31 @@ export default {
     $(window).on("hashchange", function() {
       this.setActiveRoad();
     }.bind(this))
+
+    window.onbeforeunload = function() {
+      if(this.cookiesAllowed) {
+        console.log("unloading")
+        var tabID = sessionStorage.tabID;
+        var tabs = JSON.parse(this.$cookies.get("tabs"));
+        console.log(tabs);
+        var tabIndex = tabs.indexOf(tabID);
+        tabs.splice(tabIndex, 1);
+        console.log(tabs);
+        this.$cookies.set("tabs", JSON.stringify(tabs));
+        var tabCount = this.$cookies.get("tabCount");
+        if(tabID == tabCount) {
+          console.log("changing tab count");
+          if(tabCount > 1 && tabs.length > 1) {
+            var maxTab = Math.max(...tabs).toString();
+            this.$cookies.set("tabCount", maxTab);
+          } else {
+            this.$cookies.remove("tabCount");
+          }
+        }
+      }
+      // return true;
+      return "You sure?";
+    }.bind(this);
     //moves nav drawer border with scroll
     //if the effect proves too annoying we can remove the borders instead
     //(commented out below)

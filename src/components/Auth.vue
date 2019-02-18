@@ -225,7 +225,7 @@ export default {
         }
         var newRoad = Object.assign(this.roads[roadID], assignKeys);
         // newRoad.agent = this.getAgent();
-        console.log(newRoad);
+        // console.log(newRoad);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
           // console.log(response);
@@ -240,7 +240,7 @@ export default {
               // this.conflictDialog = true;
               var conflictInfo = {id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date:response.data.other_date, other_contents: response.data.other_contents, this_agent:response.data.this_agent, this_date:response.data.this_date};
               // console.log(conflictInfo);
-              console.log(response.data);
+              // console.log(response.data);
               this.data.$emit("conflict", conflictInfo);
             } else {
               if(response.data.id != undefined) {
@@ -301,7 +301,7 @@ export default {
       return newRoadData;
     },
     updateRemote: function(roadID) {
-      console.log("update remote");
+      // console.log("update remote");
       var newRoad = Object.assign({id: roadID, override: true, agent: this.getAgent()}, this.roads[roadID]);
       this.postSecure("/sync/sync_road/",newRoad)
       .then(function(response) {
@@ -315,7 +315,7 @@ export default {
     },
 
     updateLocal: function(roadID) {
-      console.log("update local");
+      // console.log("update local");
       Vue.set(this.roads[roadID], "name", this.conflictInfo.other_name);
       Vue.set(this.roads[roadID], "agent", this.conflictInfo.other_agent);
       Vue.set(this.roads[roadID], "changed_date", this.conflictInfo.other_date);
@@ -368,14 +368,6 @@ export default {
   },
   mounted() {
     // this.$cookies.remove("newRoads");
-    if(this.$cookies.isKey("accessInfo")) {
-      this.loggedIn = true;
-      // this.cookiesAllowed = true;
-      this.$emit("cookies-allowed");
-      this.accessInfo = this.$cookies.get("accessInfo");
-      this.getUserData();
-    }
-
     if(this.$cookies.isKey("newRoads")) {
       // this.cookiesAllowed = true;
       this.$emit("cookies-allowed")
@@ -396,6 +388,18 @@ export default {
       }
 
     }
+
+    window.cookies = this.$cookies;
+    if(this.$cookies.isKey("accessInfo")) {
+      console.log("has access info");
+      this.loggedIn = true;
+      // this.cookiesAllowed = true;
+      this.$emit("cookies-allowed");
+      this.accessInfo = this.$cookies.get("accessInfo");
+      this.getUserData();
+    }
+
+
 
     this.attemptLogin();
 
