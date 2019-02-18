@@ -191,6 +191,8 @@ export default {
         if(response.data.success) {
           if(this.cookiesAllowed) {
             this.data.$cookies.set("accessInfo", response.data.access_info);
+          } else {
+            console.log("cookies not allowed; couldn't save")
           }
           this.data.accessInfo = response.data.access_info;
           this.data.loggedIn = true;

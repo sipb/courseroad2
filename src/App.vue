@@ -369,14 +369,6 @@ export default {
 
     getAgent: function() {
       var ua = UAParser(navigator.userAgent);
-      // console.log(ua.getBrowser());
-      //using random number to test conflicts
-      //only generates conflicts if the agent is different
-      // console.log(Math.floor(Math.random()*100000).toString());
-      // return navigator.platform + Math.floor(Math.random()*100000).toString()
-      // console.log(ua.browser.name + " Tab " + this.tabID);
-      console.log(this.$cookies.get("tabs"));
-      console.log(this.$cookies.get("tabCount"));
       return ua.browser.name + " Tab " + this.tabID;
     },
     addRoad: function(roadName) {
@@ -438,47 +430,29 @@ export default {
       Vue.set(this.roads[roadID], roadProp, propValue);
     },
     setTabID: function() {
-      console.log("setting tab ID");
       if(this.cookiesAllowed) {
         if(sessionStorage.tabID != undefined) {
-          console.log("already had tab id");
           this.tabID = sessionStorage.tabID;
-          var tabs = JSON.parse(this.$cookies.get("tabs"));
-          var tabCount = this.$cookies.get("tabCount");
-          if(!(this.tabID in tabs)) {
-            tabs.push(this.tabID);
-            this.$cookies.set("tabs", JSON.stringify(tabs));
-          }
-          if(this.tabID > tabCount) {
-            this.$cookies.set("tabCount", this.tabID);
-          }
-        } else {
-          console.log("did not already have");
-          if(this.$cookies.isKey("tabCount")) {
-            console.log("has tab count");
-            var numTabs = this.$cookies.get("tabCount");
-            console.log(numTabs);
-            numTabs++;
-            this.$cookies.set("tabCount", numTabs);
-            this.tabID = numTabs;
-            sessionStorage.tabID = this.tabID;
-            if(this.$cookies.isKey("tabs")) {
-              console.log("has tabs");
-              var tabs = JSON.parse(this.$cookies.get("tabs"));
-              console.log(tabs);
-              tabs.push(numTabs.toString());
-              console.log(tabs);
+          if(this.$cookies.isKey("tabs")) {
+            var tabs = JSON.parse(this.$cookies.get("tabs"));
+            if(tabs.indexOf(this.tabID)===-1) {
+              tabs.push(this.tabID);
               this.$cookies.set("tabs", JSON.stringify(tabs));
-            } else {
-              console.log("doesn't have tabs");
-              this.$cookies.set("tabs", JSON.stringify([numTabs]));
             }
           } else {
-            console.log("doesn't have tab count");
-            console.log("setting to 1");
-            this.tabID = 1;
-            sessionStorage.tabID = this.tabID;
-            this.$cookies.set("tabCount", "1");
+            this.$cookies.set("tabs", JSON.stringify([this.tabID]));
+          }
+        } else {
+          if(this.$cookies.isKey("tabs") && (tabs = JSON.parse(this.$cookies.get("tabs"))).length) {
+            var maxTab = Math.max(...tabs);
+            var newTab = (maxTab + 1).toString();
+            sessionStorage.tabID = newTab;
+            this.tabID = newTab;
+            tabs.push(newTab);
+            this.$cookies.set("tabs", JSON.stringify(tabs));
+          } else {
+            sessionStorage.tabID = "1";
+            this.tabID = "1";
             this.$cookies.set("tabs", "[\"1\"]");
           }
         }
@@ -488,7 +462,7 @@ export default {
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
-      console.log("active road changed from " + oldRoad + " to " + newRoad);
+      // console.log("active road changed from " + oldRoad + " to " + newRoad);
       this.justLoaded = false;
       this.duplicateRoadSource = newRoad;
       if(newRoad !== "") {
@@ -522,27 +496,17 @@ export default {
 
     window.onbeforeunload = function() {
       if(this.cookiesAllowed) {
-        console.log("unloading")
         var tabID = sessionStorage.tabID;
         var tabs = JSON.parse(this.$cookies.get("tabs"));
-        console.log(tabs);
         var tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
-        console.log(tabs);
         this.$cookies.set("tabs", JSON.stringify(tabs));
-        var tabCount = this.$cookies.get("tabCount");
-        if(tabID == tabCount) {
-          console.log("changing tab count");
-          if(tabCount > 1 && tabs.length > 1) {
-            var maxTab = Math.max(...tabs).toString();
-            this.$cookies.set("tabCount", maxTab);
-          } else {
-            this.$cookies.remove("tabCount");
-          }
-        }
       }
-      // return true;
-      return "You sure?";
+      if(this.currentlySaving) {
+        return "Are you sure you want to leave?  Your roads are not saved.";
+      } else {
+        return true;
+      }
     }.bind(this);
     //moves nav drawer border with scroll
     //if the effect proves too annoying we can remove the borders instead
