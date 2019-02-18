@@ -366,7 +366,7 @@ export default {
     },
 
     getAgent: function() {
-      //using random number to test conflicts 
+      //using random number to test conflicts
       //only generates conflicts if the agent is different
       console.log(Math.floor(Math.random()*100000).toString());
       return navigator.platform + Math.floor(Math.random()*100000).toString()

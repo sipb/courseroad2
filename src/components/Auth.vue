@@ -223,8 +223,8 @@ export default {
         if(!roadID.includes("$")) {
           assignKeys.id = roadID
         }
-        var newRoad = Object.assign(assignKeys, this.roads[roadID]);
-        newRoad.agent = this.getAgent();
+        var newRoad = Object.assign(this.roads[roadID], assignKeys);
+        // newRoad.agent = this.getAgent();
         console.log(newRoad);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
