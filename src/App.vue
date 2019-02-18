@@ -24,6 +24,7 @@
         v-bind:justLoaded = "justLoaded"
         v-bind:getAgent = "getAgent"
         v-bind:activeRoad = "activeRoad"
+        v-bind:conflictInfo = "conflictInfo"
         @delete-road = "deleteRoad"
         @set-road = "setRoad(...arguments)"
         @set-active = "setActive"
@@ -86,8 +87,9 @@
         v-if = "conflictInfo != undefined"
         v-bind:conflictInfo = "conflictInfo"
         v-bind:conflictDialog = "conflictDialog"
-        @update-local = "updateLocal"
-        @update-remote = "updateRemote"
+        v-bind:roads = "roads"
+        @update-local = "$refs.authcomponent.updateLocal"
+        @update-remote = "$refs.authcomponent.updateRemote"
       >
       </conflict-dialog>
 
@@ -364,7 +366,10 @@ export default {
     },
 
     getAgent: function() {
-      return navigator.platform;
+      //using random number to test conflicts 
+      //only generates conflicts if the agent is different
+      console.log(Math.floor(Math.random()*100000).toString());
+      return navigator.platform + Math.floor(Math.random()*100000).toString()
     },
     addRoad: function(roadName) {
       var tempRoadID = "$" + this.newRoads.length + "$";
@@ -418,8 +423,8 @@ export default {
       this.conflictInfo = conflictInfo;
     },
     resolveConflict: function() {
+      this.conflictInfo = undefined;
       this.conflictDialog = false;
-      this.conflictInfo = {};
     },
     setRoadProp: function(roadID, roadProp, propValue) {
       Vue.set(this.roads[roadID], roadProp, propValue);

@@ -39,7 +39,7 @@ function getQueryObject() {
 export default {
   name: "Auth",
   components: {},
-  props: ["roads", "cookiesAllowed", "justLoaded", "getAgent", "activeRoad"],
+  props: ["roads", "cookiesAllowed", "justLoaded", "getAgent", "activeRoad", "conflictInfo"],
   data: function() {return {
     accessInfo: undefined,
     loggedIn: false,
@@ -224,6 +224,8 @@ export default {
           assignKeys.id = roadID
         }
         var newRoad = Object.assign(assignKeys, this.roads[roadID]);
+        newRoad.agent = this.getAgent();
+        console.log(newRoad);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
           // console.log(response);
@@ -237,6 +239,8 @@ export default {
             if(response.data.result == "conflict") {
               // this.conflictDialog = true;
               var conflictInfo = {id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date:response.data.other_date, other_contents: response.data.other_contents, this_agent:response.data.this_agent, this_date:response.data.this_date};
+              // console.log(conflictInfo);
+              console.log(response.data);
               this.data.$emit("conflict", conflictInfo);
             } else {
               if(response.data.id != undefined) {
@@ -297,6 +301,7 @@ export default {
       return newRoadData;
     },
     updateRemote: function(roadID) {
+      console.log("update remote");
       var newRoad = Object.assign({id: roadID, override: true, agent: this.getAgent()}, this.roads[roadID]);
       this.postSecure("/sync/sync_road/",newRoad)
       .then(function(response) {
@@ -310,6 +315,7 @@ export default {
     },
 
     updateLocal: function(roadID) {
+      console.log("update local");
       Vue.set(this.roads[roadID], "name", this.conflictInfo.other_name);
       Vue.set(this.roads[roadID], "agent", this.conflictInfo.other_agent);
       Vue.set(this.roads[roadID], "changed_date", this.conflictInfo.other_date);
