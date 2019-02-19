@@ -133,10 +133,13 @@ export default {
       }.bind(this)).then(function([roadIDs,roadData]) {
         if(roadData !== undefined) {
           this.renumberRoads(roadData);
-          if(this.justLoaded) {
-            // Vue.delete(this.roads, "$defaultroad$");
-            this.$emit("delete-road", "$defaultroad$")
-          }
+          // if(this.justLoaded) {
+          //   console.log("just loaded");
+          //   // Vue.delete(this.roads, "$defaultroad$");
+          //   this.$emit("delete-road", "$defaultroad$")
+          // } else {
+          //   console.log("not just loaded");
+          // }
           for(var r = 0; r < roadIDs.length; r++) {
             if(roadData[r].status===200 && roadData[r].data.success) {
               roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
@@ -296,6 +299,11 @@ export default {
     },
     getNewRoadData: function() {
       var newRoadData = {};
+      if(this.newRoads.indexOf("$defaultroad$") === -1 && "$defaultroad$" in this.roads) {
+        if(this.roads["$defaultroad$"].contents.selectedSubjects.length > 0 || JSON.stringify(Array.from(this.roads["$defaultroad$"].contents.coursesOfStudy)) !== "[\"girs\"]") {
+          this.newRoads.push("$defaultroad$");
+        }
+      }
       for (var r=0; r < this.newRoads.length; r++) {
         var roadID = this.newRoads[r];
         if(roadID in this.roads) {

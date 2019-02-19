@@ -25,6 +25,7 @@
         v-bind:conflictInfo = "conflictInfo"
         @delete-road = "deleteRoad"
         @set-road = "setRoad(...arguments)"
+        @set-roads = "roads = $event"
         @set-active = "setActive"
         @conflict = "conflict"
         @resolve-conflict = "resolveConflict"
@@ -166,7 +167,7 @@ export default {
     leftDrawer: true,
     rightDrawer: true,
     activeRoad: "$defaultroad$",
-    newRoads: ["$defaultroad$"],
+    // newRoads: ["$defaultroad$"],
     newRoadName: "",
     justLoaded: true,
     currentlySaving: false,
@@ -362,7 +363,7 @@ export default {
       return false;
     },
     addRoad: function(roadName) {
-      var tempRoadID = "$" + this.newRoads.length + "$";
+      var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
       var newContents;
       if(!this.duplicateRoad) {
         newContents = {
@@ -381,7 +382,7 @@ export default {
         contents: newContents
       }
       Vue.set(this.roads, tempRoadID, newRoad);
-      this.newRoads.push(tempRoadID);
+      this.$refs.authcomponent.newRoads.push(tempRoadID);
       this.activeRoad = tempRoadID;
     },
 
@@ -423,6 +424,7 @@ export default {
       window.activeRoad = newRoad;
       // console.log("active road changed from " + oldRoad + " to " + newRoad);
       this.justLoaded = false;
+      console.log("just loaded false");
       this.duplicateRoadSource = newRoad;
       if(newRoad !== "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
@@ -431,6 +433,8 @@ export default {
     },
     roads: {
       handler: function(newRoads,oldRoads) {
+        this.justLoaded = false;
+        console.log("just loaded false");
         if(this.activeRoad != "") {
           this.updateFulfillment();
         }
