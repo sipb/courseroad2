@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model = "conflictDialog">
+  <v-dialog v-model = "localConflictDialog">
     <v-card>
       <v-card-title>Save Conflict</v-card-title>
       <v-layout row>
@@ -40,6 +40,14 @@
 <script>
 export default {
   name: "ConflictDialog",
-  props: ["conflictDialog", "conflictInfo", "roads"]
+  props: ["conflictDialog", "conflictInfo", "roads"],
+  data: function() { return {
+    localConflictDialog: false
+  }},
+  watch: {
+    conflictDialog: function(newcd, oldcd) {
+      localConflictDialog = newcd;
+    }
+  }
 }
 </script>
