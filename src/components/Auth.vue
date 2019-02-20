@@ -48,7 +48,8 @@ export default {
     saveWarnings: [],
     gettingUserData: false,
     currentlySaving: false,
-    authCookiesAllowed: false
+    authCookiesAllowed: false,
+    tabID: Math.floor(Math.random()*16**10).toString(16)
   }},
   computed: {
     saveColor: function() {
@@ -375,7 +376,7 @@ export default {
     },
     getAgent: function() {
       var ua = UAParser(navigator.userAgent);
-      return ua.browser.name + " Tab " + this.tabID;
+      return navigator.platform + " " + ua.browser.name + " Tab " + this.tabID;
     },
     setTabID: function() {
       if(this.authCookiesAllowed) {

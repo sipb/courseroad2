@@ -175,7 +175,7 @@ export default {
     conflictDialog: false,
     conflictInfo: undefined,
     cookiesAllowed: false,
-    tabID: Math.floor(Math.random()*16**10).toString(16),
+    
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
