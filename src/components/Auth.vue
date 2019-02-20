@@ -270,7 +270,7 @@ export default {
           if(savedResult.state === "changed") {
             var oldIdIndex = this.newRoads.indexOf(savedResult.oldid);
             if(oldIdIndex>=0) {
-              this.newRoads.splice(oldIdIndex);
+              this.newRoads.splice(oldIdIndex,1);
             }
           }
         }
@@ -356,7 +356,7 @@ export default {
 
       if(roadID in this.newRoads) {
         roadIndex = this.newRoads.indexOf(roadID);
-        this.newRoads.splice(roadID);
+        this.newRoads.splice(roadID,1);
       }
 
       if(this.loggedIn) {

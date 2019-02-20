@@ -348,7 +348,7 @@ export default {
     },
     removeReq: function(event) {
       var reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
-      this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex);
+      this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex,1);
     },
     setActiveRoad: function() {
       var roadHash = window.location.hash;
