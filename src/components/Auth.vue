@@ -133,13 +133,9 @@ export default {
       }.bind(this)).then(function([roadIDs,roadData]) {
         if(roadData !== undefined) {
           this.renumberRoads(roadData);
-          // if(this.justLoaded) {
-          //   console.log("just loaded");
-          //   // Vue.delete(this.roads, "$defaultroad$");
-          //   this.$emit("delete-road", "$defaultroad$")
-          // } else {
-          //   console.log("not just loaded");
-          // }
+          if(this.justLoaded) {
+            Vue.delete(this.roads, "$defaultroad$");
+          }
           for(var r = 0; r < roadIDs.length; r++) {
             if(roadData[r].status===200 && roadData[r].data.success) {
               roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
@@ -196,8 +192,6 @@ export default {
         if(response.data.success) {
           if(this.data.authCookiesAllowed) {
             this.data.$cookies.set("accessInfo", response.data.access_info);
-          } else {
-            console.log("cookies not allowed; couldn't save")
           }
           this.data.accessInfo = response.data.access_info;
           this.data.loggedIn = true;
@@ -291,9 +285,11 @@ export default {
     },
 
     saveLocal: function() {
+      this.currentlySaving = true;
       if(this.authCookiesAllowed) {
         this.$cookies.set("newRoads", this.getNewRoadData());
       }
+      this.currentlySaving = false;
       // Vue.set(this.roads[roadID], "downloaded", moment().format(DATE_FORMAT));
       // this.$emit("set-road-prop", roadID, "downloaded", moment().format(DATE_FORMAT));
     },
