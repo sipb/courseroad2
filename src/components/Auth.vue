@@ -132,7 +132,6 @@ export default {
         if(roadData !== undefined) {
           this.renumberRoads(roadData);
           if(this.justLoaded) {
-            console.log("delete $defaultroad$");
             Vue.delete(this.roads, "$defaultroad$");
           }
           for(var r = 0; r < roadIDs.length; r++) {
@@ -240,7 +239,9 @@ export default {
                 //this is to fix a problem where the activeroad gets reset to the first one
                 //i suspect this is because the three events required were not happening
                 //in the correct order or something
-                this.data.$emit("reset-id", this.oldid, response.data.id);
+                if(this.oldid != response.data.id) {
+                  this.data.$emit("reset-id", this.oldid, response.data.id);
+                }
                 return Promise.resolve({oldid: this.oldid, newid: response.data.id, state: "changed"});
               } else {
                 return Promise.resolve({oldid: this.oldid, newid: this.oldid, state: "same"});
@@ -272,7 +273,6 @@ export default {
         this.currentlySaving = false;
       }.bind(this));
     },
-
     saveLocal: function() {
       this.currentlySaving = true;
       if(this.authCookiesAllowed) {
@@ -319,7 +319,6 @@ export default {
     },
 
     deleteRoad: function(roadID) {
-      console.log("deleting road " + roadID);
       if(this.activeRoad === roadID) {
         var roadIndex = Object.keys(this.roads).indexOf(roadID);
         var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
@@ -342,7 +341,6 @@ export default {
 
       if(this.loggedIn) {
         if(roadID.indexOf("$")<0) {
-          console.log("deleting on server");
           this.postSecure("/sync/delete_road/",{id: roadID});
         }
       }
