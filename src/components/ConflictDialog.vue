@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model = "localConflictDialog">
+  <v-dialog v-model = "conflictDialog" v-if = "conflictInfo != undefined">
     <v-card>
       <v-card-title>Save Conflict</v-card-title>
       <v-layout row>
@@ -40,13 +40,22 @@
 <script>
 export default {
   name: "ConflictDialog",
-  props: ["conflictDialog", "conflictInfo", "roads"],
+  props: ["conflictInfo", "roads"],
   data: function() { return {
-    localConflictDialog: false
+    conflictDialog: false
   }},
   watch: {
-    conflictDialog: function(newcd, oldcd) {
-      localConflictDialog = newcd;
+    // conflictDialog: function(newcd, oldcd) {
+    //   console.log("conflict dialog changed")
+    //   localConflictDialog = newcd;
+    // }
+  },
+  methods: {
+    startConflict: function() {
+      this.conflictDialog = true;
+    },
+    resolveConflict: function() {
+      this.conflictDialog = false;
     }
   }
 }

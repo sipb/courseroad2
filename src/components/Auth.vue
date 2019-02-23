@@ -310,8 +310,7 @@ export default {
       return newRoadData;
     },
     updateRemote: function(roadID) {
-      // console.log("update remote");
-      var newRoad = Object.assign({id: roadID, override: true, agent: this.getAgent()}, this.roads[roadID]);
+      var newRoad = Object.assign(this.roads[roadID],{id: roadID, override: true, agent: this.getAgent()});
       this.postSecure("/sync/sync_road/",newRoad)
       .then(function(response) {
         if(!response.data.success) {
@@ -319,20 +318,15 @@ export default {
         }
       })
       this.$emit("resolve-conflict");
-      // this.conflictInfo = {};
-      // this.conflictDialog = false;
     },
 
     updateLocal: function(roadID) {
-      // console.log("update local");
       Vue.set(this.roads[roadID], "name", this.conflictInfo.other_name);
       Vue.set(this.roads[roadID], "agent", this.conflictInfo.other_agent);
       Vue.set(this.roads[roadID], "changed_date", this.conflictInfo.other_date);
       Vue.set(this.roads[roadID], "contents", this.conflictInfo.other_contents)
       Vue.set(this.roads[roadID], "downloaded", moment().format(DATE_FORMAT));
       this.$emit("resolve-conflict")
-      // this.conflictInfo = {};
-      // this.conflictDialog = false;
     },
 
     deleteRoad: function(roadID) {
@@ -341,18 +335,14 @@ export default {
         var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
         if(withoutRoad.length) {
           if(withoutRoad.length>roadIndex) {
-            // this.activeRoad = withoutRoad[roadIndex];
             this.$emit("set-active", withoutRoad[roadIndex]);
           } else {
-            // this.activeRoad = withoutRoad[roadIndex-1];
             this.$emit("set-active", withoutRoad[roadIndex-1]);
           }
         } else {
           this.$emit("set-active", "");
-          // this.activeRoad = "";
         }
       }
-      // Vue.delete(this.roads, roadID);
       this.$emit("delete-road", roadID);
 
       if(roadID in this.newRoads) {

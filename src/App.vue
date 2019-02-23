@@ -83,12 +83,12 @@
       </v-tabs-items>
 
       <conflict-dialog
-        v-if = "conflictInfo !== undefined"
+        ref = "conflictdialog"
         v-bind:conflictInfo = "conflictInfo"
         v-bind:conflictDialog = "conflictDialog"
         v-bind:roads = "roads"
-        @update-local = "$refs.authcomponent.updateLocal"
-        @update-remote = "$refs.authcomponent.updateRemote"
+        @update-local = "updateLocal"
+        @update-remote = "updateRemote"
       >
       </conflict-dialog>
 
@@ -175,7 +175,7 @@ export default {
     conflictDialog: false,
     conflictInfo: undefined,
     cookiesAllowed: false,
-    
+
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -403,12 +403,12 @@ export default {
       this.activeRoad = roadID;
     },
     conflict: function(conflictInfo) {
-      this.conflictDialog = true;
+      this.$refs.conflictdialog.startConflict();
       this.conflictInfo = conflictInfo;
     },
     resolveConflict: function() {
+      this.$refs.conflictdialog.resolveConflict();
       this.conflictInfo = undefined;
-      this.conflictDialog = false;
     },
     setRoadProp: function(roadID, roadProp, propValue) {
       Vue.set(this.roads[roadID], roadProp, propValue);
@@ -416,15 +416,19 @@ export default {
     allowCookies: function() {
       this.$refs.authcomponent.allowCookies();
       this.cookiesAllowed = true;
+    },
+    updateLocal: function(id) {
+      this.$refs.authcomponent.updateLocal(id);
+    },
+    updateRemote: function(id) {
+      this.$refs.authcomponent.updateRemote(id);
     }
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
       window.activeRoad = newRoad;
-      // console.log("active road changed from " + oldRoad + " to " + newRoad);
       this.justLoaded = false;
-      console.log("just loaded false");
       this.duplicateRoadSource = newRoad;
       if(newRoad !== "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
@@ -434,7 +438,6 @@ export default {
     roads: {
       handler: function(newRoads,oldRoads) {
         this.justLoaded = false;
-        console.log("just loaded false");
         if(this.activeRoad != "") {
           this.updateFulfillment();
         }
