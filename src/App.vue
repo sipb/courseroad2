@@ -60,10 +60,6 @@
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
-    <!--the v-model here is the problem.
-    if i instead use v-if, active road does not change but it remains on the wrong tab.
-
-  -->
     <v-content app id="center-panel">
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
@@ -167,7 +163,6 @@ export default {
     leftDrawer: true,
     rightDrawer: true,
     activeRoad: "$defaultroad$",
-    // newRoads: ["$defaultroad$"],
     newRoadName: "",
     justLoaded: true,
     currentlySaving: false,
@@ -224,7 +219,6 @@ export default {
       var semesterElem = document.elementFromPoint(position.x,position.y);
       var semesterParent = $(semesterElem).parents(".semester-container");
       var semesterBox = semesterParent.find(".semester-drop-container");
-      // var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
       return {
         semesterParent: semesterParent,
         semesterBox: semesterBox
@@ -453,6 +447,10 @@ export default {
     var scrollers = $(".scroller")
     var scrollWidth = scrollers.width()
 
+    //moves nav drawer border with scroll
+    //if the effect proves too annoying we can remove the borders instead
+    //(commented out below)
+
     scrollers.scroll(function() {
       var scrollPosition = scrollers.scrollLeft()
       borders.css({top: 0, left: scrollWidth-1+scrollPosition})
@@ -462,14 +460,8 @@ export default {
       this.setActiveRoad();
     }.bind(this))
 
-    //moves nav drawer border with scroll
-    //if the effect proves too annoying we can remove the borders instead
-    //(commented out below)
 
     this.setActiveRoad();
-    // TODO: this is kind of janky, and should not happen ideally:
-    //  I'm bouncing the request through this proxy to avoid some issue with CORS
-    // see this issue for more: https://github.com/axios/axios/issues/853
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
