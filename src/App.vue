@@ -213,6 +213,7 @@ export default {
       if(this.activeRoad===oldid) {
         this.activeRoad = newid;
       }
+      console.log("resetting id " + oldid);
       Vue.delete(this.roads, oldid);
     },
     getRelevantObjects: function(position) {
@@ -388,6 +389,7 @@ export default {
       this.activeRoad = event;
     },
     deleteRoad: function(roadID) {
+      console.log("app delete " + roadID);
       Vue.delete(this.roads, roadID);
     },
     setRoad: function(roadID, newRoad) {

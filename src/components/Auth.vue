@@ -132,6 +132,7 @@ export default {
         if(roadData !== undefined) {
           this.renumberRoads(roadData);
           if(this.justLoaded) {
+            console.log("delete $defaultroad$");
             Vue.delete(this.roads, "$defaultroad$");
           }
           for(var r = 0; r < roadIDs.length; r++) {
@@ -318,6 +319,7 @@ export default {
     },
 
     deleteRoad: function(roadID) {
+      console.log("deleting road " + roadID);
       if(this.activeRoad === roadID) {
         var roadIndex = Object.keys(this.roads).indexOf(roadID);
         var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
@@ -340,6 +342,7 @@ export default {
 
       if(this.loggedIn) {
         if(roadID.indexOf("$")<0) {
+          console.log("deleting on server");
           this.postSecure("/sync/delete_road/",{id: roadID});
         }
       }

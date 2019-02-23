@@ -12,7 +12,7 @@
             <v-card style = "padding: 1em">
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for = "req in conflictInfo.other_contents.coursesOfStudy"> {{req}} </span></p>
-              <p>Selected Subjects: <span v-for = "course in conflictInfo.other_contents.selectedSubjects"> {{course.id}} </span></p>
+              <p>Selected Subjects: <span v-for = "(course, index) in conflictInfo.other_contents.selectedSubjects" :class = "colorSubject(index, 'remote')"> {{course.id}} </span></p>
             </v-card>
           </v-list>
           <v-btn color = "primary" @click = "$emit('update-local', conflictInfo.id) ">Keep Remote</v-btn>
@@ -26,7 +26,7 @@
             <v-card style = "padding: 1em">
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for = "req in roads[conflictInfo.id].contents.coursesOfStudy"> {{req}} </span></p>
-              <p>Selected Subjects: <span v-for = "course in roads[conflictInfo.id].contents.selectedSubjects"> {{course.id}} </span></p>
+              <p>Selected Subjects: <span v-for = "(course, index) in roads[conflictInfo.id].contents.selectedSubjects" :class = "colorSubject(index, 'local')"> {{course.id}} </span></p>
             </v-card>
           </v-list>
           <v-btn color = "primary" @click = "$emit('update-remote', conflictInfo.id)">Keep Local</v-btn>
@@ -38,25 +38,67 @@
 </template>
 
 <script>
+Array.prototype.diff = function(a) {
+  return this.filter(function(i) {
+    return a.indexOf(i)===-1;
+  });
+};
+
+Array.prototype.count = function(elem) {
+  var countElem = 0;
+  for(var i = 0; i < this.length; i++) {
+    if(this[i]==elem) {
+      countElem++;
+    }
+  }
+  return countElem;
+}
+
+Array.prototype.renumberDuplicates = function() {
+  return this.map(function(elem, index) {
+    if(this.count(elem)>1) {
+      var appendNumber = this.slice(0, index).count(elem);
+      return elem + "-" + appendNumber.toString();
+    } else {
+      return elem;
+    }
+  }.bind(this));
+}
+window.Array = Array;
+
 export default {
   name: "ConflictDialog",
   props: ["conflictInfo", "roads"],
   data: function() { return {
     conflictDialog: false
   }},
-  watch: {
-    // conflictDialog: function(newcd, oldcd) {
-    //   console.log("conflict dialog changed")
-    //   localConflictDialog = newcd;
-    // }
-  },
   methods: {
     startConflict: function() {
       this.conflictDialog = true;
     },
     resolveConflict: function() {
       this.conflictDialog = false;
+    },
+    colorSubject: function(subjectIndex, subjectList) {
+      var remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + " " + s.semester).renumberDuplicates();
+      var localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + " " + s.semester).renumberDuplicates();
+      var currentSubject;
+      if(subjectList === "remote") {
+        currentSubject = remoteSubjects[subjectIndex];
+        if(remoteSubjects.diff(localSubjects).indexOf(currentSubject)>=0) {
+          return "blue--text";
+        }
+      } else if(subjectList === "local") {
+        currentSubject = localSubjects[subjectIndex];
+        if(localSubjects.diff(remoteSubjects).indexOf(currentSubject)>=0) {
+          return "blue--text";
+        }
+      }
+      return "";
     }
   }
 }
 </script>
+
+<style scoped>
+</style>
