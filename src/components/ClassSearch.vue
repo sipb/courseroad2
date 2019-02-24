@@ -1,8 +1,8 @@
 <template>
   <v-container class="searchdiv">
     <!-- this is probably a good place for v-container » v-layout » v-flex -->
-    <h1>Class Search</h1>
-    <v-text-field v-model="chosenFilters.nameInput" placeholder = "6.0061 Silly Systems"/>
+    <!-- <h1>Class Search</h1> -->
+    <!-- <v-text-field v-model="chosenFilters.nameInput" placeholder = "6.0061 Silly Systems"/> -->
     <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
     <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
     <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
@@ -31,7 +31,7 @@ export default {
   components: {
     "filter-set": FilterSet
   },
-  props: ['subjects'],
+  props: ['subjects', 'searchInput'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -92,6 +92,11 @@ export default {
       pagination: {
         rowsPerPage: -1
       }
+    }
+  },
+  watch: {
+    searchInput: function(newSearch, oldSearch) {
+      this.chosenFilters.nameInput = newSearch;
     }
   },
   computed: {

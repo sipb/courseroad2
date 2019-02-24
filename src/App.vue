@@ -36,8 +36,16 @@
         </v-progress-circular>
       </div>
       <v-spacer></v-spacer>
-      <v-toolbar-title>Class Search</v-toolbar-title>
-      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
+
+      <v-menu  offset-y v-model = "showSearch" close-on-content-click=false>
+        <v-text-field v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator">
+          <v-icon slot = "prepend">search</v-icon>
+        </v-text-field>
+        <div class = "search-menu">
+          <class-search v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
+        </div>
+      </v-menu>
+
     </v-toolbar>
 
 
@@ -61,6 +69,7 @@
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
+
 
     <v-content app id="center-panel">
       <v-tabs-items v-model = "activeRoad">
@@ -90,18 +99,6 @@
       </conflict-dialog>
 
     </v-content>
-
-    <v-navigation-drawer
-      id="right-panel"
-      width="350"
-      mobile-break-point="800"
-      class="side-panel elevation-5"
-      v-model="rightDrawer"
-      right
-      app
-    >
-      <class-search v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
-    </v-navigation-drawer>
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
       This site uses cookies to store your data and login information.  Click OK to consent to the use of cookies.
@@ -182,6 +179,8 @@ export default {
     conflictDialog: false,
     conflictInfo: undefined,
     cookiesAllowed: false,
+    searchInput: "",
+    showSearch: false,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -708,6 +707,11 @@ export default {
           this.justLoaded = false;
       },
       deep: true
+    },
+    searchInput: function(newSearch, oldSearch) {
+      if(newSearch.length > 0) {
+        this.showSearch = true;
+      }
     }
   },
   mounted() {
@@ -788,5 +792,8 @@ export default {
   }
   .v-navigation-drawer__border {
     display: none !important;
+  }
+  .search-menu {
+    background: white;
   }
 </style>
