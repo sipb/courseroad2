@@ -37,10 +37,8 @@
       </div>
       <v-spacer></v-spacer>
 
-      <v-menu  offset-y v-model = "showSearch" close-on-content-click=false>
-        <v-text-field v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator">
-          <v-icon slot = "prepend">search</v-icon>
-        </v-text-field>
+      <v-menu  offset-y v-model = "showSearch" :close-on-content-click="false" input-activator fixed>
+        <v-text-field class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
         <div class = "search-menu">
           <class-search v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
         </div>
@@ -217,6 +215,13 @@ export default {
         return "warning";
       } else {
         return "save";
+      }
+    },
+    searchbar: function() {
+      if(this.showSearch) {
+        return "expanded-search";
+      } else {
+        return "";
       }
     }
   },
@@ -795,5 +800,8 @@ export default {
   }
   .search-menu {
     background: white;
+  }
+  .expanded-search {
+    width: 350px;
   }
 </style>
