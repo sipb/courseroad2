@@ -37,12 +37,11 @@
       </div>
       <v-spacer></v-spacer>
 
-      <v-menu  offset-y v-model = "showSearch" :close-on-content-click="false" input-activator fixed>
-        <v-text-field class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
-        <div class = "search-menu">
-          <class-search v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
-        </div>
+      <v-menu attach v-model = "showSearch" :close-on-content-click="false" fixed offset-y input-activator>
+        <v-text-field autocomplete = "false" class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
+        <class-search class = "search-menu" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
       </v-menu>
+
 
     </v-toolbar>
 
@@ -70,6 +69,7 @@
 
 
     <v-content app id="center-panel">
+
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
           v-for = "roadid in Object.keys(roads)"
@@ -687,6 +687,9 @@ export default {
     },
     changeActiveRoad: function(event) {
       this.activeRoad = event;
+    },
+    clickText: function(event) {
+      console.log(event);
     }
   },
   watch: {
@@ -755,6 +758,8 @@ export default {
     $(window).on("hashchange", function() {
       this.setActiveRoad();
     }.bind(this))
+
+    window.thing = $("#text-input-field-thing");
     //moves nav drawer border with scroll
     //if the effect proves too annoying we can remove the borders instead
     //(commented out below)
