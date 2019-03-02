@@ -25,7 +25,6 @@
 
 <script>
 import FilterSet from "./FilterSet.vue";
-import Vue from "vue";
 import $ from 'jquery';
 
 export default {
