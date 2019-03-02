@@ -286,6 +286,8 @@ export default {
       var searchInputElem = document.getElementById("searchInputTF");
       var searchInputRect = searchInputElem.getBoundingClientRect();
       var searchMenuTop = searchInputRect.top + searchInputRect.height;
+      var searchInput = $("#searchInputTF");
+      var menuWidth = searchInput.outerWidth();
       var classInfoCard = $("#classInfoCard");
       var menuBottom;
       if(classInfoCard.length) {
@@ -294,7 +296,7 @@ export default {
         menuBottom= $(window).innerHeight();
       }
       var maxHeight = menuBottom - searchMenuTop - this.menuMargin;
-      this.searchHeight = "max-height: "+maxHeight+"px;";
+      this.searchHeight = "max-height: "+maxHeight+"px;width: "+menuWidth+"px;";
 
     }
   },

@@ -38,7 +38,7 @@
 
       <v-menu attach v-model = "showSearch" :close-on-content-click="false" fixed offset-y input-activator>
         <v-text-field id = "searchInputTF" autocomplete = "false" class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
-        <class-search id = "searchMenu" scrollable class = "search-menu" v-bind:currentlyShowing = "showSearch" v-bind:showClassInfo = "showClassInfo" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
+        <class-search id = "searchMenu" class = "search-menu" v-bind:currentlyShowing = "showSearch" v-bind:showClassInfo = "showClassInfo" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass" @drop-class="dropClass" @drag-class="testClass"></class-search>
       </v-menu>
 
 
@@ -185,7 +185,7 @@ export default {
     cookiesAllowed: false,
     searchInput: "",
     showSearch: false,
-    showClassInfo: false,
+    showClassInfo: true,
     classInfoStack: [],
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
@@ -495,6 +495,20 @@ export default {
       this.setActiveRoad();
     }.bind(this))
 
+    $(window).resize(function() {
+      var classInfoCard = $("#classInfoCard");
+      var searchInput = $("#searchInputTF");
+      var cardWidth = searchInput.outerWidth();
+      var cardLeft = cardWidth + searchInput.offset().left;
+      var browserWidth = $(window).width();
+      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
+    })
+    var classInfoCard = $("#classInfoCard");
+    var searchInput = $("#searchInputTF");
+    var cardWidth = searchInput.outerWidth();
+    var cardLeft = cardWidth + searchInput.offset().left;
+    var browserWidth = $(window).width();
+    classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
 
     this.setActiveRoad();
 
@@ -517,6 +531,7 @@ export default {
         this.subjectsInfo = response.data
         this.subjectsLoaded = true;
       });
+
   },
 };
 </script>
@@ -531,13 +546,13 @@ export default {
     background: white;
   }
   .expanded-search {
-    width: 350px;
+    width: 20em;
   }
   .class-info-card {
-    height: 350px;
+    height: 30vh;
     position: fixed;
     bottom: 0;
     right: 0;
-    width: 341px;
+    width: 20em;
   }
 </style>
