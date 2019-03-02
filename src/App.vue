@@ -41,9 +41,7 @@
         <class-search id = "searchMenu" class = "search-menu" v-bind:currentlyShowing = "showSearch" v-bind:showClassInfo = "showClassInfo" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass" @drop-class="dropClass" @drag-class="testClass"></class-search>
       </v-menu>
 
-
     </v-toolbar>
-
 
 
     <v-navigation-drawer
