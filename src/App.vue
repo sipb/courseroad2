@@ -10,31 +10,30 @@
       <road-tabs
         v-bind:roads = "roads"
         v-bind:activeRoad = "activeRoad"
-        @delete-road = "deleteRoad"
+        @delete-road = "$refs.authcomponent.deleteRoad($event)"
         @set-name = "setRoadName($event.road, $event.name)"
         @add-road = "addRoad"
         @change-active = "changeActiveRoad($event)"
         slot = "extension"
       >
       </road-tabs>
-      <v-btn v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
-        Login
-      </v-btn>
-      <v-btn v-if = "loggedIn" outline round color = "primary" @click = "logoutUser">
-        Logout
-      </v-btn>
-      <v-tooltip bottom :disabled = "saveWarnings.length==0">
-        <v-icon slot = "activator" v-if = "!currentlySaving && !gettingUserData" :color = "saveColor">
-          {{saveIcon}}
-        </v-icon>
-        <div>
-          <p v-for = "saveWarning in saveWarnings">{{saveWarning.name}}: {{saveWarning.error}}</p>
-        </div>
-      </v-tooltip>
-      <div v-if = "currentlySaving || gettingUserData">
-        <v-progress-circular :size = "18" indeterminate>
-        </v-progress-circular>
-      </div>
+      <auth
+        ref = "authcomponent"
+        v-bind:roads = "roads"
+        v-bind:justLoaded = "justLoaded"
+        v-bind:activeRoad = "activeRoad"
+        v-bind:conflictInfo = "conflictInfo"
+        @delete-road = "deleteRoad"
+        @set-road = "setRoad(...arguments)"
+        @set-roads = "roads = $event"
+        @set-active = "setActive"
+        @conflict = "conflict"
+        @resolve-conflict = "resolveConflict"
+        @set-road-prop = "setRoadProp(...arguments)"
+        @reset-id = "resetID(...arguments)"
+        @allow-cookies = "allowCookies"
+      >
+      </auth>
       <v-spacer></v-spacer>
       <v-toolbar-title>Class Search</v-toolbar-title>
       <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
@@ -51,7 +50,7 @@
       app
     >
       <audit
-        v-if = "activeRoad != ''"
+        v-if = "activeRoad !== ''"
         v-bind:reqTrees="reqTrees"
         v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
         v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
@@ -61,7 +60,6 @@
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
-
     <v-content app id="center-panel">
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
@@ -81,9 +79,10 @@
       </v-tabs-items>
 
       <conflict-dialog
-        v-if = "conflictInfo != undefined"
+        ref = "conflictdialog"
         v-bind:conflictInfo = "conflictInfo"
         v-bind:conflictDialog = "conflictDialog"
+        v-bind:roads = "roads"
         @update-local = "updateLocal"
         @update-remote = "updateRemote"
       >
@@ -104,7 +103,7 @@
     </v-navigation-drawer>
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
-      This site uses cookies to store your data and login information.  Click OK to consent to the use of cookies.
+      This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
       <v-btn small depressed color = "primary" @click = "allowCookies">
         OK
       </v-btn>
@@ -134,22 +133,12 @@ import Road from './components/Road.vue'
 import FilterSet from "./components/FilterSet.vue"
 import RoadTabs from "./components/RoadTabs.vue"
 import ConflictDialog from "./components/ConflictDialog.vue"
+import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
-
-function getQueryObject() {
-  var query = window.location.search.substring(1);
-  var vars = query.split("&");
-  var queryObject = {}
-  for(var i = 0; i < vars.length; i++) {
-    var keyValuePair = vars[i].split("=");
-    queryObject[keyValuePair[0]] = keyValuePair[1];
-  }
-  return queryObject;
-}
 
 export default {
   components: {
@@ -158,14 +147,14 @@ export default {
     'road': Road,
     'filter-set': FilterSet,
     'road-tabs': RoadTabs,
-    'conflict-dialog': ConflictDialog
+    'conflict-dialog': ConflictDialog,
+    'auth': Auth
   },
   data: function(){ return {
     reqTrees: {},
     reqList: [],
     dragSemesterNum: -1,
     subjectsLoaded: false,
-    loggedIn: false,
     gettingUserData: false,
     cookieName: "Default Cookie",
     accessInfo: undefined,
@@ -174,7 +163,6 @@ export default {
     leftDrawer: true,
     rightDrawer: true,
     activeRoad: "$defaultroad$",
-    newRoads: ["$defaultroad$"],
     newRoadName: "",
     justLoaded: true,
     currentlySaving: false,
@@ -182,6 +170,7 @@ export default {
     conflictDialog: false,
     conflictInfo: undefined,
     cookiesAllowed: false,
+
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -191,7 +180,7 @@ export default {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: "My First Road",
-        agent: this.getAgent(),
+        agent: "",
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: []
@@ -205,23 +194,6 @@ export default {
   computed: {
     roadref: function() {
       return "#road" + this.activeRoad
-    },
-    saveColor: function() {
-      if(!this.cookiesAllowed && !this.loggedIn) {
-        return "gray";
-      }
-      if(this.saveWarnings.length) {
-        return "warning";
-      } else {
-        return "primary";
-      }
-    },
-    saveIcon: function() {
-      if(this.saveWarnings.length) {
-        return "warning";
-      } else {
-        return "save";
-      }
     }
   },
   methods: {
@@ -238,6 +210,14 @@ export default {
       this.roads[this.activeRoad].contents.selectedSubjects.splice(classIndex,1);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
+    resetID: function(oldid, newid) {
+      newid = newid.toString();
+      Vue.set(this.roads, newid, this.roads[oldid]);
+      if(this.activeRoad===oldid) {
+        this.activeRoad = newid;
+      }
+      Vue.delete(this.roads, oldid);
+    },
     getRelevantObjects: function(position) {
       let semesterElem
       if (position.x === 0 && position.y === 0) {
@@ -247,7 +227,6 @@ export default {
       }
       var semesterParent = $(semesterElem).parents(".semester-container");
       var semesterBox = semesterParent.find(".semester-drop-container");
-      // var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
       return {
         semesterParent: semesterParent,
         semesterBox: semesterBox
@@ -261,14 +240,14 @@ export default {
     classIsOffered: function(semesterObjects, event) {
       if(semesterObjects.semesterParent.length) {
         var semesterID = semesterObjects.semesterParent.attr("id");
-        if(semesterID.split("_")[2]=="semester") {
+        if(semesterID.split("_")[2]==="semester") {
           var semesterNum = parseInt(semesterID.split("_")[3]);
           var semesterType = semesterNum % 2;
           var classInfo = event.classInfo;
-          if(classInfo == undefined) {
+          if(classInfo === undefined) {
             if(this.subjectsLoaded) {
               var filteredSubjects = this.subjectsInfo.filter(function(s) {
-                return s.subject_id == event.basicClass.id
+                return s.subject_id === event.basicClass.id
               });
               if(filteredSubjects.length) {
                 classInfo = filteredSubjects[0];
@@ -298,9 +277,9 @@ export default {
 
           }
           var isOffered;
-          if(classInfo != undefined) {
-            isOffered = (semesterType == 0 && classInfo.offered_fall)
-                            || (semesterType == 1 && classInfo.offered_spring);
+          if(classInfo !== undefined) {
+            isOffered = (semesterType === 0 && classInfo.offered_fall)
+                            || (semesterType === 1 && classInfo.offered_spring);
           }
           return {
             isOffered: isOffered,
@@ -337,7 +316,7 @@ export default {
     testClass: function(event) {
       var semesterObjects = this.getRelevantObjects(event.drag);
       var semInfo = this.classIsOffered(semesterObjects, event);
-      if(semInfo.isOffered != undefined) {
+      if(semInfo.isOffered !== undefined) {
         if (!semInfo.isOffered) {
           semesterObjects.semesterBox.removeClass("grey");
           semesterObjects.semesterBox.addClass("red");
@@ -346,12 +325,12 @@ export default {
           semesterObjects.semesterBox.addClass("green");
         }
       }
-      if(this.dragSemesterNum != semInfo.semesterNum && this.dragSemesterNum != -1) {
+      if(this.dragSemesterNum !== semInfo.semesterNum && this.dragSemesterNum != -1) {
         var lastSemester = $("#road_"+$.escapeSelector(this.activeRoad)+"_semester_" + this.dragSemesterNum);
         var lastSemesterBox = lastSemester.find(".semester-drop-container");
         this.resetSemesterBox(lastSemesterBox)
       }
-      if(semInfo.semesterNum != undefined) {
+      if(semInfo.semesterNum !== undefined) {
         this.dragSemesterNum = semInfo.semesterNum;
       }
     },
@@ -370,155 +349,12 @@ export default {
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
     },
     removeReq: function(event) {
-      console.log(event);
-      console.log(this.roads[this.activeRoad].contents.coursesOfStudy);
       var reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
-      this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex);
-    },
-    loginUser: function(event) {
-      window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
-    },
-    logoutUser: function(event) {
-      this.$cookies.remove("accessInfo");
-      this.loggedIn = false;
-      this.accessInfo = undefined;
-      window.location.reload();
-    },
-    doSecure: function(axiosFunc, link, params) {
-      if(this.loggedIn && this.accessInfo != undefined) {
-        // var CORS_LINK = `https://cors-anywhere.herokuapp.com/`;
-        var CORS_LINK = '';
-        var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
-        var headerList = {headers: {
-          "Authorization": 'Bearer ' + this.accessInfo.access_token,
-          }};
-        //note: TODO: fix the cors problem
-        return axios.get(CORS_LINK+FIREROAD_LINK+"/verify/", headerList)
-        .then(function(verifyResponse){
-          if(verifyResponse.data.success) {
-            if(params==false) {
-              return axiosFunc(CORS_LINK+FIREROAD_LINK+link,headerList);
-            } else {
-              return axiosFunc(CORS_LINK+FIREROAD_LINK+link,params,headerList);
-            }
-          } else {
-            this.logoutUser();
-            return Promise.reject("Token not valid")
-          }
-        });
-      } else {
-        return Promise.reject("No auth information");
-      }
-
-    },
-    getSecure: function(link) {
-      return this.doSecure(axios.get,link,false);
-    },
-    postSecure: function(link, params) {
-      return this.doSecure(axios.post,link,params);
-    },
-    getUserData: function() {
-      this.gettingUserData = true;
-      this.getSecure("/sync/roads/")
-      .then(function(response) {
-        if(response.status == 200 && response.data.success) {
-          return Object.keys(response.data.files)
-        } else {
-          return Promise.reject();
-        }
-        return response;
-      }).then(function(fileKeys) {
-        console.log("fileKeys:");
-        console.log(fileKeys);
-        if(fileKeys.length) {
-          console.log("getting file links")
-          var fileLinks = fileKeys.map(function(fk) {
-            return this.getSecure("/sync/roads/?id="+fk)
-          }.bind(this));
-          console.log("got file links");
-          return Promise.all(fileLinks).then((fl) => [fileKeys, fl]);
-        } else {
-          return [fileKeys, undefined];
-        }
-      }.bind(this)).then(function([roadIDs,roadData]) {
-        if(roadData != undefined) {
-          this.renumberRoads(roadData);
-          if(this.justLoaded) {
-            Vue.delete(this.roads, "$defaultroad$");
-          }
-          for(var r = 0; r < roadIDs.length; r++) {
-            if(roadData[r].status==200 && roadData[r].data.success) {
-              roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
-              roadData[r].data.file.changed = moment().format(DATE_FORMAT);
-              Vue.set(this.roads, roadIDs[r], roadData[r].data.file);
-            }
-          }
-          this.activeRoad = Object.keys(this.roads)[0];
-        }
-        this.gettingUserData = false;
-      }.bind(this)).catch(function(err) {
-        alert(err);
-        this.gettingUserData = false;
-        if(err=="Token not valid") {
-          alert("Your token has expired.  Please log in again.");
-        }
-        this.logoutUser();
-      }.bind(this))
-    },
-    renumber: function(name, otherNames) {
-      var newName = undefined;
-      var copyIndex = 2;
-      while(newName == undefined) {
-        var copyName = name + " ("+copyIndex+")";
-        if(otherNames.indexOf(copyName)==-1) {
-          newName = copyName;
-        }
-        copyIndex++;
-      }
-      return newName;
-    },
-    renumberRoads: function(cloudRoads) {
-      var cloudNames = cloudRoads.map(function(cr) {
-        try {
-          return cr.data.file.name
-        } catch (err) {
-          return undefined;
-        }
-      });
-      for(var roadID in this.roads) {
-        var localName = this.roads[roadID].name;
-        if(cloudNames.indexOf(localName)>=0) {
-          var renumberedName = this.renumber(localName, cloudNames);
-          Vue.set(this.roads[roadID], "name", renumberedName);
-        }
-      }
-    },
-    getAuthorizationToken: function(code) {
-      axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
-        if(response.data.success) {
-          console.log(response);
-          if(this.cookiesAllowed) {
-            this.data.$cookies.set("accessInfo", response.data.access_info);
-          }
-          this.data.accessInfo = response.data.access_info;
-          console.log("set accessInfo");
-          console.log(this.data.accessInfo);
-          this.data.loggedIn = true;
-          this.data.getUserData();
-        }
-      }.bind({data:this}))
-    },
-    attemptLogin: function() {
-      var queryObject = getQueryObject();
-      if("code" in queryObject) {
-        var code = queryObject["code"];
-        window.history.pushState("CourseRoad Home","CourseRoad Home","/#"+this.activeRoad);
-        this.getAuthorizationToken(code);
-      }
+      this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex,1);
     },
     setActiveRoad: function() {
       var roadHash = window.location.hash;
-      if(roadHash.length&&roadHash.substring(0,5)=="#road") {
+      if(roadHash.length&&roadHash.substring(0,5)==="#road") {
         var roadRequested = roadHash.substring(5);
         if(roadRequested in this.roads) {
           this.activeRoad = roadHash.substring(5);
@@ -528,109 +364,8 @@ export default {
       window.location.hash = "#road" + this.activeRoad;
       return false;
     },
-    save: function() {
-      this.currentlySaving = true;
-      this.saveWarnings = [];
-      var savePromises = [];
-      for(var roadID in this.roads) {
-        var assignKeys = {override: false, agent: this.getAgent()}
-        if(!roadID.includes("$")) {
-          assignKeys.id = roadID
-        }
-        var newRoad = Object.assign(assignKeys, this.roads[roadID]);
-        var savePromise = this.postSecure("/sync/sync_road/",newRoad)
-        .then(function(response) {
-          // console.log(response);
-          if(response.status!=200) {
-            return Promise.reject("Unable to save road " + this.oldid);
-          } else {
-            console.log(response.data.result);
-            var newid = (response.data.id!=undefined ? response.data.id : this.oldid);
-            if(response.data.success == false) {
-              this.data.saveWarnings.push({id: newid, error: response.data.error_msg, name: this.data.roads[this.oldid].name});
-            }
-            if(response.data.result == "conflict") {
-              this.conflictDialog = true;
-              this.conflictInfo = {id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date:response.data.other_date, other_contents: response.data.other_contents, this_agent:response.data.this_agent, this_date:response.data.this_date};
-            } else {
-              if(response.data.id != undefined) {
-                Vue.set(this.data.roads, response.data.id.toString(), this.data.roads[this.oldid]);
-                if(this.data.activeRoad==this.oldid) {
-                  this.data.activeRoad = response.data.id;
-                }
-                Vue.delete(this.data.roads, this.oldid);
-                console.log(this.oldid + " " + response.data.id);
-                return Promise.resolve({oldid: this.oldid, newid: response.data.id, state: "changed"});
-              } else {
-                return Promise.resolve({oldid: this.oldid, newid: this.oldid, state: "same"});
-              }
-              Vue.set(this.data.roads[newid], "downloaded", moment().format(DATE_FORMAT));
-            }
-
-          }
-        }.bind({oldid: roadID,data:this}))
-        savePromises.push(savePromise);
-      }
-      Promise.all(savePromises)
-      .then(function(saveResults) {
-        console.log(saveResults.map((sr)=>"Saved road " + sr.oldid + (sr.state=="changed" ? (" as " + sr.newid) : "")));
-        for(var s = 0; s < saveResults.length; s++) {
-          var savedResult = saveResults[s];
-          if(savedResult.state == "changed") {
-            var oldIdIndex = this.newRoads.indexOf(savedResult.oldid);
-            if(oldIdIndex>=0) {
-              this.newRoads.splice(oldIdIndex);
-            }
-          }
-        }
-        if(this.$cookies.isKey("newRoads")) {
-          this.$cookies.remove("newRoads");
-        }
-        this.currentlySaving = false;
-        console.log(this.saveWarnings);
-      }.bind(this)).catch(function(err) {
-        console.log(err);
-        this.currentlySaving = false;
-      }.bind(this));
-    },
-    updateRemote: function(roadID) {
-      var newRoad = Object.assign({id: roadID, override: true, agent: this.getAgent()}, this.roads[roadID]);
-      this.postSecure("/sync/sync_road/",newRoad)
-      .then(function(response) {
-        if(!response.data.success) {
-          this.saveWarnings.push({error: response.data.error_msg, id: roadID, name: this.roads[roadID]});
-        }
-      })
-      this.conflictInfo = {};
-      this.conflictDialog = false;
-    },
-    updateLocal: function(roadID) {
-      Vue.set(this.roads[roadID], "name", this.conflictInfo.other_name);
-      Vue.set(this.roads[roadID], "agent", this.conflictInfo.other_agent);
-      Vue.set(this.roads[roadID], "changed_date", this.conflictInfo.other_date);
-      Vue.set(this.roads[roadID], "contents", this.conflictInfo.other_contents)
-      Vue.set(this.roads[roadID], "downloaded", moment().format(DATE_FORMAT));
-      this.conflictInfo = {};
-      this.conflictDialog = false;
-    },
-    saveLocal: function() {
-      if(this.newRoads.length) {
-        var newRoadData = {}
-        for (var r=0; r < this.newRoads.length; r++) {
-          var roadID = this.newRoads[r];
-          if(roadID in this.roads) {
-            newRoadData[roadID] = this.roads[roadID];
-          }
-        }
-        this.$cookies.set("newRoads", newRoadData, "7d");
-      }
-      Vue.set(this.roads[roadID], "downloaded", moment().format(DATE_FORMAT));
-    },
-    getAgent: function() {
-      return navigator.platform;
-    },
     addRoad: function(roadName) {
-      var tempRoadID = "$" + this.newRoads.length + "$";
+      var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
       var newContents;
       if(!this.duplicateRoad) {
         newContents = {
@@ -645,133 +380,102 @@ export default {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: roadName,
-        agent: this.getAgent(),
+        agent: "",
         contents: newContents
       }
       Vue.set(this.roads, tempRoadID, newRoad);
-      this.newRoads.push(tempRoadID);
-      console.log("setting to temp");
+      this.$refs.authcomponent.newRoads.push(tempRoadID);
       this.activeRoad = tempRoadID;
     },
-    deleteRoad: function(roadID) {
-      console.log("deleting "  + roadID + " " + this.roads[roadID].name);
-      if(this.activeRoad == roadID) {
-        var roadIndex = Object.keys(this.roads).indexOf(roadID);
-        var withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex+1));
-        if(withoutRoad.length) {
-          if(withoutRoad.length>roadIndex) {
-            this.activeRoad = withoutRoad[roadIndex];
-          } else {
-            this.activeRoad = withoutRoad[roadIndex-1];
-          }
-        } else {
-          this.activeRoad = "";
-        }
-      }
-      Vue.delete(this.roads, roadID);
-      if(roadID in this.newRoads) {
-        roadIndex = this.newRoads.indexOf(roadID);
-        this.newRoads.splice(roadID);
-      }
 
-      if(this.loggedIn) {
-        if(roadID.indexOf("$")<0) {
-          this.postSecure("/sync/delete_road/",{id: roadID});
-        }
-      }
-    },
+
     setRoadName: function(roadID, roadName) {
       Vue.set(this.roads[roadID], "name", roadName);
     },
-    allowCookies: function() {
-      this.cookiesAllowed = true;
-      if(this.loggedIn) {
-        this.$cookies.set("accessInfo", this.accessInfo);
-      }
-    },
     changeActiveRoad: function(event) {
       this.activeRoad = event;
+    },
+    deleteRoad: function(roadID) {
+      Vue.delete(this.roads, roadID);
+    },
+    setRoad: function(roadID, newRoad) {
+      Vue.set(this.roads, roadID, newRoad);
+    },
+    setActive: function(roadID) {
+      this.activeRoad = roadID;
+    },
+    conflict: function(conflictInfo) {
+      this.$refs.conflictdialog.startConflict();
+      this.conflictInfo = conflictInfo;
+    },
+    resolveConflict: function() {
+      this.$refs.conflictdialog.resolveConflict();
+      this.conflictInfo = undefined;
+    },
+    setRoadProp: function(roadID, roadProp, propValue) {
+      Vue.set(this.roads[roadID], roadProp, propValue);
+    },
+    allowCookies: function() {
+      this.$refs.authcomponent.allowCookies();
+      this.cookiesAllowed = true;
+    },
+    updateLocal: function(id) {
+      this.$refs.authcomponent.updateLocal(id);
+    },
+    updateRemote: function(id) {
+      this.$refs.authcomponent.updateRemote(id);
     }
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
+      window.activeRoad = newRoad;
       this.justLoaded = false;
       this.duplicateRoadSource = newRoad;
-      if(newRoad != "") {
+      if(newRoad !== "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
         this.updateFulfillment();
       }
     },
     roads: {
       handler: function(newRoads,oldRoads) {
+        this.justLoaded = false;
         if(this.activeRoad != "") {
           this.updateFulfillment();
         }
-          if(this.loggedIn && !this.currentlySaving) {
-            this.save();
-          } else {
-            this.saveLocal();
-          }
-          this.justLoaded = false;
+        this.$refs.authcomponent.save();
       },
       deep: true
     }
   },
   mounted() {
+    window.$refs = this.$refs;
+    window.activeRoad = this.activeRoad;
 
     document.ondragover = (event) => {
       this.lastX = event.x
       this.lastY = event.y
     }
 
-    if(this.$cookies.isKey("accessInfo")) {
-      this.loggedIn = true;
-      this.cookiesAllowed = true;
-      this.accessInfo = this.$cookies.get("accessInfo");
-      this.getUserData();
-    }
-
-    if(this.$cookies.isKey("newRoads")) {
-      this.cookiesAllowed = true;
-      var newRoads = this.$cookies.get("newRoads");
-      if(Object.keys(newRoads).length) {
-        if(this.justLoaded) {
-          if(!(this.activeRoad in newRoads)) {
-            console.log("mounted setting to 0th")
-            this.activeRoad = Object.keys(newRoads)[0];
-          }
-          this.roads = newRoads;
-        } else {
-          this.roads = Object.assign(newRoads, this.roads);
-        }
-        this.newRoads = Object.keys(newRoads);
-      } else {
-        this.$cookies.remove("newRoads");
-      }
-
-    }
-
-    var borders = $(".v-navigatio   n-drawer__border")
+    var borders = $(".v-navigation-drawer__border")
     var scrollers = $(".scroller")
     var scrollWidth = scrollers.width()
 
-    $(window).on("hashchange", function() {
-      this.setActiveRoad();
-    }.bind(this))
     //moves nav drawer border with scroll
     //if the effect proves too annoying we can remove the borders instead
     //(commented out below)
+
     scrollers.scroll(function() {
       var scrollPosition = scrollers.scrollLeft()
       borders.css({top: 0, left: scrollWidth-1+scrollPosition})
     })
 
+    $(window).on("hashchange", function() {
+      this.setActiveRoad();
+    }.bind(this))
+
+
     this.setActiveRoad();
-    this.attemptLogin();
-    // TODO: this is kind of janky, and should not happen ideally:
-    //  I'm bouncing the request through this proxy to avoid some issue with CORS
-    // see this issue for more: https://github.com/axios/axios/issues/853
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
