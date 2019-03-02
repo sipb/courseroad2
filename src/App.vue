@@ -39,7 +39,7 @@
 
       <v-menu attach v-model = "showSearch" :close-on-content-click="false" fixed offset-y input-activator>
         <v-text-field autocomplete = "false" class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
-        <class-search class = "search-menu" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
+        <class-search scrollable class = "search-menu" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
       </v-menu>
 
 
@@ -69,7 +69,7 @@
 
 
     <v-content app id="center-panel">
-
+      
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
           v-for = "roadid in Object.keys(roads)"

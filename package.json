@@ -27,6 +27,7 @@
     "jquery": "^3.3.1",
     "vue-cookies": "^1.5.12",
     "vue-router": "^3.0.1",
+    "vue-scrolling-table": "^0.2.2",
     "vuetify": "^1.4.3"
   },
   "devDependencies": {

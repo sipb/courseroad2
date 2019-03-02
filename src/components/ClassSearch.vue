@@ -7,26 +7,32 @@
     <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
-    <v-data-table  :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
-      <template slot = "items" slot-scope = "props">
-        <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)">
-          <td>{{props.item.subject_id}}</td>
-          <td>{{props.item.title}}</td>
-        </tr>
-      </template>
-    </v-data-table>
+    <v-layout column :style = "searchTable">
+      <v-flex style = "overflow: auto">
+        <v-data-table :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
+          <template slot = "items" slot-scope = "props">
+            <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)">
+              <td>{{props.item.subject_id}}</td>
+              <td>{{props.item.title}}</td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
 
 <script>
 import FilterSet from "./FilterSet.vue";
+import VueScrollingTable from "vue-scrolling-table";
 import $ from 'jquery';
 
 export default {
   name: "ClassSearch",
   components: {
-    "filter-set": FilterSet
+    "filter-set": FilterSet,
+    "vue-scrolling-table": VueScrollingTable
   },
   props: ['subjects', 'searchInput'],
   data: function () {
@@ -184,6 +190,9 @@ export default {
       } else {
         return [];
       }
+    },
+    searchTable: function() {
+      return "height: 50vh";
     }
   },
   methods: {
