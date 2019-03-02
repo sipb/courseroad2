@@ -69,7 +69,7 @@
 
 
     <v-content app id="center-panel">
-      
+
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
           v-for = "roadid in Object.keys(roads)"
@@ -97,6 +97,21 @@
       </conflict-dialog>
 
     </v-content>
+
+
+
+    <v-card class = "class-info-card">
+      <v-card-title>
+        Class Info
+      </v-card-title>
+      <v-card-text>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum mauris quis interdum vehicula. Vivamus sagittis commodo ante, ut gravida velit aliquam eget. Fusce quis lobortis dolor. Sed vel erat in nibh pretium tempor. Integer lobortis velit purus, vitae rutrum ipsum dignissim vitae. Nullam in efficitur mauris. Mauris eleifend est sit amet elit congue, quis efficitur tellus mattis. Ut ut mollis tellus. Maecenas orci ex, ultrices eu magna nec, posuere efficitur lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+      </v-card-text>
+    </v-card>
+    <!--
+    <div style = "height:40vh" fixed>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum mauris quis interdum vehicula. Vivamus sagittis commodo ante, ut gravida velit aliquam eget. Fusce quis lobortis dolor. Sed vel erat in nibh pretium tempor. Integer lobortis velit purus, vitae rutrum ipsum dignissim vitae. Nullam in efficitur mauris. Mauris eleifend est sit amet elit congue, quis efficitur tellus mattis. Ut ut mollis tellus. Maecenas orci ex, ultrices eu magna nec, posuere efficitur lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+    </div> -->
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
       This site uses cookies to store your data and login information.  Click OK to consent to the use of cookies.
@@ -808,5 +823,12 @@ export default {
   }
   .expanded-search {
     width: 350px;
+  }
+  .class-info-card {
+    height: 350px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 341px;
   }
 </style>

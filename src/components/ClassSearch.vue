@@ -192,7 +192,7 @@ export default {
       }
     },
     searchTable: function() {
-      return "height: 50vh";
+      return "height: 25vh";
     }
   },
   methods: {
