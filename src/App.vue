@@ -4,9 +4,6 @@
   <v-app id="app-wrapper"
   >
     <v-toolbar fixed app dense>
-        <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
-        <v-toolbar-title>Audit</v-toolbar-title>
-      <v-spacer></v-spacer>
       <road-tabs
         v-bind:roads = "roads"
         v-bind:activeRoad = "activeRoad"
@@ -36,17 +33,17 @@
       </auth>
       <v-spacer></v-spacer>
       <v-toolbar-title>Class Search</v-toolbar-title>
-      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer">
+        <v-icon v-if="rightDrawer">clear</v-icon>
+        <v-icon v-else>search</v-icon>
+      </v-toolbar-side-icon>
     </v-toolbar>
-
-
 
     <v-navigation-drawer
       id="left-panel"
       width="350"
       mobile-break-point="800"
       class="side-panel elevation-5 scroller"
-      v-model="leftDrawer"
       app
     >
       <audit
@@ -160,7 +157,6 @@ export default {
     accessInfo: undefined,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
-    leftDrawer: true,
     rightDrawer: true,
     activeRoad: "$defaultroad$",
     newRoadName: "",
