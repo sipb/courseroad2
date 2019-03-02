@@ -57,7 +57,7 @@
         <class-search
           id = "searchMenu"
           class = "search-menu"
-          v-bind:showClassInfo = "showClassInfo"
+          v-bind:classInfoStack = "classInfoStack"
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
           @add-class="addClass"
@@ -123,7 +123,7 @@
 
     </v-content>
 
-    <class-info v-if = "showClassInfo"></class-info>
+    <class-info v-if = "classInfoStack.length>0"></class-info>
 
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
@@ -198,7 +198,6 @@ export default {
     cookiesAllowed: false,
     searchInput: "",
     showSearch: false,
-    showClassInfo: true,
     classInfoStack: [],
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad

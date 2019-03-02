@@ -112,8 +112,12 @@ export default {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
     },
-    showClassInfo: function(newShowing, oldShowing) {
-      this.updateMenuStyle();
+    classInfoStack: function(newStack, oldStack) {
+      var oldShowing = oldStack.length > 0;
+      var newShowing = newStack.length > 0;
+      if(oldShowing != newShowing) {
+        this.updateMenuStyle();
+      }
     }
   },
   computed: {
