@@ -9,9 +9,20 @@
     <h4> Results: </h4>
       <div style = "display: flex; flex: 1; min-height: 0px;">
         <div style = "flex: 1; overflow: auto;">
-          <v-data-table :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
+          <v-data-table
+            :items="autocomplete"
+            :pagination.sync = "pagination"
+            :no-data-text = "'No results'"
+            :rows-per-page-text= "'Display'"
+            :hide-headers= "true"
+          >
             <template slot = "items" slot-scope = "props">
-              <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)" v-on:dragstart="dragStart($event, props)">
+              <tr
+                draggable = "true"
+                v-on:dragend ="drop($event, props)"
+                v-on:drag = "drag($event, props)"
+                v-on:dragstart="dragStart($event, props)"
+              >
                 <td>{{props.item.subject_id}}</td>
                 <td>{{props.item.title}}</td>
               </tr>
