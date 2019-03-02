@@ -3,10 +3,7 @@
   <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
   <v-app id="app-wrapper"
   >
-    <v-toolbar fixed app dense>
-        <v-toolbar-side-icon @click.stop="leftDrawer = !leftDrawer"></v-toolbar-side-icon>
-        <v-toolbar-title>Audit</v-toolbar-title>
-      <v-spacer></v-spacer>
+    <v-toolbar fixed app dense class="elevation-2">
       <road-tabs
         v-bind:roads = "roads"
         v-bind:activeRoad = "activeRoad"
@@ -36,9 +33,36 @@
       </auth>
       <v-spacer></v-spacer>
 
-      <v-menu attach v-model = "showSearch" :close-on-content-click="false" fixed offset-y input-activator>
-        <v-text-field id = "searchInputTF" autocomplete = "false" class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
-        <class-search id = "searchMenu" class = "search-menu" v-bind:currentlyShowing = "showSearch" v-bind:showClassInfo = "showClassInfo" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass" @drop-class="dropClass" @drag-class="testClass"></class-search>
+      <v-menu
+        attach
+        v-model = "showSearch"
+        :close-on-content-click="false"
+        fixed
+        offset-y
+        input-activator
+      >
+        <v-text-field
+          id = "searchInputTF"
+          autocomplete = "false"
+          class = "expanded-search"
+          prepend-icon="search"
+          v-model = "searchInput"
+          placeholder = "6.0061 Silly Systems"
+          slot = "activator"
+        >
+        </v-text-field>
+        <class-search
+          id = "searchMenu"
+          class = "search-menu"
+          v-bind:classInfoStack = "classInfoStack"
+          v-bind:searchInput = "searchInput"
+          v-bind:subjects="subjectsInfo"
+          @add-class="addClass"
+          @move-class="moveClass"
+          @drop-class="dropClass"
+          @drag-class="testClass"
+        >
+        </class-search>
       </v-menu>
 
     </v-toolbar>
@@ -48,8 +72,7 @@
       id="left-panel"
       width="350"
       mobile-break-point="800"
-      class="side-panel elevation-5 scroller"
-      v-model="leftDrawer"
+      class="side-panel elevation-2 scroller"
       app
     >
       <audit
@@ -96,21 +119,7 @@
 
     </v-content>
 
-
-    <v-container v-if = "showClassInfo">
-      <v-layout>
-        <v-flex>
-          <v-card class = "class-info-card" id = "classInfoCard">
-            <v-card-title>
-              Class Info
-            </v-card-title>
-            <v-card-text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum mauris quis interdum vehicula. Vivamus sagittis commodo ante, ut gravida velit aliquam eget. Fusce quis lobortis dolor. Sed vel erat in nibh pretium tempor. Integer lobortis velit purus, vitae rutrum ipsum dignissim vitae. Nullam in efficitur mauris. Mauris eleifend est sit amet elit congue, quis efficitur tellus mattis. Ut ut mollis tellus. Maecenas orci ex, ultrices eu magna nec, posuere efficitur lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
+    <class-info v-if = "classInfoStack.length>0"></class-info>
 
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
@@ -147,6 +156,7 @@ import ConflictDialog from "./components/ConflictDialog.vue"
 import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
+import ClassInfo from "./components/ClassInfo.vue"
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
@@ -159,7 +169,8 @@ export default {
     'filter-set': FilterSet,
     'road-tabs': RoadTabs,
     'conflict-dialog': ConflictDialog,
-    'auth': Auth
+    'auth': Auth,
+    'class-info': ClassInfo
   },
   data: function(){ return {
     reqTrees: {},
@@ -171,7 +182,6 @@ export default {
     accessInfo: undefined,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
-    leftDrawer: true,
     rightDrawer: true,
     activeRoad: "$defaultroad$",
     newRoadName: "",
@@ -183,7 +193,6 @@ export default {
     cookiesAllowed: false,
     searchInput: "",
     showSearch: false,
-    showClassInfo: true,
     classInfoStack: [],
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
@@ -546,11 +555,5 @@ export default {
   .expanded-search {
     width: 20em;
   }
-  .class-info-card {
-    height: 35vh;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 20em;
-  }
+
 </style>

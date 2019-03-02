@@ -9,9 +9,20 @@
     <h4> Results: </h4>
       <div style = "display: flex; flex: 1; min-height: 0px;">
         <div style = "flex: 1; overflow: auto;">
-          <v-data-table :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
+          <v-data-table
+            :items="autocomplete"
+            :pagination.sync = "pagination"
+            :no-data-text = "'No results'"
+            :rows-per-page-text= "'Display'"
+            :hide-headers= "true"
+          >
             <template slot = "items" slot-scope = "props">
-              <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)" v-on:dragstart="dragStart($event, props)" @click = "viewClassInfo(props)">
+              <tr
+                draggable = "true"
+                v-on:dragend ="drop($event, props)"
+                v-on:drag = "drag($event, props)"
+                v-on:dragstart="dragStart($event, props)"
+              >
                 <td>{{props.item.subject_id}}</td>
                 <td>{{props.item.title}}</td>
               </tr>
@@ -32,7 +43,7 @@ export default {
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput', 'currentlyShowing', 'showClassInfo'],
+  props: ['subjects', 'searchInput', 'showClassInfo'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -101,13 +112,12 @@ export default {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
     },
-    currentlyShowing: function(newShowing, oldShowing) {
-      if(newShowing) {
+    classInfoStack: function(newStack, oldStack) {
+      var oldShowing = oldStack.length > 0;
+      var newShowing = newStack.length > 0;
+      if(oldShowing != newShowing) {
         this.updateMenuStyle();
       }
-    },
-    showClassInfo: function(newShowing, oldShowing) {
-      this.updateMenuStyle();
     }
   },
   computed: {
@@ -303,6 +313,8 @@ export default {
     }
   },
   mounted() {
+    this.updateMenuStyle();
+
     $(window).resize(function() {
       this.updateMenuStyle();
     }.bind(this));
