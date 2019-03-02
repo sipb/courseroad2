@@ -1,6 +1,6 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
-  <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'road_'+roadID+'_semester_' + index">
+  <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'road_'+roadID+'_semester_' + index" v-on:dragover.native.prevent>
     <div slot="header">Semester {{index}}</div>
     <v-container
       class="grey lighten-3 semester-drop-container"
@@ -10,10 +10,10 @@
     >
       <v-layout wrap align-center justify-center row>
         <class
-          v-for="subject in semesterSubjects"
+          v-for="(subject, subjindex) in semesterSubjects"
           v-bind:classInfo="subject"
           v-bind:semesterIndex="index"
-          :key="subject.id + index"
+          :key="subject.id + '-' + subjindex + '-' + index"
           @drag-class="$emit('drag-class',$event)"
           @drop-class="$emit('drop-class',$event)"
           @remove-class = "$emit('remove-class', $event)"

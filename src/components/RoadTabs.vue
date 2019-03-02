@@ -29,13 +29,13 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model = "deleteDialog">
+      <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads">
         <v-card style = "padding: 2em">
           <v-card-title>Permanently Delete {{roads[tabRoad].name}}?</v-card-title>
           <v-card-text>This action cannot be undone.</v-card-text>
           <v-card-actions>
             <v-btn @click = "deleteDialog = false; editDialog = true;">Cancel</v-btn>
-            <v-btn @click = "deleteDialog = false; $emit('delete-road',tabRoad);" color = "error">Delete</v-btn>
+            <v-btn @click = "deleteDialog = false; $emit('delete-road',tabRoad); newRoadName = ''" color = "error">Delete</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
