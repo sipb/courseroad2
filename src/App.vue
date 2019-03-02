@@ -3,7 +3,7 @@
   <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
   <v-app id="app-wrapper"
   >
-    <v-toolbar fixed app dense>
+    <v-toolbar fixed app dense class="elevation-2">
       <road-tabs
         v-bind:roads = "roads"
         v-bind:activeRoad = "activeRoad"
@@ -43,7 +43,7 @@
       id="left-panel"
       width="350"
       mobile-break-point="800"
-      class="side-panel elevation-5 scroller"
+      class="side-panel elevation-2 scroller"
       app
     >
       <audit
