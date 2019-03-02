@@ -33,11 +33,12 @@ export default {
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput', 'currentlyShowing'],
+  props: ['subjects', 'searchInput', 'currentlyShowing', 'showClassInfo'],
   data: function () {
     return {
       dragSemesterNum: -1,
       searchHeight: "",
+      menuMargin: 20,
       //lists of the filters turned on in each filter group
       chosenFilters: {
         nameInput: "",
@@ -102,6 +103,11 @@ export default {
       this.chosenFilters.nameInput = newSearch;
     },
     currentlyShowing: function(newShowing, oldShowing) {
+      if(newShowing) {
+        this.updateMenuStyle();
+      }
+    },
+    showClassInfo: function(newShowing, oldShowing) {
       this.updateMenuStyle();
     }
   },
@@ -272,34 +278,26 @@ export default {
       }
     },
     updateMenuStyle: function() {
-      var searchMenu = $("#searchMenu");
-      var searchInput = $("#searchInputTF");
-      window.searchInput = searchInput;
+
+      var searchInputElem = document.getElementById("searchInputTF");
+      var searchInputRect = searchInputElem.getBoundingClientRect();
+      var searchMenuTop = searchInputRect.top + searchInputRect.height;
       var classInfoCard = $("#classInfoCard");
-      var classInfoTop = classInfoCard.position().top;
-      // var searchMenuTop = searchMenu.offset().top;
-      var searchMenuTop = searchInput.offset().top + searchInput.outerHeight(true);
-      var maxHeight = classInfoTop - searchMenuTop;
-      console.log("max height: " + maxHeight);
+      var menuBottom;
+      if(classInfoCard.length) {
+        menuBottom = classInfoCard.position().top;
+      } else {
+        menuBottom= $(window).innerHeight();
+      }
+      var maxHeight = menuBottom - searchMenuTop - this.menuMargin;
       this.searchHeight = "max-height: "+maxHeight+"px;";
+
     }
   },
   mounted() {
-    // $(document).ready(function() {
-    //   var searchMenu = $("#searchMenu");
-    //   var classInfoCard = $("#classInfoCard");
-    //   var searchInput = $("#searchInputTF");
-    //   var searchTable = $("#searchResultsTable");
-    //   var classInfoTop = classInfoCard.position().top;
-    //   var searchMenuTop = searchInput.offset().top + searchInput.outerHeight(true);
-    //   var margin = 20;
-    //   var maxHeight = classInfoTop-searchMenuTop - margin;
-    //   this.searchHeight =  "height: "+maxHeight+"px";
-    //   window.searchMenu = searchMenu;
-    //   window.classInfoCard = classInfoCard;
-    //   window.searchInput = searchInput;
-    //   window.searchTable = searchTable;
-    // }.bind(this));
+    $(window).resize(function() {
+      this.updateMenuStyle();
+    }.bind(this));
   }
 }
 </script>

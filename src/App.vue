@@ -39,7 +39,7 @@
 
       <v-menu attach v-model = "showSearch" :close-on-content-click="false" fixed offset-y input-activator>
         <v-text-field id = "searchInputTF" autocomplete = "false" class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
-        <class-search id = "searchMenu" scrollable class = "search-menu" v-bind:currentlyShowing = "showSearch" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
+        <class-search id = "searchMenu" scrollable class = "search-menu" v-bind:currentlyShowing = "showSearch" v-bind:showClassInfo = "showClassInfo" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
       </v-menu>
 
 
@@ -99,7 +99,7 @@
     </v-content>
 
 
-    <v-container>
+    <v-container v-if = "showClassInfo">
       <v-layout>
         <v-flex>
           <v-card class = "class-info-card" id = "classInfoCard">
@@ -196,6 +196,8 @@ export default {
     cookiesAllowed: false,
     searchInput: "",
     showSearch: false,
+    showClassInfo: false,
+    classInfoStack: [],
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
