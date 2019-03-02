@@ -33,10 +33,7 @@
       </auth>
       <v-spacer></v-spacer>
       <v-toolbar-title>Class Search</v-toolbar-title>
-      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon v-if="rightDrawer">clear</v-icon>
-        <v-icon v-else>search</v-icon>
-      </v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
     </v-toolbar>
 
     <v-navigation-drawer
