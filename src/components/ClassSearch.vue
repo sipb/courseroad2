@@ -32,7 +32,7 @@ export default {
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput', 'currentlyShowing', 'showClassInfo'],
+  props: ['subjects', 'searchInput', 'showClassInfo'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -100,11 +100,6 @@ export default {
   watch: {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
-    },
-    currentlyShowing: function(newShowing, oldShowing) {
-      if(newShowing) {
-        this.updateMenuStyle();
-      }
     },
     showClassInfo: function(newShowing, oldShowing) {
       this.updateMenuStyle();
@@ -298,6 +293,8 @@ export default {
     }
   },
   mounted() {
+    this.updateMenuStyle();
+
     $(window).resize(function() {
       this.updateMenuStyle();
     }.bind(this));
