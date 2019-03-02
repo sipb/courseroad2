@@ -121,21 +121,7 @@
 
     </v-content>
 
-
-    <v-container v-if = "showClassInfo">
-      <v-layout>
-        <v-flex>
-          <v-card class = "class-info-card" id = "classInfoCard">
-            <v-card-title>
-              Class Info
-            </v-card-title>
-            <v-card-text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum mauris quis interdum vehicula. Vivamus sagittis commodo ante, ut gravida velit aliquam eget. Fusce quis lobortis dolor. Sed vel erat in nibh pretium tempor. Integer lobortis velit purus, vitae rutrum ipsum dignissim vitae. Nullam in efficitur mauris. Mauris eleifend est sit amet elit congue, quis efficitur tellus mattis. Ut ut mollis tellus. Maecenas orci ex, ultrices eu magna nec, posuere efficitur lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
+    <class-info v-if = "showClassInfo"></class-info>
 
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
@@ -172,6 +158,7 @@ import ConflictDialog from "./components/ConflictDialog.vue"
 import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
+import ClassInfo from "./components/ClassInfo.vue"
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
@@ -184,7 +171,8 @@ export default {
     'filter-set': FilterSet,
     'road-tabs': RoadTabs,
     'conflict-dialog': ConflictDialog,
-    'auth': Auth
+    'auth': Auth,
+    'class-info': ClassInfo
   },
   data: function(){ return {
     reqTrees: {},
@@ -571,11 +559,5 @@ export default {
   .expanded-search {
     width: 20em;
   }
-  .class-info-card {
-    height: 30vh;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 20em;
-  }
+  
 </style>
