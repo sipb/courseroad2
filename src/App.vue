@@ -547,7 +547,7 @@ export default {
     width: 20em;
   }
   .class-info-card {
-    height: 30vh;
+    height: 35vh;
     position: fixed;
     bottom: 0;
     right: 0;

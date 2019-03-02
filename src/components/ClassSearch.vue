@@ -11,7 +11,7 @@
         <div style = "flex: 1; overflow: auto;">
           <v-data-table :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
             <template slot = "items" slot-scope = "props">
-              <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)" v-on:dragstart="dragStart($event, props)">
+              <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)" v-on:dragstart="dragStart($event, props)" @click = "viewClassInfo(props)">
                 <td>{{props.item.subject_id}}</td>
                 <td>{{props.item.title}}</td>
               </tr>
@@ -297,6 +297,9 @@ export default {
       var maxHeight = menuBottom - searchMenuTop - this.menuMargin;
       this.searchHeight = "max-height: "+maxHeight+"px;width: "+menuWidth+"px;";
 
+    },
+    viewClassInfo: function(item) {
+      console.log(item);
     }
   },
   mounted() {
