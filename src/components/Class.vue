@@ -7,6 +7,7 @@
       draggable
       v-on:drag = "drag"
       v-on:dragend = "drop"
+      v-on:dragstart = "dragStart"
     >
       <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo)">cancel</v-icon>
       <v-card-text>{{classInfo.id}}: {{classInfo.title}}</v-card-text>
@@ -40,6 +41,10 @@ export default {
         isNew: false,
         currentSem: this.semesterIndex
       });
+    },
+    dragStart: function(event) {
+      // TODO: Rewrite as part of #53?
+      event.dataTransfer.setData('foo', 'bar')
     },
     drop: function(event) {
       this.$emit("drop-class",{
