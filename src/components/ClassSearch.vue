@@ -12,7 +12,7 @@
     <h4> Results: </h4>
     <v-data-table  :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
       <template slot = "items" slot-scope = "props">
-        <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)">
+        <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)" v-on:dragstart="dragStart($event, props)">
           <td>{{props.item.subject_id}}</td>
           <td>{{props.item.title}}</td>
         </tr>
@@ -191,6 +191,10 @@ export default {
         classInfo: classItem.item,
         isNew: true
       });
+    },
+    dragStart: function(event, classItem) {
+      // TODO: Rewrite as part of #53?
+      event.dataTransfer.setData('foo', 'bar')
     },
     drop: function(event, classItem) {
       this.$emit("drop-class", {
