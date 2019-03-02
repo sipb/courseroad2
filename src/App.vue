@@ -36,9 +36,34 @@
       </auth>
       <v-spacer></v-spacer>
 
-      <v-menu attach v-model = "showSearch" :close-on-content-click="false" fixed offset-y input-activator>
-        <v-text-field id = "searchInputTF" autocomplete = "false" class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
-        <class-search id = "searchMenu" class = "search-menu" v-bind:showClassInfo = "showClassInfo" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
+      <v-menu
+        attach
+        v-model = "showSearch"
+        :close-on-content-click="false"
+        fixed
+        offset-y
+        input-activator
+      >
+        <v-text-field
+        id = "searchInputTF"
+        autocomplete = "false"
+        class = "expanded-search"
+        prepend-icon="search"
+        v-model = "searchInput"
+        placeholder = "6.0061 Silly Systems"
+        slot = "activator">
+        </v-text-field>
+        <class-search
+        id = "searchMenu"
+        class = "search-menu"
+        v-bind:showClassInfo = "showClassInfo"
+        v-bind:searchInput = "searchInput"
+        v-bind:subjects="subjectsInfo"
+        @add-class="addClass"
+        @move-class="moveClass"
+        @drop-class="dropClass"
+        @drag-class="testClass">
+        </class-search>
       </v-menu>
 
     </v-toolbar>
