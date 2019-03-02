@@ -38,8 +38,8 @@
       <v-spacer></v-spacer>
 
       <v-menu attach v-model = "showSearch" :close-on-content-click="false" fixed offset-y input-activator>
-        <v-text-field autocomplete = "false" class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
-        <class-search scrollable class = "search-menu" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
+        <v-text-field id = "searchInputTF" autocomplete = "false" class = "expanded-search" prepend-icon="search" v-model = "searchInput" placeholder = "6.0061 Silly Systems" slot = "activator"></v-text-field>
+        <class-search id = "searchMenu" scrollable class = "search-menu" v-bind:currentlyShowing = "showSearch" v-bind:searchInput = "searchInput" v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
       </v-menu>
 
 
@@ -99,19 +99,21 @@
     </v-content>
 
 
+    <v-container>
+      <v-layout>
+        <v-flex>
+          <v-card class = "class-info-card" id = "classInfoCard">
+            <v-card-title>
+              Class Info
+            </v-card-title>
+            <v-card-text>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum mauris quis interdum vehicula. Vivamus sagittis commodo ante, ut gravida velit aliquam eget. Fusce quis lobortis dolor. Sed vel erat in nibh pretium tempor. Integer lobortis velit purus, vitae rutrum ipsum dignissim vitae. Nullam in efficitur mauris. Mauris eleifend est sit amet elit congue, quis efficitur tellus mattis. Ut ut mollis tellus. Maecenas orci ex, ultrices eu magna nec, posuere efficitur lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
 
-    <v-card class = "class-info-card">
-      <v-card-title>
-        Class Info
-      </v-card-title>
-      <v-card-text>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum mauris quis interdum vehicula. Vivamus sagittis commodo ante, ut gravida velit aliquam eget. Fusce quis lobortis dolor. Sed vel erat in nibh pretium tempor. Integer lobortis velit purus, vitae rutrum ipsum dignissim vitae. Nullam in efficitur mauris. Mauris eleifend est sit amet elit congue, quis efficitur tellus mattis. Ut ut mollis tellus. Maecenas orci ex, ultrices eu magna nec, posuere efficitur lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-      </v-card-text>
-    </v-card>
-    <!--
-    <div style = "height:40vh" fixed>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rutrum mauris quis interdum vehicula. Vivamus sagittis commodo ante, ut gravida velit aliquam eget. Fusce quis lobortis dolor. Sed vel erat in nibh pretium tempor. Integer lobortis velit purus, vitae rutrum ipsum dignissim vitae. Nullam in efficitur mauris. Mauris eleifend est sit amet elit congue, quis efficitur tellus mattis. Ut ut mollis tellus. Maecenas orci ex, ultrices eu magna nec, posuere efficitur lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-    </div> -->
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
       This site uses cookies to store your data and login information.  Click OK to consent to the use of cookies.

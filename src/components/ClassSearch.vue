@@ -1,43 +1,43 @@
 <template>
-  <v-container class="searchdiv">
+  <v-container class="searchdiv" :style = "searchHeight + 'display: flex; flex-direction:column;'">
     <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
-    <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
-    <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
-    <filter-set v-model = "chosenFilters.levelInput" v-bind:label = "'Level'" v-bind:filters="allFilters.levelInput"></filter-set>
-    <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
+    <!-- <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set> -->
+    <!-- <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set> -->
+    <!-- <filter-set v-model = "chosenFilters.levelInput" v-bind:label = "'Level'" v-bind:filters="allFilters.levelInput"></filter-set> -->
+    <!-- <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set> -->
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
-    <v-layout column :style = "searchTable">
-      <v-flex style = "overflow: auto">
-        <v-data-table :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
-          <template slot = "items" slot-scope = "props">
-            <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)">
-              <td>{{props.item.subject_id}}</td>
-              <td>{{props.item.title}}</td>
-            </tr>
-          </template>
-        </v-data-table>
-      </v-flex>
-    </v-layout>
+      <div style = "display: flex; flex: 1; min-height: 0px;">
+        <div style = "flex: 1; overflow: auto;">
+          <v-data-table :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
+            <template slot = "items" slot-scope = "props">
+              <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)">
+                <td>{{props.item.subject_id}}</td>
+                <td>{{props.item.title}}</td>
+              </tr>
+            </template>
+          </v-data-table>
+        </div>
+      </div>
   </v-container>
 </template>
 
 
 <script>
 import FilterSet from "./FilterSet.vue";
-import VueScrollingTable from "vue-scrolling-table";
+import Vue from "vue";
 import $ from 'jquery';
 
 export default {
   name: "ClassSearch",
   components: {
     "filter-set": FilterSet,
-    "vue-scrolling-table": VueScrollingTable
   },
-  props: ['subjects', 'searchInput'],
+  props: ['subjects', 'searchInput', 'currentlyShowing'],
   data: function () {
     return {
       dragSemesterNum: -1,
+      searchHeight: "",
       //lists of the filters turned on in each filter group
       chosenFilters: {
         nameInput: "",
@@ -100,6 +100,9 @@ export default {
   watch: {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
+    },
+    currentlyShowing: function(newShowing, oldShowing) {
+      this.updateMenuStyle();
     }
   },
   computed: {
@@ -190,9 +193,6 @@ export default {
       } else {
         return [];
       }
-    },
-    searchTable: function() {
-      return "height: 25vh";
     }
   },
   methods: {
@@ -270,7 +270,36 @@ export default {
           this.dragSemesterNum = semesterNum;
         }
       }
+    },
+    updateMenuStyle: function() {
+      var searchMenu = $("#searchMenu");
+      var searchInput = $("#searchInputTF");
+      window.searchInput = searchInput;
+      var classInfoCard = $("#classInfoCard");
+      var classInfoTop = classInfoCard.position().top;
+      // var searchMenuTop = searchMenu.offset().top;
+      var searchMenuTop = searchInput.offset().top + searchInput.outerHeight(true);
+      var maxHeight = classInfoTop - searchMenuTop;
+      console.log("max height: " + maxHeight);
+      this.searchHeight = "max-height: "+maxHeight+"px;";
     }
+  },
+  mounted() {
+    // $(document).ready(function() {
+    //   var searchMenu = $("#searchMenu");
+    //   var classInfoCard = $("#classInfoCard");
+    //   var searchInput = $("#searchInputTF");
+    //   var searchTable = $("#searchResultsTable");
+    //   var classInfoTop = classInfoCard.position().top;
+    //   var searchMenuTop = searchInput.offset().top + searchInput.outerHeight(true);
+    //   var margin = 20;
+    //   var maxHeight = classInfoTop-searchMenuTop - margin;
+    //   this.searchHeight =  "height: "+maxHeight+"px";
+    //   window.searchMenu = searchMenu;
+    //   window.classInfoCard = classInfoCard;
+    //   window.searchInput = searchInput;
+    //   window.searchTable = searchTable;
+    // }.bind(this));
   }
 }
 </script>
