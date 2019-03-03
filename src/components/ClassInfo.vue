@@ -24,7 +24,7 @@
             </v-flex>
           </v-card-title>
           <v-card-text class = "card-body">
-            <div class = "card-body-container">
+            <div class = "card-body-container" id = "cardBody">
               <table cellspacing= "4">
                 <tr>
                   <td><b>Units</b></td>
@@ -55,8 +55,8 @@
                   <td><b>Hours</b></td>
                   <td>
                     <table cellspacing = "0">
-                      <tr>{{currentSubject.in_class_hours}} in class</tr>
-                      <tr>{{currentSubject.out_of_class_hours}} out of class</tr>
+                      <tr v-if = "currentSubject.in_class_hours !== undefined">{{currentSubject.in_class_hours}} in class</tr>
+                      <tr v-if = "currentSubject.out_of_class_hours !== undefined">{{currentSubject.out_of_class_hours}} out of class</tr>
                     </table>
                   </td>
                 </tr>
@@ -74,7 +74,7 @@
                 <table cellspacing = "10">
                   <tr style = "height: 1px;">
                     <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in currentSubject.related_subjects">
-                      <div class = "related-subject" @click = "$emit('push-stack', subjectID)">
+                      <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
                         <div><b>{{subjectID}}</b></div>
                         {{classInfo(subjectID).title}}
                       </div>
@@ -90,6 +90,7 @@
   </v-container>
 </template>
 <script>
+import $ from "jquery";
 export default {
   name: "ClassInfo",
   components: {},
@@ -104,6 +105,10 @@ export default {
     classInfo: function(subjectID) {
       var subjectIndex = this.subjects.map((s)=>s.subject_id).indexOf(subjectID);
       return this.subjects[subjectIndex];
+    },
+    clickRelatedSubject: function(subjectID) {
+      this.$emit('push-stack', subjectID);
+      $("#cardBody").animate({scrollTop:0});
     }
   }
 }
