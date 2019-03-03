@@ -1,35 +1,37 @@
 <template>
   <v-container class="searchdiv" :style = "searchHeight + 'display: flex; flex-direction:column;'">
-    <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
-    <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
-    <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
-    <filter-set v-model = "chosenFilters.levelInput" v-bind:label = "'Level'" v-bind:filters="allFilters.levelInput"></filter-set>
-    <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
+    <div>
+      <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
+      <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
+      <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
+      <filter-set v-model = "chosenFilters.levelInput" v-bind:label = "'Level'" v-bind:filters="allFilters.levelInput"></filter-set>
+      <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
+    </div>
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
-      <div style = "display: flex; flex: 1; min-height: 0px;">
-        <div style = "flex: 1; overflow: auto;">
-          <v-data-table
-            :items="autocomplete"
-            :pagination.sync = "pagination"
-            :no-data-text = "'No results'"
-            :rows-per-page-text= "'Display'"
-            :hide-headers= "true"
-          >
-            <template slot = "items" slot-scope = "props">
-              <tr
-                draggable = "true"
-                v-on:dragend ="drop($event, props)"
-                v-on:drag = "drag($event, props)"
-                v-on:dragstart="dragStart($event, props)"
-              >
-                <td>{{props.item.subject_id}}</td>
-                <td>{{props.item.title}}</td>
-              </tr>
-            </template>
-          </v-data-table>
-        </div>
+    <div style = "display: flex; flex: 1; min-height: 0px;">
+      <div style = "flex: 1; overflow: auto;">
+        <v-data-table
+          :items="autocomplete"
+          :pagination.sync = "pagination"
+          :no-data-text = "'No results'"
+          :rows-per-page-text= "'Display'"
+          :hide-headers= "true"
+        >
+          <template slot = "items" slot-scope = "props">
+            <tr
+              draggable = "true"
+              v-on:dragend ="drop($event, props)"
+              v-on:drag = "drag($event, props)"
+              v-on:dragstart="dragStart($event, props)"
+            >
+              <td>{{props.item.subject_id}}</td>
+              <td>{{props.item.title}}</td>
+            </tr>
+          </template>
+        </v-data-table>
       </div>
+    </div>
   </v-container>
 </template>
 
