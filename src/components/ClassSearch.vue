@@ -135,7 +135,7 @@ export default {
         //gets the .test function (which tests if a string matches regex) from each regex filter in a group
         function getRegexFuncs(regexStrings) {
           return regexStrings.map(function(rs) {
-            var r = new RegExp(rs);
+            var r = new RegExp(rs, "i");
             var t = r.test.bind(r);
             return t;
           });

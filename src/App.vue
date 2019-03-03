@@ -132,20 +132,6 @@
 </template>
 
 
-<style scoped>
-  #app-wrapper {
-/*    display: flex;
-    flex-direction: row;
-    height: 100%;*/
-  }
-
-  .side-panel {
-    /*height: 100%;*/
-  }
-
-</style>
-
-
 <script>
 import Audit from './components/Audit.vue'
 import ClassSearch from './components/ClassSearch.vue'
@@ -542,6 +528,8 @@ export default {
   },
 };
 </script>
+
+
 <style scoped>
   .scroller {
     overflow-x: scroll;
@@ -555,5 +543,4 @@ export default {
   .expanded-search {
     width: 20em;
   }
-
 </style>

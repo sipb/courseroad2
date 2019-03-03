@@ -14,6 +14,8 @@
     </v-layout>
   </v-container>
 </template>
+
+
 <script>
 export default {
   name: "ClassInfo",
@@ -22,11 +24,13 @@ export default {
   data: function() {return {}}
 }
 </script>
+
+
 <style>
 .class-info-card {
   height: 30vh;
   position: fixed;
-  bottom: 0;
+  bottom: 1em;
   right: 0;
   width: 20em;
 }
