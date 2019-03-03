@@ -1,10 +1,12 @@
 <template>
   <v-container class="searchdiv" :style = "searchHeight + 'display: flex; flex-direction:column;'">
-    <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
-    <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
-    <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
-    <filter-set v-model = "chosenFilters.levelInput" v-bind:label = "'Level'" v-bind:filters="allFilters.levelInput"></filter-set>
-    <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
+    <div>
+      <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
+      <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
+      <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
+      <filter-set v-model = "chosenFilters.levelInput" v-bind:label = "'Level'" v-bind:filters="allFilters.levelInput"></filter-set>
+      <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
+    </div>
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
       <div style = "display: flex; flex: 1; min-height: 0px;">
@@ -31,6 +33,7 @@
           </v-data-table>
         </div>
       </div>
+    </div>
   </v-container>
 </template>
 
@@ -129,7 +132,7 @@ export default {
         //gets the .test function (which tests if a string matches regex) from each regex filter in a group
         function getRegexFuncs(regexStrings) {
           return regexStrings.map(function(rs) {
-            var r = new RegExp(rs);
+            var r = new RegExp(rs, "i");
             var t = r.test.bind(r);
             return t;
           });

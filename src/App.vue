@@ -141,20 +141,6 @@
 </template>
 
 
-<style scoped>
-  #app-wrapper {
-/*    display: flex;
-    flex-direction: row;
-    height: 100%;*/
-  }
-
-  .side-panel {
-    /*height: 100%;*/
-  }
-
-</style>
-
-
 <script>
 import Audit from './components/Audit.vue'
 import ClassSearch from './components/ClassSearch.vue'
@@ -537,9 +523,17 @@ export default {
       this.setActiveRoad();
     }.bind(this))
 
-    $(window).resize(function() {
-      this.adjustCardStyle();
-    }.bind(this))
+    var setSearchSize = function() {
+      var classInfoCard = $("#classInfoCard");
+      var searchInput = $("#searchInputTF");
+      var cardWidth = searchInput.outerWidth();
+      var cardLeft = cardWidth + searchInput.offset().left;
+      var browserWidth = $(window).width();
+      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
+    };
+
+    setSearchSize();
+    $(window).resize(setSearchSize)
 
     this.adjustCardStyle();
     this.setActiveRoad();
@@ -567,6 +561,8 @@ export default {
   },
 };
 </script>
+
+
 <style scoped>
   .scroller {
     overflow-x: scroll;
@@ -578,7 +574,6 @@ export default {
     background: white;
   }
   .expanded-search {
-    width: 20em;
+    width: 22em;
   }
-
 </style>
