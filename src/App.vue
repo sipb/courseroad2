@@ -32,9 +32,41 @@
       >
       </auth>
       <v-spacer></v-spacer>
-      <v-toolbar-title>Class Search</v-toolbar-title>
-      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
+
+      <v-menu
+        attach
+        v-model = "showSearch"
+        :close-on-content-click="false"
+        fixed
+        offset-y
+        input-activator
+      >
+        <v-text-field
+          id = "searchInputTF"
+          autocomplete = "false"
+          class = "expanded-search"
+          prepend-icon="search"
+          v-model = "searchInput"
+          placeholder = "6.0061 Silly Systems"
+          slot = "activator"
+        >
+        </v-text-field>
+        <class-search
+          id = "searchMenu"
+          class = "search-menu"
+          v-bind:classInfoStack = "classInfoStack"
+          v-bind:searchInput = "searchInput"
+          v-bind:subjects="subjectsInfo"
+          @add-class="addClass"
+          @move-class="moveClass"
+          @drop-class="dropClass"
+          @drag-class="testClass"
+        >
+        </class-search>
+      </v-menu>
+
     </v-toolbar>
+
 
     <v-navigation-drawer
       id="left-panel"
@@ -54,7 +86,10 @@
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
+
+
     <v-content app id="center-panel">
+
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
           v-for = "roadid in Object.keys(roads)"
@@ -84,17 +119,8 @@
 
     </v-content>
 
-    <v-navigation-drawer
-      id="right-panel"
-      width="350"
-      mobile-break-point="800"
-      class="side-panel elevation-5"
-      v-model="rightDrawer"
-      right
-      app
-    >
-      <class-search v-bind:subjects="subjectsInfo" @add-class="addClass" @move-class="moveClass"   @drop-class="dropClass" @drag-class="testClass"></class-search>
-    </v-navigation-drawer>
+    <class-info v-if = "classInfoStack.length>0"></class-info>
+
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
       This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
@@ -104,20 +130,6 @@
     </v-footer>
   </v-app>
 </template>
-
-
-<style scoped>
-  #app-wrapper {
-/*    display: flex;
-    flex-direction: row;
-    height: 100%;*/
-  }
-
-  .side-panel {
-    /*height: 100%;*/
-  }
-
-</style>
 
 
 <script>
@@ -130,6 +142,7 @@ import ConflictDialog from "./components/ConflictDialog.vue"
 import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
+import ClassInfo from "./components/ClassInfo.vue"
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
@@ -142,7 +155,8 @@ export default {
     'filter-set': FilterSet,
     'road-tabs': RoadTabs,
     'conflict-dialog': ConflictDialog,
-    'auth': Auth
+    'auth': Auth,
+    'class-info': ClassInfo
   },
   data: function(){ return {
     reqTrees: {},
@@ -163,7 +177,9 @@ export default {
     conflictDialog: false,
     conflictInfo: undefined,
     cookiesAllowed: false,
-
+    searchInput: "",
+    showSearch: false,
+    classInfoStack: [],
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -439,6 +455,11 @@ export default {
         this.$refs.authcomponent.save();
       },
       deep: true
+    },
+    searchInput: function(newSearch, oldSearch) {
+      if(newSearch.length > 0) {
+        this.showSearch = true;
+      }
     }
   },
   mounted() {
@@ -467,6 +488,17 @@ export default {
       this.setActiveRoad();
     }.bind(this))
 
+    var setSearchSize = function() {
+      var classInfoCard = $("#classInfoCard");
+      var searchInput = $("#searchInputTF");
+      var cardWidth = searchInput.outerWidth();
+      var cardLeft = cardWidth + searchInput.offset().left;
+      var browserWidth = $(window).width();
+      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
+    };
+
+    setSearchSize();
+    $(window).resize(setSearchSize)
 
     this.setActiveRoad();
 
@@ -489,14 +521,23 @@ export default {
         this.subjectsInfo = response.data
         this.subjectsLoaded = true;
       });
+
   },
 };
 </script>
+
+
 <style scoped>
   .scroller {
     overflow-x: scroll;
   }
   .v-navigation-drawer__border {
     display: none !important;
+  }
+  .search-menu {
+    background: white;
+  }
+  .expanded-search {
+    width: 20em;
   }
 </style>
