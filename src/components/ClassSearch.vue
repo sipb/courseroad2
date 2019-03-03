@@ -22,6 +22,7 @@
                 v-on:dragend ="drop($event, props)"
                 v-on:drag = "drag($event, props)"
                 v-on:dragstart="dragStart($event, props)"
+                @click = "viewClassInfo(props)"
               >
                 <td>{{props.item.subject_id}}</td>
                 <td>{{props.item.title}}</td>
@@ -112,12 +113,11 @@ export default {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
     },
-    classInfoStack: function(newStack, oldStack) {
-      var oldShowing = oldStack.length > 0;
-      var newShowing = newStack.length > 0;
-      if(oldShowing != newShowing) {
-        this.updateMenuStyle();
-      }
+    classInfoStack: {
+      handler: function(n, o) {
+        console.log("class info stack just changed 2");
+      },
+      deep: true
     }
   },
   computed: {
@@ -291,8 +291,7 @@ export default {
       }
     },
     updateMenuStyle: function() {
-
-      var searchInputElem = document.getElementById("searchInputTF");
+      var searchInputElem =  document.getElementById("searchInputTF");
       var searchInputRect = searchInputElem.getBoundingClientRect();
       var searchMenuTop = searchInputRect.top + searchInputRect.height;
       var searchInput = $("#searchInputTF");
@@ -309,7 +308,7 @@ export default {
 
     },
     viewClassInfo: function(item) {
-      console.log(item);
+      this.$emit("view-class-info", item.item.subject_id);
     }
   },
   mounted() {

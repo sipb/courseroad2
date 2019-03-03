@@ -53,6 +53,7 @@
         </v-text-field>
         <class-search
           id = "searchMenu"
+          ref = "searchMenu"
           class = "search-menu"
           v-bind:classInfoStack = "classInfoStack"
           v-bind:searchInput = "searchInput"
@@ -61,6 +62,7 @@
           @move-class="moveClass"
           @drop-class="dropClass"
           @drag-class="testClass"
+          @view-class-info="pushClassStack"
         >
         </class-search>
       </v-menu>
@@ -119,7 +121,13 @@
 
     </v-content>
 
-    <class-info v-if = "classInfoStack.length>0"></class-info>
+    <class-info
+      v-if = "classInfoStack.length"
+      v-bind:classInfoStack = "classInfoStack"
+      v-bind:subjects = "subjectsInfo"
+      @pop-stack = "popClassStack"
+      >
+    </class-info>
 
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
@@ -447,6 +455,22 @@ export default {
     },
     updateRemote: function(id) {
       this.$refs.authcomponent.updateRemote(id);
+    },
+    pushClassStack: function(id) {
+      var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
+      this.classInfoStack.push(subjectIndex);
+      console.log(this.classInfoStack);
+    },
+    popClassStack: function() {
+      this.classInfoStack.pop();
+    },
+    adjustCardStyle: function() {
+      var classInfoCard = $("#classInfoCard");
+      var searchInput = $("#searchInputTF");
+      var cardWidth = searchInput.outerWidth();
+      var cardLeft = cardWidth + searchInput.offset().left;
+      var browserWidth = $(window).width();
+      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
     }
   },
   watch: {
@@ -474,6 +498,15 @@ export default {
       if(newSearch.length > 0) {
         this.showSearch = true;
       }
+    },
+    classInfoStack: {
+      handler: function(newStack, oldStack) {
+        Vue.nextTick(function() {
+          this.adjustCardStyle();
+          this.$refs.searchMenu.updateMenuStyle();
+        }.bind(this));
+      },
+      deep: false
     }
   },
   mounted() {
@@ -503,20 +536,10 @@ export default {
     }.bind(this))
 
     $(window).resize(function() {
-      var classInfoCard = $("#classInfoCard");
-      var searchInput = $("#searchInputTF");
-      var cardWidth = searchInput.outerWidth();
-      var cardLeft = cardWidth + searchInput.offset().left;
-      var browserWidth = $(window).width();
-      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
-    })
-    var classInfoCard = $("#classInfoCard");
-    var searchInput = $("#searchInputTF");
-    var cardWidth = searchInput.outerWidth();
-    var cardLeft = cardWidth + searchInput.offset().left;
-    var browserWidth = $(window).width();
-    classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
+      this.adjustCardStyle();
+    }.bind(this))
 
+    this.adjustCardStyle();
     this.setActiveRoad();
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)

@@ -19,7 +19,7 @@ export default {
   name: "ClassInfo",
   components: {},
   props: [],
-  data: function() {return {}}
+  data: function() {return {}},
 }
 </script>
 <style>
