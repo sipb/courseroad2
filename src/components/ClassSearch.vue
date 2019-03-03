@@ -43,7 +43,7 @@ export default {
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput', 'showClassInfo'],
+  props: ['subjects', 'searchInput', 'classInfoStack'],
   data: function () {
     return {
       dragSemesterNum: -1,
