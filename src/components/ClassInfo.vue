@@ -14,7 +14,7 @@
                 </div>
               </div>
               <div style = "padding: 0 0.5em 0 0;"><span>{{currentSubject.title}}</span></div>
-              <div>
+              <div style = "margin-left:auto">
                 <v-btn @click = "$emit('close-classinfo')" icon style = "margin: 0;">
                   <v-icon style = "margin:0; padding: 0;">
                     close
