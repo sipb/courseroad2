@@ -538,6 +538,6 @@ export default {
     background: white;
   }
   .expanded-search {
-    width: 20em;
+    width: 22em;
   }
 </style>
