@@ -33,15 +33,17 @@
                 <tr>
                   <td><b>Offered</b></td>
                   <td>
-                    <span v-if = "currentSubject.offered_fall">Fall</span>
-                    <span v-if = "currentSubject.offered_IAP">IAP</span>
-                    <span v-if = "currentSubject.offered_spring">Spring</span>
-                    <span v-if = "currentSubject.offered_summer">Summer</span>
+                    <ul class = "comma-separated">
+                      <li v-if = "currentSubject.offered_fall">Fall</li>
+                      <li v-if = "currentSubject.offered_IAP">IAP</li>
+                      <li v-if = "currentSubject.offered_spring">Spring</li>
+                      <li v-if = "currentSubject.offered_summer">Summer</li>
+                    </ul>
                   </td>
                 </tr>
                 <tr>
                   <td><b>Instructor</b></td>
-                  <td><span v-for = "instructor in currentSubject.instructors">{{instructor}} </span></td>
+                  <td><ul class = "comma-separated"><li v-for = "instructor in currentSubject.instructors">{{instructor}}</li></ul></td>
                 </tr>
                 <tr>
                   <td><b>Average Enrollment</b></td>
@@ -61,15 +63,9 @@
                   </td>
                 </tr>
               </table>
+              <h3>Description</h3>
               <p>{{currentSubject.description}}</p>
               <h3>Related subjects</h3>
-              <!-- <div class = "horizontal-scroll">
-                <div style = "display: flex; flex-direction: row; overflow-x: scroll;"> -->
-                <!-- <v-card class = "scrolling-card" v-for = "subjectID in currentSubject.related_subjects">
-                  <b>{{subjectID}}</b>
-                  {{classInfo(subjectID).title}}
-                </v-card> -->
-              <!-- </div>  -->
               <div style = "overflow-x: scroll;">
                 <table cellspacing = "10">
                   <tr style = "height: 1px;">
@@ -120,9 +116,9 @@ export default {
   display: inline-block;
 }
 .class-info-card {
-  height: 40vh;
+  height: 35vh;
   position: fixed;
-  bottom: 0;
+  bottom: 1em;
   right: 0;
   width: 20em;
 }
@@ -144,5 +140,18 @@ export default {
   border-radius: 3px;
   padding: 0.5em;
   display: inline-block;
+}
+.comma-separated {
+  padding: 0;
+}
+.comma-separated li {
+  display: inline;
+  list-style: none;
+}
+.comma-separated li:after {
+  content: ", ";
+}
+.comma-separated li:last-child:after {
+  content: "";
 }
 </style>
