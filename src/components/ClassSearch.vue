@@ -44,7 +44,7 @@ export default {
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput', 'showClassInfo'],
+  props: ['subjects', 'searchInput'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -112,12 +112,6 @@ export default {
   watch: {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
-    },
-    classInfoStack: {
-      handler: function(n, o) {
-        console.log("class info stack just changed 2");
-      },
-      deep: true
     }
   },
   computed: {

@@ -55,7 +55,6 @@
           id = "searchMenu"
           ref = "searchMenu"
           class = "search-menu"
-          v-bind:classInfoStack = "classInfoStack"
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
           @add-class="addClass"
@@ -460,6 +459,7 @@ export default {
       var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
       this.classInfoStack.push(subjectIndex);
       console.log(this.classInfoStack);
+      console.log(this.subjectsInfo[subjectIndex]);
     },
     popClassStack: function() {
       this.classInfoStack.pop();
