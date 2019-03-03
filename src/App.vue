@@ -488,20 +488,17 @@ export default {
       this.setActiveRoad();
     }.bind(this))
 
-    $(window).resize(function() {
+    var setSearchSize = function() {
       var classInfoCard = $("#classInfoCard");
       var searchInput = $("#searchInputTF");
       var cardWidth = searchInput.outerWidth();
       var cardLeft = cardWidth + searchInput.offset().left;
       var browserWidth = $(window).width();
       classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
-    })
-    var classInfoCard = $("#classInfoCard");
-    var searchInput = $("#searchInputTF");
-    var cardWidth = searchInput.outerWidth();
-    var cardLeft = cardWidth + searchInput.offset().left;
-    var browserWidth = $(window).width();
-    classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
+    };
+
+    setSearchSize();
+    $(window).resize(setSearchSize)
 
     this.setActiveRoad();
 
