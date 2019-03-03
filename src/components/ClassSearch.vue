@@ -1,8 +1,5 @@
 <template>
-  <v-container class="searchdiv">
-    <!-- this is probably a good place for v-container » v-layout » v-flex -->
-    <h1>Class Search</h1>
-    <v-text-field v-model="chosenFilters.nameInput" placeholder = "6.0061 Silly Systems"/>
+  <v-container class="searchdiv" :style = "searchHeight + 'display: flex; flex-direction:column;'">
     <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
     <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
     <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
@@ -10,14 +7,29 @@
     <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
-    <v-data-table  :items="autocomplete" :pagination.sync = "pagination" :no-data-text = "'No results'" :rows-per-page-text= "'Display'" :hide-headers= "true">
-      <template slot = "items" slot-scope = "props">
-        <tr draggable = "true" v-on:dragend ="drop($event, props)" v-on:drag = "drag($event, props)" v-on:dragstart="dragStart($event, props)">
-          <td>{{props.item.subject_id}}</td>
-          <td>{{props.item.title}}</td>
-        </tr>
-      </template>
-    </v-data-table>
+      <div style = "display: flex; flex: 1; min-height: 0px;">
+        <div style = "flex: 1; overflow: auto;">
+          <v-data-table
+            :items="autocomplete"
+            :pagination.sync = "pagination"
+            :no-data-text = "'No results'"
+            :rows-per-page-text= "'Display'"
+            :hide-headers= "true"
+          >
+            <template slot = "items" slot-scope = "props">
+              <tr
+                draggable = "true"
+                v-on:dragend ="drop($event, props)"
+                v-on:drag = "drag($event, props)"
+                v-on:dragstart="dragStart($event, props)"
+              >
+                <td>{{props.item.subject_id}}</td>
+                <td>{{props.item.title}}</td>
+              </tr>
+            </template>
+          </v-data-table>
+        </div>
+      </div>
   </v-container>
 </template>
 
@@ -29,12 +41,14 @@ import $ from 'jquery';
 export default {
   name: "ClassSearch",
   components: {
-    "filter-set": FilterSet
+    "filter-set": FilterSet,
   },
-  props: ['subjects'],
+  props: ['subjects', 'searchInput', 'classInfoStack'],
   data: function () {
     return {
       dragSemesterNum: -1,
+      searchHeight: "",
+      menuMargin: 20,
       //lists of the filters turned on in each filter group
       chosenFilters: {
         nameInput: "",
@@ -94,6 +108,18 @@ export default {
       }
     }
   },
+  watch: {
+    searchInput: function(newSearch, oldSearch) {
+      this.chosenFilters.nameInput = newSearch;
+    },
+    classInfoStack: function(newStack, oldStack) {
+      var oldShowing = oldStack.length > 0;
+      var newShowing = newStack.length > 0;
+      if(oldShowing != newShowing) {
+        this.updateMenuStyle();
+      }
+    }
+  },
   computed: {
     autocomplete: function () {
       //only display subjects if you are filtering by something
@@ -109,7 +135,7 @@ export default {
         //gets the .test function (which tests if a string matches regex) from each regex filter in a group
         function getRegexFuncs(regexStrings) {
           return regexStrings.map(function(rs) {
-            var r = new RegExp(rs);
+            var r = new RegExp(rs, "i");
             var t = r.test.bind(r);
             return t;
           });
@@ -263,7 +289,32 @@ export default {
           this.dragSemesterNum = semesterNum;
         }
       }
+    },
+    updateMenuStyle: function() {
+
+      var searchInputElem = document.getElementById("searchInputTF");
+      var searchInputRect = searchInputElem.getBoundingClientRect();
+      var searchMenuTop = searchInputRect.top + searchInputRect.height;
+      var searchInput = $("#searchInputTF");
+      var menuWidth = searchInput.outerWidth();
+      var classInfoCard = $("#classInfoCard");
+      var menuBottom;
+      if(classInfoCard.length) {
+        menuBottom = classInfoCard.position().top;
+      } else {
+        menuBottom= $(window).innerHeight();
+      }
+      var maxHeight = menuBottom - searchMenuTop - this.menuMargin;
+      this.searchHeight = "max-height: "+maxHeight+"px;width: "+menuWidth+"px;";
+
     }
+  },
+  mounted() {
+    this.updateMenuStyle();
+
+    $(window).resize(function() {
+      this.updateMenuStyle();
+    }.bind(this));
   }
 }
 </script>
