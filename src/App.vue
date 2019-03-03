@@ -125,6 +125,8 @@
       v-bind:classInfoStack = "classInfoStack"
       v-bind:subjects = "subjectsInfo"
       @pop-stack = "popClassStack"
+      @push-stack = "pushClassStack"
+      @close-classinfo = "classInfoStack = []"
       >
     </class-info>
 
