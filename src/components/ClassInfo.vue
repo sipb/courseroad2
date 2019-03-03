@@ -5,13 +5,13 @@
         <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" >
           <v-card-title class = "card-header">
             <v-flex style = "display: flex; flex-direction: row;">
+              <div  style = "padding: 0; margin: 0; display: block;">
+                <v-btn v-if = "classInfoStack.length > 1"@click = "$emit('pop-stack')" style = "padding: 0; margin: 0" icon>
+                  <v-icon>navigate_before</v-icon>
+                </v-btn>
+              </div>
               <div style = "padding: 0 0.5em 0 0;">
                 <h3>{{currentSubject.subject_id}}</h3>
-                <div v-if = "classInfoStack.length > 1" style = "padding: 0; margin: 0; display: block;">
-                  <v-btn @click = "$emit('pop-stack')" style = "padding: 0; margin: 0" icon>
-                    <v-icon>navigate_before</v-icon>
-                  </v-btn>
-                </div>
               </div>
               <div style = "padding: 0 0.5em 0 0;"><span>{{currentSubject.title}}</span></div>
               <div style = "margin-left:auto">
