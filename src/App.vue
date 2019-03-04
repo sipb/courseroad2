@@ -446,8 +446,6 @@ export default {
     pushClassStack: function(id) {
       var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
       this.classInfoStack.push(subjectIndex);
-      console.log(this.classInfoStack);
-      console.log(this.subjectsInfo[subjectIndex]);
     },
     popClassStack: function() {
       this.classInfoStack.pop();

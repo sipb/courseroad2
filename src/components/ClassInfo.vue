@@ -168,7 +168,6 @@ export default {
         var filteredReqs = allReqs.filter(function(req) {
           return req.length > 0 && req.indexOf("'") == -1;
         });
-        console.log(filteredReqs);
         return filteredReqs;
       } else {
         return [];
