@@ -14,6 +14,15 @@
         slot = "extension"
       >
       </road-tabs>
+
+      <import-export
+        v-bind:roads="roads"
+        v-bind:activeRoad="activeRoad"
+      >
+      </import-export>
+
+      <v-spacer></v-spacer>
+
       <auth
         ref = "authcomponent"
         v-bind:roads = "roads"
@@ -31,6 +40,7 @@
         @allow-cookies = "allowCookies"
       >
       </auth>
+
       <v-spacer></v-spacer>
 
       <v-menu
@@ -143,6 +153,7 @@ import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
 import ClassInfo from "./components/ClassInfo.vue"
+import ImportExport from "./components/ImportExport.vue"
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
@@ -156,7 +167,8 @@ export default {
     'road-tabs': RoadTabs,
     'conflict-dialog': ConflictDialog,
     'auth': Auth,
-    'class-info': ClassInfo
+    'class-info': ClassInfo,
+    'import-export': ImportExport,
   },
   data: function(){ return {
     reqTrees: {},
