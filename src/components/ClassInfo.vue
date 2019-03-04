@@ -65,19 +65,67 @@
               </table>
               <h3>Description</h3>
               <p>{{currentSubject.description}}</p>
-              <a :href = "currentSubject.url">View in Course Catalog</a>
-              <h3>Related subjects</h3>
-              <div style = "overflow-x: scroll;">
-                <table cellspacing = "10">
-                  <tr style = "height: 1px;">
-                    <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in currentSubject.related_subjects">
-                      <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
-                        <div><b>{{subjectID}}</b></div>
-                        {{classInfo(subjectID).title}}
-                      </div>
-                    </td>
-                  </tr>
-                </table>
+              <p><a :href = "currentSubject.url">View in Course Catalog</a></p>
+              <p><a :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">View Course Evaluations</a></p>
+              <div v-if = "currentSubject.equivalent_subjects !== undefined">
+                <h3>Equivalent Subjects</h3>
+                <div style = "overflow-x: scroll;">
+                  <table cellspacing = "10">
+                    <tr style = "height: 1px;">
+                      <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in currentSubject.equivalent_subjects">
+                        <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
+                          <div><b>{{subjectID}}</b></div>
+                          {{classInfo(subjectID).title}}
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div v-if = "currentSubject.prerequisites !== undefined">
+                <h3>Prerequisites</h3>
+                <div style = "overflow-x: scroll;">
+                  <table cellspacing = "10">
+                    <tr style = "height: 1px;">
+                      <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in parseRequirements(currentSubject.prerequisites)">
+                        <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
+                          <div><b>{{subjectID}}</b></div>
+                          {{classInfo(subjectID).title}}
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div v-if = "currentSubject.corequisites !== undefined">
+                <h3>Corequisites</h3>
+                <div style = "overflow-x: scroll;">
+                  <table cellspacing = "10">
+                    <tr style = "height: 1px;">
+                      <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in parseRequirements(currentSubject.corequisites)">
+                        <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
+                          <div><b>{{subjectID}}</b></div>
+                          {{classInfo(subjectID).title}}
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div v-if = "currentSubject.related_subjects !== undefined">
+                <h3>Related subjects</h3>
+                <div style = "overflow-x: scroll;">
+                  <table cellspacing = "10">
+                    <tr style = "height: 1px;">
+                      <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in currentSubject.related_subjects">
+                        <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
+                          <div><b>{{subjectID}}</b></div>
+                          {{classInfo(subjectID).title}}
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </div>
             </div>
           </v-card-text>
@@ -101,11 +149,30 @@ export default {
   methods: {
     classInfo: function(subjectID) {
       var subjectIndex = this.subjects.map((s)=>s.subject_id).indexOf(subjectID);
-      return this.subjects[subjectIndex];
+      if(subjectIndex == -1) {
+        return {
+          subject_id: subjectID,
+          title: ""
+        }
+      } else {
+        return this.subjects[subjectIndex];
+      }
     },
     clickRelatedSubject: function(subjectID) {
       this.$emit('push-stack', subjectID);
       $("#cardBody").animate({scrollTop:0});
+    },
+    parseRequirements: function(requirements) {
+      if(requirements) {
+        var allReqs = requirements.split(/, |\(|\)|\//);
+        var filteredReqs = allReqs.filter(function(req) {
+          return req.length > 0 && req.indexOf("'") == -1;
+        });
+        console.log(filteredReqs);
+        return filteredReqs;
+      } else {
+        return [];
+      }
     }
   }
 }
@@ -134,7 +201,8 @@ export default {
 }
 .related-subject {
   height:100%;
-  max-height: 8em;
+  max-height: 6em;
+  min-width: 8em;
   text-overflow: ellipsis;
   overflow: hidden;
   background-color: lightblue;
