@@ -65,6 +65,7 @@
               </table>
               <h3>Description</h3>
               <p>{{currentSubject.description}}</p>
+              <a :href = "currentSubject.url">View in Course Catalog</a>
               <h3>Related subjects</h3>
               <div style = "overflow-x: scroll;">
                 <table cellspacing = "10">
