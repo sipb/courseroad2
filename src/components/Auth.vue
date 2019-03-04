@@ -1,5 +1,5 @@
 <template>
-  <v-layout row>
+  <v-layout row align-baseline>
     <v-btn v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
       Login
     </v-btn>
