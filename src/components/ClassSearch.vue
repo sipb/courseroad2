@@ -173,7 +173,7 @@ export default {
 
         // and or or function based on filter mode
         var filterAction = this.filterGroupModes[this.filterGroupMode];
-        return this.subjects.filter(function(subject) {
+        var filteredSubjects =  this.subjects.filter(function(subject) {
           for(var attrs in filters) {
             //each test function in a filter group
             var testers = filters[attrs];
@@ -207,6 +207,25 @@ export default {
           }
           return true;
         })
+        if(this.chosenFilters.nameInput.length) {
+          var sortingOrder = [this.chosenFilters.nameInput,  "^" + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), "^" + escapeRegExp(this.chosenFilters.nameInput)];
+          var sortingFuncs = getRegexFuncs(sortingOrder);
+          var getOrderForString = function(matchingString) {
+            var matches = sortingFuncs.map((func)=>func(matchingString))
+            return matches.lastIndexOf(true);
+          }
+          var getOrder = function(subject) {
+            var idMatch = getOrderForString(subject.subject_id);
+            var nameMatch = getOrderForString(subject.title);
+            return Math.max(idMatch, nameMatch)
+          }
+          return filteredSubjects.sort(function(subject1, subject2) {
+            return getOrder(subject2) - getOrder(subject1);
+          });
+        } else {
+          return filteredSubjects;
+        }
+
       } else {
         return [];
       }
