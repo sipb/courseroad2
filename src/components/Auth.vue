@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-layout row>
     <v-btn v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
       Login
     </v-btn>
@@ -18,7 +18,7 @@
       <v-progress-circular :size = "18" indeterminate>
       </v-progress-circular>
     </div>
-  </div>
+  </v-layout>
 </template>
 
 <script>
