@@ -105,6 +105,7 @@
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
+            @click-class = "pushClassStack($event.id)"
           ></road>
         </v-tab-item>
       </v-tabs-items>

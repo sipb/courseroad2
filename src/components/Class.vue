@@ -8,6 +8,7 @@
       v-on:drag = "drag"
       v-on:dragend = "drop"
       v-on:dragstart = "dragStart"
+      v-on:click = "$emit('click-class',classInfo)"
     >
       <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo)">cancel</v-icon>
       <v-card-text>{{classInfo.id}}: {{classInfo.title}}</v-card-text>
