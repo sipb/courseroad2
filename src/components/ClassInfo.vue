@@ -65,8 +65,8 @@
               </table>
               <h3>Description</h3>
               <p>{{currentSubject.description}}</p>
-              <p><a :href = "currentSubject.url">View in Course Catalog</a></p>
-              <p><a :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">View Course Evaluations</a></p>
+              <p><a :href = "currentSubject.url" target="_blank">View in Course Catalog</a></p>
+              <p><a :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id" target="_blank">View Course Evaluations</a></p>
               <div v-if = "currentSubject.equivalent_subjects !== undefined">
                 <h3>Equivalent Subjects</h3>
                 <div style = "overflow-x: scroll;">
@@ -149,7 +149,7 @@ export default {
   methods: {
     classInfo: function(subjectID) {
       var subjectIndex = this.subjects.map((s)=>s.subject_id).indexOf(subjectID);
-      if(subjectIndex == -1) {
+      if(subjectIndex === -1) {
         return {
           subject_id: subjectID,
           title: ""
@@ -166,7 +166,7 @@ export default {
       if(requirements) {
         var allReqs = requirements.split(/, |\(|\)|\//);
         var filteredReqs = allReqs.filter(function(req) {
-          return req.length > 0 && req.indexOf("'") == -1;
+          return req.length > 0 && req.indexOf("'") === -1;
         });
         return filteredReqs;
       } else {
