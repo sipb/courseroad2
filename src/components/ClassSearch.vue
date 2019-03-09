@@ -9,29 +9,28 @@
     </div>
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
-      <div style = "display: flex; flex: 1; min-height: 0px;">
-        <div style = "flex: 1; overflow: auto;">
-          <v-data-table
-            :items="autocomplete"
-            :pagination.sync = "pagination"
-            :no-data-text = "'No results'"
-            :rows-per-page-text= "'Display'"
-            :hide-headers= "true"
-          >
-            <template slot = "items" slot-scope = "props">
-              <tr
-                draggable = "true"
-                v-on:dragend ="drop($event, props)"
-                v-on:drag = "drag($event, props)"
-                v-on:dragstart="dragStart($event, props)"
-                @click = "viewClassInfo(props)"
-              >
-                <td>{{props.item.subject_id}}</td>
-                <td>{{props.item.title}}</td>
-              </tr>
-            </template>
-          </v-data-table>
-        </div>
+    <div style = "display: flex; flex: 1; min-height: 0px;">
+      <div style = "flex: 1; overflow: auto;">
+        <v-data-table
+          :items="autocomplete"
+          :pagination.sync = "pagination"
+          :no-data-text = "'No results'"
+          :rows-per-page-text= "'Display'"
+          :hide-headers= "true"
+        >
+          <template slot = "items" slot-scope = "props">
+            <tr
+              draggable = "true"
+              v-on:dragend ="drop($event, props)"
+              v-on:drag = "drag($event, props)"
+              v-on:dragstart="dragStart($event, props)"
+              @click = "viewClassInfo(props)"
+            >
+              <td>{{props.item.subject_id}}</td>
+              <td>{{props.item.title}}</td>
+            </tr>
+          </template>
+        </v-data-table>
       </div>
     </div>
   </v-container>
