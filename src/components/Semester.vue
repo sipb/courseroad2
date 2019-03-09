@@ -1,7 +1,22 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'road_'+roadID+'_semester_' + index" v-on:dragover.native.prevent>
-    <div slot="header">Semester {{index}}</div>
+    <!-- <div slot="header"> -->
+    <v-container grid-list-xs slot = "header" style = "padding: 0;">
+      <v-layout row>
+        <v-flex>
+          Semester {{index}}
+          Units: {{semesterInformation.totalUnits}}
+          Hours: {{Math.round(semesterInformation.expectedHours,1)}}
+        </v-flex>
+        <v-flex xs1 v-for = "subject in semesterSubjects">
+          <v-card dark color = "primary">
+            <v-card-text style = "padding: 0.3em;">{{subject.id}}</v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
     <v-container
       class="grey lighten-3 semester-drop-container"
       fluid
@@ -35,7 +50,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen"],
   components: {
     'class': Class
   },
@@ -52,6 +67,29 @@ export default {
         return this.index === subj.semester;
       });
     },
+    semesterInformation: function() {
+      var classesInfo = this.semesterSubjects.map(function(subj) {
+        var subjectIndex = this.allSubjects.map((s)=>s.subject_id).indexOf(subj.id);
+        if(subjectIndex >= 0) {
+          return this.allSubjects[subjectIndex];
+        } else {
+          return undefined;
+        }
+      }.bind(this)).filter(function(subj) {
+        return subj !== undefined;
+      });
+      var addNums = function(a, b) {
+        a = isNaN(a) ? 0 : a;
+        b = isNaN(b) ? 0 : b;
+        return a + b;
+      }
+      var totalUnits = classesInfo.map((s)=>s.total_units).reduce(addNums, 0);
+      var expectedHours = classesInfo.map((s)=>s.in_class_hours+s.out_of_class_hours).reduce(addNums, 0);
+      return {
+        totalUnits: totalUnits,
+        expectedHours: expectedHours,
+      }
+    }
   },
   methods: {
     dropRoadSubject: function(event, subject) {

@@ -433,7 +433,7 @@ export default {
     }.bind(this);
 
     this.attemptLogin();
-
+    // window.cookies = this.$cookies;
   }
 }
 </script>

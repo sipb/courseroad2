@@ -14,6 +14,7 @@
       v-bind:selectedSubjects="selectedSubjects"
       v-bind:allSubjects = "subjects"
       v-bind:roadID = "roadID"
+      v-bind:isOpen = "visibleList[index-1]"
       @drag-class = "$emit('drag-class',$event)"
       @drop-class = "$emit('drop-class',$event)"
       @remove-class = "$emit('remove-class', $event)"

@@ -7,6 +7,7 @@
       <road-tabs
         v-bind:roads = "roads"
         v-bind:activeRoad = "activeRoad"
+        v-bind:subjects = "subjectsInfo"
         @delete-road = "$refs.authcomponent.deleteRoad($event)"
         @set-name = "setRoadName($event.road, $event.name)"
         @add-road = "addRoad"
