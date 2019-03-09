@@ -40,13 +40,14 @@
 <script>
 import FilterSet from "./FilterSet.vue";
 import $ from 'jquery';
+import Vue from 'vue'
 
 export default {
   name: "ClassSearch",
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput'],
+  props: ['subjects', 'searchInput','classInfoStack'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -114,6 +115,11 @@ export default {
   watch: {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
+    },
+    classStackExists: function(oldExists, newExists) {
+      Vue.nextTick(function() {
+        this.updateMenuStyle();
+      }.bind(this));
     }
   },
   computed: {
@@ -204,6 +210,9 @@ export default {
       } else {
         return [];
       }
+    },
+    classStackExists: function() {
+      return this.classInfoStack.length>0;
     }
   },
   methods: {

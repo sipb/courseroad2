@@ -58,6 +58,7 @@
           class = "search-menu"
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
+          v-bind:classInfoStack = "classInfoStack"
           @add-class="addClass"
           @move-class="moveClass"
           @drop-class="dropClass"
@@ -452,14 +453,6 @@ export default {
     },
     popClassStack: function() {
       this.classInfoStack.pop();
-    },
-    adjustCardStyle: function() {
-      var classInfoCard = $("#classInfoCard");
-      var searchInput = $("#searchInputTF");
-      var cardWidth = searchInput.outerWidth();
-      var cardLeft = cardWidth + searchInput.offset().left;
-      var browserWidth = $(window).width();
-      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
     }
   },
   watch: {
@@ -487,15 +480,6 @@ export default {
       if(newSearch.length > 0) {
         this.showSearch = true;
       }
-    },
-    classInfoStack: {
-      handler: function(newStack, oldStack) {
-        Vue.nextTick(function() {
-          this.adjustCardStyle();
-          this.$refs.searchMenu.updateMenuStyle();
-        }.bind(this));
-      },
-      deep: false
     }
   },
   mounted() {
@@ -524,19 +508,6 @@ export default {
       this.setActiveRoad();
     }.bind(this))
 
-    var setSearchSize = function() {
-      var classInfoCard = $("#classInfoCard");
-      var searchInput = $("#searchInputTF");
-      var cardWidth = searchInput.outerWidth();
-      var cardLeft = cardWidth + searchInput.offset().left;
-      var browserWidth = $(window).width();
-      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
-    };
-
-    setSearchSize();
-    $(window).resize(setSearchSize)
-
-    this.adjustCardStyle();
     this.setActiveRoad();
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
