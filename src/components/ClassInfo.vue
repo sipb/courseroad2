@@ -69,63 +69,19 @@
               <p><a :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">View Course Evaluations</a></p>
               <div v-if = "currentSubject.equivalent_subjects !== undefined">
                 <h3>Equivalent Subjects</h3>
-                <div style = "overflow-x: scroll;">
-                  <table cellspacing = "10">
-                    <tr style = "height: 1px;">
-                      <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in currentSubject.equivalent_subjects">
-                        <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
-                          <div><b>{{subjectID}}</b></div>
-                          {{classInfo(subjectID).title}}
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
+                <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
               </div>
               <div v-if = "currentSubject.prerequisites !== undefined">
                 <h3>Prerequisites</h3>
-                <div style = "overflow-x: scroll;">
-                  <table cellspacing = "10">
-                    <tr style = "height: 1px;">
-                      <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in parseRequirements(currentSubject.prerequisites)">
-                        <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
-                          <div><b>{{subjectID}}</b></div>
-                          {{classInfo(subjectID).title}}
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
+                <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "parseRequirements(currentSubject.prerequisites).map(classInfo)"></subject-scroll>
               </div>
               <div v-if = "currentSubject.corequisites !== undefined">
                 <h3>Corequisites</h3>
-                <div style = "overflow-x: scroll;">
-                  <table cellspacing = "10">
-                    <tr style = "height: 1px;">
-                      <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in parseRequirements(currentSubject.corequisites)">
-                        <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
-                          <div><b>{{subjectID}}</b></div>
-                          {{classInfo(subjectID).title}}
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
+                <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "parseRequirements(currentSubject.corequisites).map(classInfo)"></subject-scroll>
               </div>
               <div v-if = "currentSubject.related_subjects !== undefined">
                 <h3>Related subjects</h3>
-                <div style = "overflow-x: scroll;">
-                  <table cellspacing = "10">
-                    <tr style = "height: 1px;">
-                      <td style = "min-width: 8em; height: inherit;" v-for = "subjectID in currentSubject.related_subjects">
-                        <div class = "related-subject" @click = "clickRelatedSubject(subjectID)">
-                          <div><b>{{subjectID}}</b></div>
-                          {{classInfo(subjectID).title}}
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
+                <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.related_subjects.map(classInfo)"></subject-scroll>
               </div>
             </div>
           </v-card-text>
@@ -136,9 +92,12 @@
 </template>
 <script>
 import $ from "jquery";
+import SubjectScroll from "../components/SubjectScroll.vue"
 export default {
   name: "ClassInfo",
-  components: {},
+  components: {
+    'subject-scroll': SubjectScroll
+  },
   props: ["subjects", "classInfoStack"],
   data: function() {return {}},
   computed: {
@@ -209,17 +168,6 @@ export default {
 .card-body-container {
   flex: 1;
   overflow: auto;
-}
-.related-subject {
-  height:100%;
-  max-height: 6em;
-  min-width: 8em;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  background-color: lightblue;
-  border-radius: 3px;
-  padding: 0.5em;
-  display: inline-block;
 }
 .comma-separated {
   padding: 0;
