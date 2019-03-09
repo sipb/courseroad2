@@ -287,7 +287,7 @@ export default {
       }
     },
     updateMenuStyle: function() {
-      var searchInputElem =  document.getElementById("searchInputTF");
+      var searchInputElem = document.getElementById("searchInputTF");
       var searchInputRect = searchInputElem.getBoundingClientRect();
       var searchMenuTop = searchInputRect.top + searchInputRect.height;
       var searchInput = $("#searchInputTF");
