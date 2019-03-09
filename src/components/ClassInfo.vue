@@ -149,7 +149,7 @@ export default {
   methods: {
     classInfo: function(subjectID) {
       var subjectIndex = this.subjects.map((s)=>s.subject_id).indexOf(subjectID);
-      if(subjectIndex == -1) {
+      if(subjectIndex === -1) {
         return {
           subject_id: subjectID,
           title: ""
@@ -166,7 +166,7 @@ export default {
       if(requirements) {
         var allReqs = requirements.split(/, |\(|\)|\//);
         var filteredReqs = allReqs.filter(function(req) {
-          return req.length > 0 && req.indexOf("'") == -1;
+          return req.length > 0 && req.indexOf("'") === -1;
         });
         return filteredReqs;
       } else {
