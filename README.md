@@ -6,13 +6,11 @@ and choose which classes to take when in order to maximize your time at MIT.
 CourseRoad allows you to look more than one semester ahead make fully informed choices about the big picture.
 
 # Installation
-This is a hot mess. TODO: do a practice install from scratch and make this section better.
+TODO: do a practice install from scratch and make this section better.
 
-`npm install` in the base directory.
+`npm install` in the base directory should 'just work'.
 
-Then, just do `npm install <package> --save-dev` for every package mentioned in error messages until it works (have to run command below).
-
-Honestly I don't understand how any of this package stuff works. (TODO)
+If that doesn't work... just do `npm install <package> --save-dev` for every package mentioned in error messages until it works (have to run command below).
 
 # Running
 `npm run dev` then go to <http://localhost:8080/>.
