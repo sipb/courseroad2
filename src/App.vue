@@ -37,6 +37,7 @@
         attach
         v-model = "showSearch"
         :close-on-content-click="false"
+        :close-on-click = "false"
         fixed
         offset-y
         input-activator
@@ -127,6 +128,7 @@
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
       @close-classinfo = "classInfoStack = []"
+      v-on:click.native = "$event.stopPropagation()"
       >
     </class-info>
 
@@ -546,6 +548,9 @@ export default {
 
     this.updateFulfillment();
 
+    document.body.addEventListener("click", function(e) {
+      this.showSearch = false;
+    }.bind(this));
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
