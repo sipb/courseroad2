@@ -90,6 +90,8 @@
     </v-layout>
   </v-container>
 </template>
+
+
 <script>
 import $ from "jquery";
 import SubjectScroll from "../components/SubjectScroll.vue"
@@ -147,6 +149,8 @@ export default {
   }
 }
 </script>
+
+
 <style>
 .card-header {
   padding: 0.5em 1em;
