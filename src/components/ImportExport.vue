@@ -43,6 +43,13 @@
         <v-divider></v-divider>
 
         <v-card-actions>
+          <v-btn
+            color="primary"
+            flat
+            @click="dialog = false"
+          >
+            Cancel
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn
             color="primary"
@@ -86,19 +93,24 @@ export default {
     },
     importRoad: function(event) {
 
+      let fail = false;
       // check for legal input
-      if (this.inputtext === ""){
-        this.dialog = false;
-        return;
+      if (this.inputtext === "" || this.roadtitle === ""){
+        fail = true;
       }
 
       // parse text and add to roads and stuff
       var obj = JSON.parse(this.inputtext);
-      console.log(obj)
 
+      if (fail) {
+        // do something, like show an error maybe?
+        console.log('fail')
 
+      } else {
+        this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, obj.selectedSubjects)
 
-      this.dialog = false;
+        this.dialog = false;
+      }
     },
   },
   mounted() {

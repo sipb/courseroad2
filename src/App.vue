@@ -18,6 +18,7 @@
       <import-export
         v-bind:roads="roads"
         v-bind:activeRoad="activeRoad"
+        @add-road = "addRoad"
       >
       </import-export>
 
@@ -385,13 +386,13 @@ export default {
       window.location.hash = "#road" + this.activeRoad;
       return false;
     },
-    addRoad: function(roadName) {
+    addRoad: function(roadName, cos=["girs"], ss=[]) {
       var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
       var newContents;
       if(!this.duplicateRoad) {
         newContents = {
-          coursesOfStudy: ["girs"],
-          selectedSubjects: []
+          coursesOfStudy: cos,
+          selectedSubjects: ss,
         }
       } else {
         newContents = JSON.parse(JSON.stringify(this.roads[this.duplicateRoadSource].contents));
