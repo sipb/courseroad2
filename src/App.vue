@@ -184,6 +184,10 @@ export default {
     showSearch: false,
     classInfoStack: [],
     currentSemester: 0,
+    currentPlaceholder: {
+      semester: undefined,
+      index: undefined
+    },
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -223,16 +227,26 @@ export default {
       }
       return 0;
     },
+    removePlaceholder: function() {
+      for(var i = 0; i < this.roads[this.activeRoad].contents.selectedSubjects.length; i++) {
+        var currentClass = this.roads[this.activeRoad].contents.selectedSubjects[i];
+        if(currentClass.id === "drag.placeholder") {
+          this.roads[this.activeRoad].contents.selectedSubjects.splice(i, 1);
+          i--;
+        }
+      }
+    },
     addClass: function(newClass, semesterIndex) {
+      if(newClass.id==="drag.placeholder") {
+        this.removePlaceholder();
+      }
       var spliceIndex = this.getSpliceIndex(newClass, semesterIndex);
-      console.log(spliceIndex);
       this.roads[this.activeRoad].contents.selectedSubjects.splice(spliceIndex, 0, newClass);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     moveClass: function(classIndex, newSem, semesterIndex) {
       this.roads[this.activeRoad].contents.selectedSubjects[classIndex].semester = newSem;
       var spliceIndex = this.getSpliceIndex(this.roads[this.activeRoad].contents.selectedSubjects[classIndex],semesterIndex);
-      console.log(spliceIndex);
       this.roads[this.activeRoad].contents.selectedSubjects.splice(spliceIndex, 0, this.roads[this.activeRoad].contents.selectedSubjects[classIndex]);
       var newClassIndex = classIndex >= spliceIndex ? classIndex + 1 : classIndex
       this.roads[this.activeRoad].contents.selectedSubjects.splice(newClassIndex, 1);
@@ -267,7 +281,6 @@ export default {
       var classes = semesterBox.find(".semester-class");
       var minDif = Number.MAX_SAFE_INTEGER;
       var minInd = 0;
-      var beforeOrAfter = 0;
       classes.each(function(index, value) {
         var classPosition = $(this).offset();
         var width = $(this).width();
@@ -276,7 +289,7 @@ export default {
         if(posDifference < minDif) {
           minDif = posDifference;
           var indexInSemester = parseInt($(this).attr("id").split("-")[1]);
-          beforeOrAfter = posx > classPosition.left + width/2 ? 1 : 0;
+          var beforeOrAfter = posx > classPosition.left + width/2 ? 1 : 0;
           minInd = indexInSemester + beforeOrAfter;
         }
       });
@@ -355,7 +368,6 @@ export default {
         var inSameYear = Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
         if(semInfo.isOffered||!inSameYear) {
           event.drop.preventDefault();
-          console.log(semesterObjects.closestIndex);
           if(event.isNew) {
             var newClass = {
               overrideWarnings : false,
@@ -372,8 +384,10 @@ export default {
         }
       }
       this.dragSemesterNum = -1;
+      this.removePlaceholder();
     },
     testClass: function(event) {
+      console.log("test class");
       var semesterObjects = this.getRelevantObjects(event.drag);
       var semInfo = this.classIsOffered(semesterObjects, event);
       if(semInfo.isOffered !== undefined) {
@@ -396,8 +410,21 @@ export default {
         var lastSemesterBox = lastSemester.find(".semester-drop-container");
         this.resetSemesterBox(lastSemesterBox)
       }
+      var newPlaceholder = {
+        semester: semInfo.semesterNum,
+        index: semesterObjects.closestIndex
+      };
+      if(newPlaceholder.semester !== this.currentPlaceholder.semester || newPlaceholder.index !== this.currentPlaceholder.index) {
+        this.currentPlaceholder = newPlaceholder;
+        this.addClass({
+          id: "drag.placeholder",
+          semester: newPlaceholder.semester
+        }, newPlaceholder.index);
+      }
       if(semInfo.semesterNum !== undefined) {
         this.dragSemesterNum = semInfo.semesterNum;
+      } else {
+        this.removePlaceholder();
       }
     },
     updateFulfillment: function() {
@@ -523,6 +550,7 @@ export default {
     }
   },
   mounted() {
+    this.removePlaceholder();
     window.$refs = this.$refs;
     window.activeRoad = this.activeRoad;
 

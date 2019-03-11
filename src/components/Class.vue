@@ -10,6 +10,7 @@
       draggable
       v-on:drag = "drag"
       v-on:dragend = "drop"
+      v-if = "classInfo.id !== 'drag.placeholder'"
     >
       <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo)">cancel</v-icon>
       <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
@@ -21,6 +22,10 @@
       pa-2
     > -->
 
+    </v-card>
+    <v-card
+      class = "classbox placeholder"
+      v-if = "classInfo.id == 'drag.placeholder'">
     </v-card>
   </v-flex>
 </template>
@@ -52,6 +57,7 @@ export default {
   },
   methods: {
     drag: function(event) {
+      console.log("emit drag");
       this.$emit("drag-class",{
         drag: event,
         basicClass: this.classInfo,
@@ -83,6 +89,10 @@ export default {
     height: 9em;
     padding-top: 0;
     overflow:hidden;
+  }
+
+  .placeholder {
+    background: radial-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0));
   }
 
   .satisfied {

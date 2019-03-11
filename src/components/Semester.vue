@@ -32,7 +32,7 @@
           v-bind:semesterIndex="index"
           v-bind:subjectIndex = "subjindex"
           :key="subject.id + '-' + subjindex + '-' + index"
-          @drag-class="$emit('drag-class',$event)"
+          @drag-class="$emit('drag-class',$event);"
           @drop-class="$emit('drop-class',$event)"
           @remove-class = "$emit('remove-class', $event)"
         />
@@ -103,8 +103,7 @@ export default {
     dropRoadSubject: function(event, subject) {
       console.log("drop road subject");
       console.log(event);
-    },
-
+    }
     // dropped: function(event) {
     //   // console.log("dropped");
     //   // console.log(event);
