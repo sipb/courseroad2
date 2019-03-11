@@ -486,7 +486,7 @@ export default {
 
     $(window).on("hashchange", function() {
       this.setActiveRoad();
-    }.bind(this))
+    }.bind(this));
 
     var setSearchSize = function() {
       var classInfoCard = $("#classInfoCard");
@@ -498,17 +498,18 @@ export default {
     };
 
     setSearchSize();
-    $(window).resize(setSearchSize)
+    $(window).resize(setSearchSize);
 
     this.setActiveRoad();
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
-        this.reqList = response.data;
-        for(var r in this.reqList) {
-          Vue.set(this.reqList, r, this.reqList[r]);
-        }
-      })
+        const ordered = {};
+        Object.keys(response.data).sort().forEach(function(key) {
+          ordered[key] = response.data[key];
+        });
+        this.reqList = ordered;
+      });
 
     this.updateFulfillment();
 
