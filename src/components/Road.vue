@@ -43,7 +43,7 @@ export default {
     baseYear: function() {
       var today = new Date();
       var currentYear = today.getFullYear();
-      var baseYear = today.getMonth() >= 8 ? currentYear + 1 : currentYear
+      var baseYear = (today.getMonth() >= 4 && today.getMonth()<=10) ? currentYear + 1 : currentYear
       return baseYear - Math.floor(this.currentSemester/3)
     }
   }
