@@ -32,4 +32,7 @@ export default {
 .subject-title {
   font-size: 0.9em;
 }
+.cardtext {
+  color: white;
+}
 </style>
