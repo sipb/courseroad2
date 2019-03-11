@@ -141,7 +141,24 @@ export default {
       reader.onload = (event) => {
           this.inputtext = event.target.result;
       };
-      reader.readAsText(event.target.files[0]);
+
+      if (event.target.files[0]) {
+        // would have been undefined if user exited file select dialog
+        let name = event.target.files[0].name
+        // check for valid type hopefully
+        if (name.substr(name.length - 5) === '.road') {
+          // update title unless they already input one
+          if (this.roadtitle === '') {
+            this.roadtitle = name.substr(0, name.length - 5)
+          }
+          // finally, read the file
+          reader.readAsText(event.target.files[0]);
+        } else {
+          // wrong file type
+          this.badinput = true
+          setTimeout(() => { this.badinput = false }, 7000);
+        }
+      }
     }
 
     document.getElementById('file').addEventListener('change', onFileChange);
