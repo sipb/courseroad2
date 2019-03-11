@@ -4,12 +4,15 @@
   <v-flex
     md3 xs4
     :id = "classInfo.id + '-' + subjectIndex + '-' + semesterIndex"
-    class = "semester-class">
+    class = "semester-class"
+    v-show = "!dragging"
+    >
     <v-card
       :class="[{classbox: true, satisfied: isSatisfied}, courseColor]"
       draggable
       v-on:drag = "drag"
       v-on:dragend = "drop"
+      v-on:dragstart = "dragging = true"
       v-if = "classInfo.id !== 'drag.placeholder'"
     >
       <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo)">cancel</v-icon>
@@ -31,6 +34,7 @@
 </template>
 
 <script>
+import Vue from "vue";
 export default {
   name: "class",
   props: ['classInfo','semesterIndex','subjectIndex'],
@@ -52,7 +56,8 @@ export default {
         '11', '12', '14', '15', '16', '17', '18', '20', '21', '21A', '21W',
         'CMS', '21G', '21H', '21L', '21M', 'WGS', '22', '24', 'CC', 'CSB',
         'EC', 'EM', 'ES', 'HST', 'IDS', 'MAS', 'SCM', 'STS', 'SWE', 'SP'
-      ]
+      ],
+      dragging: false
     }
   },
   methods: {
@@ -66,12 +71,18 @@ export default {
       });
     },
     drop: function(event) {
+      this.dragging = false;
       this.$emit("drop-class",{
         drop: event,
         basicClass: this.classInfo,
         isNew: false,
         currentSem: this.semesterIndex
       });
+    },
+    dragStart: function() {
+      Vue.nextTick(function() {
+        this.$emit('remove-class', this.classInfo)
+      }.bind(this));
     }
   }
 }

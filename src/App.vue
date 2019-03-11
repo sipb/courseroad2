@@ -378,6 +378,7 @@ export default {
             }
             this.addClass(newClass, semesterObjects.closestIndex);
           } else {
+            var newClass = event.basicClass;
             var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
             this.moveClass(currentIndex, semInfo.semesterNum, semesterObjects.closestIndex)
           }
