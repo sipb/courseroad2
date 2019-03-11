@@ -1,7 +1,10 @@
 <!-- this is a cool idea for class info on click: https://vuetifyjs.com/en/components/expansion-panels#popout-inset -->
 
 <template>
-  <v-flex md3 xs4>
+  <v-flex
+    md3 xs4
+    :id = "classInfo.id + '-' + subjectIndex + '-' + semesterIndex"
+    class = "semester-class">
     <v-card
       :class="[{classbox: true, satisfied: isSatisfied}, courseColor]"
       draggable
@@ -25,7 +28,7 @@
 <script>
 export default {
   name: "class",
-  props: ['classInfo','semesterIndex'],
+  props: ['classInfo','semesterIndex','subjectIndex'],
   computed: {
     courseColor () {
       let course  = this.classInfo.id.split('.')[0]

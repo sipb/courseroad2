@@ -210,12 +210,32 @@ export default {
     }
   },
   methods: {
-    addClass: function(newClass) {
-      this.roads[this.activeRoad].contents.selectedSubjects.push(newClass);
+    getSpliceIndex: function(classObj, semesterIndex) {
+      var numInSemester = 0;
+      for(var i = 0; i < this.roads[this.activeRoad].contents.selectedSubjects.length; i++) {
+        var currentClass = this.roads[this.activeRoad].contents.selectedSubjects[i];
+        if(currentClass.semester === classObj.semester) {
+          numInSemester++;
+          if(numInSemester == semesterIndex) {
+            return i+1;
+          }
+        }
+      }
+      return 0;
+    },
+    addClass: function(newClass, semesterIndex) {
+      var spliceIndex = this.getSpliceIndex(newClass, semesterIndex);
+      console.log(spliceIndex);
+      this.roads[this.activeRoad].contents.selectedSubjects.splice(spliceIndex, 0, newClass);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
-    moveClass: function(classIndex, newSem) {
+    moveClass: function(classIndex, newSem, semesterIndex) {
       this.roads[this.activeRoad].contents.selectedSubjects[classIndex].semester = newSem;
+      var spliceIndex = this.getSpliceIndex(this.roads[this.activeRoad].contents.selectedSubjects[classIndex],semesterIndex);
+      console.log(spliceIndex);
+      this.roads[this.activeRoad].contents.selectedSubjects.splice(spliceIndex, 0, this.roads[this.activeRoad].contents.selectedSubjects[classIndex]);
+      var newClassIndex = classIndex >= spliceIndex ? classIndex + 1 : classIndex
+      this.roads[this.activeRoad].contents.selectedSubjects.splice(newClassIndex, 1);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     removeClass: function(classInfo) {
@@ -232,17 +252,38 @@ export default {
       Vue.delete(this.roads, oldid);
     },
     getRelevantObjects: function(position) {
-      let semesterElem
+      let posx;
+      let posy;
       if (position.x === 0 && position.y === 0) {
-        semesterElem = document.elementFromPoint(this.lastX, this.lastY)
+        posx = this.lastX;
+        posy = this.lastY;
       } else {
-        semesterElem = document.elementFromPoint(position.x,position.y);
+        posx = position.x;
+        posy = position.y;
       }
+      var semesterElem = document.elementFromPoint(posx,posy);
       var semesterParent = $(semesterElem).parents(".semester-container");
       var semesterBox = semesterParent.find(".semester-drop-container");
+      var classes = semesterBox.find(".semester-class");
+      var minDif = Number.MAX_SAFE_INTEGER;
+      var minInd = 0;
+      var beforeOrAfter = 0;
+      classes.each(function(index, value) {
+        var classPosition = $(this).offset();
+        var width = $(this).width();
+        var height = $(this).height();
+        var posDifference = Math.pow(classPosition.left + width/2 - posx,2) + Math.pow(classPosition.top + height/2 -posy,2);
+        if(posDifference < minDif) {
+          minDif = posDifference;
+          var indexInSemester = parseInt($(this).attr("id").split("-")[1]);
+          beforeOrAfter = posx > classPosition.left + width/2 ? 1 : 0;
+          minInd = indexInSemester + beforeOrAfter;
+        }
+      });
       return {
         semesterParent: semesterParent,
-        semesterBox: semesterBox
+        semesterBox: semesterBox,
+        closestIndex: minInd
       }
     },
     resetSemesterBox: function(semesterBox) {
@@ -314,6 +355,7 @@ export default {
         var inSameYear = Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
         if(semInfo.isOffered||!inSameYear) {
           event.drop.preventDefault();
+          console.log(semesterObjects.closestIndex);
           if(event.isNew) {
             var newClass = {
               overrideWarnings : false,
@@ -322,10 +364,10 @@ export default {
               id : event.classInfo.subject_id,
               units : event.classInfo.total_units
             }
-            this.addClass(newClass);
+            this.addClass(newClass, semesterObjects.closestIndex);
           } else {
             var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
-            this.moveClass(currentIndex, semInfo.semesterNum)
+            this.moveClass(currentIndex, semInfo.semesterNum, semesterObjects.closestIndex)
           }
         }
       }

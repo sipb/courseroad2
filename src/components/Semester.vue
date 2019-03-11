@@ -30,6 +30,7 @@
           v-for="(subject, subjindex) in semesterSubjects"
           v-bind:classInfo="subject"
           v-bind:semesterIndex="index"
+          v-bind:subjectIndex = "subjindex"
           :key="subject.id + '-' + subjindex + '-' + index"
           @drag-class="$emit('drag-class',$event)"
           @drop-class="$emit('drop-class',$event)"
