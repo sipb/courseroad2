@@ -84,7 +84,7 @@ export default {
   }
 
   .satisfied {
-    background: #98fb98;
+    background: #00b300;
   }
   /* this is a bad color, change it */
   .unsatisfied {
