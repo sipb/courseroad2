@@ -8,11 +8,9 @@
       v-model="dialog"
       width="500"
     >
-      <template v-slot:activator="{ on }">
-        <v-btn outline round color="primary" v-on="on">
-          Import
-        </v-btn>
-      </template>
+      <v-btn slot="activator" outline round color="primary">
+        Import
+      </v-btn>
 
       <v-card>
         <v-card-title
