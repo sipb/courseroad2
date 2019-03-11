@@ -28,7 +28,7 @@
         <v-tooltip left>
           <template slot = "activator">
             <v-icon v-if="'reqs' in item" :style = "fulfilledIcon(item)">
-              {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }}
+              <!-- {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }} -->
             </v-icon>
             <v-icon v-else :style = "fulfilledIcon(item)">
               {{ item['plain-string'] ? item.fulfilled ? "star" : "star_outline": item.fulfilled ? "check_box" : "check_box_outline_blank"}}
@@ -45,8 +45,8 @@
         </requirement>
       </template>
       <template slot = "append" slot-scope = "{ item, leaf }">
-        <v-btn icon flat color = "info" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
-        <v-dialog v-if = "dialogReq != undefined" v-model = "viewDialog">
+        <v-btn icon flat color = "info" v-if="'reqs' in item || dialogReq !== undefined && 'percent_fulfilled' in dialogReq" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
+        <v-dialog v-if = "dialogReq !== undefined" v-model = "viewDialog">
           <v-card style = "padding: 2em">
             <v-btn icon flat style = "float:right" @click = "viewDialog = false"><v-icon>close</v-icon></v-btn>
             <v-card-title>{{dialogReq["title"]}}</v-card-title>
@@ -60,7 +60,7 @@
               {{dialogReq["req"]}}
             </v-card-text>
             <v-card-text >
-              <b>Satisfied Courses</b>
+              <b>Satisfying Courses</b>
               <div v-for = "course in dialogReq['sat_courses']">
                 {{course}}
               </div>
@@ -109,7 +109,7 @@ export default {
   methods: {
     fulfilledIcon: function(req) {
       if(req.fulfilled && (req.req != undefined || req.sat_courses.length>0)) {
-        return "color: #52e052;";
+        return "color: #00b300;";
       } else {
         return "";
       }
@@ -119,6 +119,7 @@ export default {
     },
     reqInfo: function(event, req) {
       event.preventDefault();
+      event.stopPropagation();
       console.log(event);
       console.log(req);
       this.viewDialog = true;
@@ -129,12 +130,12 @@ export default {
       var pstring = "--percent: " + req.percent_fulfilled+"%";
       return pstring;
     },
-    percentage_bar: function(req) {
-      var pblock = {
-        "percentage-bar": ("reqs" in req || "threshold" in req)
-      }
-      return pblock
-    },
+    // percentage_bar: function(req) {
+    //   var pblock = {
+    //     "percentage-bar": ("reqs" in req || "threshold" in req)
+    //   }
+    //   return pblock;
+    // },
     deleteReq: function(req) {
       var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
       this.$emit("remove-req",reqName);
@@ -147,10 +148,13 @@ export default {
 <style scoped>
 .percentage-bar {
   height: 30px;
-  background: linear-gradient(90deg, #98fb98 var(--percent), rgba(255,255,255,0) var(--percent));
+  background: linear-gradient(90deg, #00b300 var(--percent), rgba(255,255,255,0) var(--percent));
   border: 1px solid gray;
   padding-left: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+.terminal {
+  cursor: default;
 }
 </style>

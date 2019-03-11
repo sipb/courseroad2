@@ -73,19 +73,14 @@ export default {
 
 <style scoped>
   .fulfilled {
-    background:  radial-gradient(#98fb98,white);
-    /* background: #98fb98; */
+    /* background:  radial-gradient(#00b300,white); */
   }
   .requirement {
     font-size: 0.75em;
   }
-  /* .percentage-background {
-    background: linear-gradient(90deg, #98fb98 var(--percent), rgba(255,255,255,0) var(--percent));
-    border: 1px solid #efefef;
-    border-radius: 3px;
-  } */
+
   .percentage-bar {
-    height: 2px;
-    background: linear-gradient(90deg, #98fb98 var(--percent), rgba(255,255,255,0) var(--percent));
+    height: 4px;
+    background: linear-gradient(90deg, #00b300 var(--percent), lightgrey var(--percent));
   }
 </style>
