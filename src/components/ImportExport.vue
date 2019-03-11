@@ -38,7 +38,6 @@
             full-width
             single-line
           ></v-textarea>
-          {{inputtext}}
         </v-card-text>
 
         <v-divider></v-divider>
@@ -86,24 +85,30 @@ export default {
       document.body.removeChild(element);
     },
     importRoad: function(event) {
-      this.dialog = false;
-    },
-    settext: function(t) {
-      this.inputtext = t;
-    }
-  },
-  mounted() {
-    var onChange = function(event) {
 
-      function onReaderLoad(event){
-          console.log(event.target.result);
-          var obj = JSON.parse(event.target.result);
-          this.settext(event.target.result) // not a function
-          // this.inputtext = event.target.result;
+      // check for legal input
+      if (this.inputtext === ""){
+        this.dialog = false;
+        return;
       }
 
+      // parse text and add to roads and stuff
+      var obj = JSON.parse(this.inputtext);
+      console.log(obj)
+
+
+
+      this.dialog = false;
+    },
+  },
+  mounted() {
+    // read uploaded files
+    var onChange = (event) => {
+
       var reader = new FileReader();
-      reader.onload = onReaderLoad;
+      reader.onload = (event) => {
+          this.inputtext = event.target.result;
+      };
       reader.readAsText(event.target.files[0]);
     }
 
