@@ -29,8 +29,10 @@
             label="Road name"
             clearable
           ></v-text-field>
+
           <v-spacer></v-spacer>
           <input id="file" type="file" />
+
           <v-spacer></v-spacer>
           <v-textarea
             v-model="inputtext"
@@ -38,8 +40,8 @@
             full-width
             single-line
           ></v-textarea>
-          <v-spacer></v-spacer>
 
+          <v-spacer></v-spacer>
           <v-flex v-if="badinput">
             <v-card color="red">
               <v-card-text>
@@ -51,7 +53,6 @@
         </v-card-text>
 
         <v-divider></v-divider>
-
         <v-card-actions>
           <v-btn
             color="primary"
@@ -60,6 +61,7 @@
           >
             Cancel
           </v-btn>
+
           <v-spacer></v-spacer>
           <v-btn
             color="primary"
@@ -91,6 +93,8 @@ export default {
       var filename = this.roads[this.activeRoad].name + '.road';
       var text = JSON.stringify(this.roads[this.activeRoad].contents);
 
+      // for some reason this is the way you download files...
+      //    create an element, click it, and remove it
       var element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
       element.setAttribute('download', filename);
@@ -112,7 +116,7 @@ export default {
 
       if (!fail) {
         try {
-          // parse text and add to roads and stuff
+          // parse text and add to roads
           var obj = JSON.parse(this.inputtext);
           this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, obj.selectedSubjects)
         } catch(error) {
@@ -133,7 +137,7 @@ export default {
   },
   mounted() {
     // read uploaded files
-    var onChange = (event) => {
+    var onFileChange = (event) => {
 
       var reader = new FileReader();
       reader.onload = (event) => {
@@ -142,7 +146,7 @@ export default {
       reader.readAsText(event.target.files[0]);
     }
 
-    document.getElementById('file').addEventListener('change', onChange);
+    document.getElementById('file').addEventListener('change', onFileChange);
   },
 }
 </script>
