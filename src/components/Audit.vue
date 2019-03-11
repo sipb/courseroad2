@@ -1,18 +1,18 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
   <v-container>
-    <v-menu style = "float:right">
+    <v-menu max-height="600px" absolute style = "float:right">
       <v-btn icon flat color = "primary" style = "float:right" slot = "activator">
         <v-icon>add</v-icon>
       </v-btn>
-      <v-list scrollable>
+      <v-list dense>
         <v-list-tile
-           v-for= "(item, index) in reqList"
-           @click = "addReqTree(index)"
-           >
-           <v-list-tile-title style = "font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
-         </v-list-tile>
-       </v-list>
+          v-for= "(item, key) in reqList"
+          @click = "addReqTree(key)"
+        >
+          <v-list-tile-title style = "font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
     </v-menu>
     <v-treeview
       v-model="tree"
@@ -91,6 +91,10 @@ export default {
     dialogReq: undefined
   }},
   computed: {
+    maxHeight: function() {
+      console.log(document.documentElement.clientWidth);
+      return "600px";
+    },
     selectedTrees: function() {
       // console.log("calculting selected trees");
       // console.log(this.reqTrees.girs);
@@ -115,7 +119,7 @@ export default {
       }
     },
     addReqTree: function(req) {
-      this.$emit("add-req",req)
+      this.$emit("add-req", req)
     },
     reqInfo: function(event, req) {
       event.preventDefault();

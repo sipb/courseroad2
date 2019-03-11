@@ -19,6 +19,7 @@
       @drag-class = "$emit('drag-class',$event)"
       @drop-class = "$emit('drop-class',$event)"
       @remove-class = "$emit('remove-class', $event)"
+      @click-class = "$emit('click-class',$event)"
       >
     </semester>
   </v-expansion-panel>

@@ -15,6 +15,16 @@
         slot = "extension"
       >
       </road-tabs>
+
+      <import-export
+        v-bind:roads="roads"
+        v-bind:activeRoad="activeRoad"
+        @add-road = "addRoad"
+      >
+      </import-export>
+
+      <v-spacer></v-spacer>
+
       <auth
         ref = "authcomponent"
         v-bind:roads = "roads"
@@ -33,12 +43,14 @@
         @set-sem = "setSemester"
       >
       </auth>
+
       <v-spacer></v-spacer>
 
       <v-menu
         attach
         v-model = "showSearch"
         :close-on-content-click="false"
+        :close-on-click = "false"
         fixed
         offset-y
         input-activator
@@ -55,14 +67,16 @@
         </v-text-field>
         <class-search
           id = "searchMenu"
+          ref = "searchMenu"
           class = "search-menu"
-          v-bind:classInfoStack = "classInfoStack"
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
+          v-bind:classInfoStack = "classInfoStack"
           @add-class="addClass"
           @move-class="moveClass"
           @drop-class="dropClass"
           @drag-class="testClass"
+          @view-class-info="pushClassStack"
         >
         </class-search>
       </v-menu>
@@ -106,6 +120,7 @@
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
+            @click-class = "pushClassStack($event.id)"
           ></road>
         </v-tab-item>
       </v-tabs-items>
@@ -122,7 +137,16 @@
 
     </v-content>
 
-    <class-info v-if = "classInfoStack.length>0"></class-info>
+    <class-info
+      v-if = "classInfoStack.length"
+      v-bind:classInfoStack = "classInfoStack"
+      v-bind:subjects = "subjectsInfo"
+      @pop-stack = "popClassStack"
+      @push-stack = "pushClassStack"
+      @close-classinfo = "classInfoStack = []"
+      v-on:click.native = "$event.stopPropagation()"
+      >
+    </class-info>
 
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
@@ -146,6 +170,7 @@ import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
 import ClassInfo from "./components/ClassInfo.vue"
+import ImportExport from "./components/ImportExport.vue"
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
@@ -159,7 +184,8 @@ export default {
     'road-tabs': RoadTabs,
     'conflict-dialog': ConflictDialog,
     'auth': Auth,
-    'class-info': ClassInfo
+    'class-info': ClassInfo,
+    'import-export': ImportExport,
   },
   data: function(){ return {
     reqTrees: {},
@@ -388,13 +414,13 @@ export default {
       window.location.hash = "#road" + this.activeRoad;
       return false;
     },
-    addRoad: function(roadName) {
+    addRoad: function(roadName, cos=["girs"], ss=[]) {
       var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
       var newContents;
       if(!this.duplicateRoad) {
         newContents = {
-          coursesOfStudy: ["girs"],
-          selectedSubjects: []
+          coursesOfStudy: cos,
+          selectedSubjects: ss,
         }
       } else {
         newContents = JSON.parse(JSON.stringify(this.roads[this.duplicateRoadSource].contents));
@@ -451,7 +477,14 @@ export default {
     },
     setSemester: function(sem) {
       this.currentSemester = sem;
-    }
+    },
+    pushClassStack: function(id) {
+      var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
+      this.classInfoStack.push(subjectIndex);
+    },
+    popClassStack: function() {
+      this.classInfoStack.pop();
+    },
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
@@ -504,32 +537,24 @@ export default {
 
     $(window).on("hashchange", function() {
       this.setActiveRoad();
-    }.bind(this))
-
-    var setSearchSize = function() {
-      var classInfoCard = $("#classInfoCard");
-      var searchInput = $("#searchInputTF");
-      var cardWidth = searchInput.outerWidth();
-      var cardLeft = cardWidth + searchInput.offset().left;
-      var browserWidth = $(window).width();
-      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
-    };
-
-    setSearchSize();
-    $(window).resize(setSearchSize)
+    }.bind(this));
 
     this.setActiveRoad();
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
-        this.reqList = response.data;
-        for(var r in this.reqList) {
-          Vue.set(this.reqList, r, this.reqList[r]);
-        }
-      })
+        const ordered = {};
+        Object.keys(response.data).sort().forEach(function(key) {
+          ordered[key] = response.data[key];
+        });
+        this.reqList = ordered;
+      });
 
     this.updateFulfillment();
 
+    document.body.addEventListener("click", function(e) {
+      this.showSearch = false;
+    }.bind(this));
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
