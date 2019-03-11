@@ -37,6 +37,7 @@
         attach
         v-model = "showSearch"
         :close-on-content-click="false"
+        :close-on-click = "false"
         fixed
         offset-y
         input-activator
@@ -53,14 +54,16 @@
         </v-text-field>
         <class-search
           id = "searchMenu"
+          ref = "searchMenu"
           class = "search-menu"
-          v-bind:classInfoStack = "classInfoStack"
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
+          v-bind:classInfoStack = "classInfoStack"
           @add-class="addClass"
           @move-class="moveClass"
           @drop-class="dropClass"
           @drag-class="testClass"
+          @view-class-info="pushClassStack"
         >
         </class-search>
       </v-menu>
@@ -103,6 +106,7 @@
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
+            @click-class = "pushClassStack($event.id)"
           ></road>
         </v-tab-item>
       </v-tabs-items>
@@ -119,7 +123,16 @@
 
     </v-content>
 
-    <class-info v-if = "classInfoStack.length>0"></class-info>
+    <class-info
+      v-if = "classInfoStack.length"
+      v-bind:classInfoStack = "classInfoStack"
+      v-bind:subjects = "subjectsInfo"
+      @pop-stack = "popClassStack"
+      @push-stack = "pushClassStack"
+      @close-classinfo = "classInfoStack = []"
+      v-on:click.native = "$event.stopPropagation()"
+      >
+    </class-info>
 
 
     <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
@@ -433,6 +446,13 @@ export default {
     },
     updateRemote: function(id) {
       this.$refs.authcomponent.updateRemote(id);
+    },
+    pushClassStack: function(id) {
+      var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
+      this.classInfoStack.push(subjectIndex);
+    },
+    popClassStack: function() {
+      this.classInfoStack.pop();
     }
   },
   watch: {
@@ -488,18 +508,6 @@ export default {
       this.setActiveRoad();
     }.bind(this))
 
-    var setSearchSize = function() {
-      var classInfoCard = $("#classInfoCard");
-      var searchInput = $("#searchInputTF");
-      var cardWidth = searchInput.outerWidth();
-      var cardLeft = cardWidth + searchInput.offset().left;
-      var browserWidth = $(window).width();
-      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
-    };
-
-    setSearchSize();
-    $(window).resize(setSearchSize)
-
     this.setActiveRoad();
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
@@ -512,6 +520,9 @@ export default {
 
     this.updateFulfillment();
 
+    document.body.addEventListener("click", function(e) {
+      this.showSearch = false;
+    }.bind(this));
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?

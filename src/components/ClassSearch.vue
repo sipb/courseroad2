@@ -24,6 +24,7 @@
               v-on:dragend ="drop($event, props)"
               v-on:drag = "drag($event, props)"
               v-on:dragstart="dragStart($event, props)"
+              @click = "viewClassInfo(props)"
             >
               <td>{{props.item.subject_id}}</td>
               <td>{{props.item.title}}</td>
@@ -39,13 +40,14 @@
 <script>
 import FilterSet from "./FilterSet.vue";
 import $ from 'jquery';
+import Vue from 'vue'
 
 export default {
   name: "ClassSearch",
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput', 'classInfoStack'],
+  props: ['subjects', 'searchInput','classInfoStack'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -114,12 +116,10 @@ export default {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
     },
-    classInfoStack: function(newStack, oldStack) {
-      var oldShowing = oldStack.length > 0;
-      var newShowing = newStack.length > 0;
-      if(oldShowing != newShowing) {
+    classStackExists: function(oldExists, newExists) {
+      Vue.nextTick(function() {
         this.updateMenuStyle();
-      }
+      }.bind(this));
     }
   },
   computed: {
@@ -229,6 +229,9 @@ export default {
       } else {
         return [];
       }
+    },
+    classStackExists: function() {
+      return this.classInfoStack.length>0;
     }
   },
   methods: {
@@ -312,7 +315,6 @@ export default {
       }
     },
     updateMenuStyle: function() {
-
       var searchInputElem = document.getElementById("searchInputTF");
       var searchInputRect = searchInputElem.getBoundingClientRect();
       var searchMenuTop = searchInputRect.top + searchInputRect.height;
@@ -328,6 +330,9 @@ export default {
       var maxHeight = menuBottom - searchMenuTop - this.menuMargin;
       this.searchHeight = "max-height: "+maxHeight+"px;width: "+menuWidth+"px;";
 
+    },
+    viewClassInfo: function(item) {
+      this.$emit("view-class-info", item.item.subject_id);
     }
   },
   mounted() {
