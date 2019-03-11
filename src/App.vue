@@ -249,6 +249,7 @@ export default {
       semesterBox.addClass("grey");
       semesterBox.removeClass("red");
       semesterBox.removeClass("green");
+      semesterBox.removeClass("yellow");
     },
     classIsOffered: function(semesterObjects, event) {
       if(semesterObjects.semesterParent.length) {
@@ -309,20 +310,23 @@ export default {
       var semesterObjects = this.getRelevantObjects(event.drop);
       this.resetSemesterBox(semesterObjects.semesterBox);
       var semInfo = this.classIsOffered(semesterObjects, event);
-      if(semInfo.isOffered) {
-        event.drop.preventDefault();
-        if(event.isNew) {
-          var newClass = {
-            overrideWarnings : false,
-            semester : semInfo.semesterNum,
-            title : event.classInfo.title,
-            id : event.classInfo.subject_id,
-            units : event.classInfo.total_units
+      if(semInfo.isOffered !== undefined) {
+        var inSameYear = Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
+        if(semInfo.isOffered||!inSameYear) {
+          event.drop.preventDefault();
+          if(event.isNew) {
+            var newClass = {
+              overrideWarnings : false,
+              semester : semInfo.semesterNum,
+              title : event.classInfo.title,
+              id : event.classInfo.subject_id,
+              units : event.classInfo.total_units
+            }
+            this.addClass(newClass);
+          } else {
+            var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
+            this.moveClass(currentIndex, semInfo.semesterNum)
           }
-          this.addClass(newClass);
-        } else {
-          var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
-          this.moveClass(currentIndex, semInfo.semesterNum)
         }
       }
       this.dragSemesterNum = -1;
@@ -331,9 +335,15 @@ export default {
       var semesterObjects = this.getRelevantObjects(event.drag);
       var semInfo = this.classIsOffered(semesterObjects, event);
       if(semInfo.isOffered !== undefined) {
+        var inSameYear = Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
         if (!semInfo.isOffered) {
-          semesterObjects.semesterBox.removeClass("grey");
-          semesterObjects.semesterBox.addClass("red");
+          if(inSameYear) {
+            semesterObjects.semesterBox.removeClass("grey");
+            semesterObjects.semesterBox.addClass("red");
+          } else {
+            semesterObjects.semesterBox.removeClass("grey");
+            semesterObjects.semesterBox.addClass("yellow");
+          }
         } else {
           semesterObjects.semesterBox.removeClass("grey");
           semesterObjects.semesterBox.addClass("green");
