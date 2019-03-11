@@ -42,9 +42,10 @@
 
           <v-flex v-if="badinput">
             <v-card color="red">
-              <v-card-title>
-                <b>Invalid input!</b> Make sure you have given this road a name, and uploaded/pasted the right thing.
-              </v-card-title>
+              <v-card-text>
+                <b>Invalid input!</b>
+                Make sure you have given this road a name, and uploaded/pasted the right thing.
+              </v-card-text>
             </v-card>
           </v-flex>
         </v-card-text>
