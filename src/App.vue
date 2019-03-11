@@ -387,7 +387,6 @@ export default {
       this.removePlaceholder();
     },
     testClass: function(event) {
-      console.log("test class");
       var semesterObjects = this.getRelevantObjects(event.drag);
       var semInfo = this.classIsOffered(semesterObjects, event);
       if(semInfo.isOffered !== undefined) {

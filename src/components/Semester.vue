@@ -26,8 +26,9 @@
       :class="semesterStyles"
     >
       <v-layout wrap align-center justify-center row>
+        <keep-alive v-for="(subject, subjindex) in semesterSubjects">
         <class
-          v-for="(subject, subjindex) in semesterSubjects"
+
           v-bind:classInfo="subject"
           v-bind:semesterIndex="index"
           v-bind:subjectIndex = "subjindex"
@@ -36,6 +37,7 @@
           @drop-class="$emit('drop-class',$event)"
           @remove-class = "$emit('remove-class', $event)"
         />
+      </keep-alive>
       </v-layout>
     </v-container>
   </v-expansion-panel-content>

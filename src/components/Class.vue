@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     drag: function(event) {
-      console.log("emit drag");
+      // console.log("emit drag");
       this.$emit("drag-class",{
         drag: event,
         basicClass: this.classInfo,
