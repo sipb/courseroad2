@@ -45,7 +45,7 @@
         </requirement>
       </template>
       <template slot = "append" slot-scope = "{ item, leaf }">
-        <v-btn icon flat color = "info" v-if="'reqs' in item || dialogReq !== undefined && 'threshold' in dialogReq" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
+        <v-btn icon flat color = "info" v-if="'title-no-degree' in item" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
         <v-dialog v-if = "dialogReq !== undefined" v-model = "viewDialog">
           <v-card style = "padding: 2em">
             <v-btn icon flat style = "float:right" @click = "viewDialog = false"><v-icon>close</v-icon></v-btn>
