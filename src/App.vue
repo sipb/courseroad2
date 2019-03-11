@@ -255,7 +255,7 @@ export default {
         var semesterID = semesterObjects.semesterParent.attr("id");
         if(semesterID.split("_")[2]==="semester") {
           var semesterNum = parseInt(semesterID.split("_")[3]);
-          var semesterType = semesterNum % 2;
+          var semesterType = semesterNum % 3;
           var classInfo = event.classInfo;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
@@ -274,13 +274,15 @@ export default {
                   classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
                     return {
                       offered_fall: subjectA.offered_fall || subjectB.offeredFall,
-                      offered_spring: subjectA.offered_spring || subjectB.offered_spring
+                      offered_spring: subjectA.offered_spring || subjectB.offered_spring,
+                      offered_IAP: subjectA.offered_IAP || subjectA.offered_IAP
                     }
                   });
                 } else {
                   classInfo = {
                     offered_fall: false,
-                    offered_spring: false
+                    offered_spring: false,
+                    offered_IAP: false
                   }
                 }
               }
@@ -291,8 +293,7 @@ export default {
           }
           var isOffered;
           if(classInfo !== undefined) {
-            isOffered = (semesterType === 0 && classInfo.offered_fall)
-                            || (semesterType === 1 && classInfo.offered_spring);
+            isOffered = [classInfo.offered_fall, classInfo.offered_IAP, classInfo.offered_spring][semesterType];
           }
           return {
             isOffered: isOffered,
