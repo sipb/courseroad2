@@ -23,14 +23,14 @@
         </v-card-title>
 
         <v-card-text>
-          <input id="file" type="file" />
-          <v-spacer></v-spacer>
           <v-text-field
             v-model="roadtitle"
-            box
+            outline
             label="Road name"
             clearable
           ></v-text-field>
+          <v-spacer></v-spacer>
+          <input id="file" type="file" />
           <v-spacer></v-spacer>
           <v-textarea
             v-model="inputtext"
@@ -38,6 +38,15 @@
             full-width
             single-line
           ></v-textarea>
+          <v-spacer></v-spacer>
+
+          <v-flex v-if="badinput">
+            <v-card color="red">
+              <v-card-title>
+                <b>Invalid input!</b> Make sure you have given this road a name, and uploaded/pasted the right thing.
+              </v-card-title>
+            </v-card>
+          </v-flex>
         </v-card-text>
 
         <v-divider></v-divider>
@@ -74,6 +83,7 @@ export default {
     dialog: false,
     inputtext: "",
     roadtitle: "",
+    badinput: false,
   }},
   methods: {
     exportRoad: function(event) {
@@ -99,16 +109,23 @@ export default {
         fail = true;
       }
 
-      // parse text and add to roads and stuff
-      var obj = JSON.parse(this.inputtext);
+      if (!fail) {
+        try {
+          // parse text and add to roads and stuff
+          var obj = JSON.parse(this.inputtext);
+          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, obj.selectedSubjects)
+        } catch(error) {
+          fail = true;
+        }
+      }
 
       if (fail) {
-        // do something, like show an error maybe?
-        console.log('fail')
+        this.badinput = true;
+        // make warning go away after 7 seconds
+        setTimeout(() => { this.badinput = false }, 7000);
 
       } else {
-        this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, obj.selectedSubjects)
-
+        this.badinput = false;
         this.dialog = false;
       }
     },
