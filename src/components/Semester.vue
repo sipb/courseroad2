@@ -4,16 +4,18 @@
     <!-- <div slot="header"> -->
     <v-container grid-list-xs slot = "header" style = "padding: 0;">
       <v-layout row>
-        <v-flex>
-          Semester {{index}}
+        <v-flex xs6>
+          <b>{{semesterName}}</b>
           Units: {{semesterInformation.totalUnits}}
           Hours: {{Math.round(semesterInformation.expectedHours,1)}}
         </v-flex>
-        <v-flex xs1 v-for = "subject in semesterSubjects">
-          <v-card dark color = "primary">
-            <v-card-text style = "padding: 0.3em;">{{subject.id}}</v-card-text>
-          </v-card>
-        </v-flex>
+        <v-layout row xs6 v-if = "!isOpen">
+          <v-flex xs3 v-for = "subject in semesterSubjects">
+            <v-card dark color = "primary">
+              <v-card-text style = "padding: 0.3em;">{{subject.id}}</v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
       </v-layout>
     </v-container>
 
@@ -50,7 +52,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear"],
   components: {
     'class': Class
   },
@@ -89,6 +91,11 @@ export default {
         totalUnits: totalUnits,
         expectedHours: expectedHours,
       }
+    },
+    semesterName: function() {
+      var semesterYear = Math.floor((this.index-1)/3) + this.baseYear;
+      var semesterType = ["Fall ", "IAP ", "Spring "][this.index%3];
+      return semesterType + semesterYear;
     }
   },
   methods: {

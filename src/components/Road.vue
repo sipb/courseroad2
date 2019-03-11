@@ -8,13 +8,14 @@
     <!-- v-for index in N starts at 1... -->
     <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
     <semester
-      v-for="index in 8"
+      v-for="index in 12"
       :key="index-1"
       v-bind:index="index-1"
       v-bind:selectedSubjects="selectedSubjects"
       v-bind:allSubjects = "subjects"
       v-bind:roadID = "roadID"
       v-bind:isOpen = "visibleList[index-1]"
+      v-bind:baseYear = "baseYear"
       @drag-class = "$emit('drag-class',$event)"
       @drop-class = "$emit('drop-class',$event)"
       @remove-class = "$emit('remove-class', $event)"
@@ -32,12 +33,18 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects',"subjects","roadID"],
+  props: ['selectedSubjects',"subjects","roadID","currentSemester"],
   data: function () { return {
       visibleList: Array(8).fill(true),
     }
   },
-  methods: {
+  computed: {
+    baseYear: function() {
+      var today = new Date();
+      var currentYear = today.getFullYear();
+      var baseYear = today.getMonth() >= 8 ? currentYear + 1 : currentYear
+      return baseYear - Math.floor(this.currentSemester/3)
+    }
   }
 }
 </script>

@@ -30,6 +30,7 @@
         @set-road-prop = "setRoadProp(...arguments)"
         @reset-id = "resetID(...arguments)"
         @allow-cookies = "allowCookies"
+        @set-sem = "setSemester"
       >
       </auth>
       <v-spacer></v-spacer>
@@ -101,6 +102,7 @@
             v-bind:selectedSubjects="roads[roadid].contents.selectedSubjects"
             v-bind:subjects = "subjectsInfo"
             v-bind:roadID = "roadid"
+            v-bind:currentSemester = "currentSemester"
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
@@ -181,6 +183,7 @@ export default {
     searchInput: "",
     showSearch: false,
     classInfoStack: [],
+    currentSemester: 0,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -434,6 +437,9 @@ export default {
     },
     updateRemote: function(id) {
       this.$refs.authcomponent.updateRemote(id);
+    },
+    setSemester: function(sem) {
+      this.currentSemester = sem;
     }
   },
   watch: {
