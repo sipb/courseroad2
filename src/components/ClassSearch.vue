@@ -24,6 +24,7 @@
               v-on:dragend ="drop($event, props)"
               v-on:drag = "drag($event, props)"
               v-on:dragstart="dragStart($event, props)"
+              @click = "viewClassInfo(props)"
             >
               <td>{{props.item.subject_id}}</td>
               <td>{{props.item.title}}</td>
@@ -39,13 +40,14 @@
 <script>
 import FilterSet from "./FilterSet.vue";
 import $ from 'jquery';
+import Vue from 'vue'
 
 export default {
   name: "ClassSearch",
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput', 'classInfoStack'],
+  props: ['subjects', 'searchInput','classInfoStack'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -114,12 +116,10 @@ export default {
     searchInput: function(newSearch, oldSearch) {
       this.chosenFilters.nameInput = newSearch;
     },
-    classInfoStack: function(newStack, oldStack) {
-      var oldShowing = oldStack.length > 0;
-      var newShowing = newStack.length > 0;
-      if(oldShowing != newShowing) {
+    classStackExists: function(oldExists, newExists) {
+      Vue.nextTick(function() {
         this.updateMenuStyle();
-      }
+      }.bind(this));
     }
   },
   computed: {
@@ -173,7 +173,7 @@ export default {
 
         // and or or function based on filter mode
         var filterAction = this.filterGroupModes[this.filterGroupMode];
-        return this.subjects.filter(function(subject) {
+        var filteredSubjects =  this.subjects.filter(function(subject) {
           for(var attrs in filters) {
             //each test function in a filter group
             var testers = filters[attrs];
@@ -207,9 +207,31 @@ export default {
           }
           return true;
         })
+        if(this.chosenFilters.nameInput.length) {
+          var sortingOrder = [this.chosenFilters.nameInput,  "^" + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), "^" + escapeRegExp(this.chosenFilters.nameInput)];
+          var sortingFuncs = getRegexFuncs(sortingOrder);
+          var getOrderForString = function(matchingString) {
+            var matches = sortingFuncs.map((func)=>func(matchingString))
+            return matches.lastIndexOf(true);
+          }
+          var getOrder = function(subject) {
+            var idMatch = getOrderForString(subject.subject_id);
+            var nameMatch = getOrderForString(subject.title);
+            return Math.max(idMatch, nameMatch)
+          }
+          return filteredSubjects.sort(function(subject1, subject2) {
+            return getOrder(subject2) - getOrder(subject1);
+          });
+        } else {
+          return filteredSubjects;
+        }
+
       } else {
         return [];
       }
+    },
+    classStackExists: function() {
+      return this.classInfoStack.length>0;
     }
   },
   methods: {
@@ -293,7 +315,6 @@ export default {
       }
     },
     updateMenuStyle: function() {
-
       var searchInputElem = document.getElementById("searchInputTF");
       var searchInputRect = searchInputElem.getBoundingClientRect();
       var searchMenuTop = searchInputRect.top + searchInputRect.height;
@@ -309,6 +330,9 @@ export default {
       var maxHeight = menuBottom - searchMenuTop - this.menuMargin;
       this.searchHeight = "max-height: "+maxHeight+"px;width: "+menuWidth+"px;";
 
+    },
+    viewClassInfo: function(item) {
+      this.$emit("view-class-info", item.item.subject_id);
     }
   },
   mounted() {
