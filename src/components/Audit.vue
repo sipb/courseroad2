@@ -45,7 +45,7 @@
         </requirement>
       </template>
       <template slot = "append" slot-scope = "{ item, leaf }">
-        <v-btn icon flat color = "info" v-if="'reqs' in item || dialogReq !== undefined && 'percent_fulfilled' in dialogReq" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
+        <v-btn icon flat color = "info" v-if="'reqs' in item || dialogReq !== undefined && 'threshold' in dialogReq" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
         <v-dialog v-if = "dialogReq !== undefined" v-model = "viewDialog">
           <v-card style = "padding: 2em">
             <v-btn icon flat style = "float:right" @click = "viewDialog = false"><v-icon>close</v-icon></v-btn>
@@ -130,12 +130,6 @@ export default {
       var pstring = "--percent: " + req.percent_fulfilled+"%";
       return pstring;
     },
-    // percentage_bar: function(req) {
-    //   var pblock = {
-    //     "percentage-bar": ("reqs" in req || "threshold" in req)
-    //   }
-    //   return pblock;
-    // },
     deleteReq: function(req) {
       var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
       this.$emit("remove-req",reqName);

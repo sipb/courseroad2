@@ -24,8 +24,6 @@
       | <span style = "text-transform: cursive">{{ req.req }}</span>
     </span>
     <div :class = "percentage_bar" :style = "percentage"></div>
-    <!-- <div :style = "percentage">
-    </div> -->
   </div>
 </template>
 
