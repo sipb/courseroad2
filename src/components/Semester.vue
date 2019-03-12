@@ -5,7 +5,13 @@
     <v-container grid-list-xs slot = "header" style = "padding: 0;">
       <v-layout row>
         <v-flex xs6>
-          <b>{{semesterName}}</b>
+          <b>{{semesterType}}
+            <v-hover>
+              <span slot-scope = "{ hover }" @click = "changeYear" :class = "hover ? 'hovering' : ''">
+                {{semesterYear}}
+              </span>
+            </v-hover>
+          </b>
           Units: {{semesterInformation.totalUnits}}
           Hours: {{Math.round(semesterInformation.expectedHours,1)}}
         </v-flex>
@@ -54,6 +60,9 @@ import $ from "jquery"
 export default {
   name: "semester",
   props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear"],
+  data: function() {return {
+    newYear: this.semesterYear,
+  }},
   components: {
     'class': Class
   },
@@ -93,18 +102,18 @@ export default {
         expectedHours: expectedHours,
       }
     },
-    semesterName: function() {
-      var semesterYear = Math.floor((this.index-1)/3) + this.baseYear;
-      var semesterType = ["Fall ", "IAP ", "Spring "][this.index%3];
-      return semesterType + semesterYear;
+    semesterYear: function() {
+      return Math.floor((this.index-1)/3) + this.baseYear;
+    },
+    semesterType: function() {
+      return ["Fall", "IAP", "Spring"][this.index%3];
     }
   },
   methods: {
-    dropRoadSubject: function(event, subject) {
-      console.log("drop road subject");
-      console.log(event);
-    },
-
+    changeYear: function(event) {
+      event.stopPropagation();
+      this.$emit("change-year")
+    }
     // dropped: function(event) {
     //   // console.log("dropped");
     //   // console.log(event);
@@ -120,6 +129,9 @@ export default {
 
 
 <style scoped>
+  .hovering {
+    background: radial-gradient(lightgreen, rgba(0,0,0,0));
+  }
   .semesterBin {
 /*    display: flex;
     justify-content: space-between;

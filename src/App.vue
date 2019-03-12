@@ -121,6 +121,7 @@
             @drag-class="testClass"
             @remove-class = "removeClass"
             @click-class = "pushClassStack($event.id)"
+            @change-year = "$refs.authcomponent.changeSemester($event)"
           ></road>
         </v-tab-item>
       </v-tabs-items>

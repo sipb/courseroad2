@@ -90,6 +90,7 @@ export default {
         return axios.get(FIREROAD_LINK+"/verify/", headerList)
         .then(function(verifyResponse){
           if(verifyResponse.data.success) {
+            this.$emit("set-sem", verifyResponse.data.current_semester);
             if(params===false) {
               return axiosFunc(FIREROAD_LINK+link,headerList);
             } else {
@@ -99,7 +100,7 @@ export default {
             this.logoutUser();
             return Promise.reject("Token not valid")
           }
-        });
+        }.bind(this));
       } else {
         return Promise.reject("No auth information");
       }
@@ -385,6 +386,18 @@ export default {
           }
         }
       }
+    },
+    changeSemester: function(year) {
+      var sem = year * 3;
+      var currentMonth = new Date().getMonth();
+      if(currentMonth <= 4 || currentMonth >= 10) {
+        sem += 2;
+      }
+      this.postSecure("/set_semester/",{semester: sem}).then(function(res) {
+        if(res.status===200 && res.data.success) {
+          this.$emit('set-sem', sem);
+        }
+      }.bind(this))
     }
   },
   watch: {
