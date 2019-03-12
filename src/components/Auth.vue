@@ -397,6 +397,10 @@ export default {
         if(res.status===200 && res.data.success) {
           this.$emit('set-sem', sem);
         }
+      }.bind(this)).catch(function(err) {
+        if(err == "No auth information") {
+          this.$emit('set-sem', sem);
+        }
       }.bind(this))
     }
   },
