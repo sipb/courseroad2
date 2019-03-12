@@ -83,7 +83,7 @@ export default {
           {name: "Any", short: "Any", filterString: "CI.+"},
           {name: "CI-H", short: "CI-H", filterString: "CI-H"},
           {name: "CI-HW", short: "CI-HW", filterString: "CI-HW"},
-          {name: "CI-M", short: "CI-M", filterString: "CI-M"},
+          // {name: "CI-M", short: "CI-M", filterString: "CI-M"},
           {name: "Not CI", short: "None", filterString: "^(?!CI)"}
         ],
         levelInput: [
