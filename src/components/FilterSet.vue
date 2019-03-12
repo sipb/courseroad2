@@ -43,6 +43,7 @@ export default {
 }
 
 .filter-title {
+  user-select: none;
   font-weight: bold;
   font-size: 0.9em;
   min-width: 3.3em;
