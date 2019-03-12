@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import '../assets/app.css'
 import Vuetify from 'vuetify'
 import $ from 'jquery'
 import VueCookies from "vue-cookies"
