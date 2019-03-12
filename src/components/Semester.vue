@@ -103,10 +103,18 @@ export default {
       }
     },
     semesterYear: function() {
-      return Math.floor((this.index-1)/3) + this.baseYear;
+      if(this.index===0) {
+        return "";
+      } else {
+        return Math.floor((this.index-2)/3) + this.baseYear;
+      }
     },
     semesterType: function() {
-      return ["Fall", "IAP", "Spring"][this.index%3];
+      if(this.index===0) {
+        return "Prior Credit"
+      } else {
+        return ["Fall", "IAP", "Spring"][(this.index-1)%3];
+      }
     }
   },
   methods: {

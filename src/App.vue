@@ -283,8 +283,9 @@ export default {
         var semesterID = semesterObjects.semesterParent.attr("id");
         if(semesterID.split("_")[2]==="semester") {
           var semesterNum = parseInt(semesterID.split("_")[3]);
-          var semesterType = semesterNum % 3;
+          var semesterType = (semesterNum-1) % 3;
           var classInfo = event.classInfo;
+          var isOffered;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
               var filteredSubjects = this.subjectsInfo.filter(function(s) {
@@ -292,7 +293,7 @@ export default {
               });
               if(filteredSubjects.length) {
                 classInfo = filteredSubjects[0];
-              } else {
+              } else if(semesterType >= 0) {
                 //not in catalog, might be a generic course (like PHY1 or HASS)
                 var matchingClasses = this.subjectsInfo.filter(function(subject) {
                   var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
@@ -319,9 +320,12 @@ export default {
             }
 
           }
-          var isOffered;
           if(classInfo !== undefined) {
-            isOffered = [classInfo.offered_fall, classInfo.offered_IAP, classInfo.offered_spring][semesterType];
+            if(semesterType>=0) {
+              isOffered = [classInfo.offered_fall, classInfo.offered_IAP, classInfo.offered_spring][semesterType];
+            } else {
+              isOffered = true;
+            }
           }
           return {
             isOffered: isOffered,

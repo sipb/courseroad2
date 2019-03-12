@@ -388,10 +388,12 @@ export default {
       }
     },
     changeSemester: function(year) {
-      var sem = year * 3;
       var currentMonth = new Date().getMonth();
-      if(currentMonth <= 4 || currentMonth >= 10) {
-        sem += 2;
+      var sem;
+      if(currentMonth >= 4 && currentMonth <= 10) {
+        sem = 1 + year * 3;
+      } else {
+        sem = 3 + year * 3;
       }
       this.postSecure("/set_semester/",{semester: sem}).then(function(res) {
         if(res.status===200 && res.data.success) {

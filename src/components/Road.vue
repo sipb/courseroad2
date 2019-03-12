@@ -59,10 +59,10 @@ export default {
   },
   props: ['selectedSubjects',"subjects","roadID","currentSemester"],
   data: function () { return {
-      visibleList: this.currentSemester >= 12 ? Array(15).fill(true) : Array(12).fill(true),
+      visibleList: this.currentSemester >= 13 ? Array(16).fill(true) : Array(13).fill(true),
       changeYearDialog: false,
-      newYear: this.currentSemester * 3,
-      numSems: this.currentSemester >= 12 ? 15 : 12
+      newYear: (this.currentSemester-1) * 3,
+      numSems: this.currentSemester >= 13 ? 16 : 13
     }
   },
   computed: {
@@ -70,12 +70,12 @@ export default {
       var today = new Date();
       var currentYear = today.getFullYear();
       var baseYear = (today.getMonth() >= 4 && today.getMonth()<=10) ? currentYear + 1 : currentYear
-      return baseYear - Math.floor(this.currentSemester/3)
+      return baseYear - Math.floor((this.currentSemester-1)/3)
     }
   },
   watch: {
     currentSemester: function(newSem, oldSem) {
-      this.numSems = newSem >= 12 ? 15 : 12;
+      this.numSems = newSem >= 13 ? 16 : 13;
     }
   }
 }
