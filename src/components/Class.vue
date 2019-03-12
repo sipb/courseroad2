@@ -5,11 +5,11 @@
     <v-card
       :class="[{classbox: true, satisfied: isSatisfied}, courseColor]"
       draggable
-      v-on:drag = "drag"
-      v-on:dragend = "drop"
-      v-on:click = "$emit('click-class',classInfo)"
+      v-on:drag="drag"
+      v-on:dragend="drop"
+      v-on:click="$emit('click-class',classInfo)"
     >
-      <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo)">cancel</v-icon>
+      <v-icon style="margin: 4px" small @click="$emit('remove-class',classInfo)">cancel</v-icon>
       <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
 
 <!--
@@ -29,7 +29,7 @@ export default {
   props: ['classInfo','semesterIndex'],
   computed: {
     courseColor () {
-      let course  = this.classInfo.id.split('.')[0]
+      let course =this.classInfo.id.split('.')[0]
       if (this.validCourses.indexOf(course) !== -1) {
         return 'course-' + course
       } else {

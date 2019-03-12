@@ -55,7 +55,7 @@
           <v-btn
             color="primary"
             flat
-            @click="dialog = false"
+            @click="dialog=false"
           >
             Cancel
           </v-btn>
@@ -88,16 +88,16 @@ export default {
   }},
   methods: {
     exportRoad: function(event) {
-      var filename = this.roads[this.activeRoad].name + '.road';
-      var text = JSON.stringify(this.roads[this.activeRoad].contents);
+      var filename=this.roads[this.activeRoad].name + '.road';
+      var text=JSON.stringify(this.roads[this.activeRoad].contents);
 
       // for some reason this is the way you download files...
       //    create an element, click it, and remove it
-      var element = document.createElement('a');
+      var element=document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
       element.setAttribute('download', filename);
 
-      element.style.display = 'none';
+      element.style.display='none';
       document.body.appendChild(element);
 
       element.click();
@@ -106,57 +106,57 @@ export default {
     },
     importRoad: function(event) {
 
-      let fail = false;
+      let fail=false;
       // check for legal input
       if (this.inputtext === "" || this.roadtitle === ""){
-        fail = true;
+        fail=true;
       }
 
       if (!fail) {
         try {
           // parse text and add to roads
-          var obj = JSON.parse(this.inputtext);
+          var obj=JSON.parse(this.inputtext);
           this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, obj.selectedSubjects)
         } catch(error) {
-          fail = true;
+          fail=true;
         }
       }
 
       if (fail) {
-        this.badinput = true;
+        this.badinput=true;
         // make warning go away after 7 seconds
-        setTimeout(() => { this.badinput = false }, 7000);
+        setTimeout(() => { this.badinput=false }, 7000);
 
       } else {
-        this.badinput = false;
-        this.dialog = false;
+        this.badinput=false;
+        this.dialog=false;
       }
     },
   },
   mounted() {
     // read uploaded files
-    var onFileChange = (event) => {
+    var onFileChange=(event) => {
 
-      var reader = new FileReader();
-      reader.onload = (event) => {
-          this.inputtext = event.target.result;
+      var reader=new FileReader();
+      reader.onload=(event) => {
+          this.inputtext=event.target.result;
       };
 
       if (event.target.files[0]) {
         // would have been undefined if user exited file select dialog
-        let name = event.target.files[0].name
+        let name=event.target.files[0].name
         // check for valid type hopefully
         if (name.substr(name.length - 5) === '.road') {
           // update title unless they already input one
           if (this.roadtitle === '') {
-            this.roadtitle = name.substr(0, name.length - 5)
+            this.roadtitle=name.substr(0, name.length - 5)
           }
           // finally, read the file
           reader.readAsText(event.target.files[0]);
         } else {
           // wrong file type
-          this.badinput = true
-          setTimeout(() => { this.badinput = false }, 7000);
+          this.badinput=true
+          setTimeout(() => { this.badinput=false }, 7000);
         }
       }
     }

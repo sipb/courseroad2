@@ -1,30 +1,30 @@
 <template>
-  <v-container class="searchdiv" :style = "searchHeight + 'display: flex; flex-direction:column;'">
+  <v-container class="searchdiv" :style="searchHeight + 'display: flex; flex-direction:column;'">
     <div>
-      <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
-      <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
-      <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
-      <filter-set v-model = "chosenFilters.levelInput" v-bind:label = "'Level'" v-bind:filters="allFilters.levelInput"></filter-set>
-      <filter-set v-model = "chosenFilters.unitInput" v-bind:label = "'Units'" v-bind:filters = "allFilters.unitInput"></filter-set>
+      <filter-set v-model="chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
+      <filter-set v-model="chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
+      <filter-set v-model="chosenFilters.ciInput" v-bind:label="'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
+      <filter-set v-model="chosenFilters.levelInput" v-bind:label="'Level'" v-bind:filters="allFilters.levelInput"></filter-set>
+      <filter-set v-model="chosenFilters.unitInput" v-bind:label="'Units'" v-bind:filters="allFilters.unitInput"></filter-set>
     </div>
     <h4> Search: {{ chosenFilters.nameInput}} </h4>
     <h4> Results: </h4>
-    <div style = "display: flex; flex: 1; min-height: 0px;">
-      <div style = "flex: 1; overflow: auto;">
+    <div style="display: flex; flex: 1; min-height: 0px;">
+      <div style="flex: 1; overflow: auto;">
         <v-data-table
           :items="autocomplete"
-          :pagination.sync = "pagination"
-          :no-data-text = "'No results'"
+          :pagination.sync="pagination"
+          :no-data-text="'No results'"
           :rows-per-page-text= "'Display'"
           :hide-headers= "true"
         >
-          <template slot = "items" slot-scope = "props">
+          <template slot="items" slot-scope="props">
             <tr
-              draggable = "true"
+              draggable="true"
               v-on:dragend ="drop($event, props)"
-              v-on:drag = "drag($event, props)"
+              v-on:drag="drag($event, props)"
               v-on:dragstart="dragStart($event, props)"
-              @click = "viewClassInfo(props)"
+              @click="viewClassInfo(props)"
             >
               <td>{{props.item.subject_id}}</td>
               <td>{{props.item.title}}</td>
@@ -114,7 +114,7 @@ export default {
   },
   watch: {
     searchInput: function(newSearch, oldSearch) {
-      this.chosenFilters.nameInput = newSearch;
+      this.chosenFilters.nameInput=newSearch;
     },
     classStackExists: function(oldExists, newExists) {
       Vue.nextTick(function() {
@@ -125,9 +125,9 @@ export default {
   computed: {
     autocomplete: function () {
       //only display subjects if you are filtering by something
-      var returnAny = false;
+      var returnAny=false;
       for(var filterName in this.chosenFilters) {
-        returnAny = returnAny || this.chosenFilters[filterName].length;
+        returnAny=returnAny || this.chosenFilters[filterName].length;
       }
       if(returnAny) {
         //escapes special characters for regex in a string
@@ -137,8 +137,8 @@ export default {
         //gets the .test function (which tests if a string matches regex) from each regex filter in a group
         function getRegexFuncs(regexStrings) {
           return regexStrings.map(function(rs) {
-            var r = new RegExp(rs, "i");
-            var t = r.test.bind(r);
+            var r=new RegExp(rs, "i");
+            var t=r.test.bind(r);
             return t;
           });
         }
@@ -152,7 +152,7 @@ export default {
           })
         }
         //gets functions that return a boolean if a filter is true
-        var filters = {
+        var filters={
           "subject_id,title": getRegexFuncs([this.chosenFilters.nameInput]),
           "gir_attribute": getRegexFuncs(this.chosenFilters.girInput),
           "hass_attribute": getRegexFuncs(this.chosenFilters.hassInput),
@@ -162,7 +162,7 @@ export default {
         }
         // gets all possible values of an attribute
 
-        // var allSubjects = this.subjects;
+        // var allSubjects=this.subjects;
         // function unique(arr) {
         //   return [... new Set(arr)]
         // }
@@ -172,29 +172,29 @@ export default {
         // console.log(allAttr("hass_attribute"));
 
         // and or or function based on filter mode
-        var filterAction = this.filterGroupModes[this.filterGroupMode];
-        var filteredSubjects =  this.subjects.filter(function(subject) {
+        var filterAction=this.filterGroupModes[this.filterGroupMode];
+        var filteredSubjects= this.subjects.filter(function(subject) {
           for(var attrs in filters) {
             //each test function in a filter group
-            var testers = filters[attrs];
+            var testers=filters[attrs];
             if(testers.length) {
               //if a single attribute group in a set returns true, the filter will match it
-              var passesAnyAttributeGroupInSet = false;
-              var attrSet = attrs.split(",");
-              for(var a = 0; a < attrSet.length; a++) {
-                var attr = attrSet[a];
-                var subjectattr = subject[attr]
+              var passesAnyAttributeGroupInSet=false;
+              var attrSet=attrs.split(",");
+              for(var a=0; a < attrSet.length; a++) {
+                var attr=attrSet[a];
+                var subjectattr=subject[attr]
                 if(!subject[attr]) {
-                  subjectattr = ""
+                  subjectattr=""
                 }
                 //start with false for OR mode, and true for AND mode
-                var passesAttributeGroup = !filterAction(false, true);
+                var passesAttributeGroup=!filterAction(false, true);
                 //use the filter mode function (OR or AND) and test all filters in a group
-                for(var t = 0; t < testers.length; t++) {
-                  passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subjectattr));
+                for(var t=0; t < testers.length; t++) {
+                  passesAttributeGroup=filterAction(passesAttributeGroup, testers[t](subjectattr));
                 }
                 if(passesAttributeGroup) {
-                  passesAnyAttributeGroupInSet = true;
+                  passesAnyAttributeGroupInSet=true;
                 }
               }
               //if the subject passes no attribute group in the set, don't include it
@@ -208,15 +208,15 @@ export default {
           return true;
         })
         if(this.chosenFilters.nameInput.length) {
-          var sortingOrder = [this.chosenFilters.nameInput,  "^" + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), "^" + escapeRegExp(this.chosenFilters.nameInput)];
-          var sortingFuncs = getRegexFuncs(sortingOrder);
-          var getOrderForString = function(matchingString) {
-            var matches = sortingFuncs.map((func)=>func(matchingString))
+          var sortingOrder=[this.chosenFilters.nameInput,  "^" + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), "^" + escapeRegExp(this.chosenFilters.nameInput)];
+          var sortingFuncs=getRegexFuncs(sortingOrder);
+          var getOrderForString=function(matchingString) {
+            var matches=sortingFuncs.map((func)=>func(matchingString))
             return matches.lastIndexOf(true);
           }
-          var getOrder = function(subject) {
-            var idMatch = getOrderForString(subject.subject_id);
-            var nameMatch = getOrderForString(subject.title);
+          var getOrder=function(subject) {
+            var idMatch=getOrderForString(subject.subject_id);
+            var nameMatch=getOrderForString(subject.title);
             return Math.max(idMatch, nameMatch)
           }
           return filteredSubjects.sort(function(subject1, subject2) {
@@ -254,23 +254,23 @@ export default {
       });
     },
     addClass: function(event, classItem) {
-      var semesterElem = document.elementFromPoint(event.x,event.y);
-      var semesterParent = $(semesterElem).parents(".semester-container");
-      var classElem = $(event.target);
-      // var semesterBox = semesterParent.find(".semester-drop-container");
-      var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
+      var semesterElem=document.elementFromPoint(event.x,event.y);
+      var semesterParent=$(semesterElem).parents(".semester-container");
+      var classElem=$(event.target);
+      // var semesterBox=semesterParent.find(".semester-drop-container");
+      var semesterBox=$("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
       semesterBox.addClass("grey");
       semesterBox.removeClass("red");
       semesterBox.removeClass("green");
       if(semesterParent.length) {
-        var semesterID = semesterParent.attr("id");
+        var semesterID=semesterParent.attr("id");
         if(semesterID.substring(0,9)=="semester_") {
-          var semesterNum = parseInt(semesterID.substring(9))
-          var semesterType = semesterNum % 2;
-          var isOffered = (semesterType == 0 && classItem.item.offered_fall)
+          var semesterNum=parseInt(semesterID.substring(9))
+          var semesterType=semesterNum % 2;
+          var isOffered=(semesterType == 0 && classItem.item.offered_fall)
                           || (semesterType == 1 && classItem.item.offered_spring);
           if (isOffered) {
-            var newClass = {
+            var newClass={
               overrideWarnings : false,
               semester : semesterNum,
               title : classItem.item.title,
@@ -282,20 +282,20 @@ export default {
           }
         }
       }
-      this.dragSemesterNum = -1;
+      this.dragSemesterNum=-1;
     },
     testClass: function(event, classItem) {
-      var semesterElem = $(document.elementFromPoint(event.x,event.y));
-      var semesterParent = semesterElem.parents(".semester-container");
-      var classElem = $(event.target);
-      var semesterBox = semesterParent.find(".semester-drop-container");
+      var semesterElem=$(document.elementFromPoint(event.x,event.y));
+      var semesterParent=semesterElem.parents(".semester-container");
+      var classElem=$(event.target);
+      var semesterBox=semesterParent.find(".semester-drop-container");
       if(semesterParent.length) {
-        var semesterID = semesterParent.attr("id");
+        var semesterID=semesterParent.attr("id");
         if(semesterID.substring(0,9)=="semester_") {
-          var semesterNum = parseInt(semesterID.substring(9))
+          var semesterNum=parseInt(semesterID.substring(9))
           if(this.dragSemesterNum != semesterNum) {
-            var semesterType = semesterNum % 2;
-            var isOffered = (semesterType == 0 && classItem.item.offered_fall)
+            var semesterType=semesterNum % 2;
+            var isOffered=(semesterType == 0 && classItem.item.offered_fall)
                             || (semesterType == 1 && classItem.item.offered_spring);
             if (!isOffered) {
               semesterBox.removeClass("grey");
@@ -304,31 +304,31 @@ export default {
               semesterBox.removeClass("grey");
               semesterBox.addClass("green");
             }
-            var lastSemester = $("#semester_" + this.dragSemesterNum);
-            var lastSemesterBox = lastSemester.find(".semester-drop-container");
+            var lastSemester=$("#semester_" + this.dragSemesterNum);
+            var lastSemesterBox=lastSemester.find(".semester-drop-container");
             lastSemesterBox.addClass("grey");
             lastSemesterBox.removeClass("red");
             lastSemesterBox.removeClass("green");
           }
-          this.dragSemesterNum = semesterNum;
+          this.dragSemesterNum=semesterNum;
         }
       }
     },
     updateMenuStyle: function() {
-      var searchInputElem = document.getElementById("searchInputTF");
-      var searchInputRect = searchInputElem.getBoundingClientRect();
-      var searchMenuTop = searchInputRect.top + searchInputRect.height;
-      var searchInput = $("#searchInputTF");
-      var menuWidth = searchInput.outerWidth();
-      var classInfoCard = $("#classInfoCard");
+      var searchInputElem=document.getElementById("searchInputTF");
+      var searchInputRect=searchInputElem.getBoundingClientRect();
+      var searchMenuTop=searchInputRect.top + searchInputRect.height;
+      var searchInput=$("#searchInputTF");
+      var menuWidth=searchInput.outerWidth();
+      var classInfoCard=$("#classInfoCard");
       var menuBottom;
       if(classInfoCard.length) {
-        menuBottom = classInfoCard.position().top;
+        menuBottom=classInfoCard.position().top;
       } else {
         menuBottom= $(window).innerHeight();
       }
-      var maxHeight = menuBottom - searchMenuTop - this.menuMargin;
-      this.searchHeight = "max-height: "+maxHeight+"px;width: "+menuWidth+"px;";
+      var maxHeight=menuBottom - searchMenuTop - this.menuMargin;
+      this.searchHeight="max-height: "+maxHeight+"px;width: "+menuWidth+"px;";
 
     },
     viewClassInfo: function(item) {

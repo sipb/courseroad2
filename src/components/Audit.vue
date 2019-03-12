@@ -1,16 +1,16 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
   <v-container>
-    <v-menu max-height="600px" absolute style = "float:right">
-      <v-btn icon flat color = "primary" style = "float:right" slot = "activator">
+    <v-menu max-height="600px" absolute style="float:right">
+      <v-btn icon flat color="primary" style="float:right" slot="activator">
         <v-icon>add</v-icon>
       </v-btn>
       <v-list dense>
         <v-list-tile
           v-for= "(item, key) in reqList"
-          @click = "addReqTree(key)"
+          @click="addReqTree(key)"
         >
-          <v-list-tile-title style = "font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
+          <v-list-tile-title style="font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-menu>
@@ -21,52 +21,52 @@
       item-key="title"
       item-children="reqs"
       open-on-click
-      :activatable = "false"
+      :activatable="false"
     >
       <!-- TODO: useful icons can go here if you can figure out how -->
       <template slot="prepend" slot-scope="{ item, leaf, open }">
         <v-tooltip left>
-          <template slot = "activator">
-            <v-icon v-if="'reqs' in item" :style = "fulfilledIcon(item)">
+          <template slot="activator">
+            <v-icon v-if="'reqs' in item" :style="fulfilledIcon(item)">
               <!-- {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }} -->
             </v-icon>
-            <v-icon v-else :style = "fulfilledIcon(item)">
+            <v-icon v-else :style="fulfilledIcon(item)">
               {{ item['plain-string'] ? item.fulfilled ? "star" : "star_outline": item.fulfilled ? "check_box" : "check_box_outline_blank"}}
             </v-icon>
           </template>
           <span>{{item.percent_fulfilled}}%</span>
         </v-tooltip>
       </template>
-      <template slot = "label" slot-scope = "{ item, leaf}">
+      <template slot="label" slot-scope="{ item, leaf}">
         <requirement
           v-bind:req="item"
           v-bind:leaf="leaf"
         >
         </requirement>
       </template>
-      <template slot = "append" slot-scope = "{ item, leaf }">
-        <v-btn icon flat color = "info" v-if="'title-no-degree' in item" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
-        <v-dialog v-if = "dialogReq !== undefined" v-model = "viewDialog">
-          <v-card style = "padding: 2em">
-            <v-btn icon flat style = "float:right" @click = "viewDialog = false"><v-icon>close</v-icon></v-btn>
+      <template slot="append" slot-scope="{ item, leaf }">
+        <v-btn icon flat color="info" v-if="'title-no-degree' in item" @click="reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
+        <v-dialog v-if="dialogReq !== undefined" v-model="viewDialog">
+          <v-card style="padding: 2em">
+            <v-btn icon flat style="float:right" @click="viewDialog=false"><v-icon>close</v-icon></v-btn>
             <v-card-title>{{dialogReq["title"]}}</v-card-title>
-            <v-card-text v-if = "'desc' in dialogReq">{{dialogReq["desc"]}}</v-card-text>
+            <v-card-text v-if="'desc' in dialogReq">{{dialogReq["desc"]}}</v-card-text>
             <v-card-text>
-              <div class = "percentage-bar" :style = "percentage(dialogReq)">
+              <div class="percentage-bar" :style="percentage(dialogReq)">
                 {{dialogReq["percent_fulfilled"]}}% fulfilled
               </div>
             </v-card-text>
-            <v-card-text v-if = "'req' in dialogReq">
+            <v-card-text v-if="'req' in dialogReq">
               {{dialogReq["req"]}}
             </v-card-text>
             <v-card-text >
               <b>Satisfying Courses</b>
-              <div v-for = "course in dialogReq['sat_courses']">
+              <div v-for="course in dialogReq['sat_courses']">
                 {{course}}
               </div>
             </v-card-text>
             <v-card-actions>
-              <v-btn color = "error" v-if = "'title-no-degree' in dialogReq" @click = "deleteReq(dialogReq); viewDialog = false; dialogReq = undefined;">Remove Requirement</v-btn>
+              <v-btn color="error" v-if="'title-no-degree' in dialogReq" @click="deleteReq(dialogReq); viewDialog=false; dialogReq=undefined;">Remove Requirement</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -126,16 +126,16 @@ export default {
       event.stopPropagation();
       console.log(event);
       console.log(req);
-      this.viewDialog = true;
-      this.dialogReq = req;
+      this.viewDialog=true;
+      this.dialogReq=req;
     },
     percentage: function(req) {
-      var pfulfilled = req.percent_fulfilled
-      var pstring = "--percent: " + req.percent_fulfilled+"%";
+      var pfulfilled=req.percent_fulfilled
+      var pstring="--percent: " + req.percent_fulfilled+"%";
       return pstring;
     },
     deleteReq: function(req) {
-      var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
+      var reqName=req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
       this.$emit("remove-req",reqName);
     }
   },

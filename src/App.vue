@@ -5,42 +5,42 @@
   >
     <v-toolbar fixed app dense class="elevation-2">
       <road-tabs
-        v-bind:roads = "roads"
-        v-bind:activeRoad = "activeRoad"
-        v-bind:subjects = "subjectsInfo"
-        @delete-road = "$refs.authcomponent.deleteRoad($event)"
-        @set-name = "setRoadName($event.road, $event.name)"
-        @add-road = "addRoad"
-        @change-active = "changeActiveRoad($event)"
-        slot = "extension"
+        v-bind:roads="roads"
+        v-bind:activeRoad="activeRoad"
+        v-bind:subjects="subjectsInfo"
+        @delete-road="$refs.authcomponent.deleteRoad($event)"
+        @set-name="setRoadName($event.road, $event.name)"
+        @add-road="addRoad"
+        @change-active="changeActiveRoad($event)"
+        slot="extension"
       >
       </road-tabs>
 
       <import-export
         v-bind:roads="roads"
         v-bind:activeRoad="activeRoad"
-        @add-road = "addRoad"
+        @add-road="addRoad"
       >
       </import-export>
 
       <v-spacer></v-spacer>
 
       <auth
-        ref = "authcomponent"
-        v-bind:roads = "roads"
-        v-bind:justLoaded = "justLoaded"
-        v-bind:activeRoad = "activeRoad"
-        v-bind:conflictInfo = "conflictInfo"
-        @delete-road = "deleteRoad"
-        @set-road = "setRoad(...arguments)"
-        @set-roads = "roads = $event"
-        @set-active = "setActive"
-        @conflict = "conflict"
-        @resolve-conflict = "resolveConflict"
-        @set-road-prop = "setRoadProp(...arguments)"
-        @reset-id = "resetID(...arguments)"
-        @allow-cookies = "allowCookies"
-        @set-sem = "setSemester"
+        ref="authcomponent"
+        v-bind:roads="roads"
+        v-bind:justLoaded="justLoaded"
+        v-bind:activeRoad="activeRoad"
+        v-bind:conflictInfo="conflictInfo"
+        @delete-road="deleteRoad"
+        @set-road="setRoad(...arguments)"
+        @set-roads="roads=$event"
+        @set-active="setActive"
+        @conflict="conflict"
+        @resolve-conflict="resolveConflict"
+        @set-road-prop="setRoadProp(...arguments)"
+        @reset-id="resetID(...arguments)"
+        @allow-cookies="allowCookies"
+        @set-sem="setSemester"
       >
       </auth>
 
@@ -48,30 +48,30 @@
 
       <v-menu
         attach
-        v-model = "showSearch"
+        v-model="showSearch"
         :close-on-content-click="false"
-        :close-on-click = "false"
+        :close-on-click="false"
         fixed
         offset-y
         input-activator
       >
         <v-text-field
-          id = "searchInputTF"
-          autocomplete = "false"
-          class = "expanded-search"
+          id="searchInputTF"
+          autocomplete="false"
+          class="expanded-search"
           prepend-icon="search"
-          v-model = "searchInput"
-          placeholder = "6.0061 Silly Systems"
-          slot = "activator"
+          v-model="searchInput"
+          placeholder="6.0061 Silly Systems"
+          slot="activator"
         >
         </v-text-field>
         <class-search
-          id = "searchMenu"
-          ref = "searchMenu"
-          class = "search-menu"
-          v-bind:searchInput = "searchInput"
+          id="searchMenu"
+          ref="searchMenu"
+          class="search-menu"
+          v-bind:searchInput="searchInput"
           v-bind:subjects="subjectsInfo"
-          v-bind:classInfoStack = "classInfoStack"
+          v-bind:classInfoStack="classInfoStack"
           @add-class="addClass"
           @move-class="moveClass"
           @drop-class="dropClass"
@@ -92,13 +92,13 @@
       app
     >
       <audit
-        v-if = "activeRoad !== ''"
+        v-if="activeRoad !== ''"
         v-bind:reqTrees="reqTrees"
         v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
-        v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
+        v-bind:selectedSubjects="roads[activeRoad].contents.selectedSubjects"
         v-bind:reqList="reqList"
-        @add-req = "addReq"
-        @remove-req = "removeReq"
+        @add-req="addReq"
+        @remove-req="removeReq"
       ></audit>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
@@ -106,52 +106,52 @@
 
     <v-content app id="center-panel">
 
-      <v-tabs-items v-model = "activeRoad">
+      <v-tabs-items v-model="activeRoad">
         <v-tab-item
-          v-for = "roadid in Object.keys(roads)"
-          :key = "roadid"
-          :value = "roadid"
+          v-for="roadid in Object.keys(roads)"
+          :key="roadid"
+          :value="roadid"
           >
           <road
             v-bind:selectedSubjects="roads[roadid].contents.selectedSubjects"
-            v-bind:subjects = "subjectsInfo"
-            v-bind:roadID = "roadid"
-            v-bind:currentSemester = "currentSemester"
+            v-bind:subjects="subjectsInfo"
+            v-bind:roadID="roadid"
+            v-bind:currentSemester="currentSemester"
             @drop-class="dropClass"
             @drag-class="testClass"
-            @remove-class = "removeClass"
-            @click-class = "pushClassStack($event.id)"
+            @remove-class="removeClass"
+            @click-class="pushClassStack($event.id)"
           ></road>
         </v-tab-item>
       </v-tabs-items>
 
       <conflict-dialog
-        ref = "conflictdialog"
-        v-bind:conflictInfo = "conflictInfo"
-        v-bind:conflictDialog = "conflictDialog"
-        v-bind:roads = "roads"
-        @update-local = "updateLocal"
-        @update-remote = "updateRemote"
+        ref="conflictdialog"
+        v-bind:conflictInfo="conflictInfo"
+        v-bind:conflictDialog="conflictDialog"
+        v-bind:roads="roads"
+        @update-local="updateLocal"
+        @update-remote="updateRemote"
       >
       </conflict-dialog>
 
     </v-content>
 
     <class-info
-      v-if = "classInfoStack.length"
-      v-bind:classInfoStack = "classInfoStack"
-      v-bind:subjects = "subjectsInfo"
-      @pop-stack = "popClassStack"
-      @push-stack = "pushClassStack"
-      @close-classinfo = "classInfoStack = []"
-      v-on:click.native = "$event.stopPropagation()"
+      v-if="classInfoStack.length"
+      v-bind:classInfoStack="classInfoStack"
+      v-bind:subjects="subjectsInfo"
+      @pop-stack="popClassStack"
+      @push-stack="pushClassStack"
+      @close-classinfo="classInfoStack=[]"
+      v-on:click.native="$event.stopPropagation()"
       >
     </class-info>
 
 
-    <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
+    <v-footer v-if="!cookiesAllowed" fixed class="pa-2">
       This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
-      <v-btn small depressed color = "primary" @click = "allowCookies">
+      <v-btn small depressed color="primary" @click="allowCookies">
         OK
       </v-btn>
     </v-footer>
@@ -172,8 +172,8 @@ import Vue from 'vue'
 import ClassInfo from "./components/ClassInfo.vue"
 import ImportExport from "./components/ImportExport.vue"
 
-var MAIN_URL = "http://localhost:8080"
-var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
+var MAIN_URL="http://localhost:8080"
+var DATE_FORMAT="YYYY-MM-DDTHH:mm:ss.SSS000Z"
 
 export default {
   components: {
@@ -241,31 +241,31 @@ export default {
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     moveClass: function(classIndex, newSem) {
-      this.roads[this.activeRoad].contents.selectedSubjects[classIndex].semester = newSem;
+      this.roads[this.activeRoad].contents.selectedSubjects[classIndex].semester=newSem;
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     removeClass: function(classInfo) {
-      var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      var classIndex=this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
       this.roads[this.activeRoad].contents.selectedSubjects.splice(classIndex,1);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     resetID: function(oldid, newid) {
-      newid = newid.toString();
+      newid=newid.toString();
       Vue.set(this.roads, newid, this.roads[oldid]);
       if(this.activeRoad===oldid) {
-        this.activeRoad = newid;
+        this.activeRoad=newid;
       }
       Vue.delete(this.roads, oldid);
     },
     getRelevantObjects: function(position) {
       let semesterElem
       if (position.x === 0 && position.y === 0) {
-        semesterElem = document.elementFromPoint(this.lastX, this.lastY)
+        semesterElem=document.elementFromPoint(this.lastX, this.lastY)
       } else {
-        semesterElem = document.elementFromPoint(position.x,position.y);
+        semesterElem=document.elementFromPoint(position.x,position.y);
       }
-      var semesterParent = $(semesterElem).parents(".semester-container");
-      var semesterBox = semesterParent.find(".semester-drop-container");
+      var semesterParent=$(semesterElem).parents(".semester-container");
+      var semesterBox=semesterParent.find(".semester-drop-container");
       return {
         semesterParent: semesterParent,
         semesterBox: semesterBox
@@ -279,26 +279,26 @@ export default {
     },
     classIsOffered: function(semesterObjects, event) {
       if(semesterObjects.semesterParent.length) {
-        var semesterID = semesterObjects.semesterParent.attr("id");
+        var semesterID=semesterObjects.semesterParent.attr("id");
         if(semesterID.split("_")[2]==="semester") {
-          var semesterNum = parseInt(semesterID.split("_")[3]);
-          var semesterType = semesterNum % 3;
-          var classInfo = event.classInfo;
+          var semesterNum=parseInt(semesterID.split("_")[3]);
+          var semesterType=semesterNum % 3;
+          var classInfo=event.classInfo;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
-              var filteredSubjects = this.subjectsInfo.filter(function(s) {
+              var filteredSubjects=this.subjectsInfo.filter(function(s) {
                 return s.subject_id === event.basicClass.id
               });
               if(filteredSubjects.length) {
-                classInfo = filteredSubjects[0];
+                classInfo=filteredSubjects[0];
               } else {
                 //not in catalog, might be a generic course (like PHY1 or HASS)
-                var matchingClasses = this.subjectsInfo.filter(function(subject) {
-                  var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
+                var matchingClasses=this.subjectsInfo.filter(function(subject) {
+                  var possible_attributes=[subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
                   return possible_attributes.includes(event.basicClass.id);
                 });
                 if(matchingClasses.length) {
-                  classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
+                  classInfo=matchingClasses.reduce(function(subjectA, subjectB) {
                     return {
                       offered_fall: subjectA.offered_fall || subjectB.offeredFall,
                       offered_spring: subjectA.offered_spring || subjectB.offered_spring,
@@ -306,7 +306,7 @@ export default {
                     }
                   });
                 } else {
-                  classInfo = {
+                  classInfo={
                     offered_fall: false,
                     offered_spring: false,
                     offered_IAP: false
@@ -314,13 +314,13 @@ export default {
                 }
               }
             } else {
-              classInfo = undefined;
+              classInfo=undefined;
             }
 
           }
           var isOffered;
           if(classInfo !== undefined) {
-            isOffered = [classInfo.offered_fall, classInfo.offered_IAP, classInfo.offered_spring][semesterType];
+            isOffered=[classInfo.offered_fall, classInfo.offered_IAP, classInfo.offered_spring][semesterType];
           }
           return {
             isOffered: isOffered,
@@ -333,15 +333,15 @@ export default {
       }
     },
     dropClass: function(event) {
-      var semesterObjects = this.getRelevantObjects(event.drop);
+      var semesterObjects=this.getRelevantObjects(event.drop);
       this.resetSemesterBox(semesterObjects.semesterBox);
-      var semInfo = this.classIsOffered(semesterObjects, event);
+      var semInfo=this.classIsOffered(semesterObjects, event);
       if(semInfo.isOffered !== undefined) {
-        var inSameYear = Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
+        var inSameYear=Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
         if(semInfo.isOffered||!inSameYear) {
           event.drop.preventDefault();
           if(event.isNew) {
-            var newClass = {
+            var newClass={
               overrideWarnings : false,
               semester : semInfo.semesterNum,
               title : event.classInfo.title,
@@ -350,18 +350,18 @@ export default {
             }
             this.addClass(newClass);
           } else {
-            var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
+            var currentIndex=this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
             this.moveClass(currentIndex, semInfo.semesterNum)
           }
         }
       }
-      this.dragSemesterNum = -1;
+      this.dragSemesterNum=-1;
     },
     testClass: function(event) {
-      var semesterObjects = this.getRelevantObjects(event.drag);
-      var semInfo = this.classIsOffered(semesterObjects, event);
+      var semesterObjects=this.getRelevantObjects(event.drag);
+      var semInfo=this.classIsOffered(semesterObjects, event);
       if(semInfo.isOffered !== undefined) {
-        var inSameYear = Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
+        var inSameYear=Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
         if (!semInfo.isOffered) {
           if(inSameYear) {
             semesterObjects.semesterBox.removeClass("grey");
@@ -376,18 +376,18 @@ export default {
         }
       }
       if(this.dragSemesterNum !== semInfo.semesterNum && this.dragSemesterNum != -1) {
-        var lastSemester = $("#road_"+$.escapeSelector(this.activeRoad)+"_semester_" + this.dragSemesterNum);
-        var lastSemesterBox = lastSemester.find(".semester-drop-container");
+        var lastSemester=$("#road_"+$.escapeSelector(this.activeRoad)+"_semester_" + this.dragSemesterNum);
+        var lastSemesterBox=lastSemester.find(".semester-drop-container");
         this.resetSemesterBox(lastSemesterBox)
       }
       if(semInfo.semesterNum !== undefined) {
-        this.dragSemesterNum = semInfo.semesterNum;
+        this.dragSemesterNum=semInfo.semesterNum;
       }
     },
     updateFulfillment: function() {
-      var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
-      for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
-        var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
+      var subjectIDs=this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
+      for (var r=0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
+        var req=this.roads[this.activeRoad].contents.coursesOfStudy[r];
         axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
           //This is necessary so Vue knows about the new property on reqTrees
           Vue.set(this.data.reqTrees, this.req, response.data);
@@ -399,34 +399,34 @@ export default {
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
     },
     removeReq: function(event) {
-      var reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
+      var reqIndex=this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
       this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex,1);
     },
     setActiveRoad: function() {
-      var roadHash = window.location.hash;
+      var roadHash=window.location.hash;
       if(roadHash.length&&roadHash.substring(0,5)==="#road") {
-        var roadRequested = roadHash.substring(5);
+        var roadRequested=roadHash.substring(5);
         if(roadRequested in this.roads) {
-          this.activeRoad = roadHash.substring(5);
+          this.activeRoad=roadHash.substring(5);
           return true;
         }
       }
-      window.location.hash = "#road" + this.activeRoad;
+      window.location.hash="#road" + this.activeRoad;
       return false;
     },
     addRoad: function(roadName, cos=["girs"], ss=[]) {
-      var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
+      var tempRoadID="$" + this.$refs.authcomponent.newRoads.length + "$";
       var newContents;
       if(!this.duplicateRoad) {
-        newContents = {
+        newContents={
           coursesOfStudy: cos,
           selectedSubjects: ss,
         }
       } else {
-        newContents = JSON.parse(JSON.stringify(this.roads[this.duplicateRoadSource].contents));
+        newContents=JSON.parse(JSON.stringify(this.roads[this.duplicateRoadSource].contents));
       }
 
-      var newRoad = {
+      var newRoad={
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: roadName,
@@ -435,7 +435,7 @@ export default {
       }
       Vue.set(this.roads, tempRoadID, newRoad);
       this.$refs.authcomponent.newRoads.push(tempRoadID);
-      this.activeRoad = tempRoadID;
+      this.activeRoad=tempRoadID;
     },
 
 
@@ -443,7 +443,7 @@ export default {
       Vue.set(this.roads[roadID], "name", roadName);
     },
     changeActiveRoad: function(event) {
-      this.activeRoad = event;
+      this.activeRoad=event;
     },
     deleteRoad: function(roadID) {
       Vue.delete(this.roads, roadID);
@@ -452,22 +452,22 @@ export default {
       Vue.set(this.roads, roadID, newRoad);
     },
     setActive: function(roadID) {
-      this.activeRoad = roadID;
+      this.activeRoad=roadID;
     },
     conflict: function(conflictInfo) {
       this.$refs.conflictdialog.startConflict();
-      this.conflictInfo = conflictInfo;
+      this.conflictInfo=conflictInfo;
     },
     resolveConflict: function() {
       this.$refs.conflictdialog.resolveConflict();
-      this.conflictInfo = undefined;
+      this.conflictInfo=undefined;
     },
     setRoadProp: function(roadID, roadProp, propValue) {
       Vue.set(this.roads[roadID], roadProp, propValue);
     },
     allowCookies: function() {
       this.$refs.authcomponent.allowCookies();
-      this.cookiesAllowed = true;
+      this.cookiesAllowed=true;
     },
     updateLocal: function(id) {
       this.$refs.authcomponent.updateLocal(id);
@@ -476,10 +476,10 @@ export default {
       this.$refs.authcomponent.updateRemote(id);
     },
     setSemester: function(sem) {
-      this.currentSemester = sem;
+      this.currentSemester=sem;
     },
     pushClassStack: function(id) {
-      var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
+      var subjectIndex=this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
       this.classInfoStack.push(subjectIndex);
     },
     popClassStack: function() {
@@ -489,9 +489,9 @@ export default {
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
-      window.activeRoad = newRoad;
-      this.justLoaded = false;
-      this.duplicateRoadSource = newRoad;
+      window.activeRoad=newRoad;
+      this.justLoaded=false;
+      this.duplicateRoadSource=newRoad;
       if(newRoad !== "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
         this.updateFulfillment();
@@ -499,7 +499,7 @@ export default {
     },
     roads: {
       handler: function(newRoads,oldRoads) {
-        this.justLoaded = false;
+        this.justLoaded=false;
         if(this.activeRoad != "") {
           this.updateFulfillment();
         }
@@ -509,29 +509,29 @@ export default {
     },
     searchInput: function(newSearch, oldSearch) {
       if(newSearch.length > 0) {
-        this.showSearch = true;
+        this.showSearch=true;
       }
     }
   },
   mounted() {
-    window.$refs = this.$refs;
-    window.activeRoad = this.activeRoad;
+    window.$refs=this.$refs;
+    window.activeRoad=this.activeRoad;
 
-    document.ondragover = (event) => {
-      this.lastX = event.x
-      this.lastY = event.y
+    document.ondragover=(event) => {
+      this.lastX=event.x
+      this.lastY=event.y
     }
 
-    var borders = $(".v-navigation-drawer__border")
-    var scrollers = $(".scroller")
-    var scrollWidth = scrollers.width()
+    var borders=$(".v-navigation-drawer__border")
+    var scrollers=$(".scroller")
+    var scrollWidth=scrollers.width()
 
     //moves nav drawer border with scroll
     //if the effect proves too annoying we can remove the borders instead
     //(commented out below)
 
     scrollers.scroll(function() {
-      var scrollPosition = scrollers.scrollLeft()
+      var scrollPosition=scrollers.scrollLeft()
       borders.css({top: 0, left: scrollWidth-1+scrollPosition})
     })
 
@@ -543,17 +543,17 @@ export default {
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
-        const ordered = {};
+        const ordered={};
         Object.keys(response.data).sort().forEach(function(key) {
-          ordered[key] = response.data[key];
+          ordered[key]=response.data[key];
         });
-        this.reqList = ordered;
+        this.reqList=ordered;
       });
 
     this.updateFulfillment();
 
     document.body.addEventListener("click", function(e) {
-      this.showSearch = false;
+      this.showSearch=false;
     }.bind(this));
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
@@ -561,8 +561,8 @@ export default {
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
-        this.subjectsInfo = response.data
-        this.subjectsLoaded = true;
+        this.subjectsInfo=response.data
+        this.subjectsLoaded=true;
       });
 
   },
