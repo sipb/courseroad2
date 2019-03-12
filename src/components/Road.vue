@@ -27,7 +27,6 @@
       <v-card>
         <v-card-title>Change Class Year</v-card-title>
         <v-card-text>
-          Class Year
           <v-select
             v-model = "newYear"
             :items = "[{value: 0,text:'1st Year'},{value: 1,text:'2nd Year'},{value:2,text:'3rd Year'},{value:3,text:'4th Year'},{value:4,text:'5th Year'}]"
@@ -62,7 +61,7 @@ export default {
   data: function () { return {
       visibleList: this.currentSemester >= 12 ? Array(15).fill(true) : Array(12).fill(true),
       changeYearDialog: false,
-      newYear: undefined,
+      newYear: this.currentSemester * 3,
       numSems: this.currentSemester >= 12 ? 15 : 12
     }
   },
