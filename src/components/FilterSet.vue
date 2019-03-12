@@ -8,7 +8,9 @@
       <v-btn
         flat
         v-for="filter in filters"
+        :key="filter.filterString"
         v-bind:value="filter.filterString"
+        @click="buttonClicked"
       >
         {{filter.short}}
       </v-btn>
@@ -24,6 +26,11 @@ export default {
     changeFilter(newValues) {
       this.$emit("input", newValues);
     },
+    buttonClicked(event) {
+      // Focus the search input in case user wants to start typing after
+      // selecting a filter
+      document.getElementById("searchInputTF").focus();
+    }
   }
 }
 </script>
