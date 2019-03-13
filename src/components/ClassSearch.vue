@@ -108,7 +108,7 @@ export default {
       //set this to AND to get subjects that match all filters turned on in a group
       //set this to OR to get subjects that match any filter turned on in a group
       filterGroupMode: "OR",
-      rowsPerPageItems: [5, 10, 20, 50],
+      rowsPerPageItems: [5, 10, 20, 50, {"text": "$vuetify.dataIterator.rowsPerPageAll", "value": -1}],
       pagination: {
         rowsPerPage: 20,
       }
