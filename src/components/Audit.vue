@@ -1,23 +1,9 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
   <v-container>
-    <v-menu max-height="600px" absolute style = "float:right">
-      <v-btn icon flat color = "primary" style = "float:right" slot = "activator">
-        <v-icon>add</v-icon>
-      </v-btn>
-      <v-list dense>
-        <v-list-tile
-          v-for= "(item, key) in reqList"
-          @click = "addReqTree(key)"
-        >
-          <v-list-tile-title style = "font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-menu>
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
-      activatable
       item-key="title"
       item-children="reqs"
       open-on-click
@@ -65,7 +51,7 @@
         </v-card-text>
         <v-card-text >
           <b>Satisfied Courses</b>
-          <div v-for = "course in dialogReq['sat_courses']">
+          <div v-for = "course in dialogReq['sat_courses']" v-bind:key="course">
             {{course}}
           </div>
         </v-card-text>
@@ -75,6 +61,20 @@
       </v-card>
       </div>
     </v-dialog>
+    <v-menu max-height="600px" absolute>
+      <v-btn flat color = "primary" slot = "activator">
+        <v-icon>add</v-icon>Add a degree audit
+      </v-btn>
+      <v-list dense>
+        <v-list-tile
+          v-for = "(item, key) in reqList"
+          v-bind:key = "(item, key)"
+          @click = "addReqTree(key)"
+        >
+          <v-list-tile-title style = "font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
   </v-container>
 </template>
 
