@@ -45,34 +45,36 @@
         </requirement>
       </template>
       <template slot = "append" slot-scope = "{ item, leaf }">
-        <v-btn icon flat color = "info" v-if="'title-no-degree' in item" @click = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
-        <v-dialog v-if = "dialogReq !== undefined" v-model = "viewDialog">
-          <v-card style = "padding: 2em">
-            <v-btn icon flat style = "float:right" @click = "viewDialog = false"><v-icon>close</v-icon></v-btn>
-            <v-card-title>{{dialogReq["title"]}}</v-card-title>
-            <v-card-text v-if = "'desc' in dialogReq">{{dialogReq["desc"]}}</v-card-text>
-            <v-card-text>
-              <div class = "percentage-bar" :style = "percentage(dialogReq)">
-                {{dialogReq["percent_fulfilled"]}}% fulfilled
-              </div>
-            </v-card-text>
-            <v-card-text v-if = "'req' in dialogReq">
-              {{dialogReq["req"]}}
-            </v-card-text>
-            <v-card-text >
-              <b>Satisfying Courses</b>
-              <div v-for = "course in dialogReq['sat_courses']">
-                {{course}}
-              </div>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color = "error" v-if = "'title-no-degree' in dialogReq" @click = "deleteReq(dialogReq); viewDialog = false; dialogReq = undefined;">Remove Requirement</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <v-btn icon flat color = "info" @click.stop = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
       </template>
-
     </v-treeview>
+
+    <v-dialog v-model = "viewDialog">
+      <div v-if = "dialogReq !== undefined">
+      <v-card style = "padding: 2em">
+        <v-btn icon flat style = "float:right" @click = "viewDialog = false"><v-icon>close</v-icon></v-btn>
+        <v-card-title>{{dialogReq["title"]}}</v-card-title>
+        <v-card-text v-if = "'desc' in dialogReq">{{dialogReq["desc"]}}</v-card-text>
+        <v-card-text>
+          <div class = "percentage-bar" :style = "percentage(dialogReq)">
+            {{dialogReq["percent_fulfilled"]}}% fulfilled
+          </div>
+        </v-card-text>
+        <v-card-text v-if = "'req' in dialogReq">
+          {{dialogReq["req"]}}
+        </v-card-text>
+        <v-card-text >
+          <b>Satisfied Courses</b>
+          <div v-for = "course in dialogReq['sat_courses']">
+            {{course}}
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color = "error" v-if = "'title-no-degree' in dialogReq" @click = "deleteReq(dialogReq); viewDialog = false; dialogReq = undefined;">Remove Requirement</v-btn>
+        </v-card-actions>
+      </v-card>
+      </div>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -122,10 +124,7 @@ export default {
       this.$emit("add-req", req)
     },
     reqInfo: function(event, req) {
-      event.preventDefault();
       event.stopPropagation();
-      console.log(event);
-      console.log(req);
       this.viewDialog = true;
       this.dialogReq = req;
     },
