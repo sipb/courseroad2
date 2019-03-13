@@ -48,7 +48,7 @@ export default {
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput','classInfoStack'],
+  props: ['subjects', 'searchInput','classInfoStack','cookiesAllowed'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -122,6 +122,16 @@ export default {
       Vue.nextTick(function() {
         this.updateMenuStyle();
       }.bind(this));
+    },
+    'pagination.rowsPerPage': function(newRows, oldRows) {
+      if(this.cookiesAllowed) {
+        this.$cookies.set("paginationRows",newRows);
+      }
+    },
+    cookiesAllowed: function(newCookies, oldCookies) {
+      if(newCookies) {
+        this.$cookies.set("paginationRows", this.pagination.rowsPerPage);
+      }
     }
   },
   computed: {
@@ -279,7 +289,6 @@ export default {
               id : classItem.item.subject_id,
               units : classItem.item.total_units
             }
-            console.log(newClass);
             this.$emit("add-class",newClass)
           }
         }
@@ -340,9 +349,14 @@ export default {
   mounted() {
     this.updateMenuStyle();
 
+    window.cookies = this.$cookies;
     $(window).resize(function() {
       this.updateMenuStyle();
     }.bind(this));
+
+    if(this.$cookies.isKey("paginationRows")) {
+      this.pagination.rowsPerPage = parseInt(this.$cookies.get("paginationRows"));
+    }
   }
 }
 </script>
