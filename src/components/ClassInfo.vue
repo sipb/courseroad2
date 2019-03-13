@@ -104,7 +104,9 @@ export default {
   data: function() {return {}},
   computed: {
     currentSubject: function() {
-      return this.subjects[this.classInfoStack[this.classInfoStack.length-1]];
+      var curSubj = this.subjects[this.classInfoStack[this.classInfoStack.length-1]];
+      console.log(curSubj);
+      return curSubj;
     }
   },
   methods: {
@@ -125,9 +127,9 @@ export default {
     },
     parseRequirements: function(requirements) {
       if(requirements) {
-        var allReqs = requirements.split(/, |\(|\)|\//);
+        var allReqs = requirements.split(/, |\(|\)|\/| or/);
         var filteredReqs = allReqs.filter(function(req) {
-          return req.length > 0 && req.indexOf("'") == -1;
+          return req.length > 0 && req.indexOf("'") == -1 && req!=="or";
         });
         return filteredReqs;
       } else {
