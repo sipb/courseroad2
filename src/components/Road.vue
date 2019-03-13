@@ -50,7 +50,6 @@
 
 <script>
 import Semester from './Semester.vue'
-import $ from "jquery";
 
 export default {
   name: 'Semester',
