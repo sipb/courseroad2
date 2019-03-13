@@ -71,11 +71,11 @@
                 <h3>Equivalent Subjects</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
               </div>
-              <div v-if = "currentSubject.prerequisites !== undefined">
+              <div v-if = "currentSubject.prerequisites !== undefined && parseRequirements(currentSubject.prerequisites).length>0">
                 <h3>Prerequisites</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "parseRequirements(currentSubject.prerequisites).map(classInfo)"></subject-scroll>
               </div>
-              <div v-if = "currentSubject.corequisites !== undefined">
+              <div v-if = "currentSubject.corequisites !== undefined && parseRequirements(currentSubject.corequisites).length>0">
                 <h3>Corequisites</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "parseRequirements(currentSubject.corequisites).map(classInfo)"></subject-scroll>
               </div>
