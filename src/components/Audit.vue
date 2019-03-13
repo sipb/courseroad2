@@ -98,8 +98,6 @@ export default {
       return "600px";
     },
     selectedTrees: function() {
-      // console.log("calculting selected trees");
-      // console.log(this.reqTrees.girs);
       return this.selectedReqs.map(function(req){
         if(req in this.reqTrees) {
           return this.reqTrees[req];
@@ -126,8 +124,6 @@ export default {
     reqInfo: function(event, req) {
       event.preventDefault();
       event.stopPropagation();
-      console.log(event);
-      console.log(req);
       this.viewDialog = true;
       this.dialogReq = req;
     },
