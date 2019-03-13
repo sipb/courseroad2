@@ -71,6 +71,7 @@
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
           v-bind:classInfoStack = "classInfoStack"
+          v-bind:cookiesAllowed = "cookiesAllowed"
           @add-class="addClass"
           @move-class="moveClass"
           @drop-class="dropClass"
