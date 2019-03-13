@@ -4,9 +4,9 @@
       <v-flex>
         <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" >
           <v-card-title class = "card-header">
-            <v-flex style = "display: flex; flex-direction: row;">
-              <div  style = "padding: 0; margin: 0; display: block;">
-                <v-btn v-if = "classInfoStack.length > 1"@click = "$emit('pop-stack')" style = "padding: 0; margin: 0" icon>
+            <v-flex style = "display: flex; flex-direction: row; align-items: center;">
+              <div style = "padding: 0; margin: 0; display: block;">
+                <v-btn v-if = "classInfoStack.length > 1" @click = "$emit('pop-stack')" style = "padding: 0; margin: 0" icon>
                   <v-icon>navigate_before</v-icon>
                 </v-btn>
               </div>
@@ -71,11 +71,11 @@
                 <h3>Equivalent Subjects</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
               </div>
-              <div v-if = "currentSubject.prerequisites !== undefined">
+              <div v-if = "currentSubject.prerequisites !== undefined && parseRequirements(currentSubject.prerequisites).length>0">
                 <h3>Prerequisites</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "parseRequirements(currentSubject.prerequisites).map(classInfo)"></subject-scroll>
               </div>
-              <div v-if = "currentSubject.corequisites !== undefined">
+              <div v-if = "currentSubject.corequisites !== undefined && parseRequirements(currentSubject.corequisites).length>0">
                 <h3>Corequisites</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "parseRequirements(currentSubject.corequisites).map(classInfo)"></subject-scroll>
               </div>
@@ -104,7 +104,9 @@ export default {
   data: function() {return {}},
   computed: {
     currentSubject: function() {
-      return this.subjects[this.classInfoStack[this.classInfoStack.length-1]];
+      var curSubj = this.subjects[this.classInfoStack[this.classInfoStack.length-1]];
+      console.log(curSubj);
+      return curSubj;
     }
   },
   methods: {
@@ -125,9 +127,9 @@ export default {
     },
     parseRequirements: function(requirements) {
       if(requirements) {
-        var allReqs = requirements.split(/, |\(|\)|\//);
+        var allReqs = requirements.split(/, |\(|\)|\/| or/);
         var filteredReqs = allReqs.filter(function(req) {
-          return req.length > 0 && req.indexOf("'") == -1;
+          return req.length > 0 && req.indexOf("'") == -1 && req!=="or";
         });
         return filteredReqs;
       } else {

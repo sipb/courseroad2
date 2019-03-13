@@ -14,6 +14,16 @@
         slot = "extension"
       >
       </road-tabs>
+
+      <import-export
+        v-bind:roads="roads"
+        v-bind:activeRoad="activeRoad"
+        @add-road = "addRoad"
+      >
+      </import-export>
+
+      <v-spacer></v-spacer>
+
       <auth
         ref = "authcomponent"
         v-bind:roads = "roads"
@@ -31,6 +41,7 @@
         @allow-cookies = "allowCookies"
       >
       </auth>
+
       <v-spacer></v-spacer>
 
       <v-menu
@@ -59,6 +70,7 @@
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
           v-bind:classInfoStack = "classInfoStack"
+          v-bind:cookiesAllowed = "cookiesAllowed"
           @add-class="addClass"
           @move-class="moveClass"
           @drop-class="dropClass"
@@ -156,6 +168,7 @@ import Auth from "./components/Auth.vue"
 import $ from 'jquery'
 import Vue from 'vue'
 import ClassInfo from "./components/ClassInfo.vue"
+import ImportExport from "./components/ImportExport.vue"
 
 var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
@@ -169,7 +182,8 @@ export default {
     'road-tabs': RoadTabs,
     'conflict-dialog': ConflictDialog,
     'auth': Auth,
-    'class-info': ClassInfo
+    'class-info': ClassInfo,
+    'import-export': ImportExport,
   },
   data: function(){ return {
     reqTrees: {},
@@ -386,13 +400,13 @@ export default {
       window.location.hash = "#road" + this.activeRoad;
       return false;
     },
-    addRoad: function(roadName) {
+    addRoad: function(roadName, cos=["girs"], ss=[]) {
       var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
       var newContents;
       if(!this.duplicateRoad) {
         newContents = {
-          coursesOfStudy: ["girs"],
-          selectedSubjects: []
+          coursesOfStudy: cos,
+          selectedSubjects: ss,
         }
       } else {
         newContents = JSON.parse(JSON.stringify(this.roads[this.duplicateRoadSource].contents));
@@ -506,17 +520,18 @@ export default {
 
     $(window).on("hashchange", function() {
       this.setActiveRoad();
-    }.bind(this))
+    }.bind(this));
 
     this.setActiveRoad();
 
     axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
       .then(response => {
-        this.reqList = response.data;
-        for(var r in this.reqList) {
-          Vue.set(this.reqList, r, this.reqList[r]);
-        }
-      })
+        const ordered = {};
+        Object.keys(response.data).sort().forEach(function(key) {
+          ordered[key] = response.data[key];
+        });
+        this.reqList = ordered;
+      });
 
     this.updateFulfillment();
 
