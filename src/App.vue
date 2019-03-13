@@ -1,6 +1,5 @@
 <!-- direct from the Vuetify website: this is the proper nesting: v-container » v-layout » v-flex (» v-card) -->
 <template>
-  <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
   <v-app id="app-wrapper"
   >
     <v-toolbar fixed app dense class="elevation-2">
@@ -304,7 +303,7 @@ export default {
                     return {
                       offered_fall: subjectA.offered_fall || subjectB.offeredFall,
                       offered_spring: subjectA.offered_spring || subjectB.offered_spring,
-                      offered_IAP: subjectA.offered_IAP || subjectA.offered_IAP
+                      offered_IAP: subjectA.offered_IAP || subjectB.offered_IAP,
                     }
                   });
                 } else {
