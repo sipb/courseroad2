@@ -83,7 +83,7 @@ export default {
   }
 
   .classbox {
-    height: 9em;
+    height: 8em;
     padding-top: 0;
     overflow:hidden;
   }
