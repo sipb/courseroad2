@@ -28,7 +28,7 @@
         <v-tooltip left>
           <template slot = "activator">
             <v-icon v-if="'reqs' in item" :style = "fulfilledIcon(item)">
-              {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }}
+              <!-- {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }} -->
             </v-icon>
             <v-icon v-else :style = "fulfilledIcon(item)">
               {{ item['plain-string'] ? item.fulfilled ? "star" : "star_outline": item.fulfilled ? "check_box" : "check_box_outline_blank"}}
@@ -45,7 +45,7 @@
         </requirement>
       </template>
       <template slot = "append" slot-scope = "{ item, leaf }">
-        <v-btn icon flat color = "info" @click.stop = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
+        <v-btn v-if="'reqs' in item" icon flat color = "info" @click.stop = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
       </template>
     </v-treeview>
 
@@ -98,8 +98,6 @@ export default {
       return "600px";
     },
     selectedTrees: function() {
-      // console.log("calculting selected trees");
-      // console.log(this.reqTrees.girs);
       return this.selectedReqs.map(function(req){
         if(req in this.reqTrees) {
           return this.reqTrees[req];
@@ -115,7 +113,7 @@ export default {
   methods: {
     fulfilledIcon: function(req) {
       if(req.fulfilled && (req.req != undefined || req.sat_courses.length>0)) {
-        return "color: #52e052;";
+        return "color: #00b300;";
       } else {
         return "";
       }
@@ -124,6 +122,7 @@ export default {
       this.$emit("add-req", req)
     },
     reqInfo: function(event, req) {
+      event.preventDefault();
       event.stopPropagation();
       this.viewDialog = true;
       this.dialogReq = req;
@@ -132,12 +131,6 @@ export default {
       var pfulfilled = req.percent_fulfilled
       var pstring = "--percent: " + req.percent_fulfilled+"%";
       return pstring;
-    },
-    percentage_bar: function(req) {
-      var pblock = {
-        "percentage-bar": ("reqs" in req || "threshold" in req)
-      }
-      return pblock
     },
     deleteReq: function(req) {
       var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
@@ -151,10 +144,13 @@ export default {
 <style scoped>
 .percentage-bar {
   height: 30px;
-  background: linear-gradient(90deg, #98fb98 var(--percent), rgba(255,255,255,0) var(--percent));
+  background: linear-gradient(90deg, #00b300 var(--percent), rgba(255,255,255,0) var(--percent));
   border: 1px solid gray;
   padding-left: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+.terminal {
+  cursor: default;
 }
 </style>
