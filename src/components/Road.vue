@@ -19,7 +19,7 @@
       @drag-class = "$emit('drag-class',$event)"
       @drop-class = "$emit('drop-class',$event)"
       @remove-class = "$emit('remove-class', $event)"
-      @click-class = "$emit('click-class',...arguments)"
+      @click-class = "$emit('click-class',$event)"
       @change-year = "changeYearDialog = true"
       >
     </semester>
