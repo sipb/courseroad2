@@ -310,7 +310,7 @@ export default {
                   classInfo = {
                     offered_fall: false,
                     offered_spring: false,
-                    offered_IAP: false
+                    offered_IAP: false,
                   }
                 }
               }
