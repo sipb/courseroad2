@@ -4,9 +4,9 @@
       <v-flex>
         <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" >
           <v-card-title class = "card-header">
-            <v-flex style = "display: flex; flex-direction: row;">
-              <div  style = "padding: 0; margin: 0; display: block;">
-                <v-btn v-if = "classInfoStack.length > 1"@click = "$emit('pop-stack')" style = "padding: 0; margin: 0" icon>
+            <v-flex style = "display: flex; flex-direction: row; align-items: center;">
+              <div style = "padding: 0; margin: 0; display: block;">
+                <v-btn v-if = "classInfoStack.length > 1" @click = "$emit('pop-stack')" style = "padding: 0; margin: 0" icon>
                   <v-icon>navigate_before</v-icon>
                 </v-btn>
               </div>

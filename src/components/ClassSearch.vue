@@ -13,9 +13,10 @@
       <div style = "flex: 1; overflow: auto;">
         <v-data-table
           :items="autocomplete"
+          :rows-per-page-items="rowsPerPageItems"
           :pagination.sync = "pagination"
           :no-data-text = "'No results'"
-          :rows-per-page-text= "'Display'"
+          :rows-per-page-text= "'Results per page: '"
           :hide-headers= "true"
         >
           <template slot = "items" slot-scope = "props">
@@ -82,7 +83,7 @@ export default {
           {name: "Any", short: "Any", filterString: "CI.+"},
           {name: "CI-H", short: "CI-H", filterString: "CI-H"},
           {name: "CI-HW", short: "CI-HW", filterString: "CI-HW"},
-          {name: "CI-M", short: "CI-M", filterString: "CI-M"},
+          // {name: "CI-M", short: "CI-M", filterString: "CI-M"},
           {name: "Not CI", short: "None", filterString: "^(?!CI)"}
         ],
         levelInput: [
@@ -107,8 +108,9 @@ export default {
       //set this to AND to get subjects that match all filters turned on in a group
       //set this to OR to get subjects that match any filter turned on in a group
       filterGroupMode: "OR",
+      rowsPerPageItems: [5, 10, 20, 50],
       pagination: {
-        rowsPerPage: -1
+        rowsPerPage: 20,
       }
     }
   },
