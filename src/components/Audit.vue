@@ -1,6 +1,6 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
-  <v-container>
+  <v-flex style="padding: 24px; overflow: scroll;">
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
@@ -75,7 +75,7 @@
         </v-list-tile>
       </v-list>
     </v-menu>
-  </v-container>
+  </v-flex>
 </template>
 
 
