@@ -59,7 +59,7 @@
           class = "expanded-search"
           prepend-icon="search"
           v-model = "searchInput"
-          placeholder = "6.0061 Silly Systems"
+          placeholder = "Add classes"
           slot = "activator"
         >
         </v-text-field>
