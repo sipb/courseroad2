@@ -365,7 +365,7 @@ export default {
       var semesterObjects = this.getRelevantObjects(event.drag);
       var semInfo = this.classIsOffered(semesterObjects, event);
       if(semInfo.isOffered !== undefined) {
-        var inSameYear = Math.floor(semInfo.semesterNum/3) === Math.floor(this.currentSemester/3);
+        var inSameYear = Math.floor((semInfo.semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
         if (!semInfo.isOffered) {
           if(inSameYear) {
             semesterObjects.semesterBox.removeClass("grey");
