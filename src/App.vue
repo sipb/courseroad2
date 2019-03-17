@@ -464,7 +464,7 @@ export default {
       this.$refs.authcomponent.updateRemote(id);
     },
     pushClassStack: function(id) {
-      var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
+      var subjectIndex = this.subjectsIndexDict[id];
       this.classInfoStack.push(subjectIndex);
     },
     popClassStack: function() {
