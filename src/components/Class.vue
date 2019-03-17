@@ -1,7 +1,7 @@
 <!-- this is a cool idea for class info on click: https://vuetifyjs.com/en/components/expansion-panels#popout-inset -->
 
 <template>
-  <v-flex md3>
+  <v-flex md3 xs4>
     <v-card
       :class="[{classbox: true, satisfied: isSatisfied}, courseColor]"
       draggable
@@ -58,9 +58,9 @@ export default {
         currentSem: this.semesterIndex
       });
     },
-    dragStart: function(event) {
-      // TODO: Rewrite as part of #53?
-      event.dataTransfer.setData('foo', 'bar')
+    dragStart: function(event) {  
+      // TODO: Rewrite as part of #53?  
+      event.dataTransfer.setData('foo', 'bar')  
     },
     drop: function(event) {
       this.$emit("drop-class",{
@@ -79,15 +79,15 @@ export default {
   .card-text {
     color: white;
     font-size: 1.1em;
+    padding-top: 0;
   }
 
-/*  .classbox {
-    padding: 1rem 2rem;
-    border-style: solid;
-    border-width: 0.2em;
-    border-radius: 0.5em;
+  .classbox {
+    height: 8em;
+    padding-top: 0;
+    overflow:hidden;
   }
-*/
+
   .satisfied {
     background: #00b300;
   }

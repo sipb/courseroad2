@@ -1,7 +1,30 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'road_'+roadID+'_semester_' + index" v-on:dragover.native.prevent>
-    <div slot="header">Semester {{index}}</div>
+    <!-- <div slot="header"> -->
+    <v-container grid-list-xs slot = "header" style = "padding: 0;">
+      <v-layout row>
+        <v-flex xs6>
+          <b>{{semesterType}}
+            <v-hover>
+              <span slot-scope = "{ hover }" @click = "changeYear" :class = "hover ? 'hovering' : ''">
+                {{semesterYear}}
+              </span>
+            </v-hover>
+          </b>
+          Units: {{semesterInformation.totalUnits}}
+          Hours: {{Math.round(semesterInformation.expectedHours,1)}}
+        </v-flex>
+        <v-layout row xs6 v-if = "!isOpen">
+          <v-flex xs3 v-for = "subject in semesterSubjects">
+            <v-card dark color = "primary">
+              <v-card-text style = "padding: 0.3em;">{{subject.id}}</v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-layout>
+    </v-container>
+
     <v-container
       class="grey lighten-3 semester-drop-container"
       fluid
@@ -36,7 +59,10 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear"],
+  data: function() {return {
+    newYear: this.semesterYear,
+  }},
   components: {
     'class': Class
   },
@@ -53,13 +79,49 @@ export default {
         return this.index === subj.semester;
       });
     },
+    semesterInformation: function() {
+      var classesInfo = this.semesterSubjects.map(function(subj) {
+        var subjectIndex = this.allSubjects.map((s)=>s.subject_id).indexOf(subj.id);
+        if(subjectIndex >= 0) {
+          return this.allSubjects[subjectIndex];
+        } else {
+          return undefined;
+        }
+      }.bind(this)).filter(function(subj) {
+        return subj !== undefined;
+      });
+      var addNums = function(a, b) {
+        a = isNaN(a) ? 0 : a;
+        b = isNaN(b) ? 0 : b;
+        return a + b;
+      }
+      var totalUnits = classesInfo.map((s)=>s.total_units).reduce(addNums, 0);
+      var expectedHours = classesInfo.map((s)=>s.in_class_hours+s.out_of_class_hours).reduce(addNums, 0);
+      return {
+        totalUnits: totalUnits,
+        expectedHours: expectedHours,
+      }
+    },
+    semesterYear: function() {
+      if(this.index===0) {
+        return "";
+      } else {
+        return Math.floor((this.index-2)/3) + this.baseYear;
+      }
+    },
+    semesterType: function() {
+      if(this.index===0) {
+        return "Prior Credit"
+      } else {
+        return ["Fall", "IAP", "Spring"][(this.index-1)%3];
+      }
+    }
   },
   methods: {
-    dropRoadSubject: function(event, subject) {
-      console.log("drop road subject");
-      console.log(event);
-    },
-
+    changeYear: function(event) {
+      event.stopPropagation();
+      this.$emit("change-year")
+    }
     // dropped: function(event) {
     //   // console.log("dropped");
     //   // console.log(event);
@@ -75,6 +137,9 @@ export default {
 
 
 <style scoped>
+  .hovering {
+    background: radial-gradient(lightgreen, rgba(0,0,0,0));
+  }
   .semesterBin {
 /*    display: flex;
     justify-content: space-between;
