@@ -139,6 +139,7 @@
       v-if = "classInfoStack.length"
       v-bind:classInfoStack = "classInfoStack"
       v-bind:subjects = "subjectsInfo"
+      v-bind:subjectsIndex = "subjectsIndexDict"
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
       @close-classinfo = "classInfoStack = []"
@@ -195,6 +196,7 @@ export default {
     accessInfo: undefined,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
+    subjectsIndexDict: {},
     rightDrawer: true,
     activeRoad: "$defaultroad$",
     newRoadName: "",
@@ -544,7 +546,11 @@ export default {
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
-        this.subjectsInfo = response.data
+        this.subjectsInfo = response.data;
+        this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
+          obj[item.subject_id] = index;
+          return obj;
+        },{});
         this.subjectsLoaded = true;
       });
 

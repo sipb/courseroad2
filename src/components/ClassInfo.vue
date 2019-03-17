@@ -100,25 +100,24 @@ export default {
   components: {
     'subject-scroll': SubjectScroll
   },
-  props: ["subjects", "classInfoStack"],
+  props: ["subjects", "classInfoStack", "subjectsIndex"],
   data: function() {return {}},
   computed: {
     currentSubject: function() {
       var curSubj = this.subjects[this.classInfoStack[this.classInfoStack.length-1]];
-      console.log(curSubj);
       return curSubj;
     }
   },
   methods: {
     classInfo: function(subjectID) {
-      var subjectIndex = this.subjects.map((s)=>s.subject_id).indexOf(subjectID);
-      if(subjectIndex == -1) {
+      var subj = this.subjects[this.subjectsIndex[subjectID]];
+      if(subj != undefined) {
+        return subj;
+      } else {
         return {
           subject_id: subjectID,
           title: ""
         }
-      } else {
-        return this.subjects[subjectIndex];
       }
     },
     clickRelatedSubject: function(subjectID) {
