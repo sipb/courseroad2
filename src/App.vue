@@ -284,11 +284,8 @@ export default {
           var classInfo = event.classInfo;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
-              var filteredSubjects = this.subjectsInfo.filter(function(s) {
-                return s.subject_id === event.basicClass.id
-              });
-              if(filteredSubjects.length) {
-                classInfo = filteredSubjects[0];
+              if (event.basicClass.id in this.subjectsIndexDict) {
+                classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
               } else {
                 //not in catalog, might be a generic course (like PHY1 or HASS)
                 var matchingClasses = this.subjectsInfo.filter(function(subject) {
