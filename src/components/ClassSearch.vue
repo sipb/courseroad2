@@ -19,17 +19,22 @@
           :rows-per-page-text= "'Results per page: '"
           :hide-headers= "true"
         >
-          <template slot = "items" slot-scope = "props">
-            <tr
-              draggable = "true"
-              v-on:dragend ="drop($event, props)"
-              v-on:drag = "drag($event, props)"
-              v-on:dragstart="dragStart($event, props)"
-              @click = "viewClassInfo(props)"
-            >
-              <td>{{props.item.subject_id}}</td>
-              <td>{{props.item.title}}</td>
-            </tr>
+          <template slot="items" slot-scope="props">
+            <v-hover>
+              <tr
+                slot-scope="{ hover }"
+                :class="{ 'elevation-5': hover }"
+                draggable = "true"
+                v-on:dragend ="drop($event, props)"
+                v-on:drag = "drag($event, props)"
+                v-on:dragstart="dragStart($event, props)"
+                @click = "viewClassInfo(props)"
+                style="cursor: grab; margin: 10px; display: block;"
+              >
+                <td style="padding: 0; white-space: nowrap; width: 30%;"><v-icon style="vertical-align: middle;">drag_indicator</v-icon><span style="vertical-align: middle;"> {{props.item.subject_id}}</span></td>
+                <td style="width: 60%;">{{props.item.title}}</td>
+              </tr>
+            </v-hover>
           </template>
         </v-data-table>
       </div>
