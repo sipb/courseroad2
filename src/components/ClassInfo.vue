@@ -111,7 +111,7 @@ export default {
   methods: {
     classInfo: function(subjectID) {
       var subj = this.subjects[this.subjectsIndex[subjectID]];
-      if(subj != undefined) {
+      if(subj !== undefined) {
         return subj;
       } else {
         return {
