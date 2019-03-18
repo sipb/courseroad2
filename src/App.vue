@@ -99,7 +99,9 @@
         v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
         v-bind:reqList="reqList"
         v-bind:subjects = "subjectsInfo"
+        v-bind:subjectIndex = "subjectsIndexDict"
         v-bind:genericCourses = "genericCourses"
+        v-bind:genericIndex = "genericIndexDict"
         @drag-class = "testClass"
         @drop-class = "dropClass"
         @add-req = "addReq"
@@ -206,6 +208,7 @@ export default {
     subjectsInfo: [],
     subjectsIndexDict: {},
     genericCourses: [],
+    genericIndexDict: {},
     rightDrawer: true,
     activeRoad: "$defaultroad$",
     newRoadName: "",
@@ -300,11 +303,8 @@ export default {
               if(event.basicClass.id in this.subjectsIndexDict) {
                 classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
               } else {
-                var filteredGeneric = this.genericCourses.filter(function(s) {
-                  return s.subject_id === event.basicClass.id;
-                });
-                if(filteredGeneric.length) {
-                  classInfo = filteredGeneric[0];
+                if(event.basicClass.id in this.genericIndexDict) {
+                  classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
                 } else {
                   classInfo = undefined;
                 }
@@ -631,6 +631,10 @@ export default {
         this.subjectsInfo = response.data
         this.genericCourses = this.makeGenericCourses();
         this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
+          obj[item.subject_id] = index;
+          return obj;
+        },{});
+        this.genericIndexDict = this.genericCourses.reduce(function(obj, item, index) {
           obj[item.subject_id] = index;
           return obj;
         },{});

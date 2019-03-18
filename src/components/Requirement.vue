@@ -39,7 +39,7 @@ import $ from 'jquery'
 
 export default {
   name: 'requirement',
-  props: ['req', 'leaf', 'subjects', 'genericCourses'],
+  props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
   data: function() {
     return {
       open: [],
@@ -50,17 +50,15 @@ export default {
   computed: {
     classInfo: function() {
       if('req' in this.req) {
-        var subjectIndex = this.subjects.map((s)=>s.subject_id).indexOf(this.req.req);
-        if(subjectIndex >= 0) {
-          return this.subjects[subjectIndex];
+        if(this.req.req in this.subjectIndex) {
+          return this.subjects[this.subjectIndex[this.req.req]];
         }
         var attributeReq = this.req.req;
         if(attributeReq.indexOf("GIR:")===0) {
           attributeReq = attributeReq.substring(4);
         }
-        var genericIndex = this.genericCourses.map((s)=>s.subject_id).indexOf(attributeReq);
-        if(genericIndex >= 0) {
-          return this.genericCourses[genericIndex];
+        if(attributeReq in this.genericIndex) {
+          return this.genericCourses[this.genericIndex[attributeReq]];
         }
       }
       return undefined;

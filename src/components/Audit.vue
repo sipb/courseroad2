@@ -28,7 +28,9 @@
           v-bind:req="item"
           v-bind:leaf="leaf"
           v-bind:subjects = "subjects"
+          v-bind:subjectIndex = "subjectIndex"
           v-bind:genericCourses = "genericCourses"
+          v-bind:genericIndex = "genericIndex"
           @drag-class = "$emit('drag-class',$event)"
           @drop-class = "$emit('drop-class',$event)"
         >
@@ -90,7 +92,7 @@ export default {
   components: {
     'requirement': Requirement,
   },
-  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses'],
+  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
   data: function() { return {
     tree: [],
     viewDialog: false,
