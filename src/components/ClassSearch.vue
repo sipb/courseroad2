@@ -136,7 +136,7 @@ export default {
   },
   computed: {
     allSubjects: function() {
-      return this.subjects.concat(this.genericCourses);
+      return this.genericCourses.concat(this.subjects);
     },
     autocomplete: function () {
       //only display subjects if you are filtering by something

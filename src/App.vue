@@ -199,6 +199,7 @@ export default {
     accessInfo: undefined,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
+    genericCourses: [],
     rightDrawer: true,
     activeRoad: "$defaultroad$",
     newRoadName: "",
