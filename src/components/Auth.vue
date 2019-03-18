@@ -25,6 +25,7 @@
 import Vue from 'vue'
 import UAParser from "ua-parser-js"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
+var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
 
 function getQueryObject() {
   var query = window.location.search.substring(1);
@@ -80,24 +81,32 @@ export default {
       this.accessInfo = undefined;
       window.location.reload();
     },
-
+    verify: function() {
+      var headerList = {headers: {
+        "Authorization": 'Bearer ' + this.accessInfo.access_token,
+        }};
+      return axios.get(FIREROAD_LINK+"/verify/", headerList)
+      .then(function(verifyResponse) {
+        if(verifyResponse.data.success) {
+          this.$emit("set-sem", verifyResponse.data.current_semester);
+          return verifyResponse.data;
+        } else {
+          this.logoutUser();
+          return Promise.reject("Token not valid")
+        }
+      }.bind(this));
+    },
     doSecure: function(axiosFunc, link, params) {
       if(this.loggedIn && this.accessInfo !== undefined) {
-        var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
         var headerList = {headers: {
           "Authorization": 'Bearer ' + this.accessInfo.access_token,
           }};
-        return axios.get(FIREROAD_LINK+"/verify/", headerList)
+        return this.verify()
         .then(function(verifyResponse){
-          if(verifyResponse.data.success) {
-            if(params===false) {
-              return axiosFunc(FIREROAD_LINK+link,headerList);
-            } else {
-              return axiosFunc(FIREROAD_LINK+link,params,headerList);
-            }
+          if(params===false) {
+            return axiosFunc(FIREROAD_LINK+link,headerList);
           } else {
-            this.logoutUser();
-            return Promise.reject("Token not valid")
+            return axiosFunc(FIREROAD_LINK+link,params,headerList);
           }
         });
       } else {
@@ -190,6 +199,7 @@ export default {
             this.data.$cookies.set("accessInfo", response.data.access_info);
           }
           this.data.accessInfo = response.data.access_info;
+          this.data.verify();
           this.data.loggedIn = true;
           this.data.getUserData();
         }
@@ -385,6 +395,24 @@ export default {
           }
         }
       }
+    },
+    changeSemester: function(year) {
+      var currentMonth = new Date().getMonth();
+      var sem;
+      if(currentMonth >= 4 && currentMonth <= 10) {
+        sem = 1 + year * 3;
+      } else {
+        sem = 3 + year * 3;
+      }
+      this.postSecure("/set_semester/",{semester: sem}).then(function(res) {
+        if(res.status===200 && res.data.success) {
+          this.$emit('set-sem', sem);
+        }
+      }.bind(this)).catch(function(err) {
+        if(err == "No auth information") {
+          this.$emit('set-sem', sem);
+        }
+      }.bind(this))
     }
   },
   watch: {
@@ -415,6 +443,8 @@ export default {
     if(this.$cookies.isKey("accessInfo")) {
       this.loggedIn = true;
       this.accessInfo = this.$cookies.get("accessInfo");
+      this.$emit("set-sem",this.accessInfo.current_semester);
+      this.verify();
       this.allowCookies();
       this.getUserData();
     }
@@ -433,7 +463,7 @@ export default {
     }.bind(this);
 
     this.attemptLogin();
-
+    // window.cookies = this.$cookies;
   }
 }
 </script>

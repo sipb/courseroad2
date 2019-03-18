@@ -1,12 +1,12 @@
 <!-- direct from the Vuetify website: this is the proper nesting: v-container » v-layout » v-flex (» v-card) -->
 <template>
-  <!-- *** USE THIS for multiple roads! https://vuetifyjs.com/en/components/tabs#icons-and-text -->
   <v-app id="app-wrapper"
   >
     <v-toolbar fixed app dense class="elevation-2">
       <road-tabs
         v-bind:roads = "roads"
         v-bind:activeRoad = "activeRoad"
+        v-bind:subjects = "subjectsInfo"
         @delete-road = "$refs.authcomponent.deleteRoad($event)"
         @set-name = "setRoadName($event.road, $event.name)"
         @add-road = "addRoad"
@@ -39,6 +39,7 @@
         @set-road-prop = "setRoadProp(...arguments)"
         @reset-id = "resetID(...arguments)"
         @allow-cookies = "allowCookies"
+        @set-sem = "setSemester"
       >
       </auth>
 
@@ -115,10 +116,12 @@
             v-bind:selectedSubjects="roads[roadid].contents.selectedSubjects"
             v-bind:subjects = "subjectsInfo"
             v-bind:roadID = "roadid"
+            v-bind:currentSemester = "currentSemester"
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
             @click-class = "pushClassStack($event.id)"
+            @change-year = "$refs.authcomponent.changeSemester($event)"
           ></road>
         </v-tab-item>
       </v-tabs-items>
@@ -209,6 +212,7 @@ export default {
     searchInput: "",
     showSearch: false,
     classInfoStack: [],
+    currentSemester: 0,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -274,19 +278,21 @@ export default {
       semesterBox.addClass("grey");
       semesterBox.removeClass("red");
       semesterBox.removeClass("green");
+      semesterBox.removeClass("yellow");
     },
     classIsOffered: function(semesterObjects, event) {
       if(semesterObjects.semesterParent.length) {
         var semesterID = semesterObjects.semesterParent.attr("id");
         if(semesterID.split("_")[2]==="semester") {
           var semesterNum = parseInt(semesterID.split("_")[3]);
-          var semesterType = semesterNum % 2;
+          var semesterType = (semesterNum-1) % 3;
           var classInfo = event.classInfo;
+          var isOffered;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
               if (event.basicClass.id in this.subjectsIndexDict) {
                 classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
-              } else {
+              } else if(semesterType >= 0) {
                 //not in catalog, might be a generic course (like PHY1 or HASS)
                 var matchingClasses = this.subjectsInfo.filter(function(subject) {
                   var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
@@ -296,13 +302,15 @@ export default {
                   classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
                     return {
                       offered_fall: subjectA.offered_fall || subjectB.offeredFall,
-                      offered_spring: subjectA.offered_spring || subjectB.offered_spring
+                      offered_spring: subjectA.offered_spring || subjectB.offered_spring,
+                      offered_IAP: subjectA.offered_IAP || subjectB.offered_IAP,
                     }
                   });
                 } else {
                   classInfo = {
                     offered_fall: false,
-                    offered_spring: false
+                    offered_spring: false,
+                    offered_IAP: false,
                   }
                 }
               }
@@ -311,10 +319,12 @@ export default {
             }
 
           }
-          var isOffered;
           if(classInfo !== undefined) {
-            isOffered = (semesterType === 0 && classInfo.offered_fall)
-                            || (semesterType === 1 && classInfo.offered_spring);
+            if(semesterType>=0) {
+              isOffered = [classInfo.offered_fall, classInfo.offered_IAP, classInfo.offered_spring][semesterType];
+            } else {
+              isOffered = true;
+            }
           }
           return {
             isOffered: isOffered,
@@ -330,20 +340,23 @@ export default {
       var semesterObjects = this.getRelevantObjects(event.drop);
       this.resetSemesterBox(semesterObjects.semesterBox);
       var semInfo = this.classIsOffered(semesterObjects, event);
-      if(semInfo.isOffered) {
-        event.drop.preventDefault();
-        if(event.isNew) {
-          var newClass = {
-            overrideWarnings : false,
-            semester : semInfo.semesterNum,
-            title : event.classInfo.title,
-            id : event.classInfo.subject_id,
-            units : event.classInfo.total_units
+      if(semInfo.isOffered !== undefined) {
+        var inSameYear = Math.floor((semInfo.semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
+        if(semInfo.isOffered||!inSameYear) {
+          event.drop.preventDefault();
+          if(event.isNew) {
+            var newClass = {
+              overrideWarnings : false,
+              semester : semInfo.semesterNum,
+              title : event.classInfo.title,
+              id : event.classInfo.subject_id,
+              units : event.classInfo.total_units
+            }
+            this.addClass(newClass);
+          } else {
+            var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
+            this.moveClass(currentIndex, semInfo.semesterNum)
           }
-          this.addClass(newClass);
-        } else {
-          var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
-          this.moveClass(currentIndex, semInfo.semesterNum)
         }
       }
       this.dragSemesterNum = -1;
@@ -352,9 +365,15 @@ export default {
       var semesterObjects = this.getRelevantObjects(event.drag);
       var semInfo = this.classIsOffered(semesterObjects, event);
       if(semInfo.isOffered !== undefined) {
+        var inSameYear = Math.floor((semInfo.semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
         if (!semInfo.isOffered) {
-          semesterObjects.semesterBox.removeClass("grey");
-          semesterObjects.semesterBox.addClass("red");
+          if(inSameYear) {
+            semesterObjects.semesterBox.removeClass("grey");
+            semesterObjects.semesterBox.addClass("red");
+          } else {
+            semesterObjects.semesterBox.removeClass("grey");
+            semesterObjects.semesterBox.addClass("yellow");
+          }
         } else {
           semesterObjects.semesterBox.removeClass("grey");
           semesterObjects.semesterBox.addClass("green");
@@ -460,13 +479,16 @@ export default {
     updateRemote: function(id) {
       this.$refs.authcomponent.updateRemote(id);
     },
+    setSemester: function(sem) {
+      this.currentSemester = sem;
+    },
     pushClassStack: function(id) {
       var subjectIndex = this.subjectsIndexDict[id];
       this.classInfoStack.push(subjectIndex);
     },
     popClassStack: function() {
       this.classInfoStack.pop();
-    }
+    },
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
