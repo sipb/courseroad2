@@ -141,4 +141,12 @@ export default {
   .course-STS { background-color: #8F57B5; }
   .course-SWE { background-color: #B56B57; }
   .course-SP { background-color: #4343DE; }
+
+  .generic-GIR { background-color: #BF6139; }
+  .generic-HASS { background-color: #39BF97; }
+  .generic-HASS-A { background-color: #3997BF; }
+  .generic-HASS-H { background-color: #3946BF; }
+  .generic-HASS-S { background-color: #7C39BF; }
+  .generic-CI-H { background-color: #BF39B1; }
+  .generic-CI-HW { background-color: #BF3961; }
 </style>
