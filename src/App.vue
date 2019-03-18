@@ -295,26 +295,14 @@ export default {
               });
               if(filteredSubjects.length) {
                 classInfo = filteredSubjects[0];
-              } else if(semesterType >= 0) {
-                //not in catalog, might be a generic course (like PHY1 or HASS)
-                var matchingClasses = this.subjectsInfo.filter(function(subject) {
-                  var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
-                  return possible_attributes.includes(event.basicClass.id);
+              } else {
+                var filteredGeneric = this.genericCourses.filter(function(s) {
+                  return s.subject_id === event.basicClass.id;
                 });
-                if(matchingClasses.length) {
-                  classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
-                    return {
-                      offered_fall: subjectA.offered_fall || subjectB.offeredFall,
-                      offered_spring: subjectA.offered_spring || subjectB.offered_spring,
-                      offered_IAP: subjectA.offered_IAP || subjectB.offered_IAP,
-                    }
-                  });
+                if(filteredGeneric.length) {
+                  classInfo = filteredGeneric[0];
                 } else {
-                  classInfo = {
-                    offered_fall: false,
-                    offered_spring: false,
-                    offered_IAP: false,
-                  }
+                  classInfo = undefined;
                 }
               }
             } else {
@@ -492,6 +480,28 @@ export default {
     popClassStack: function() {
       this.classInfoStack.pop();
     },
+    getOfferedAttributes: function(gir, hass, ci) {
+      var matchingClasses = this.subjectsInfo.filter(function(subject) {
+        if(gir !== undefined && subject.gir_attribute !== gir) {
+          return false;
+        }
+        if(hass !== undefined && subject.hass_attribute !== hass) {
+          return false;
+        }
+        if(ci !== undefined && subject.communication_requirement !== ci) {
+          return false;
+        }
+        return true;
+      });
+      return matchingClasses.reduce(function(offeredObject, nextClass) {
+        return {
+          offered_spring: offeredObject.offered_spring || nextClass.offered_spring,
+          offered_summer: offeredObject.offered_summer || nextClass.offered_summer,
+          offered_IAP: offeredObject.offered_IAP || nextClass.offered_IAP,
+          offered_fall: offeredObject.offered_fall || nextClass.offered_fall
+        }
+      }, {offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false})
+    },
     makeGenericCourses: function() {
       var girAttributes = {"PHY1": "Physics 1 GIR", "PHY2": "Physics 2 GIR", "CHEM": "Chemistry GIR", "BIOL": "Biology GIR", "CAL1": "Calculus I GIR", "CAL2": "Calculus II GIR", "LAB": "Lab GIR", "REST": "REST GIR"};
       //the titles of the hass and ci attributes are currently not used in the description on fireroad
@@ -501,26 +511,25 @@ export default {
       var genericCourses = [];
       var baseGeneric = {
         description: "Use this generic subject to indicate that you are fulfilling a requirement, but do not yet have a specific subject selected.",
-        offered_fall: true,
-        offered_IAP: true,
-        offered_spring: true,
-        offered_summer: true,
         total_units: 12
       };
       for(var gir in girAttributes) {
-        genericCourses.push(Object.assign({},baseGeneric,{
+        var offeredGir = this.getOfferedAttributes(gir, undefined, undefined);
+        genericCourses.push(Object.assign({},baseGeneric,offeredGir,{
           gir_attribute: gir,
           title: "Generic " + girAttributes[gir],
           subject_id: gir
         }));
       }
       for(var hass in hassAttributes) {
-        genericCourses.push(Object.assign({},baseGeneric,{
+        var offeredHass = this.getOfferedAttributes(undefined, hass, undefined);
+        genericCourses.push(Object.assign({},baseGeneric,offeredHass,{
           hass_attribute: hass,
           title: "Generic " + hass,
           subject_id: hass
         }));
-        genericCourses.push(Object.assign({},baseGeneric,{
+        var offeredHassCI = this.getOfferedAttributes(undefined, hass, "CI-H");
+        genericCourses.push(Object.assign({},baseGeneric,offeredHassCI,{
           hass_attribute: hass,
           communication_requirement: "CI-H",
           title: "Generic CI-H " + hass,
@@ -528,7 +537,8 @@ export default {
         }));
       }
       for(var ci in ciAttributes) {
-        genericCourses.push(Object.assign({},baseGeneric, {
+        var offeredCI = this.getOfferedAttributes(undefined, "HASS", ci);
+        genericCourses.push(Object.assign({},baseGeneric, offeredCI, {
           communication_requirement: ci,
           title: "Generic " + ci,
           hass_attribute: "HASS",
@@ -608,7 +618,6 @@ export default {
       this.showSearch = false;
     }.bind(this));
 
-    this.genericCourses = this.makeGenericCourses();
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
@@ -616,6 +625,8 @@ export default {
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
         this.subjectsInfo = response.data
+        this.genericCourses = this.makeGenericCourses();
+        console.log(this.genericCourses);
         this.subjectsLoaded = true;
       });
 
