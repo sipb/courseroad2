@@ -299,15 +299,12 @@ export default {
           var isOffered;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
-
               if(event.basicClass.id in this.subjectsIndexDict) {
                 classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
+              } else if(event.basicClass.id in this.genericIndexDict) {
+                classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
               } else {
-                if(event.basicClass.id in this.genericIndexDict) {
-                  classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
-                } else {
-                  classInfo = undefined;
-                }
+                classInfo = undefined;
               }
             } else {
               classInfo = undefined;
