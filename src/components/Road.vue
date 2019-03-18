@@ -16,6 +16,9 @@
       v-bind:roadID = "roadID"
       v-bind:isOpen = "visibleList[index-1]"
       v-bind:baseYear = "baseYear"
+      v-bind:subjectsIndex = "subjectsIndex"
+      v-bind:genericCourses = "genericCourses"
+      v-bind:genericIndex = "genericIndex"
       @drag-class = "$emit('drag-class',$event)"
       @drop-class = "$emit('drop-class',$event)"
       @remove-class = "$emit('remove-class', $event)"
@@ -56,7 +59,7 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects',"subjects","roadID","currentSemester"],
+  props: ['selectedSubjects',"subjects","roadID","currentSemester", "subjectsIndex", "genericCourses", "genericIndex"],
   data: function () { return {
       visibleList: this.currentSemester >= 13 ? Array(16).fill(true) : Array(13).fill(true),
       changeYearDialog: false,
