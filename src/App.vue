@@ -538,7 +538,7 @@ export default {
         }));
       }
       for(var ci in ciAttributes) {
-        var offeredCI = this.getOfferedAttributes(undefined, "HASS", ci);
+        var offeredCI = this.getOfferedAttributes(undefined, undefined, ci);
         genericCourses.push(Object.assign({},baseGeneric, offeredCI, {
           communication_requirement: ci,
           title: "Generic " + ci,
