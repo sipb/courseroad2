@@ -100,11 +100,17 @@ export default {
   components: {
     'subject-scroll': SubjectScroll
   },
-  props: ["subjects", "classInfoStack", "subjectsIndex"],
+  props: ["subjects", "classInfoStack", "subjectsIndex", "genericCourses", "genericIndex"],
   data: function() {return {}},
   computed: {
     currentSubject: function() {
-      var curSubj = this.subjects[this.classInfoStack[this.classInfoStack.length-1]];
+      var currentID = this.classInfoStack[this.classInfoStack.length-1];
+      var curSubj;
+      if(currentID in this.subjectsIndex) {
+        curSubj = this.subjects[this.subjectsIndex[currentID]];
+      } else {
+        curSubj = this.genericCourses[this.genericIndex[currentID]];
+      }
       return curSubj;
     }
   },

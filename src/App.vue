@@ -150,6 +150,8 @@
       v-bind:classInfoStack = "classInfoStack"
       v-bind:subjects = "subjectsInfo"
       v-bind:subjectsIndex = "subjectsIndexDict"
+      v-bind:genericCourses = "genericCourses"
+      v-bind:genericIndex = "genericIndexDict"
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
       @close-classinfo = "classInfoStack = []"
@@ -475,8 +477,9 @@ export default {
       this.currentSemester = sem;
     },
     pushClassStack: function(id) {
-      var subjectIndex = this.subjectsIndexDict[id];
-      this.classInfoStack.push(subjectIndex);
+      if(id in this.subjectsIndexDict || id in this.genericIndexDict) {
+        this.classInfoStack.push(id);
+      }
     },
     popClassStack: function() {
       this.classInfoStack.pop();
