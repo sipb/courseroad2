@@ -94,10 +94,12 @@
             @add-req = "addReq"
             @remove-req = "removeReq"
           ></audit>
-          <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
-          <v-flex shrink style="padding: 24px;">
-            <p>Problems with the course requirements? Request edits <a href="https://fireroad.mit.edu/requirements/">here</a> or
-              send an email to <a href="mailto:courseroad-dev@mit.edu">courseroad@mit.edu</a>.</p>
+
+          <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+            <p>Problems with the course requirements? Request edits
+              <a href="https://fireroad.mit.edu/requirements/">here</a> or
+              send an email to <a href="mailto:courseroad@mit.edu">courseroad@mit.edu</a>.
+            </p>
           </v-flex>
         </v-layout>
       </v-container>
