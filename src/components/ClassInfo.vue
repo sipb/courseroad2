@@ -65,8 +65,8 @@
               </table>
               <h3>Description</h3>
               <p>{{currentSubject.description}}</p>
-              <p><a :href = "currentSubject.url">View in Course Catalog</a></p>
-              <p><a :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">View Course Evaluations</a></p>
+              <p><a target = "_blank" :href = "currentSubject.url">View in Course Catalog</a></p>
+              <p><a target = "_blank" :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">View Course Evaluations</a></p>
               <div v-if = "currentSubject.equivalent_subjects !== undefined">
                 <h3>Equivalent Subjects</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>

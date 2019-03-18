@@ -510,22 +510,27 @@ export default {
       }, {offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false})
     },
     makeGenericCourses: function() {
-      var girAttributes = {"PHY1": "Physics 1 GIR", "PHY2": "Physics 2 GIR", "CHEM": "Chemistry GIR", "BIOL": "Biology GIR", "CAL1": "Calculus I GIR", "CAL2": "Calculus II GIR", "LAB": "Lab GIR", "REST": "REST GIR"};
+      var girAttributes = {"PHY1": ["Physics 1 GIR","p1"], "PHY2": ["Physics 2 GIR","p2"], "CHEM": ["Chemistry GIR","c"], "BIOL": ["Biology GIR","b"], "CAL1": ["Calculus I GIR","m1"], "CAL2": ["Calculus II GIR","m2"], "LAB": ["Lab GIR","l1"], "REST": ["REST GIR","r"]};
       //the titles of the hass and ci attributes are currently not used in the description on fireroad
       //I think they might be nice to display with the description, but as of now they are unused
-      var hassAttributes = {"HASS-A": "HASS Arts", "HASS-S": "HASS Social Sciences", "HASS-H": "Hass Humanities"};
-      var ciAttributes = {"CI-H": "Communication Intensive", "CI-HW": "Communication Intensive with Writing"};
+      var hassAttributes = {"HASS-A": ["HASS Arts","ha"], "HASS-S": ["HASS Social Sciences","hs"], "HASS-H": ["Hass Humanities","hh"]};
+      var ciAttributes = {"CI-H": ["Communication Intensive","hc"], "CI-HW": ["Communication Intensive with Writing","hw"]};
       var genericCourses = [];
       var baseGeneric = {
         description: "Use this generic subject to indicate that you are fulfilling a requirement, but do not yet have a specific subject selected.",
         total_units: 12
       };
+      // biol:b, chem: c, lab: l1, partial lab: l2, rest: r, calc1: m1, calc2: m2, phys1: p1, phys2: p2
+      // hass-a: ha, hass-h: hh, hass-s: hs, hass elective: ht, hass subject: h%5Bahst%5D
+      // commun_int - cih: hc, cihw: hw
+      var baseurl = "http://student.mit.edu/catalog/search.cgi?search=&style=verbatim&when=*&termleng=4&days_offered=*&start_time=*&duration=*&total_units=*"
       for(var gir in girAttributes) {
         var offeredGir = this.getOfferedAttributes(gir, undefined, undefined);
         genericCourses.push(Object.assign({},baseGeneric,offeredGir,{
           gir_attribute: gir,
-          title: "Generic " + girAttributes[gir],
-          subject_id: gir
+          title: "Generic " + girAttributes[gir][0],
+          subject_id: gir,
+          url: baseurl + "&cred="+girAttributes[gir][1]+"&commun_int=*"
         }));
       }
       for(var hass in hassAttributes) {
@@ -533,14 +538,16 @@ export default {
         genericCourses.push(Object.assign({},baseGeneric,offeredHass,{
           hass_attribute: hass,
           title: "Generic " + hass,
-          subject_id: hass
+          subject_id: hass,
+          url: baseurl + "&cred="+hassAttributes[hass][1]+"&commun_int=*"
         }));
         var offeredHassCI = this.getOfferedAttributes(undefined, hass, "CI-H");
         genericCourses.push(Object.assign({},baseGeneric,offeredHassCI,{
           hass_attribute: hass,
           communication_requirement: "CI-H",
           title: "Generic CI-H " + hass,
-          subject_id: "CI-H " + hass
+          subject_id: "CI-H " + hass,
+          url: baseurl + "&cred="+hassAttributes[hass][1]+"&commun_int="+ciAttributes["CI-H"][1]
         }));
       }
       for(var ci in ciAttributes) {
@@ -549,7 +556,8 @@ export default {
           communication_requirement: ci,
           title: "Generic " + ci,
           hass_attribute: "HASS",
-          subject_id: ci
+          subject_id: ci,
+          url: baseurl + "&cred=*&commun_int="+ciAttributes[ci][1]
         }));
       }
       return genericCourses;
