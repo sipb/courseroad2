@@ -490,6 +490,50 @@ export default {
     popClassStack: function() {
       this.classInfoStack.pop();
     },
+    makeGenericCourses: function() {
+      var girAttributes = {"PHY1": "Physics 1 GIR", "PHY2": "Physics 2 GIR", "CHEM": "Chemistry GIR", "BIOL": "Biology GIR", "CAL1": "Calculus I GIR", "CAL2": "Calculus II GIR", "LAB": "Lab GIR", "REST": "REST GIR"};
+      //the titles of the hass and ci attributes are currently not used in the description on fireroad
+      //I think they might be nice to display with the description, but as of now they are unused
+      var hassAttributes = {"HASS-A": "HASS Arts", "HASS-S": "HASS Social Sciences", "HASS-H": "Hass Humanities"};
+      var ciAttributes = {"CI-H": "Communication Intensive", "CI-HW": "Communication Intensive with Writing"};
+      var genericCourses = [];
+      var baseGeneric = {
+        description: "Use this generic subject to indicate that you are fulfilling a requirement, but do not yet have a specific subject selected.",
+        offered_fall: true,
+        offered_IAP: true,
+        offered_spring: true,
+        offered_summer: true,
+        total_units: 12
+      };
+      for(var gir in girAttributes) {
+        genericCourses.push(Object.assign({},baseGeneric,{
+          gir_attribute: gir,
+          title: "Generic " + girAttributes[gir],
+          subject_id: gir
+        }));
+      }
+      for(var hass in hassAttributes) {
+        genericCourses.push(Object.assign({},baseGeneric,{
+          hass_attribute: hass,
+          title: "Generic " + hass,
+          subject_id: hass
+        }));
+        genericCourses.push(Object.assign({},baseGeneric,{
+          hass_attribute: hass,
+          communication_requirement: "CI-H",
+          title: "Generic CI-H " + hass,
+          subject_id: "CI-H " + hass
+        }));
+      }
+      for(var ci in ciAttributes) {
+        genericCourses.push(Object.assign({},baseGeneric, {
+          communication_requirement: ci,
+          title: "Generic " + ci,
+          hass_attribute: "HASS"
+        }));
+      }
+      return genericCourses;
+    }
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
@@ -560,6 +604,8 @@ export default {
     document.body.addEventListener("click", function(e) {
       this.showSearch = false;
     }.bind(this));
+
+    this.genericCourses = this.makeGenericCourses();
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
