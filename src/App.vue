@@ -98,6 +98,10 @@
         v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
         v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
         v-bind:reqList="reqList"
+        v-bind:subjects = "subjectsInfo"
+        v-bind:genericCourses = "genericCourses"
+        @drag-class = "testClass"
+        @drop-class = "dropClass"
         @add-req = "addReq"
         @remove-req = "removeReq"
       ></audit>

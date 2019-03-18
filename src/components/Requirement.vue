@@ -1,6 +1,12 @@
 
 <template>
-  <div class = "requirement">
+  <div
+    class = "requirement"
+    :draggable = "canDrag"
+    v-on:drag = "drag"
+    v-on:dragend = "drop"
+    v-on:dragstart = "dragStart"
+  >
     <div v-if="!leaf">
       <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
       <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
@@ -33,7 +39,7 @@ import $ from 'jquery'
 
 export default {
   name: 'requirement',
-  props: ['req', 'leaf'],
+  props: ['req', 'leaf', 'subjects', 'genericCourses'],
   data: function() {
     return {
       open: [],
@@ -42,6 +48,26 @@ export default {
     }
   },
   computed: {
+    classInfo: function() {
+      if('req' in this.req) {
+        var subjectIndex = this.subjects.map((s)=>s.subject_id).indexOf(this.req.req);
+        if(subjectIndex >= 0) {
+          return this.subjects[subjectIndex];
+        }
+        var attributeReq = this.req.req;
+        if(attributeReq.indexOf("GIR:")===0) {
+          attributeReq = attributeReq.substring(4);
+        }
+        var genericIndex = this.genericCourses.map((s)=>s.subject_id).indexOf(attributeReq);
+        if(genericIndex >= 0) {
+          return this.genericCourses[genericIndex];
+        }
+      }
+      return undefined;
+    },
+    canDrag: function() {
+      return this.classInfo !== undefined;
+    },
     reqFulfilled: function() {
       if(this.req.fulfilled) {
         return {
@@ -63,6 +89,25 @@ export default {
         "percentage-bar": ("reqs" in this.req || "threshold" in this.req)
       }
       return pblock
+    }
+  },
+  methods: {
+    drag: function(event) {
+      this.$emit("drag-class", {
+        drag: event,
+        classInfo: this.classInfo,
+        isNew: true
+      });
+    },
+    drop: function(event) {
+      this.$emit("drop-class", {
+        drop: event,
+        classInfo: this.classInfo,
+        isNew: true
+      });
+    },
+    dragStart: function() {
+      event.dataTransfer.setData('foo', 'bar');
     }
   }
 }
