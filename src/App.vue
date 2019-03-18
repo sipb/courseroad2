@@ -83,29 +83,30 @@
 
     </v-toolbar>
 
+    <v-navigation-drawer mobile-break-point="800" width="350" id="left-panel" class="side-panel elevation-2" app>
+      <v-container fill-height style="padding: 0;">
+        <v-layout fill-height column>
+          <audit
+            v-if = "activeRoad !== ''"
+            v-bind:reqTrees="reqTrees"
+            v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
+            v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
+            v-bind:reqList="reqList"
+            @add-req = "addReq"
+            @remove-req = "removeReq"
+          ></audit>
 
-    <v-navigation-drawer
-      id="left-panel"
-      width="350"
-      mobile-break-point="800"
-      class="side-panel elevation-2 scroller"
-      app
-    >
-      <audit
-        v-if = "activeRoad !== ''"
-        v-bind:reqTrees="reqTrees"
-        v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
-        v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
-        v-bind:reqList="reqList"
-        @add-req = "addReq"
-        @remove-req = "removeReq"
-      ></audit>
-      <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
+          <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+            <p>Problems with the course requirements? Request edits
+              <a href="https://fireroad.mit.edu/requirements/">here</a> or
+              send an email to <a href="mailto:courseroad@mit.edu">courseroad@mit.edu</a>.
+            </p>
+          </v-flex>
+        </v-layout>
+      </v-container>
     </v-navigation-drawer>
 
-
     <v-content app id="center-panel">
-
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
           v-for = "roadid in Object.keys(roads)"
