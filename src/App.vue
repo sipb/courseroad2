@@ -147,6 +147,7 @@
       v-if = "classInfoStack.length"
       v-bind:classInfoStack = "classInfoStack"
       v-bind:subjects = "subjectsInfo"
+      v-bind:subjectsIndex = "subjectsIndexDict"
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
       @close-classinfo = "classInfoStack = []"
@@ -203,6 +204,7 @@ export default {
     accessInfo: undefined,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
+    subjectsIndexDict: {},
     genericCourses: [],
     rightDrawer: true,
     activeRoad: "$defaultroad$",
@@ -294,11 +296,9 @@ export default {
           var isOffered;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
-              var filteredSubjects = this.subjectsInfo.filter(function(s) {
-                return s.subject_id === event.basicClass.id
-              });
-              if(filteredSubjects.length) {
-                classInfo = filteredSubjects[0];
+
+              if(event.basicClass.id in this.subjectsIndexDict) {
+                classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
               } else {
                 var filteredGeneric = this.genericCourses.filter(function(s) {
                   return s.subject_id === event.basicClass.id;
@@ -478,7 +478,7 @@ export default {
       this.currentSemester = sem;
     },
     pushClassStack: function(id) {
-      var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
+      var subjectIndex = this.subjectsIndexDict[id];
       this.classInfoStack.push(subjectIndex);
     },
     popClassStack: function() {
@@ -628,9 +628,17 @@ export default {
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
+<<<<<<< HEAD
         this.subjectsInfo = response.data
         this.genericCourses = this.makeGenericCourses();
         console.log(this.genericCourses);
+=======
+        this.subjectsInfo = response.data;
+        this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
+          obj[item.subject_id] = index;
+          return obj;
+        },{});
+>>>>>>> master
         this.subjectsLoaded = true;
       });
 

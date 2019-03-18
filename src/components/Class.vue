@@ -58,9 +58,9 @@ export default {
         currentSem: this.semesterIndex
       });
     },
-    dragStart: function(event) {  
-      // TODO: Rewrite as part of #53?  
-      event.dataTransfer.setData('foo', 'bar')  
+    dragStart: function(event) {
+      // TODO: Rewrite as part of #53?
+      event.dataTransfer.setData('foo', 'bar')
     },
     drop: function(event) {
       this.$emit("drop-class",{
