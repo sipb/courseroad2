@@ -104,7 +104,7 @@ export default {
         isNew: true
       });
     },
-    dragStart: function() {
+    dragStart: function(event) {
       event.dataTransfer.setData('foo', 'bar');
     }
   }
