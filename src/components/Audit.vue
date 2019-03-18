@@ -76,8 +76,10 @@
       </v-list>
     </v-menu>
 
-    <p><b>Note:</b> This is an unofficial audit that may not accurately reflect your degree progress.  Please visit
-    <a target = "_blank" href = "https://student.mit.edu/cgi-bin/shrwsdau.sh">the official audit</a> and confirm
+    <p><b>Warning:</b> This is an unofficial audit that may not accurately reflect your degree progress.  Please visit
+    the <a target = "_blank" href = "https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
+    <a target = "_blank" href = "http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
+    <a target = "_blank" href = "http://catalog.mit.edu/degree-charts/">degree charts</a> and confirm
     with your department advisor.</p>
   </v-container>
 </template>
