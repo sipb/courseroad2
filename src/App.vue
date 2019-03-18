@@ -70,6 +70,7 @@
           class = "search-menu"
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
+          v-bind:genericCourses = "genericCourses"
           v-bind:classInfoStack = "classInfoStack"
           v-bind:cookiesAllowed = "cookiesAllowed"
           @add-class="addClass"
@@ -529,7 +530,8 @@ export default {
         genericCourses.push(Object.assign({},baseGeneric, {
           communication_requirement: ci,
           title: "Generic " + ci,
-          hass_attribute: "HASS"
+          hass_attribute: "HASS",
+          subject_id: ci
         }));
       }
       return genericCourses;

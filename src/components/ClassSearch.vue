@@ -48,7 +48,7 @@ export default {
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput','classInfoStack','cookiesAllowed'],
+  props: ['subjects', 'searchInput','classInfoStack','cookiesAllowed','genericCourses'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -135,6 +135,9 @@ export default {
     }
   },
   computed: {
+    allSubjects: function() {
+      return this.subjects.concat(this.genericCourses);
+    },
     autocomplete: function () {
       //only display subjects if you are filtering by something
       var returnAny = false;
@@ -185,7 +188,7 @@ export default {
 
         // and or or function based on filter mode
         var filterAction = this.filterGroupModes[this.filterGroupMode];
-        var filteredSubjects =  this.subjects.filter(function(subject) {
+        var filteredSubjects =  this.allSubjects.filter(function(subject) {
           for(var attrs in filters) {
             //each test function in a filter group
             var testers = filters[attrs];
