@@ -86,8 +86,6 @@ export default {
       }
     },
     isSameYear: function() {
-      // console.log(this.index + " " + Math.floor((this.index-1)/3));
-      // console.log(Math.floor((this.index-1)/3)===Math.floor((this.currentSemester-1)/3));
       return Math.floor((this.index-1)/3) === Math.floor((this.currentSemester-1)/3);
     },
     offeredNow: function() {
