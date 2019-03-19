@@ -23,6 +23,9 @@
     <span v-else>
       <span v-if = "'title' in req">| </span><span style = "text-transform: cursive">{{ req.req }}</span>
     </span>
+    <span v-if = "req.max === 0" style = "font-style:italic">
+       (optional)
+    </span>
     <div :class = "percentage_bar" :style = "percentage"></div>
   </div>
 </template>
