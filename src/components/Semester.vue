@@ -42,6 +42,11 @@
           @remove-class = "$emit('remove-class', $event)"
           @click-class = "$emit('click-class',$event)"
         />
+        <v-flex md3 xs4 v-if = "addingFromCard && offeredNow">
+          <v-card style = "height:8em; line-height:8em; background:none;" class = "text-xs-center">
+            <v-btn large icon><v-icon>add</v-icon></v-btn>
+          </v-card>
+        </v-flex>
       </v-layout>
     </v-container>
   </v-expansion-panel-content>
@@ -59,7 +64,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear","addingFromCard", "itemAddingFromCard"],
   data: function() {return {
     newYear: this.semesterYear,
   }},
@@ -67,6 +72,14 @@ export default {
     'class': Class
   },
   computed: {
+    offeredNow: function() {
+      var semType = (this.index-1)%3;
+      if(semType >= 0) {
+        return [this.itemAddingFromCard.offered_fall, this.itemAddingFromCard.offered_IAP, this.itemAddingFromCard.offered_spring][semType];
+      } else {
+        return true;
+      }
+    },
     semesterStyles: function() {
       return {
         semesterBin: true,

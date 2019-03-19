@@ -25,6 +25,10 @@
           </v-card-title>
           <v-card-text class = "card-body">
             <div class = "card-body-container" id = "cardBody">
+              <v-btn @click = "$emit('add-class',currentSubject)" small block class = "secondary">
+                Add to Road
+                <v-icon right>add</v-icon>
+              </v-btn>
               <table cellspacing= "4">
                 <tr>
                   <td><b>Units</b></td>

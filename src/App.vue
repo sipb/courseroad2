@@ -118,6 +118,8 @@
             v-bind:subjects = "subjectsInfo"
             v-bind:roadID = "roadid"
             v-bind:currentSemester = "currentSemester"
+            v-bind:addingFromCard = "addingFromCard"
+            v-bind:itemAddingFromCard = "itemAddingFromCard"
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
@@ -146,6 +148,7 @@
       v-bind:subjectsIndex = "subjectsIndexDict"
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
+      @add-class = "addFromCard"
       @close-classinfo = "classInfoStack = []"
       v-on:click.native = "$event.stopPropagation()"
       >
@@ -214,6 +217,8 @@ export default {
     showSearch: false,
     classInfoStack: [],
     currentSemester: 0,
+    addingFromCard: false,
+    itemAddingFromCard: undefined,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -490,6 +495,10 @@ export default {
     popClassStack: function() {
       this.classInfoStack.pop();
     },
+    addFromCard: function(classItem) {
+      this.addingFromCard = true;
+      this.itemAddingFromCard = classItem;
+    }
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
