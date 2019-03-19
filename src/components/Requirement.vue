@@ -1,6 +1,6 @@
 
 <template>
-  <div class = "requirement">
+  <div class = "requirement" @click = "clickRequirement">
     <div v-if="!leaf">
       <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
       <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
@@ -63,6 +63,13 @@ export default {
         "percentage-bar": ("reqs" in this.req || "threshold" in this.req)
       }
       return pblock
+    }
+  },
+  methods: {
+    clickRequirement: function(event) {
+      if(this.req.req !== undefined) {
+        this.$emit('push-stack', this.req.req);
+      }
     }
   }
 }

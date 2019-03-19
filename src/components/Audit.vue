@@ -27,6 +27,7 @@
         <requirement
           v-bind:req="item"
           v-bind:leaf="leaf"
+          @push-stack = "$emit('push-stack',$event)"
         >
         </requirement>
       </template>

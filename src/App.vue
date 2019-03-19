@@ -94,6 +94,7 @@
             v-bind:reqList="reqList"
             @add-req = "addReq"
             @remove-req = "removeReq"
+            @push-stack = "pushClassStack"
           ></audit>
 
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
