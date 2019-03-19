@@ -10,7 +10,7 @@
       v-on:dragstart = "dragStart"
       v-on:click = "$emit('click-class',classInfo)"
     >
-      <div :class = "courseColor" style = "height:100%;">
+      <div :class = "courseColor(classInfo.id)" style = "height:100%;">
         <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
         <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
       </div>
@@ -19,19 +19,32 @@
 </template>
 
 <script>
-export default {
-  name: "class",
-  props: ['classInfo','semesterIndex'],
-  computed: {
-    courseColor () {
-      let course  = this.classInfo.id.split('.')[0]
+var colorMixin = {
+  data: function() {
+    return {
+      validCourses: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+        '11', '12', '14', '15', '16', '17', '18', '20', '21', '21A', '21W',
+        'CMS', '21G', '21H', '21L', '21M', 'WGS', '22', '24', 'CC', 'CSB',
+        'EC', 'EM', 'ES', 'HST', 'IDS', 'MAS', 'SCM', 'STS', 'SWE', 'SP'
+      ]
+    }
+  },
+  methods: {
+    courseColor(id) {
+      let course  = id.split('.')[0]
       if (this.validCourses.indexOf(course) !== -1) {
         return 'course-' + course
       } else {
         return 'course-none'
       }
     }
-  },
+  }
+}
+
+export default {
+  name: "class",
+  props: ['classInfo','semesterIndex'],
+  mixins: [colorMixin],
   data() {
     return {
       isSatisfied: true,
