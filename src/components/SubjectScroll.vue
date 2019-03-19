@@ -3,7 +3,7 @@
     <v-layout row overflow-x>
         <v-flex v-for = "subject in subjects" :key = "subject.subject_id">
           <v-card class = "subject" @click = "$emit('click-subject', subject.subject_id)">
-            <div :class = "courseColor(subject.subject_id)">
+            <div :class = "courseColor(subject.subject_id)" style = "height:100%;">
               <v-card-text class = "cardtext pa-1">
                 <div><b>{{subject.subject_id}}</b></div>
                 <p class = "subject-title">{{subject.title}}</p>
