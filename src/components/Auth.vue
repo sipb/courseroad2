@@ -404,6 +404,7 @@ export default {
       } else {
         sem = 3 + year * 3;
       }
+      console.log(sem);
       this.postSecure("/set_semester/",{semester: sem}).then(function(res) {
         if(res.status===200 && res.data.success) {
           this.$emit('set-sem', sem);

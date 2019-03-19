@@ -120,6 +120,7 @@
             v-bind:currentSemester = "currentSemester"
             v-bind:addingFromCard = "addingFromCard"
             v-bind:itemAddingFromCard = "itemAddingFromCard"
+            @add-at-placeholder = "addAtPlaceholder"
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
@@ -498,6 +499,18 @@ export default {
     addFromCard: function(classItem) {
       this.addingFromCard = true;
       this.itemAddingFromCard = classItem;
+    },
+    addAtPlaceholder: function(index) {
+      var newClass = {
+        overrideWarnings : false,
+        semester : index,
+        title : this.itemAddingFromCard.title,
+        id : this.itemAddingFromCard.subject_id,
+        units : this.itemAddingFromCard.total_units
+      }
+      this.addClass(newClass);
+      this.addingFromCard = false;
+      this.itemAddingFromCard = undefined;
     }
   },
   watch: {

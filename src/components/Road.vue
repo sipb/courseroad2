@@ -18,6 +18,8 @@
       v-bind:baseYear = "baseYear"
       v-bind:addingFromCard = "addingFromCard"
       v-bind:itemAddingFromCard = "itemAddingFromCard"
+      v-bind:currentSemester = "currentSemester"
+      @add-at-placeholder = "$emit('add-at-placeholder',$event)"
       @drag-class = "$emit('drag-class',$event)"
       @drop-class = "$emit('drop-class',$event)"
       @remove-class = "$emit('remove-class', $event)"

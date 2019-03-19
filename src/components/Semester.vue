@@ -26,10 +26,10 @@
     </v-container>
 
     <v-container
-      class="grey lighten-3 semester-drop-container"
+      class="lighten-3 semester-drop-container"
       fluid
       grid-list-md
-      :class="semesterStyles"
+      :class="[semesterStyles,semColor]"
     >
       <v-layout wrap align-center justify-center row>
         <class
@@ -42,9 +42,9 @@
           @remove-class = "$emit('remove-class', $event)"
           @click-class = "$emit('click-class',$event)"
         />
-        <v-flex md3 xs4 v-if = "addingFromCard && offeredNow">
+        <v-flex md3 xs4 v-if = "addingFromCard && (offeredNow || !isSameYear)">
           <v-card style = "height:8em; line-height:8em; background:none;" class = "text-xs-center">
-            <v-btn large icon><v-icon>add</v-icon></v-btn>
+            <v-btn large icon @click = "$emit('add-at-placeholder',index)"><v-icon>add</v-icon></v-btn>
           </v-card>
         </v-flex>
       </v-layout>
@@ -64,7 +64,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear","addingFromCard", "itemAddingFromCard"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear","addingFromCard", "itemAddingFromCard","currentSemester"],
   data: function() {return {
     newYear: this.semesterYear,
   }},
@@ -72,12 +72,32 @@ export default {
     'class': Class
   },
   computed: {
+    semColor: function() {
+      if(this.addingFromCard) {
+        if(this.offeredNow) {
+          return "green";
+        } else if(this.isSameYear) {
+          return "red";
+        } else {
+          return "yellow";
+        }
+      } else {
+        return "grey";
+      }
+    },
+    isSameYear: function() {
+      // console.log(this.index + " " + Math.floor((this.index-1)/3));
+      // console.log(Math.floor((this.index-1)/3)===Math.floor((this.currentSemester-1)/3));
+      return Math.floor((this.index-1)/3) === Math.floor((this.currentSemester-1)/3);
+    },
     offeredNow: function() {
       var semType = (this.index-1)%3;
-      if(semType >= 0) {
+      if(semType >= 0 && this.addingFromCard) {
         return [this.itemAddingFromCard.offered_fall, this.itemAddingFromCard.offered_IAP, this.itemAddingFromCard.offered_spring][semType];
-      } else {
+      } else if(this.addingFromCard) {
         return true;
+      } else {
+        return false;
       }
     },
     semesterStyles: function() {
