@@ -21,7 +21,7 @@
       </span>
     </span>
     <span v-else>
-      | <span style = "text-transform: cursive">{{ req.req }}</span>
+      <span v-if = "'title' in req">| </span><span style = "text-transform: cursive">{{ req.req }}</span>
     </span>
     <div :class = "percentage_bar" :style = "percentage"></div>
   </div>
