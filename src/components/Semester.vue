@@ -73,8 +73,12 @@ export default {
         var subjID = this.semesterSubjects[i].id;
         if(subjID in this.subjectsIndex) {
           var prereqString = this.allSubjects[this.subjectsIndex[this.semesterSubjects[i].id]].prerequisites;
+          var coreqString = this.allSubjects[this.subjectsIndex[this.semesterSubject[i].id]].corequisites;
           if(prereqString !== undefined) {
             var prereqsfulfilled = this.reqFulfilled(prereqString, this.previousSubjects);
+          }
+          if(coreqString !== undefined) {
+            var coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
           }
         }
       }
@@ -85,6 +89,11 @@ export default {
         return subj.semester < this.index;
       });
     },
+    concurrentSubjects: function() {
+      return this.selectedSubjects.filter(subj => {
+        return subject.semester <= this.index;
+      })
+    }
     semesterStyles: function() {
       return {
         semesterBin: true,
@@ -164,13 +173,29 @@ export default {
       return false;
     },
     reqFulfilled: function(reqString, subjects) {
-      var splitReq = reqString.split(/(\(|\)|\/|,\s)/);
-      
-      if(reqString.indexOf("(")>=0) {
-        console.log(reqString);
-        console.log(splitReq);
+      var allIDs = subjects.map((s)=>s.id);
+      reqString = reqString.replace(/''/g, "\"").replace(/,[\s]+/g,",");
+      var splitReq = reqString.split(/(,|\(|\)|\/)/);
+      for(var i = 0; i < splitReq.length; i++) {
+        if(splitReq[i].indexOf("\"")>=0) {
+          splitReq[i] = "true";
+        }
+        if("()/, ".indexOf(splitReq[i])<0) {
+          if(allIDs.indexOf(splitReq[i])>=0) {
+            splitReq[i] = "true";
+          } else {
+            var anyClassSatisfies  = subjects.map((s)=>this.classSatisfies(splitReq[i],s.id)).reduce((a,b)=>a||b,false);
+            if(anyClassSatisfies) {
+              splitReq[i] = "true";
+            } else {
+              splitReq[i] = "false"
+            }
+          }
+        }
       }
-
+      var reqExpression = splitReq.join("").replace(/\//g,"||").replace(/,/g,"&&");
+      //i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
+      return eval(reqExpression);
     }
     // dropped: function(event) {
     //   // console.log("dropped");
