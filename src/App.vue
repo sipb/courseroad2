@@ -134,11 +134,7 @@
             v-bind:currentSemester = "currentSemester"
             v-bind:subjectsIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
-<<<<<<< HEAD
-            v-bind:genericIndex = "genericIndex"
-=======
             v-bind:genericIndex = "genericIndexDict"
->>>>>>> generic-courses
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
