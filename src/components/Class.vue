@@ -14,7 +14,7 @@
         <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
         <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
       </v-card>
-      <v-btn v-if = "warnings.length>0" @click = "warningDialog = true" icon slot = "badge">
+      <v-btn v-if = "warnings.length>0&&!classInfo.overrideWarnings" @click = "warningDialog = true" icon slot = "badge">
         <v-icon medium>
           warning
         </v-icon>
@@ -27,9 +27,15 @@
         </v-card-title>
         <v-card-text>
           <p v-for = "warning in warnings" v-html="warning"></p>
+          <v-switch
+            label = "Override Warnings"
+            color = "orange darken-3"
+            v-model = "shouldOverrideWarnings"
+          >
+          </v-switch>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click = "warningDialog = false">Close</v-btn>
+          <v-btn @click = "warningDialog = false; $emit('override-warnings',{override:shouldOverrideWarnings,classInfo:classInfo})">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -75,6 +81,7 @@ export default {
         "HASS-A", "HASS-H", "HASS-S", "CI-H", "CI-HW"
       ],
       warningDialog: false,
+      shouldOverrideWarnings: this.classInfo.overrideWarnings
     }
   },
   methods: {

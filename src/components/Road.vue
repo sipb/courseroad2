@@ -24,6 +24,7 @@
       @remove-class = "$emit('remove-class', $event)"
       @click-class = "$emit('click-class',$event)"
       @change-year = "changeYearDialog = true"
+      @override-warnings = "$emit('override-warnings',$event)"
       >
     </semester>
     <v-dialog v-model = "changeYearDialog">

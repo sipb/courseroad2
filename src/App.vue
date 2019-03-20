@@ -140,6 +140,7 @@
             @remove-class = "removeClass"
             @click-class = "pushClassStack($event.id)"
             @change-year = "$refs.authcomponent.changeSemester($event)"
+            @override-warnings = "overrideWarnings($event.override,$event.classInfo)"
           ></road>
         </v-tab-item>
       </v-tabs-items>
@@ -569,6 +570,13 @@ export default {
         }));
       }
       return genericCourses;
+    },
+    overrideWarnings(override, classInfo) {
+      console.log("overriding warnings");
+      console.log(override);
+      console.log(classInfo);
+      var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      Vue.set(this.roads[this.activeRoad].contents.selectedSubjects[classIndex],"overrideWarnings", override);
     }
   },
   watch: {
