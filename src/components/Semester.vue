@@ -60,11 +60,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-<<<<<<< HEAD
   props:['selectedSubjects','index',"allSubjects","subjectsIndex","roadID","isOpen","baseYear", "genericCourses", "genericIndex"],
-=======
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex"],
->>>>>>> generic-courses
   data: function() {return {
     newYear: this.semesterYear,
   }},
