@@ -26,11 +26,11 @@
           <v-card-text class = "card-body">
             <div class = "card-body-container" id = "cardBody">
               <table cellspacing= "4">
-                <tr>
+                <tr v-if = "currentSubject.total_units!==undefined">
                   <td><b>Units</b></td>
-                  <td>{{currentSubject.total_units}} total ({{currentSubject.lecture_units}}-{{currentSubject.lab_units}}-{{currentSubject.preparation_units}})</td>
+                  <td>{{currentSubject.total_units}} <span v-if = "currentSubject.lecture_units!==undefined&&currentSubject.lab_units!==undefined&&currentSubject.preparation_units!==undefined">total ({{currentSubject.lecture_units}}-{{currentSubject.lab_units}}-{{currentSubject.preparation_units}})</span></td>
                 </tr>
-                <tr>
+                <tr v-if = "currentSubject.offeredFall!==undefined || currentSubject.offered_IAP !== undefined || currentSubject.offered_spring !== undefined || currentSubject.offered_summer !== undefined">
                   <td><b>Offered</b></td>
                   <td>
                     <ul class = "comma-separated">
@@ -39,21 +39,22 @@
                       <li v-if = "currentSubject.offered_spring">Spring</li>
                       <li v-if = "currentSubject.offered_summer">Summer</li>
                     </ul>
+                    <span v-if = "!currentSubject.offered_fall&&!currentSubject.offered_IAP&&!currentSubject.offered_spring&&!currentSubject.offered_summer">None</span>
                   </td>
                 </tr>
-                <tr>
+                <tr v-if = "currentSubject.instructors !== undefined">
                   <td><b>Instructor</b></td>
                   <td><ul class = "comma-separated"><li v-for = "instructor in currentSubject.instructors">{{instructor}}</li></ul></td>
                 </tr>
-                <tr>
+                <tr v-if = "currentSubject.enrollment_number !== undefined">
                   <td><b>Average Enrollment</b></td>
                   <td>{{currentSubject.enrollment_number}}</td>
                 </tr>
-                <tr>
+                <tr v-if = "currentSubject.rating !== undefined">
                   <td><b>Average Rating</b></td>
                   <td>{{currentSubject.rating}}</td>
                 </tr>
-                <tr>
+                <tr v-if = "currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined">
                   <td><b>Hours</b></td>
                   <td>
                     <table cellspacing = "0">
@@ -65,8 +66,8 @@
               </table>
               <h3>Description</h3>
               <p>{{currentSubject.description}}</p>
-              <p><a :href = "currentSubject.url">View in Course Catalog</a></p>
-              <p><a :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">View Course Evaluations</a></p>
+              <p v-if = "currentSubject.url !== undefined"><a target = "_blank" :href = "currentSubject.url">View in Course Catalog</a></p>
+              <p v-if = "currentSubject.subject_id in subjectsIndex"><a target = "_blank" :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">View Course Evaluations</a></p>
               <div v-if = "currentSubject.equivalent_subjects !== undefined">
                 <h3>Equivalent Subjects</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
@@ -100,11 +101,17 @@ export default {
   components: {
     'subject-scroll': SubjectScroll
   },
-  props: ["subjects", "classInfoStack", "subjectsIndex"],
+  props: ["subjects", "classInfoStack", "subjectsIndex", "genericCourses", "genericIndex"],
   data: function() {return {}},
   computed: {
     currentSubject: function() {
-      var curSubj = this.subjects[this.classInfoStack[this.classInfoStack.length-1]];
+      var currentID = this.classInfoStack[this.classInfoStack.length-1];
+      var curSubj;
+      if(currentID in this.subjectsIndex) {
+        curSubj = this.subjects[this.subjectsIndex[currentID]];
+      } else {
+        curSubj = this.genericCourses[this.genericIndex[currentID]];
+      }
       return curSubj;
     }
   },

@@ -59,7 +59,11 @@ export default {
   components: {
     'semester': Semester
   },
+<<<<<<< HEAD
   props: ['selectedSubjects',"subjects","roadID","currentSemester","subjectsIndex","genericCourses", "genericIndex"],
+=======
+  props: ['selectedSubjects',"subjects","roadID","currentSemester", "subjectsIndex", "genericCourses", "genericIndex"],
+>>>>>>> generic-courses
   data: function () { return {
       visibleList: this.currentSemester >= 13 ? Array(16).fill(true) : Array(13).fill(true),
       changeYearDialog: false,

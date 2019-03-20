@@ -30,10 +30,22 @@ export default {
   props: ['classInfo','semesterIndex'],
   computed: {
     courseColor () {
-      let course  = this.classInfo.id.split('.')[0]
+      let course  = this.classInfo.id.split('.')[0];
+      let girAttrs = course.split(" ").filter((c)=>(this.validGeneric.indexOf(c)>=0));
       if (this.validCourses.indexOf(course) !== -1) {
         return 'course-' + course
-      } else {
+      } else if (girAttrs.length >= 0) {
+        if(girAttrs.length == 1) {
+          var attr = girAttrs[0];
+          if(attr.indexOf("HASS") == 0) {
+            return 'generic-' + course;
+          } else if(attr.indexOf("CI") == 0) {
+            return 'generic-' + course;
+          }
+        }
+        return 'generic-GIR';
+      }
+      else {
         return 'course-none'
       }
     }
@@ -46,6 +58,9 @@ export default {
         '11', '12', '14', '15', '16', '17', '18', '20', '21', '21A', '21W',
         'CMS', '21G', '21H', '21L', '21M', 'WGS', '22', '24', 'CC', 'CSB',
         'EC', 'EM', 'ES', 'HST', 'IDS', 'MAS', 'SCM', 'STS', 'SWE', 'SP'
+      ],
+      validGeneric: ["PHY1", "PHY2", "CHEM", "BIOL", "CAL1", "CAL2", "LAB", "REST",
+        "HASS-A", "HASS-H", "HASS-S", "CI-H", "CI-HW"
       ]
     }
   },
@@ -58,9 +73,9 @@ export default {
         currentSem: this.semesterIndex
       });
     },
-    dragStart: function(event) {  
-      // TODO: Rewrite as part of #53?  
-      event.dataTransfer.setData('foo', 'bar')  
+    dragStart: function(event) {
+      // TODO: Rewrite as part of #53?
+      event.dataTransfer.setData('foo', 'bar')
     },
     drop: function(event) {
       this.$emit("drop-class",{
@@ -141,4 +156,12 @@ export default {
   .course-STS { background-color: #8F57B5; }
   .course-SWE { background-color: #B56B57; }
   .course-SP { background-color: #4343DE; }
+
+  .generic-GIR { background-color: #BF6139; }
+  .generic-HASS { background-color: #39BF97; }
+  .generic-HASS-A { background-color: #3997BF; }
+  .generic-HASS-H { background-color: #3946BF; }
+  .generic-HASS-S { background-color: #7C39BF; }
+  .generic-CI-H { background-color: #BF39B1; }
+  .generic-CI-HW { background-color: #BF3961; }
 </style>

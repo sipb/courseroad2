@@ -70,6 +70,7 @@
           class = "search-menu"
           v-bind:searchInput = "searchInput"
           v-bind:subjects="subjectsInfo"
+          v-bind:genericCourses = "genericCourses"
           v-bind:classInfoStack = "classInfoStack"
           v-bind:cookiesAllowed = "cookiesAllowed"
           @add-class="addClass"
@@ -83,8 +84,15 @@
 
     </v-toolbar>
 
-    <v-navigation-drawer mobile-break-point="800" width="350" id="left-panel" class="side-panel elevation-2" app>
-      <v-container fill-height style="padding: 0;">
+
+    <v-navigation-drawer
+      id="left-panel"
+      width="350"
+      mobile-break-point="800"
+      class="side-panel elevation-2 scroller"
+      app
+    >
+      <v-container fill-height style = "padding: 0;">
         <v-layout fill-height column>
           <audit
             v-if = "activeRoad !== ''"
@@ -92,10 +100,15 @@
             v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
             v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
             v-bind:reqList="reqList"
+            v-bind:subjects = "subjectsInfo"
+            v-bind:subjectIndex = "subjectsIndexDict"
+            v-bind:genericCourses = "genericCourses"
+            v-bind:genericIndex = "genericIndexDict"
+            @drag-class = "testClass"
+            @drop-class = "dropClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
           ></audit>
-
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>Problems with the course requirements? Request edits
               <a href="https://fireroad.mit.edu/requirements/">here</a> or
@@ -104,6 +117,7 @@
           </v-flex>
         </v-layout>
       </v-container>
+      <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
 
     <v-content app id="center-panel">
@@ -120,7 +134,11 @@
             v-bind:currentSemester = "currentSemester"
             v-bind:subjectsIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
+<<<<<<< HEAD
             v-bind:genericIndex = "genericIndex"
+=======
+            v-bind:genericIndex = "genericIndexDict"
+>>>>>>> generic-courses
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
@@ -147,6 +165,8 @@
       v-bind:classInfoStack = "classInfoStack"
       v-bind:subjects = "subjectsInfo"
       v-bind:subjectsIndex = "subjectsIndexDict"
+      v-bind:genericCourses = "genericCourses"
+      v-bind:genericIndex = "genericIndexDict"
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
       @close-classinfo = "classInfoStack = []"
@@ -204,6 +224,8 @@ export default {
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
     subjectsIndexDict: {},
+    genericCourses: [],
+    genericIndexDict: {},
     rightDrawer: true,
     activeRoad: "$defaultroad$",
     newRoadName: "",
@@ -294,29 +316,12 @@ export default {
           var isOffered;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
-              if (event.basicClass.id in this.subjectsIndexDict) {
+              if(event.basicClass.id in this.subjectsIndexDict) {
                 classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
-              } else if(semesterType >= 0) {
-                //not in catalog, might be a generic course (like PHY1 or HASS)
-                var matchingClasses = this.subjectsInfo.filter(function(subject) {
-                  var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
-                  return possible_attributes.includes(event.basicClass.id);
-                });
-                if(matchingClasses.length) {
-                  classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
-                    return {
-                      offered_fall: subjectA.offered_fall || subjectB.offeredFall,
-                      offered_spring: subjectA.offered_spring || subjectB.offered_spring,
-                      offered_IAP: subjectA.offered_IAP || subjectB.offered_IAP,
-                    }
-                  });
-                } else {
-                  classInfo = {
-                    offered_fall: false,
-                    offered_spring: false,
-                    offered_IAP: false,
-                  }
-                }
+              } else if(event.basicClass.id in this.genericIndexDict) {
+                classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
+              } else {
+                classInfo = undefined;
               }
             } else {
               classInfo = undefined;
@@ -487,12 +492,88 @@ export default {
       this.currentSemester = sem;
     },
     pushClassStack: function(id) {
-      var subjectIndex = this.subjectsIndexDict[id];
-      this.classInfoStack.push(subjectIndex);
+      if(id in this.subjectsIndexDict || id in this.genericIndexDict) {
+        this.classInfoStack.push(id);
+      }
     },
     popClassStack: function() {
       this.classInfoStack.pop();
     },
+    getOfferedAttributes: function(gir, hass, ci) {
+      var matchingClasses = this.subjectsInfo.filter(function(subject) {
+        if(gir !== undefined && subject.gir_attribute !== gir) {
+          return false;
+        }
+        if(hass !== undefined && subject.hass_attribute !== hass) {
+          return false;
+        }
+        if(ci !== undefined && subject.communication_requirement !== ci) {
+          return false;
+        }
+        return true;
+      });
+      return matchingClasses.reduce(function(offeredObject, nextClass) {
+        return {
+          offered_spring: offeredObject.offered_spring || nextClass.offered_spring,
+          offered_summer: offeredObject.offered_summer || nextClass.offered_summer,
+          offered_IAP: offeredObject.offered_IAP || nextClass.offered_IAP,
+          offered_fall: offeredObject.offered_fall || nextClass.offered_fall
+        }
+      }, {offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false})
+    },
+    makeGenericCourses: function() {
+      var girAttributes = {"PHY1": ["Physics 1 GIR","p1"], "PHY2": ["Physics 2 GIR","p2"], "CHEM": ["Chemistry GIR","c"], "BIOL": ["Biology GIR","b"], "CAL1": ["Calculus I GIR","m1"], "CAL2": ["Calculus II GIR","m2"], "LAB": ["Lab GIR","l1"], "REST": ["REST GIR","r"]};
+      //the titles of the hass and ci attributes are currently not used in the description on fireroad
+      //I think they might be nice to display with the description, but as of now they are unused
+      var hassAttributes = {"HASS-A": ["HASS Arts","ha"], "HASS-S": ["HASS Social Sciences","hs"], "HASS-H": ["Hass Humanities","hh"]};
+      var ciAttributes = {"CI-H": ["Communication Intensive","hc"], "CI-HW": ["Communication Intensive with Writing","hw"]};
+      var genericCourses = [];
+      var baseGeneric = {
+        description: "Use this generic subject to indicate that you are fulfilling a requirement, but do not yet have a specific subject selected.",
+        total_units: 12
+      };
+      // biol:b, chem: c, lab: l1, partial lab: l2, rest: r, calc1: m1, calc2: m2, phys1: p1, phys2: p2
+      // hass-a: ha, hass-h: hh, hass-s: hs, hass elective: ht, hass subject: h%5Bahst%5D
+      // commun_int - cih: hc, cihw: hw
+      var baseurl = "http://student.mit.edu/catalog/search.cgi?search=&style=verbatim&when=*&termleng=4&days_offered=*&start_time=*&duration=*&total_units=*"
+      for(var gir in girAttributes) {
+        var offeredGir = this.getOfferedAttributes(gir, undefined, undefined);
+        genericCourses.push(Object.assign({},baseGeneric,offeredGir,{
+          gir_attribute: gir,
+          title: "Generic " + girAttributes[gir][0],
+          subject_id: gir,
+          url: baseurl + "&cred="+girAttributes[gir][1]+"&commun_int=*"
+        }));
+      }
+      for(var hass in hassAttributes) {
+        var offeredHass = this.getOfferedAttributes(undefined, hass, undefined);
+        genericCourses.push(Object.assign({},baseGeneric,offeredHass,{
+          hass_attribute: hass,
+          title: "Generic " + hass,
+          subject_id: hass,
+          url: baseurl + "&cred="+hassAttributes[hass][1]+"&commun_int=*"
+        }));
+        var offeredHassCI = this.getOfferedAttributes(undefined, hass, "CI-H");
+        genericCourses.push(Object.assign({},baseGeneric,offeredHassCI,{
+          hass_attribute: hass,
+          communication_requirement: "CI-H",
+          title: "Generic CI-H " + hass,
+          subject_id: "CI-H " + hass,
+          url: baseurl + "&cred="+hassAttributes[hass][1]+"&commun_int="+ciAttributes["CI-H"][1]
+        }));
+      }
+      for(var ci in ciAttributes) {
+        var offeredCI = this.getOfferedAttributes(undefined, undefined, ci);
+        genericCourses.push(Object.assign({},baseGeneric, offeredCI, {
+          communication_requirement: ci,
+          title: "Generic " + ci,
+          hass_attribute: "HASS",
+          subject_id: ci,
+          url: baseurl + "&cred=*&commun_int="+ciAttributes[ci][1]
+        }));
+      }
+      return genericCourses;
+    }
   },
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
@@ -563,14 +644,20 @@ export default {
     document.body.addEventListener("click", function(e) {
       this.showSearch = false;
     }.bind(this));
+
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
-        this.subjectsInfo = response.data;
+        this.subjectsInfo = response.data
+        this.genericCourses = this.makeGenericCourses();
         this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
+          obj[item.subject_id] = index;
+          return obj;
+        },{});
+        this.genericIndexDict = this.genericCourses.reduce(function(obj, item, index) {
           obj[item.subject_id] = index;
           return obj;
         },{});

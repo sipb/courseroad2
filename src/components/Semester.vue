@@ -60,7 +60,11 @@ import $ from "jquery"
 
 export default {
   name: "semester",
+<<<<<<< HEAD
   props:['selectedSubjects','index',"allSubjects","subjectsIndex","roadID","isOpen","baseYear", "genericCourses", "genericIndex"],
+=======
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex"],
+>>>>>>> generic-courses
   data: function() {return {
     newYear: this.semesterYear,
   }},
@@ -99,9 +103,10 @@ export default {
     },
     semesterInformation: function() {
       var classesInfo = this.semesterSubjects.map(function(subj) {
-        var subjectIndex = this.allSubjects.map((s)=>s.subject_id).indexOf(subj.id);
-        if(subjectIndex >= 0) {
-          return this.allSubjects[subjectIndex];
+        if(subj.id in this.subjectsIndex) {
+          return this.allSubjects[this.subjectsIndex[subj.id]];
+        } else if(subj.id in this.genericIndex) {
+          return this.genericCourses[this.genericIndex[subj.id]];
         } else {
           return undefined;
         }
