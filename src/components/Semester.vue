@@ -103,11 +103,6 @@ export default {
             }
           }
         }
-        if(subjectWarnings.length) {
-          console.log(subjID);
-          console.log(subj);
-          console.log(subjectWarnings);
-        }
         allWarnings[i] = subjectWarnings;
       }
       return allWarnings;
