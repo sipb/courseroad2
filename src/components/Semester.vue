@@ -42,6 +42,7 @@
           @remove-class = "$emit('remove-class', $event)"
           @click-class = "$emit('click-class',$event)"
         />
+        {{warnings}}
       </v-layout>
     </v-container>
   </v-expansion-panel-content>
@@ -59,7 +60,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear"],
+  props:['selectedSubjects','index',"allSubjects","subjectsIndex","roadID","isOpen","baseYear", "genericCourses", "genericIndex"],
   data: function() {return {
     newYear: this.semesterYear,
   }},
@@ -67,6 +68,23 @@ export default {
     'class': Class
   },
   computed: {
+    warnings: function() {
+      for(var i = 0; i < this.semesterSubjects.length; i++) {
+        var subjID = this.semesterSubjects[i].id;
+        if(subjID in this.subjectsIndex) {
+          var prereqString = this.allSubjects[this.subjectsIndex[this.semesterSubjects[i].id]].prerequisites;
+          if(prereqString !== undefined) {
+            var prereqsfulfilled = this.reqFulfilled(prereqString, this.previousSubjects);
+          }
+        }
+      }
+      return [];
+    },
+    previousSubjects: function() {
+      return this.selectedSubjects.filter(subj => {
+        return subj.semester < this.index;
+      });
+    },
     semesterStyles: function() {
       return {
         semesterBin: true,
@@ -121,6 +139,37 @@ export default {
     changeYear: function(event) {
       event.stopPropagation();
       this.$emit("change-year")
+    },
+    classSatisfies: function(req, id) {
+      if(req === id) {
+        return true;
+      }
+      if(req.indexOf(".")===-1) {
+        var subj;
+        if(id in this.subjectsIndex) {
+          subj = this.allSubjects[this.subjectsIndex[id]];
+        } else if(id in this.genericIndex) {
+          subj = this.genericCourses[this.genericIndex[id]];
+        }
+        if(req.indexOf("GIR:")>=0) {
+          req = req.substring(4);
+          return subj.gir_attribute == req;
+        } else if(req.indexOf("HASS")>=0) {
+          return subj.hass_attribute == req;
+        } else if(req.indexOf("CI")>=0) {
+          return subj.communication_requirement == req;
+        }
+      }
+      return false;
+    },
+    reqFulfilled: function(reqString, subjects) {
+      var splitReq = reqString.split(/(\(|\)|\/|,\s)/);
+      
+      if(reqString.indexOf("(")>=0) {
+        console.log(reqString);
+        console.log(splitReq);
+      }
+
     }
     // dropped: function(event) {
     //   // console.log("dropped");
