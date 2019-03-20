@@ -36,13 +36,13 @@
           v-for="(subject, subjindex) in semesterSubjects"
           v-bind:classInfo="subject"
           v-bind:semesterIndex="index"
+          v-bind:warnings = "warnings[index]"
           :key="subject.id + '-' + subjindex + '-' + index"
           @drag-class="$emit('drag-class',$event)"
           @drop-class="$emit('drop-class',$event)"
           @remove-class = "$emit('remove-class', $event)"
           @click-class = "$emit('click-class',$event)"
         />
-        {{warnings}}
       </v-layout>
     </v-container>
   </v-expansion-panel-content>
@@ -69,20 +69,42 @@ export default {
   },
   computed: {
     warnings: function() {
+      var allWarnings = [];
       for(var i = 0; i < this.semesterSubjects.length; i++) {
+        var subjectWarnings = [];
         var subjID = this.semesterSubjects[i].id;
+        var subj;
         if(subjID in this.subjectsIndex) {
-          var prereqString = this.allSubjects[this.subjectsIndex[this.semesterSubjects[i].id]].prerequisites;
-          var coreqString = this.allSubjects[this.subjectsIndex[this.semesterSubjects[i].id]].corequisites;
+          subj = this.allSubjects[this.subjectsIndex[subjID]]
+          var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
+          var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
           if(prereqString !== undefined) {
             var prereqsfulfilled = this.reqFulfilled(prereqString, this.previousSubjects);
+            if(!prereqsfulfilled) {
+              subjectWarnings.push("Unsatisfied Corequisite - One or more corequisites are not yet fulfilled.");
+            }
           }
           if(coreqString !== undefined) {
             var coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
+            if(!coreqsfulfilled) {
+              subjectWarnings.push("Unsatisfied Prerequisite - One or more prerequisites are not yet fulfilled.");
+            }
+          }
+        } else if(subjID in this.genericIndex){
+          subj = this.genericCourses[this.genericIndex[subjID]];
+        }
+        if(subj !== undefined) {
+          var semType = (this.index-1)%3;
+          if(semType >= 0) {
+            var isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
+            if(!isUsuallyOffered) {
+              subjectWarnings.push("Not offered - According to the course catalog, " + subjID + " is not usually offered in " + this.semesterType + ".");
+            }
           }
         }
+        allWarnings[i] = subjectWarnings;
       }
-      return [];
+      return allWarnings;
     },
     previousSubjects: function() {
       return this.selectedSubjects.filter(subj => {
