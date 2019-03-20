@@ -12,8 +12,8 @@ export default {
     }
   },
   methods: {
-    courseColor () {
-      let course  = this.classInfo.id.split('.')[0];
+    courseColor (id) {
+      let course  = id.split('.')[0];
       let girAttrs = course.split(" ").filter((c)=>(this.validGeneric.indexOf(c)>=0));
       if (this.validCourses.indexOf(course) !== -1) {
         return 'course-' + course
