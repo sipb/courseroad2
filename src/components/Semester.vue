@@ -80,7 +80,7 @@ export default {
           var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
           var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
           if(prereqString !== undefined) {
-            var prereqsfulfilled = this.reqFulfilled(prereqString, this.previousSubjects);
+            var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects : this.concurrentSubjects);
             if(!prereqsfulfilled) {
               subjectWarnings.push("<b>Unsatisfied Prerequisite</b> - One or more prerequisites are not yet fulfilled.");
             }
