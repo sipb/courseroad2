@@ -82,13 +82,13 @@ export default {
           if(prereqString !== undefined) {
             var prereqsfulfilled = this.reqFulfilled(prereqString, this.previousSubjects);
             if(!prereqsfulfilled) {
-              subjectWarnings.push("<b>Unsatisfied Corequisite</b> - One or more corequisites are not yet fulfilled.");
+              subjectWarnings.push("<b>Unsatisfied Prerequisite</b> - One or more prerequisites are not yet fulfilled.");
             }
           }
           if(coreqString !== undefined) {
             var coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
             if(!coreqsfulfilled) {
-              subjectWarnings.push("<b>Unsatisfied Prerequisite</b> - One or more prerequisites are not yet fulfilled.");
+              subjectWarnings.push("<b>Unsatisfied Corequisite</b> - One or more corequisites are not yet fulfilled.");
             }
           }
         } else if(subjID in this.genericIndex){
@@ -102,6 +102,11 @@ export default {
               subjectWarnings.push("<b>Not offered</b> - According to the course catalog, " + subjID + " is not usually offered in " + this.semesterType + ".");
             }
           }
+        }
+        if(subjectWarnings.length) {
+          console.log(subjID);
+          console.log(subj);
+          console.log(subjectWarnings);
         }
         allWarnings[i] = subjectWarnings;
       }
