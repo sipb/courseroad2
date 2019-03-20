@@ -73,7 +73,7 @@ export default {
         var subjID = this.semesterSubjects[i].id;
         if(subjID in this.subjectsIndex) {
           var prereqString = this.allSubjects[this.subjectsIndex[this.semesterSubjects[i].id]].prerequisites;
-          var coreqString = this.allSubjects[this.subjectsIndex[this.semesterSubject[i].id]].corequisites;
+          var coreqString = this.allSubjects[this.subjectsIndex[this.semesterSubjects[i].id]].corequisites;
           if(prereqString !== undefined) {
             var prereqsfulfilled = this.reqFulfilled(prereqString, this.previousSubjects);
           }
@@ -91,9 +91,9 @@ export default {
     },
     concurrentSubjects: function() {
       return this.selectedSubjects.filter(subj => {
-        return subject.semester <= this.index;
+        return subj.semester <= this.index;
       })
-    }
+    },
     semesterStyles: function() {
       return {
         semesterBin: true,
