@@ -2,24 +2,28 @@
 
 <template>
   <v-flex md3 xs4>
-    <v-badge overlap right color = "rgba(0,0,0,0)" style = "width:100%;">
-      <v-card
-        :class="[{classbox: true, satisfied: isSatisfied}, courseColor]"
-        draggable
-        v-on:drag = "drag"
-        v-on:dragend = "drop"
-        v-on:dragstart = "dragStart"
-        v-on:click = "$emit('click-class',classInfo)"
-      >
-        <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
-        <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
-      </v-card>
-      <v-btn v-if = "warnings.length>0&&!classInfo.overrideWarnings" @click = "warningDialog = true" icon slot = "badge">
-        <v-icon medium>
-          warning
-        </v-icon>
-      </v-btn>
-    </v-badge>
+    <v-hover>
+      <v-badge overlap right color = "rgba(0,0,0,0)" style = "width:100%;" slot-scope = "{ hover }">
+        <v-card
+          :class="[{classbox: true, satisfied: isSatisfied}, courseColor]"
+          draggable
+          v-on:drag = "drag"
+          v-on:dragend = "drop"
+          v-on:dragstart = "dragStart"
+          v-on:click = "$emit('click-class',classInfo)"
+          @contextmenu = "$event.preventDefault();rightClickMenu=true"
+          :id = "'class'+classInfo.id.replace('.','')+semesterIndex"
+        >
+          <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
+          <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
+        </v-card>
+        <v-btn v-if = "warnings.length>0&&!classInfo.overrideWarnings||hover" @click = "warningDialog = true" icon slot = "badge">
+          <v-icon medium>
+            warning
+          </v-icon>
+        </v-btn>
+      </v-badge>
+    </v-hover>
     <v-dialog v-model = "warningDialog">
       <v-card>
         <v-card-title>
@@ -81,7 +85,8 @@ export default {
         "HASS-A", "HASS-H", "HASS-S", "CI-H", "CI-HW"
       ],
       warningDialog: false,
-      shouldOverrideWarnings: this.classInfo.overrideWarnings
+      shouldOverrideWarnings: this.classInfo.overrideWarnings,
+      rightClickMenu: false,
     }
   },
   methods: {
