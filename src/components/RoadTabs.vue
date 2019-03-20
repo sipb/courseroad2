@@ -1,73 +1,92 @@
 <template>
-  <v-layout row>
-    <v-tabs
-        show-arrows
-        v-model = "tabRoad"
-      >
-      <v-tabs-slider></v-tabs-slider>
-      <v-tab
-        :key = "roadid"
-        :href = "`#${roadid}`"
-        v-for = "roadid in Object.keys(roads)"
-        @click = "$emit('change-active', roadid)"
+  <v-layout row style = "width:100%; overflow: hidden;">
+    <v-flex class = "flex-tabs">
+      <v-tabs
+          show-arrows
+          v-model = "tabRoad"
+          :grow="false"
+          :hide-slider="true"
+          class = "fix-tabs"
         >
-          {{roads[roadid].name}}
-          <v-btn icon flat v-show = "roadid == tabRoad" @click = "newRoadName = roads[roadid].name; editDialog = true;">
-            <v-icon>edit</v-icon>
-          </v-btn>
-      </v-tab>
-      <v-dialog v-model = "editDialog" @input = "newRoadName = ''">
-        <v-card style = "padding: 2em">
-          <v-card-title>Edit Road</v-card-title>
-          <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
-          <v-card-actions>
-            <v-btn color = "primary" :disabled = "otherRoadHasName(tabRoad, newRoadName)" @click = "$emit('set-name', {road: tabRoad,name: newRoadName}); editDialog = false; newRoadName = ''">Submit</v-btn>
-            <v-btn color = "error" @click = "editDialog = false; deleteDialog = true;">
-              Delete Road
-              <v-icon>delete</v-icon>
+        <v-tab
+          v-for = "i in 20"
+          :key = "i"
+          class = "fix-tab"
+        >
+          {{i}}
+
+        </v-tab>
+        <!-- <v-tabs-slider><v-icon>add</v-icon></v-tabs-slider> -->
+        <v-tabs-slider>Hi</v-tabs-slider>
+        <!-- <v-tab
+          :key = "roadid"
+          :href = "`#${roadid}`"
+          v-for = "roadid in Object.keys(roads)"
+          @click = "$emit('change-active', roadid)"
+          >
+            {{roads[roadid].name}}
+            <v-btn icon flat v-show = "roadid == tabRoad" @click = "newRoadName = roads[roadid].name; editDialog = true;">
+              <v-icon>edit</v-icon>
             </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads">
-        <v-card style = "padding: 2em">
-          <v-card-title>Permanently Delete {{roads[tabRoad].name}}?</v-card-title>
-          <v-card-text>This action cannot be undone.</v-card-text>
-          <v-card-actions>
-            <v-btn @click = "deleteDialog = false; editDialog = true;">Cancel</v-btn>
-            <v-btn @click = "deleteDialog = false; $emit('delete-road',tabRoad); newRoadName = ''" color = "error">Delete</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-dialog v-model = "addDialog" width = "500" @input = "newRoadName = ''">
-        <v-card style = "padding: 2em">
-          <v-card-title>Create Road</v-card-title>
-          <v-text-field v-model = "newRoadName"></v-text-field>
-          <v-layout row>
-            <v-flex xs6>
-              <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
-            </v-flex>
-            <v-flex>
-              <v-select :disabled = "!duplicateRoad" :items = "Object.keys(roads)" v-model = "duplicateRoadSource">
-                <template slot = "item" slot-scope = "{item}">
-                  {{roads[item].name}}
-                </template>
-                <template slot = "selection" slot-scope = "{item}">
-                  {{roads[item].name}}
-                </template>
-              </v-select>
-            </v-flex>
-          </v-layout>
-          <v-card-actions>
-            <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="$emit('add-road', newRoadName); addDialog=false; newRoadName = ''">Create</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-tabs>
+        </v-tab> -->
+        <!-- <v-dialog v-model = "editDialog" @input = "newRoadName = ''">
+          <v-card style = "padding: 2em">
+            <v-card-title>Edit Road</v-card-title>
+            <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
+            <v-card-actions>
+              <v-btn color = "primary" :disabled = "otherRoadHasName(tabRoad, newRoadName)" @click = "$emit('set-name', {road: tabRoad,name: newRoadName}); editDialog = false; newRoadName = ''">Submit</v-btn>
+              <v-btn color = "error" @click = "editDialog = false; deleteDialog = true;">
+                Delete Road
+                <v-icon>delete</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads">
+          <v-card style = "padding: 2em">
+            <v-card-title>Permanently Delete {{roads[tabRoad].name}}?</v-card-title>
+            <v-card-text>This action cannot be undone.</v-card-text>
+            <v-card-actions>
+              <v-btn @click = "deleteDialog = false; editDialog = true;">Cancel</v-btn>
+              <v-btn @click = "deleteDialog = false; $emit('delete-road',tabRoad); newRoadName = ''" color = "error">Delete</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model = "addDialog" width = "500" @input = "newRoadName = ''">
+          <v-card style = "padding: 2em">
+            <v-card-title>Create Road</v-card-title>
+            <v-text-field v-model = "newRoadName"></v-text-field>
+            <v-layout row>
+              <v-flex xs6>
+                <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
+              </v-flex>
+              <v-flex>
+                <v-select :disabled = "!duplicateRoad" :items = "Object.keys(roads)" v-model = "duplicateRoadSource">
+                  <template slot = "item" slot-scope = "{item}">
+                    {{roads[item].name}}
+                  </template>
+                  <template slot = "selection" slot-scope = "{item}">
+                    {{roads[item].name}}
+                  </template>
+                </v-select>
+              </v-flex>
+            </v-layout>
+            <v-card-actions>
+              <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="$emit('add-road', newRoadName); addDialog=false; newRoadName = ''">Create</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog> -->
+      </v-tabs>
+    </v-flex>
+      <v-flex>
+      Toolbarasldfkjsdlfsl
+      </v-flex>
     <!-- this button gets obscured if the tab sliders are visible -->
-    <v-btn icon flat color = "primary" @click = "addDialog = true">
-      <v-icon>add</v-icon>
-    </v-btn>
+    <v-flex>
+      <v-btn icon flat color = "primary" @click = "addDialog = true">
+        <v-icon>add</v-icon>
+      </v-btn>
+    </v-flex>
   </v-layout>
 </template>
 
@@ -110,4 +129,25 @@ export default {
 </script>
 
 <style>
+.fix-tabs {
+  flex: 1;
+  width: unset;
+  overflow: hidden;
+}
+
+.fix-tab {
+  flex-shrink: 1;
+}
+
+.flex-tabs {
+  flex: 1;
+  /* max-width: 80%; */
+}
+
+/* .v-tabs__container {
+  flex-shrink: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: auto;
+} */
 </style>
