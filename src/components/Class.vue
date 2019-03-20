@@ -17,7 +17,7 @@
           <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
           <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
         </v-card>
-        <v-btn v-if = "warnings.length>0&&!classInfo.overrideWarnings||hover" @click = "warningDialog = true" icon slot = "badge">
+        <v-btn v-if = "warnings.length>0&&(!classInfo.overrideWarnings||hover)" @click = "warningDialog = true" icon slot = "badge">
           <v-icon medium>
             warning
           </v-icon>
