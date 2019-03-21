@@ -5,20 +5,29 @@
     <div v-if = "doubleScroller">
       <div>
         <span v-if = "requirement.reqs[0].expansionDesc.length>0 && requirement.reqs[0].connectionType == 'any'">{{requirement.reqs[0].expansionDesc}}</span>
-        <subject-scroll @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
+        <subject-scroll @click-subject = "clickDouble(0,$event)" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
       </div>
       <div>
         <span v-if = "requirement.reqs[1].expansionDesc.length>0 && requirement.reqs[1].connectionType == 'any'">{{requirement.reqs[1].expansionDesc}}</span>
-        <subject-scroll @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
+        <subject-scroll @click-subject = "clickDouble(1,$event)" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
       </div>
     </div>
     <subject-scroll v-else @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
     <div v-if = "open && requirement.reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
       <ExpansionReqs
+        v-if = "!doubleScroller"
         @close-expansion = "closeMyExpansion"
         @click-subject = "$emit('click-subject',$event)"
         v-bind:requirement = "requirement.reqs[expansionIndex]"
         v-bind:reqID = "reqID + '.' + expansionIndex"
+        >
+      </ExpansionReqs>
+      <ExpansionReqs
+        v-else
+        @close-expansion = "closeMyExpansion"
+        @click-subject = "$emit('click-subject',$event)"
+        v-bind:requirement = "requirement.reqs[whichScroller].reqs[expansionIndex]"
+        v-bind:reqID = "reqID + '.' + whichScroller + '.' + expansionIndex"
         >
       </ExpansionReqs>
     </div>
@@ -37,7 +46,8 @@ export default {
   },
   data: function() {return {
     open: false,
-    expansionIndex: 0
+    expansionIndex: 0,
+    whichScroller: 0
   }},
   watch: {
     requirement: function(newReq, oldReq) {
@@ -55,6 +65,24 @@ export default {
     }
   },
   methods: {
+    clickDouble: function(scroller, subj) {
+      if(this.requirement.reqs[scroller].reqs[subj.index].reqs !== undefined) {
+        this.whichScroller = scroller;
+        this.expansionIndex = subj.index;
+        this.open = true;
+        Vue.nextTick(function() {
+          var scrollPoint = $("#"+$.escapeSelector(this.reqID+"."+this.whichScroller+"."+this.expansionIndex));
+          var topPoint = scrollPoint.offset().top;
+          var cardBody = $("#cardBody");
+          cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},200);
+        }.bind(this));
+      } else {
+        if(subj.id.indexOf("GIR:")>=0) {
+          subj.id = subj.id.substring(4);
+        }
+        this.$emit("click-subject",subj);
+      }
+    },
     clickSubject: function(subj) {
       if(this.requirement.reqs[subj.index].reqs !== undefined) {
         this.expansionIndex = subj.index;
@@ -70,7 +98,6 @@ export default {
           subj.id = subj.id.substring(4);
         }
         this.$emit("click-subject", subj);
-        this.open = false;
       }
     },
     closeMe: function(subj) {
