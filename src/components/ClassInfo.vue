@@ -283,11 +283,18 @@ export default {
             parsedReq.expansionDesc = "Select all:";
           }
         }
+        var connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
+        if(connectionMatch!==null) {
+          var connectionIndex = connectionMatch.index;
+          var firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g,"");
+          var secondPart = parsedReq.subject_id.substring(connectionIndex);
+          parsedReq.subject_id = firstPart;
+          parsedReq.title = secondPart + " " + parsedReq.title;
+        }
         return parsedReq;
       }
       var rList = parseReqs(requirements);
       rList.topLevel = true;
-      console.log(rList);
       return rList;
     },
     adjustCardStyle: function() {
