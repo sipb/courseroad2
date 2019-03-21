@@ -212,7 +212,7 @@ export default {
       }
       var getClassInfo = this.classInfo;
       function parseReqs(reqString) {
-        var parsedReq = {reqs: [],connectionType:""};
+        var parsedReq = {reqs: [],connectionType:"",reqTitle:"",expansionDesc:""};
         var onereq;
         var connectionType = undefined;
         var nextConnectionType = undefined;
@@ -223,7 +223,7 @@ export default {
           }
           if(isBaseReq(onereq)) {
             if(onereq.indexOf("'")>=0) {
-              parsedReq.reqs.push(onereq);
+              parsedReq.reqs.push(onereq.replace("'",""));
             } else {
               parsedReq.reqs.push(getClassInfo(onereq));
             }
@@ -249,6 +249,33 @@ export default {
         parsedReq.reqs.sort(function(a,b) {
           return sortOrder(a) - sortOrder(b);
         })
+
+        function getReqTitle(req) {
+          if(req.subject_id !== undefined) {
+            return req.subject_id;
+          } else if(typeof req === "string") {
+            return req;
+          } else {
+            return req.reqTitle;
+          }
+        }
+
+        if(parsedReq.reqs.length == 2) {
+          if(parsedReq.connectionType === "any") {
+            parsedReq.reqTitle = getReqTitle(parsedReq.reqs[0]) + " or " + getReqTitle(parsedReq.reqs[1]);
+            parsedReq.expansionDesc = "Select either";
+          } else {
+            parsedReq.reqTitle = getReqTitle(parsedReq.reqs[0]) + " and " + getReqTitle(parsedReq.reqs[1]);
+          }
+        } else {
+          var firstTitle = getReqTitle(parsedReq.reqs[0]);
+          if(parsedReq.connectionType === "any") {
+            parsedReq.reqTitle = firstTitle + " or " + (parsedReq.reqs.length-1) + " others";
+            parsedReq.expansionDesc = "Select any";
+          } else {
+            parsedReq.reqTitle = firstTitle + " and " + (parsedReq.reqs.length-1) + " others";
+          }
+        }
         return parsedReq;
       }
       var rList = parseReqs(requirements);
