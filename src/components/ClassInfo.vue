@@ -77,6 +77,7 @@
                 <expansion-reqs
                   v-bind:requirement = "parsedPrereqs"
                   v-bind:reqID = "'prereq0'"
+                  @click-subject = "clickRelatedSubject"
                 >
                 </expansion-reqs>
               </div>
@@ -84,7 +85,8 @@
                 <h3 id = "coreq0">Corequisites</h3>
                 <expansion-reqs
                   v-bind:requirement = "parsedCoreqs"
-                  v-bin:reqID = "'coreq0'"
+                  v-bind:reqID = "'coreq0'"
+                  @click-subject = "clickRelatedSubject"
                 >
                 </expansion-reqs>
               </div>
@@ -261,8 +263,7 @@ export default {
             return req.subject_id + " " + req.title;
           }
         }
-
-        if(parsedReq.reqs.length == 2) {
+        if(parsedReq.reqs.length === 2) {
           if(parsedReq.connectionType === "any") {
             parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
             parsedReq.title = "or " + getReqTitle(parsedReq.reqs[1]);
@@ -286,6 +287,7 @@ export default {
       }
       var rList = parseReqs(requirements);
       rList.topLevel = true;
+      console.log(rList);
       return rList;
     },
     adjustCardStyle: function() {

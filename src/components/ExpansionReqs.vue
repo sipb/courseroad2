@@ -3,7 +3,7 @@
     <v-btn v-if = "!requirement.topLevel" icon small @click = "closeMe"><v-icon>close</v-icon></v-btn>
     <span v-if = "requirement.expansionDesc.length>0 ">{{requirement.expansionDesc}}</span>
     <subject-scroll @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
-    <div v-if = "open" class = "expanded-req">
+    <div v-if = "open && requirement.reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
       <ExpansionReqs
         @close-expansion = "closeMyExpansion"
         @click-subject = "$emit('click-subject',$event)"
@@ -41,7 +41,7 @@ export default {
           cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},200);
         }.bind(this))
       } else {
-        this.$emit("click-subject", subj.id);
+        this.$emit("click-subject", subj);
       }
     },
     closeMe: function(subj) {
