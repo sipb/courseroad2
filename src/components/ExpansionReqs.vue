@@ -4,6 +4,7 @@
     <span v-if = "requirement.expansionDesc.length>0 && (!requirement.topLevel || requirement.connectionType == 'any')">{{requirement.expansionDesc}}</span>
     <subject-scroll @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
     <div v-if = "open && requirement.reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
+      <p v-if = "doubleScroller">Double Scroller</p>
       <ExpansionReqs
         @close-expansion = "closeMyExpansion"
         @click-subject = "$emit('click-subject',$event)"
@@ -29,6 +30,20 @@ export default {
     open: false,
     expansionIndex: 0
   }},
+  computed: {
+    doubleScroller: function() {
+      if(this.open && this.requirement.reqs[this.expansionIndex].reqs!==undefined) {
+        var nextLevelReqs = this.requirement.reqs[this.expansionIndex].reqs;
+        if(nextLevelReqs.length == 2) {
+          return nextLevelReqs.reduce(function(acc, nxt) {
+            return acc && nxt.reqs !== undefined;
+          }, true);
+        }
+      }
+      return false;
+
+    }
+  },
   methods: {
     clickSubject: function(subj) {
       if(this.requirement.reqs[subj.index].reqs !== undefined) {
