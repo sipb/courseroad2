@@ -572,9 +572,6 @@ export default {
       return genericCourses;
     },
     overrideWarnings(override, classInfo) {
-      console.log("overriding warnings");
-      console.log(override);
-      console.log(classInfo);
       var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
       Vue.set(this.roads[this.activeRoad].contents.selectedSubjects[classIndex],"overrideWarnings", override);
     }
