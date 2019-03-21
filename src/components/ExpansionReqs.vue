@@ -41,7 +41,11 @@ export default {
           cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},200);
         }.bind(this))
       } else {
+        if(subj.id.indexOf("GIR:")>=0) {
+          subj.id = subj.id.substring(4);
+        }
         this.$emit("click-subject", subj);
+        this.open = false;
       }
     },
     closeMe: function(subj) {
