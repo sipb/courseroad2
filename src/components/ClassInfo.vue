@@ -102,7 +102,7 @@
 <script>
 import $ from "jquery";
 import SubjectScroll from "../components/SubjectScroll.vue"
-import ExpansionReqs from "../components/ExpansionsReqs.vue"
+import ExpansionReqs from "../components/ExpansionReqs.vue"
 export default {
   name: "ClassInfo",
   components: {
@@ -210,6 +210,7 @@ export default {
       function isBaseReq(req) {
         return /[\/\(\),]/g.exec(req) === null;
       }
+      var getClassInfo = this.classInfo;
       function parseReqs(reqString) {
         var parsedReq = {reqs: [],connectionType:""};
         var onereq;
@@ -221,7 +222,11 @@ export default {
             connectionType = nextConnectionType;
           }
           if(isBaseReq(onereq)) {
-            parsedReq.reqs.push(onereq);
+            if(onereq.indexOf("'")>=0) {
+              parsedReq.reqs.push(onereq);
+            } else {
+              parsedReq.reqs.push(getClassInfo(onereq));
+            }
           } else {
             parsedReq.reqs.push(parseReqs(onereq));
           }
@@ -231,19 +236,23 @@ export default {
         } else if(connectionType == ",") {
           parsedReq.connectionType = "all";
         }
-        parsedReq.reqs.sort(function(a,b) {
-          if(typeof a === "string") {
-            return a.indexOf("'");
-          } else if(typeof b === "string"){
-            return -1 * b.indexOf("'");
+        function sortOrder(req) {
+          if(typeof req === "string") {
+            return 1;
+          } else if(req.subject_id !== undefined) {
+            return -1;
           } else {
             return 0;
           }
+        }
+
+        parsedReq.reqs.sort(function(a,b) {
+          return sortOrder(a) - sortOrder(b);
         })
         return parsedReq;
       }
-      console.log(rList);
       var rList = parseReqs(requirements);
+      console.log(rList);
       return rList;
     },
     adjustCardStyle: function() {
