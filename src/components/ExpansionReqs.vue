@@ -47,13 +47,12 @@ export default {
     closeMe: function(subj) {
       this.$emit("close-expansion");
     },
-    closeMyExpansion: function() {
+    closeMyExpansion: function(event) {
       this.open = false;
       var scrollPoint = $("#"+$.escapeSelector(this.reqID));
       var topPoint = scrollPoint.offset().top;
       var cardBody = $("#cardBody");
-      cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},200);
-      // document.getElementById(this.reqID).scrollIntoView();
+      cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},350);
     }
   }
 }

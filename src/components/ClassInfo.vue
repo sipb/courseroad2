@@ -73,19 +73,20 @@
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
               </div>
               <div v-if = "parsedPrereqs.reqs.length > 0">
+                <h3 id = "prereq0">Prerequisites</h3>
                 <expansion-reqs
                   v-bind:requirement = "parsedPrereqs"
                   v-bind:reqID = "'prereq0'"
                 >
                 </expansion-reqs>
               </div>
-              <div v-if = "currentSubject.prerequisites !== undefined && listRequirements(currentSubject.prerequisites).length>0">
-                <h3>Prerequisites</h3>
-                <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "listRequirements(currentSubject.prerequisites).map(classInfo)"></subject-scroll>
-              </div>
-              <div v-if = "currentSubject.corequisites !== undefined && listRequirements(currentSubject.corequisites).length>0">
-                <h3>Corequisites</h3>
-                <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "listRequirements(currentSubject.corequisites).map(classInfo)"></subject-scroll>
+              <div v-if = "parsedCoreqs.reqs.length > 0">
+                <h3 id = "coreq0">Corequisites</h3>
+                <expansion-reqs
+                  v-bind:requirement = "parsedCoreqs"
+                  v-bin:reqID = "'coreq0'"
+                >
+                </expansion-reqs>
               </div>
               <div v-if = "currentSubject.related_subjects !== undefined">
                 <h3>Related subjects</h3>
