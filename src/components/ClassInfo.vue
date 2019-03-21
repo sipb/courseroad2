@@ -223,7 +223,7 @@ export default {
           }
           if(isBaseReq(onereq)) {
             if(onereq.indexOf("'")>=0) {
-              parsedReq.reqs.push(onereq.replace("'",""));
+              parsedReq.reqs.push({subject_id: onereq.replace("'",""),title:""});
             } else {
               parsedReq.reqs.push(getClassInfo(onereq));
             }
@@ -237,12 +237,12 @@ export default {
           parsedReq.connectionType = "all";
         }
         function sortOrder(req) {
-          if(typeof req === "string") {
-            return 1;
+          if(req.reqs !== undefined) {
+            return 0;
           } else if(req.total_units !== undefined) {
             return -1;
           } else {
-            return 0;
+            return 1;
           }
         }
 
