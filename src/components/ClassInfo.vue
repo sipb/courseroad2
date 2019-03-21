@@ -75,6 +75,7 @@
               <div v-if = "parsedPrereqs.reqs.length > 0">
                 <expansion-reqs
                   v-bind:requirement = "parsedPrereqs"
+                  v-bind:reqID = "'prereq0'"
                 >
                 </expansion-reqs>
               </div>
@@ -264,20 +265,20 @@ export default {
           if(parsedReq.connectionType === "any") {
             parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
             parsedReq.title = "or " + getReqTitle(parsedReq.reqs[1]);
-            parsedReq.expansionDesc = "Select either";
+            parsedReq.expansionDesc = "Select either:";
           } else {
             parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
             parsedReq.title = "and " + getReqTitle(parsedReq.reqs[1]);
-            parsedReq.expansionDesc = "Select both";
+            parsedReq.expansionDesc = "Select both:";
           }
         } else {
           parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
           if(parsedReq.connectionType === "any") {
             parsedReq.title = "or " + (parsedReq.reqs.length-1) + " others";
-            parsedReq.expansionDesc = "Select any";
+            parsedReq.expansionDesc = "Select any:";
           } else {
             parsedReq.title = "and " + (parsedReq.reqs.length-1) + " others";
-            parsedReq.expansionDesc = "Select all";
+            parsedReq.expansionDesc = "Select all:";
           }
         }
         return parsedReq;
