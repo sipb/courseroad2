@@ -72,7 +72,13 @@
                 <h3>Equivalent Subjects</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
               </div>
-              <div v-if = "currentSubject.prerequisites !== undefined && parseRequirements(currentSubject.prerequisites).length>0">
+              <div v-if = "parsedPrereqs.reqs.length > 0">
+                <expansion-reqs
+                  v-bind:requirement = "parsedPrereqs"
+                >
+                </expansion-reqs>
+              </div>
+              <div v-if = "currentSubject.prerequisites !== undefined && listRequirements(currentSubject.prerequisites).length>0">
                 <h3>Prerequisites</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "listRequirements(currentSubject.prerequisites).map(classInfo)"></subject-scroll>
               </div>
@@ -96,10 +102,12 @@
 <script>
 import $ from "jquery";
 import SubjectScroll from "../components/SubjectScroll.vue"
+import ExpansionReqs from "../components/ExpansionsReqs.vue"
 export default {
   name: "ClassInfo",
   components: {
-    'subject-scroll': SubjectScroll
+    'subject-scroll': SubjectScroll,
+    'expansion-reqs': ExpansionReqs
   },
   props: ["subjects", "classInfoStack", "subjectsIndex", "genericCourses", "genericIndex"],
   data: function() {return {}},
@@ -113,6 +121,24 @@ export default {
         curSubj = this.genericCourses[this.genericIndex[currentID]];
       }
       return curSubj;
+    },
+    parsedPrereqs: function() {
+      if(this.currentSubject.prerequisites !== undefined) {
+        return this.parseRequirements(this.currentSubject.prerequisites);
+      } else {
+        return {
+          reqs: []
+        }
+      }
+    },
+    parsedCoreqs: function() {
+      if(this.currentSubject.corequisites !== undefined) {
+        return this.parseRequirements(this.currentSubject.corequisites);
+      } else {
+        return {
+          reqs: []
+        }
+      }
     }
   },
   methods: {
@@ -143,7 +169,6 @@ export default {
       }
     },
     parseRequirements: function(requirements) {
-      console.log(requirements);
       requirements = requirements.replace(/([,\/])\s+/g,"$1")
       function getParenGroup(str) {
         if(str[0]=="(") {
@@ -217,8 +242,8 @@ export default {
         })
         return parsedReq;
       }
-      var rList = parseReqs(requirements);
       console.log(rList);
+      var rList = parseReqs(requirements);
       return rList;
     },
     adjustCardStyle: function() {
