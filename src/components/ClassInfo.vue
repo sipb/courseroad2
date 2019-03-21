@@ -153,8 +153,8 @@ export default {
         }
       }
     },
-    clickRelatedSubject: function(subjectID) {
-      this.$emit('push-stack', subjectID);
+    clickRelatedSubject: function(subject) {
+      this.$emit('push-stack', subject.id);
       $("#cardBody").animate({scrollTop:0});
     },
     listRequirements: function(requirements) {
@@ -212,7 +212,7 @@ export default {
       }
       var getClassInfo = this.classInfo;
       function parseReqs(reqString) {
-        var parsedReq = {reqs:[],subject_id: "",connectionType:"",title:"",expansionDesc:""};
+        var parsedReq = {reqs:[],subject_id: "",connectionType:"",title:"",expansionDesc:"",topLevel:false};
         var onereq;
         var connectionType = undefined;
         var nextConnectionType = undefined;
@@ -223,7 +223,7 @@ export default {
           }
           if(isBaseReq(onereq)) {
             if(onereq.indexOf("'")>=0) {
-              parsedReq.reqs.push({subject_id: onereq.replace("'",""),title:""});
+              parsedReq.reqs.push({subject_id: onereq.replace(/'/g,""),title:""});
             } else {
               parsedReq.reqs.push(getClassInfo(onereq));
             }
@@ -268,6 +268,7 @@ export default {
           } else {
             parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
             parsedReq.title = "and " + getReqTitle(parsedReq.reqs[1]);
+            parsedReq.expansionDesc = "Select both";
           }
         } else {
           parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
@@ -276,12 +277,13 @@ export default {
             parsedReq.expansionDesc = "Select any";
           } else {
             parsedReq.title = "and " + (parsedReq.reqs.length-1) + " others";
+            parsedReq.expansionDesc = "Select all";
           }
         }
         return parsedReq;
       }
       var rList = parseReqs(requirements);
-      console.log(rList);
+      rList.topLevel = true;
       return rList;
     },
     adjustCardStyle: function() {
