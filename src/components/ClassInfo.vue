@@ -72,7 +72,7 @@
                 <h3>Equivalent Subjects</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
               </div>
-              <div v-if = "currentSubject.prerequisites !== undefined && listRequirements(currentSubject.prerequisites).length>0">
+              <div v-if = "currentSubject.prerequisites !== undefined && parseRequirements(currentSubject.prerequisites).length>0">
                 <h3>Prerequisites</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "listRequirements(currentSubject.prerequisites).map(classInfo)"></subject-scroll>
               </div>
@@ -143,6 +143,7 @@ export default {
       }
     },
     parseRequirements: function(requirements) {
+      console.log(requirements);
       requirements = requirements.replace(/([,\/])\s+/g,"$1")
       function getParenGroup(str) {
         if(str[0]=="(") {
@@ -205,9 +206,19 @@ export default {
         } else if(connectionType == ",") {
           parsedReq.connectionType = "all";
         }
+        parsedReq.reqs.sort(function(a,b) {
+          if(typeof a === "string") {
+            return a.indexOf("'");
+          } else if(typeof b === "string"){
+            return -1 * b.indexOf("'");
+          } else {
+            return 0;
+          }
+        })
         return parsedReq;
       }
       var rList = parseReqs(requirements);
+      console.log(rList);
       return rList;
     },
     adjustCardStyle: function() {
