@@ -1,7 +1,7 @@
 <template>
   <div :id = "reqID">
     <v-btn v-if = "!requirement.topLevel" icon small @click = "closeMe"><v-icon>close</v-icon></v-btn>
-    <span v-if = "requirement.expansionDesc.length>0 ">{{requirement.expansionDesc}}</span>
+    <span v-if = "requirement.expansionDesc.length>0 && (!requirement.topLevel || requirement.connectionType == 'any')">{{requirement.expansionDesc}}</span>
     <subject-scroll @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
     <div v-if = "open && requirement.reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
       <ExpansionReqs

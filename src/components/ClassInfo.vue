@@ -273,7 +273,7 @@ export default {
             parsedReq.title = "and " + getReqTitle(parsedReq.reqs[1]);
             parsedReq.expansionDesc = "Select both:";
           }
-        } else {
+        } else if(parsedReq.reqs.length > 2){
           parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
           if(parsedReq.connectionType === "any") {
             parsedReq.title = "or " + (parsedReq.reqs.length-1) + " others";
