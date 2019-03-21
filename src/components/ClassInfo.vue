@@ -133,6 +133,71 @@ export default {
     },
     parseRequirements: function(requirements) {
       if(requirements) {
+        requirements = requirements.replace(/([,\/])\s+/g,"$1")
+        function getParenGroup(str) {
+          if(str[0]=="(") {
+            var retString = "";
+            str = str.substring(1);
+            var nextParen;
+            var numParens = 1;
+            while(((nextParen = /[\(\)]/.exec(str))!==null)&&numParens>0) {
+              var parenIndex = nextParen.index;
+              var parenType = nextParen[0];
+              if(parenType == "(") {
+                numParens++;
+              } else {
+                numParens--;
+              }
+              retString += str.substring(0,parenIndex+1);
+              str = str.substring(parenIndex+1);
+            }
+            return [retString.substring(0,retString.length-1),str.substring(1),str.length>0?str.substring(0,1):undefined];
+          } else {
+            return undefined;
+          }
+        }
+        function getNextReq(reqString) {
+          if(reqString[0] == "(") {
+            return getParenGroup(reqString);
+          } else {
+            var nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
+            if(nextMatch !== null) {
+              var nextReq = nextMatch[1];
+              var restOfString = nextMatch[3];
+              var delimiter = nextMatch[2];
+              return [nextReq, restOfString, delimiter];
+            } else {
+              return [reqString, "",undefined];
+            }
+          }
+        }
+        function isBaseReq(req) {
+          return /[\/\(\),]/g.exec(req) === null;
+        }
+        function parseReqs(reqString) {
+          var parsedReq = {reqs: [],connectionType:""};
+          var onereq;
+          var connectionType = undefined;
+          var nextConnectionType = undefined;
+          while(reqString.length>0) {
+            [onereq, reqString, nextConnectionType] = getNextReq(reqString);
+            if(nextConnectionType !== undefined) {
+              connectionType = nextConnectionType;
+            }
+            if(isBaseReq(onereq)) {
+              parsedReq.reqs.push(onereq);
+            } else {
+              parsedReq.reqs.push(parseReqs(onereq));
+            }
+          }
+          if(connectionType == "/") {
+            parsedReq.connectionType = "any";
+          } else if(connectionType == ",") {
+            parsedReq.connectionType = "all";
+          }
+          return parsedReq;
+        }
+        var rList = parseReqs(requirements);
         var allReqs = requirements.split(/, |\(|\)|\/| or/);
         var filteredReqs = allReqs.filter(function(req) {
           return req.length > 0 && req.indexOf("'") == -1 && req!=="or";
