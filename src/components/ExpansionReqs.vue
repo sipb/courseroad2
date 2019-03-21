@@ -1,4 +1,7 @@
 <template>
+  <div>
+    <subject-scroll></subject-scroll>
+  </div>
 </template>
 <script>
 import SubjectScroll from "../components/SubjectScroll.vue"

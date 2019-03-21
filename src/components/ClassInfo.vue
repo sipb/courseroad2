@@ -212,7 +212,7 @@ export default {
       }
       var getClassInfo = this.classInfo;
       function parseReqs(reqString) {
-        var parsedReq = {reqs: [],connectionType:"",reqTitle:"",expansionDesc:""};
+        var parsedReq = {reqs:[],subject_id: "",connectionType:"",title:"",expansionDesc:""};
         var onereq;
         var connectionType = undefined;
         var nextConnectionType = undefined;
@@ -239,7 +239,7 @@ export default {
         function sortOrder(req) {
           if(typeof req === "string") {
             return 1;
-          } else if(req.subject_id !== undefined) {
+          } else if(req.total_units !== undefined) {
             return -1;
           } else {
             return 0;
@@ -251,29 +251,31 @@ export default {
         })
 
         function getReqTitle(req) {
-          if(req.subject_id !== undefined) {
+          if(req.total_units !== undefined) {
             return req.subject_id;
           } else if(typeof req === "string") {
             return req;
           } else {
-            return req.reqTitle;
+            return req.subject_id + " " + req.title;
           }
         }
 
         if(parsedReq.reqs.length == 2) {
           if(parsedReq.connectionType === "any") {
-            parsedReq.reqTitle = getReqTitle(parsedReq.reqs[0]) + " or " + getReqTitle(parsedReq.reqs[1]);
+            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+            parsedReq.title = "or " + getReqTitle(parsedReq.reqs[1]);
             parsedReq.expansionDesc = "Select either";
           } else {
-            parsedReq.reqTitle = getReqTitle(parsedReq.reqs[0]) + " and " + getReqTitle(parsedReq.reqs[1]);
+            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+            parsedReq.title = "and " + getReqTitle(parsedReq.reqs[1]);
           }
         } else {
-          var firstTitle = getReqTitle(parsedReq.reqs[0]);
+          parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
           if(parsedReq.connectionType === "any") {
-            parsedReq.reqTitle = firstTitle + " or " + (parsedReq.reqs.length-1) + " others";
+            parsedReq.title = "or " + (parsedReq.reqs.length-1) + " others";
             parsedReq.expansionDesc = "Select any";
           } else {
-            parsedReq.reqTitle = firstTitle + " and " + (parsedReq.reqs.length-1) + " others";
+            parsedReq.title = "and " + (parsedReq.reqs.length-1) + " others";
           }
         }
         return parsedReq;
