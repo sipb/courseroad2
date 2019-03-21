@@ -103,7 +103,7 @@ export default {
       if(!this.duplicateRoad) {
         this.$emit('add-road', this.newRoadName);
       } else if(this.duplicateRoadSource in this.roads){
-        this.$emit('add-road', this.newRoadName, this.roads[this.duplicateRoadSource].contents.coursesOfStudy, this.roads[this.duplicateRoadSource].contents.selectedSubjects);
+        this.$emit('add-road', this.newRoadName, this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0), this.roads[this.duplicateRoadSource].contents.selectedSubjects.slice(0));
       }
       this.addDialog=false;
       this.newRoadName = ''
