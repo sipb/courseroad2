@@ -1,10 +1,19 @@
 <template>
   <div :id = "reqID">
     <v-btn v-if = "!requirement.topLevel" icon small @click = "closeMe"><v-icon>close</v-icon></v-btn>
-    <span v-if = "requirement.expansionDesc.length>0 && (!requirement.topLevel || requirement.connectionType == 'any')">{{requirement.expansionDesc}}</span>
-    <subject-scroll @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
+    <span v-if = "requirement.expansionDesc.length>0 && ((!requirement.topLevel && !doubleScroller) || requirement.connectionType == 'any')">{{requirement.expansionDesc}}</span>
+    <div v-if = "doubleScroller">
+      <div>
+        <span v-if = "requirement.reqs[0].expansionDesc.length>0 && requirement.reqs[0].connectionType == 'any'">{{requirement.reqs[0].expansionDesc}}</span>
+        <subject-scroll @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
+      </div>
+      <div>
+        <span v-if = "requirement.reqs[1].expansionDesc.length>0 && requirement.reqs[1].connectionType == 'any'">{{requirement.reqs[1].expansionDesc}}</span>
+        <subject-scroll @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
+      </div>
+    </div>
+    <subject-scroll v-else @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
     <div v-if = "open && requirement.reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
-      <p v-if = "doubleScroller">Double Scroller</p>
       <ExpansionReqs
         @close-expansion = "closeMyExpansion"
         @click-subject = "$emit('click-subject',$event)"
@@ -30,18 +39,19 @@ export default {
     open: false,
     expansionIndex: 0
   }},
+  watch: {
+    requirement: function(newReq, oldReq) {
+      this.open = false;
+    }
+  },
   computed: {
     doubleScroller: function() {
-      if(this.open && this.requirement.reqs[this.expansionIndex].reqs!==undefined) {
-        var nextLevelReqs = this.requirement.reqs[this.expansionIndex].reqs;
-        if(nextLevelReqs.length == 2) {
-          return nextLevelReqs.reduce(function(acc, nxt) {
-            return acc && nxt.reqs !== undefined;
-          }, true);
-        }
+      if(this.requirement.reqs.length == 2) {
+        return this.requirement.reqs.reduce(function(acc, nxt) {
+          return acc && nxt.reqs !== undefined;
+        }, true);
       }
       return false;
-
     }
   },
   methods: {
