@@ -3,27 +3,27 @@
     <v-btn v-if = "!requirement.topLevel" icon small @click = "closeMe"><v-icon>close</v-icon></v-btn>
     <span v-if = "requirement.expansionDesc.length>0 && ((!requirement.topLevel && !doubleScroller) || requirement.connectionType == 'any')">{{requirement.expansionDesc}}</span>
     <div v-if = "doubleScroller">
-      <div>
-        <span v-if = "requirement.reqs[0].expansionDesc.length>0 && requirement.reqs[0].connectionType == 'any'">{{requirement.reqs[0].expansionDesc}}</span>
+      <div :id = "'ds0'+reqID">
+        <span v-if = "requirement.reqs[0].expansionDesc.length>0 && (requirement.reqs[0].connectionType == 'any' || requirement.reqs[1].connectionType == 'any')">{{requirement.reqs[0].expansionDesc}}</span>
         <subject-scroll @click-subject = "clickDouble(0,$event)" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
       </div>
-      <div>
-        <span v-if = "requirement.reqs[1].expansionDesc.length>0 && requirement.reqs[1].connectionType == 'any'">{{requirement.reqs[1].expansionDesc}}</span>
+      <div :id = "'ds1'+reqID">
+        <span v-if = "requirement.reqs[1].expansionDesc.length>0 && (requirement.reqs[1].connectionType == 'any' || requirement.reqs[0].connectionType == 'any')">{{requirement.reqs[1].expansionDesc}}</span>
         <subject-scroll @click-subject = "clickDouble(1,$event)" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
       </div>
     </div>
     <subject-scroll v-else @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
-    <div v-if = "open && requirement.reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
+    <div v-if = "open && !doubleScroller && requirement.reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
       <ExpansionReqs
-        v-if = "!doubleScroller"
         @close-expansion = "closeMyExpansion"
         @click-subject = "$emit('click-subject',$event)"
         v-bind:requirement = "requirement.reqs[expansionIndex]"
         v-bind:reqID = "reqID + '.' + expansionIndex"
         >
       </ExpansionReqs>
+    </div>
+    <div v-if = "open && doubleScroller && requirement.reqs[whichScroller].reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
       <ExpansionReqs
-        v-else
         @close-expansion = "closeMyExpansion"
         @click-subject = "$emit('click-subject',$event)"
         v-bind:requirement = "requirement.reqs[whichScroller].reqs[expansionIndex]"
@@ -105,11 +105,20 @@ export default {
     },
     closeMyExpansion: function(event) {
       this.open = false;
-      var scrollPoint = $("#"+$.escapeSelector(this.reqID));
+      var scrollPoint;
+      if(!this.doubleScroller) {
+        scrollPoint = $("#"+$.escapeSelector(this.reqID));
+      } else {
+        scrollPoint = $("#ds"+this.whichScroller+$.escapeSelector(this.reqID));
+      }
       var topPoint = scrollPoint.offset().top;
       var cardBody = $("#cardBody");
       cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},350);
     }
+  },
+  mounted() {
+    console.log("mounted");
+    console.log(this.requirement);
   }
 }
 </script>
