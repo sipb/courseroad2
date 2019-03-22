@@ -93,10 +93,6 @@ export default {
     dialogReq: undefined
   }},
   computed: {
-    maxHeight: function() {
-      console.log(document.documentElement.clientWidth);
-      return "600px";
-    },
     selectedTrees: function() {
       return this.selectedReqs.map(function(req,index){
         if(req in this.reqTrees) {
