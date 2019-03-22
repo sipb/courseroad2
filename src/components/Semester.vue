@@ -16,7 +16,7 @@
           Hours: {{Math.round(semesterInformation.expectedHours,1)}}
         </v-flex>
         <v-layout row xs6 v-if = "!isOpen">
-          <v-flex xs3 v-for = "subject in semesterSubjects">
+          <v-flex xs3 v-for = "subject in semesterSubjects" :key = "subject.id">
             <v-card dark color = "primary">
               <v-card-text style = "padding: 0.3em;">{{subject.id}}</v-card-text>
             </v-card>
