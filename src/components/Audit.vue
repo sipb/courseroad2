@@ -1,6 +1,6 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
-  <v-flex style="padding: 24px; overflow: scroll;">
+  <v-flex style="padding: 24px; overflow: auto;">
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
