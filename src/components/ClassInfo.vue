@@ -3,10 +3,10 @@
     <v-layout>
       <v-flex>
         <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" >
-          <v-card-title class = "card-header">
+          <v-card-title :class = "['card-header',courseColor(currentSubject.subject_id)]">
             <v-flex style = "display: flex; flex-direction: row; align-items: center;">
               <div style = "padding: 0; margin: 0; display: block;">
-                <v-btn v-if = "classInfoStack.length > 1" @click = "$emit('pop-stack')" style = "padding: 0; margin: 0" icon>
+                <v-btn v-if = "classInfoStack.length > 1" @click = "$emit('pop-stack')" style = "padding: 0; margin: 0; color:white;" icon>
                   <v-icon>navigate_before</v-icon>
                 </v-btn>
               </div>
@@ -16,7 +16,7 @@
               <div style = "padding: 0 0.5em 0 0;"><span>{{currentSubject.title}}</span></div>
               <div style = "margin-left:auto">
                 <v-btn @click = "$emit('close-classinfo')" icon style = "margin: 0;">
-                  <v-icon style = "margin:0; padding: 0;">
+                  <v-icon style = "margin:0; padding: 0; color:white;">
                     close
                   </v-icon>
                 </v-btn>
@@ -107,6 +107,8 @@
 import $ from "jquery";
 import SubjectScroll from "../components/SubjectScroll.vue"
 import ExpansionReqs from "../components/ExpansionReqs.vue"
+import colorMixin from "./../mixins/colorMixin.js"
+
 export default {
   name: "ClassInfo",
   components: {
@@ -114,6 +116,7 @@ export default {
     'expansion-reqs': ExpansionReqs
   },
   props: ["subjects", "classInfoStack", "subjectsIndex", "genericCourses", "genericIndex"],
+  mixins: [colorMixin],
   data: function() {return {}},
   computed: {
     currentSubject: function() {
@@ -320,8 +323,8 @@ export default {
 <style>
 .card-header {
   padding: 0.5em 1em;
-  background-color: lightblue;
   display: inline-block;
+  color: white;
 }
 .class-info-card {
   height: 35vh;
