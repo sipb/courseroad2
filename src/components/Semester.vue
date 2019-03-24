@@ -17,9 +17,11 @@
         </v-flex>
         <v-layout row xs6 v-if = "!isOpen">
           <v-flex xs3 v-for = "subject in semesterSubjects">
-            <v-card dark>
+            <v-card>
               <div :class = "courseColor(subject.id)">
-                <v-card-text class = "mini-course">{{subject.id}}</v-card-text>
+                <v-card-text class = "mini-course">
+                  <b>{{subject.id}}</b>
+                </v-card-text>
               </div>
             </v-card>
           </v-flex>
@@ -149,6 +151,7 @@ export default {
     padding: 0.3em;
     overflow: hidden;
     white-space: nowrap;
+    color: white;
   }
   .semesterBin {
 /*    display: flex;
