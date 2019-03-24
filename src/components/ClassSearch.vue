@@ -23,13 +23,13 @@
             <v-hover>
               <tr
                 slot-scope="{ hover }"
-                :class="{ 'elevation-5': hover }"
+                :class="{ 'elevation-3': hover }"
                 draggable = "true"
                 v-on:dragend ="drop($event, props)"
                 v-on:drag = "drag($event, props)"
                 v-on:dragstart="dragStart($event, props)"
                 @click = "viewClassInfo(props)"
-                style="cursor: grab; margin: 10px; display: block;"
+                style="cursor: grab; margin: 4px; display: block;"
               >
                 <td style="padding: 0; white-space: nowrap; width: 30%;">
                   <v-icon style="vertical-align: middle;">drag_indicator</v-icon>
