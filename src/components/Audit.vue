@@ -63,7 +63,7 @@
     </v-dialog>
     <v-menu max-height="600px" absolute>
       <v-btn flat color = "primary" slot = "activator">
-        <v-icon>add</v-icon>Add a degree audit
+        <v-icon>add</v-icon>Add a Major/Minor
       </v-btn>
       <v-list dense>
         <v-list-tile
@@ -75,6 +75,12 @@
         </v-list-tile>
       </v-list>
     </v-menu>
+
+    <p><b>Warning:</b> This is an unofficial estimate that may not accurately reflect your degree progress.  Please visit
+    the <a target = "_blank" href = "https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
+    <a target = "_blank" href = "http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
+    <a target = "_blank" href = "http://catalog.mit.edu/degree-charts/">degree charts</a> and confirm
+    with your department advisor.</p>
   </v-flex>
 </template>
 
