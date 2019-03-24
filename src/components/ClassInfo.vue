@@ -164,17 +164,6 @@ export default {
       this.$emit('push-stack', subject.id);
       $("#cardBody").animate({scrollTop:0});
     },
-    listRequirements: function(requirements) {
-      if(requirements) {
-        var allReqs = requirements.split(/, |\(|\)|\/| or/);
-        var filteredReqs = allReqs.filter(function(req) {
-          return req.length > 0 && req.indexOf("'") == -1 && req!=="or";
-        });
-        return filteredReqs;
-      } else {
-        return [];
-      }
-    },
     parseRequirements: function(requirements) {
       requirements = requirements.replace(/([,\/])\s+/g,"$1")
       function getParenGroup(str) {
