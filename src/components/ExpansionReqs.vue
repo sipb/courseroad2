@@ -115,10 +115,6 @@ export default {
       var cardBody = $("#cardBody");
       cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},350);
     }
-  },
-  mounted() {
-    console.log("mounted");
-    console.log(this.requirement);
   }
 }
 </script>

@@ -653,11 +653,6 @@ export default {
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
         this.subjectsInfo = response.data;
-        console.log(this.subjectsInfo.sort(function(a,b) {
-          var al = a.prerequisites !== undefined ? a.prerequisites.length : 0;
-          var bl = b.prerequisites !== undefined ? b.prerequisites.length : 0;
-          return bl - al;
-        }).map((s)=>(s.subject_id + "> " +s.prerequisites)));
         this.genericCourses = this.makeGenericCourses();
         this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
           obj[item.subject_id] = index;
