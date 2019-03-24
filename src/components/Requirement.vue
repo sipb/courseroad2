@@ -68,7 +68,11 @@ export default {
   methods: {
     clickRequirement: function(event) {
       if(this.req.req !== undefined) {
-        this.$emit('push-stack', this.req.req);
+        var usedReq = this.req.req;
+        if(usedReq.indexOf("GIR:")===0) {
+          usedReq = usedReq.substring(4);
+        }
+        this.$emit('push-stack', usedReq);
       }
     }
   }
