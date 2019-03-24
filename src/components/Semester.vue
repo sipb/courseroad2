@@ -17,8 +17,12 @@
         </v-flex>
         <v-layout row xs6 v-if = "!isOpen">
           <v-flex xs3 v-for = "subject in semesterSubjects">
-            <v-card dark color = "primary">
-              <v-card-text style = "padding: 0.3em;">{{subject.id}}</v-card-text>
+            <v-card>
+              <div :class = "courseColor(subject.id)">
+                <v-card-text class = "mini-course">
+                  <b>{{subject.id}}</b>
+                </v-card-text>
+              </div>
             </v-card>
           </v-flex>
         </v-layout>
@@ -51,15 +55,18 @@
 <script>
 import Class from './Class.vue'
 import $ from "jquery"
+import colorMixin from "./../mixins/colorMixin.js"
 
 // $(".semester-container").on("dragover", function(event) {
 //   event.preventDefault();
 //   event.dataTransfer.dropEffect = "copy";
 // })
 
+
 export default {
   name: "semester",
   props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex"],
+  mixins: [colorMixin],
   data: function() {return {
     newYear: this.semesterYear,
   }},
@@ -140,6 +147,12 @@ export default {
 <style scoped>
   .hovering {
     background: radial-gradient(lightgreen, rgba(0,0,0,0));
+  }
+  .mini-course {
+    padding: 0.3em;
+    overflow: hidden;
+    white-space: nowrap;
+    color: white;
   }
   .semesterBin {
 /*    display: flex;
