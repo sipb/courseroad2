@@ -83,29 +83,30 @@
 
     </v-toolbar>
 
+    <v-navigation-drawer mobile-break-point="800" width="350" id="left-panel" class="side-panel elevation-2" app>
+      <v-container fill-height style="padding: 0;">
+        <v-layout fill-height column>
+          <audit
+            v-if = "activeRoad !== ''"
+            v-bind:reqTrees="reqTrees"
+            v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
+            v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
+            v-bind:reqList="reqList"
+            @add-req = "addReq"
+            @remove-req = "removeReq"
+          ></audit>
 
-    <v-navigation-drawer
-      id="left-panel"
-      width="350"
-      mobile-break-point="800"
-      class="side-panel elevation-2 scroller"
-      app
-    >
-      <audit
-        v-if = "activeRoad !== ''"
-        v-bind:reqTrees="reqTrees"
-        v-bind:selectedReqs="roads[activeRoad].contents.coursesOfStudy"
-        v-bind:selectedSubjects = "roads[activeRoad].contents.selectedSubjects"
-        v-bind:reqList="reqList"
-        @add-req = "addReq"
-        @remove-req = "removeReq"
-      ></audit>
-      <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
+          <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+            <p>Problems with the course requirements? Request edits
+              <a href="https://fireroad.mit.edu/requirements/">here</a> or
+              send an email to <a href="mailto:courseroad@mit.edu">courseroad@mit.edu</a>.
+            </p>
+          </v-flex>
+        </v-layout>
+      </v-container>
     </v-navigation-drawer>
 
-
     <v-content app id="center-panel">
-
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
           v-for = "roadid in Object.keys(roads)"
@@ -142,6 +143,7 @@
       v-if = "classInfoStack.length"
       v-bind:classInfoStack = "classInfoStack"
       v-bind:subjects = "subjectsInfo"
+      v-bind:subjectsIndex = "subjectsIndexDict"
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
       @close-classinfo = "classInfoStack = []"
@@ -198,6 +200,7 @@ export default {
     accessInfo: undefined,
     // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
     subjectsInfo: [],
+    subjectsIndexDict: {},
     rightDrawer: true,
     activeRoad: "$defaultroad$",
     newRoadName: "",
@@ -288,11 +291,8 @@ export default {
           var isOffered;
           if(classInfo === undefined) {
             if(this.subjectsLoaded) {
-              var filteredSubjects = this.subjectsInfo.filter(function(s) {
-                return s.subject_id === event.basicClass.id
-              });
-              if(filteredSubjects.length) {
-                classInfo = filteredSubjects[0];
+              if (event.basicClass.id in this.subjectsIndexDict) {
+                classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
               } else if(semesterType >= 0) {
                 //not in catalog, might be a generic course (like PHY1 or HASS)
                 var matchingClasses = this.subjectsInfo.filter(function(subject) {
@@ -484,7 +484,7 @@ export default {
       this.currentSemester = sem;
     },
     pushClassStack: function(id) {
-      var subjectIndex = this.subjectsInfo.map((s)=>s.subject_id).indexOf(id);
+      var subjectIndex = this.subjectsIndexDict[id];
       this.classInfoStack.push(subjectIndex);
     },
     popClassStack: function() {
@@ -566,7 +566,11 @@ export default {
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
-        this.subjectsInfo = response.data
+        this.subjectsInfo = response.data;
+        this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
+          obj[item.subject_id] = index;
+          return obj;
+        },{});
         this.subjectsLoaded = true;
       });
 
@@ -577,7 +581,7 @@ export default {
 
 <style scoped>
   .scroller {
-    overflow-x: scroll;
+    overflow-x: auto;
   }
   .v-navigation-drawer__border {
     display: none !important;

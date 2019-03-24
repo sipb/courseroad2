@@ -1,6 +1,6 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
-  <v-container>
+  <v-flex style="padding: 24px; overflow: auto;">
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
@@ -81,7 +81,7 @@
     <a target = "_blank" href = "http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
     <a target = "_blank" href = "http://catalog.mit.edu/degree-charts/">degree charts</a> and confirm
     with your department advisor.</p>
-  </v-container>
+  </v-flex>
 </template>
 
 
