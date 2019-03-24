@@ -131,9 +131,6 @@ export default {
     },
     parsedPrereqs: function() {
       if(this.currentSubject.prerequisites !== undefined) {
-        //I've tried to test some weird requirement sets but I'm sure there's edge cases I haven't thought of
-        //var testString = "6.115,((5.111/5.112/24.06/24.09/(11.015,(11.002/1.001))),(8.022/8.02/8.012/(8.01,6.0001)))"
-        // var testString = "6.115,((5.111/5.112/((5.12/8.022)/(6.845,6.0001,6.0002))),(CI-H,GIR:CHEM,14.04))"
         return this.parseRequirements(this.currentSubject.prerequisites);
       } else {
         return {
