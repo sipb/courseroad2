@@ -31,7 +31,10 @@
                 @click = "viewClassInfo(props)"
                 style="cursor: grab; margin: 10px; display: block;"
               >
-                <td style="padding: 0; white-space: nowrap; width: 30%;"><v-icon style="vertical-align: middle;">drag_indicator</v-icon><span style="vertical-align: middle;"> {{props.item.subject_id}}</span></td>
+                <td style="padding: 0; white-space: nowrap; width: 30%;">
+                  <v-icon style="vertical-align: middle;">drag_indicator</v-icon>
+                  <span style="vertical-align: middle;"> {{props.item.subject_id}}</span>
+                </td>
                 <td style="width: 60%;">{{props.item.title}}</td>
               </tr>
             </v-hover>
