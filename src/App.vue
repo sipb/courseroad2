@@ -581,7 +581,7 @@ export default {
 
 <style scoped>
   .scroller {
-    overflow-x: scroll;
+    overflow-x: auto;
   }
   .v-navigation-drawer__border {
     display: none !important;
