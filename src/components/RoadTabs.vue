@@ -1,24 +1,12 @@
 <template>
-  <v-layout row style = "width:100%; overflow: hidden;">
-    <v-flex class = "flex-tabs">
+  <v-layout row>
+    <v-flex>
       <v-tabs
           show-arrows
           v-model = "tabRoad"
-          :grow="false"
-          :hide-slider="true"
-          class = "fix-tabs"
         >
+        <v-tabs-slider></v-tabs-slider>
         <v-tab
-          v-for = "i in 20"
-          :key = "i"
-          class = "fix-tab"
-        >
-          {{i}}
-
-        </v-tab>
-        <!-- <v-tabs-slider><v-icon>add</v-icon></v-tabs-slider> -->
-        <v-tabs-slider>Hi</v-tabs-slider>
-        <!-- <v-tab
           :key = "roadid"
           :href = "`#${roadid}`"
           v-for = "roadid in Object.keys(roads)"
@@ -28,8 +16,8 @@
             <v-btn icon flat v-show = "roadid == tabRoad" @click = "newRoadName = roads[roadid].name; editDialog = true;">
               <v-icon>edit</v-icon>
             </v-btn>
-        </v-tab> -->
-        <!-- <v-dialog v-model = "editDialog" @input = "newRoadName = ''">
+        </v-tab>
+        <v-dialog v-model = "editDialog" @input = "newRoadName = ''">
           <v-card style = "padding: 2em">
             <v-card-title>Edit Road</v-card-title>
             <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
@@ -75,13 +63,9 @@
               <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="$emit('add-road', newRoadName); addDialog=false; newRoadName = ''">Create</v-btn>
             </v-card-actions>
           </v-card>
-        </v-dialog> -->
+        </v-dialog>
       </v-tabs>
     </v-flex>
-      <v-flex>
-      Toolbarasldfkjsdlfsl
-      </v-flex>
-    <!-- this button gets obscured if the tab sliders are visible -->
     <v-flex>
       <v-btn icon flat color = "primary" @click = "addDialog = true">
         <v-icon>add</v-icon>
@@ -92,6 +76,8 @@
 
 <script>
 import Road from "./Road.vue"
+import $ from "jquery"
+
 export default {
   name: 'RoadTabs',
   components: {
@@ -124,30 +110,13 @@ export default {
       this.tabRoad = this.activeRoad;
     }
   }
-
 }
 </script>
 
 <style>
-.fix-tabs {
-  flex: 1;
-  width: unset;
-  overflow: hidden;
+/*This is to prevent it from monopolizing all the space*/
+.v-tabs__container {
+  display: unset;
+  white-space: unset;
 }
-
-.fix-tab {
-  flex-shrink: 1;
-}
-
-.flex-tabs {
-  flex: 1;
-  /* max-width: 80%; */
-}
-
-/* .v-tabs__container {
-  flex-shrink: 1;
-  flex-grow: 1;
-  flex-shrink: 1;
-  width: auto;
-} */
 </style>
