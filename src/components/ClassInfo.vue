@@ -105,12 +105,14 @@
 
 <script>
 import $ from "jquery";
+import SubjectScroll from "../components/SubjectScroll.vue"
 import ExpansionReqs from "../components/ExpansionReqs.vue"
 import colorMixin from "./../mixins/colorMixin.js"
 
 export default {
   name: "ClassInfo",
   components: {
+    'subject-scroll': SubjectScroll,
     'expansion-reqs': ExpansionReqs,
   },
   props: ["subjects", "classInfoStack", "subjectsIndex", "genericCourses", "genericIndex"],
