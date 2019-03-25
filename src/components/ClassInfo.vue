@@ -25,7 +25,7 @@
           </v-card-title>
           <v-card-text class = "card-body">
             <div class = "card-body-container" id = "cardBody">
-              <v-btn @click = "$emit('add-class',currentSubject)" small block class = "secondary">
+              <v-btn @click = "addClass" small block class = "secondary">
                 Add to Road
                 <v-icon right>add</v-icon>
               </v-btn>
@@ -146,6 +146,9 @@ export default {
       var cardLeft = cardWidth + searchInput.offset().left;
       var browserWidth = $(window).width();
       classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
+    },
+    addClass: function() {
+      this.$emit('add-class',this.currentSubject);
     }
   },
   mounted() {

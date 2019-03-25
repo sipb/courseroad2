@@ -41,12 +41,8 @@
           @drop-class="$emit('drop-class',$event)"
           @remove-class = "$emit('remove-class', $event)"
           @click-class = "$emit('click-class',$event)"
+          @add-at-placeholder = "$emit('add-at-placeholder', $event)"
         />
-        <v-flex md3 xs4 v-if = "addingFromCard && (offeredNow || !isSameYear)">
-          <v-card style = "height:8em; line-height:8em; background:none;" class = "text-xs-center">
-            <v-btn large icon @click = "$emit('add-at-placeholder',index)"><v-icon>add</v-icon></v-btn>
-          </v-card>
-        </v-flex>
       </v-layout>
     </v-container>
   </v-expansion-panel-content>
@@ -106,9 +102,13 @@ export default {
       }
     },
     semesterSubjects: function() {
-      return this.selectedSubjects.filter(subj => {
+      var semSubjs =  this.selectedSubjects.filter(subj => {
         return this.index === subj.semester;
       });
+      if(this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
+        semSubjs.push("placeholder");
+      }
+      return semSubjs;
     },
     semesterInformation: function() {
       var classesInfo = this.semesterSubjects.map(function(subj) {

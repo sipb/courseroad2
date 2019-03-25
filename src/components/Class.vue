@@ -3,24 +3,29 @@
 <template>
   <v-flex md3 xs4>
     <v-card
+      v-if = "classInfo == 'placeholder'"
+      class = "placeholder classbox"
+    >
+      <v-container fill-height>
+        <v-layout>
+          <v-btn style = "margin: auto" large icon @click = "$emit('add-at-placeholder',semesterIndex)"><v-icon>add</v-icon></v-btn>
+        </v-layout>
+      </v-container>
+    </v-card>
+    <v-card
+      v-else
       :class="[{classbox: true, satisfied: isSatisfied}, courseColor]"
       draggable
       v-on:drag = "drag"
       v-on:dragend = "drop"
       v-on:dragstart = "dragStart"
-      v-on:click = "$emit('click-class',classInfo)"
+      v-on:click = "$emit('click-class', classInfo)"
     >
       <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
       <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
 
-<!--
-     <v-container
-      height="200px"
-      fluid
-      pa-2
-    > -->
-
     </v-card>
+
   </v-flex>
 </template>
 
@@ -30,11 +35,15 @@ export default {
   props: ['classInfo','semesterIndex'],
   computed: {
     courseColor () {
-      let course  = this.classInfo.id.split('.')[0]
-      if (this.validCourses.indexOf(course) !== -1) {
-        return 'course-' + course
+      if(this.classInfo !== "placeholder") {
+        let course  = this.classInfo.id.split('.')[0]
+        if (this.validCourses.indexOf(course) !== -1) {
+          return 'course-' + course
+        } else {
+          return 'course-none'
+        }
       } else {
-        return 'course-none'
+        return "placeholder";
       }
     }
   },
@@ -58,9 +67,9 @@ export default {
         currentSem: this.semesterIndex
       });
     },
-    dragStart: function(event) {  
-      // TODO: Rewrite as part of #53?  
-      event.dataTransfer.setData('foo', 'bar')  
+    dragStart: function(event) {
+      // TODO: Rewrite as part of #53?
+      event.dataTransfer.setData('foo', 'bar')
     },
     drop: function(event) {
       this.$emit("drop-class",{
@@ -69,6 +78,11 @@ export default {
         isNew: false,
         currentSem: this.semesterIndex
       });
+    },
+    clickClass: function(classInfo) {
+      if(classInfo !== "placeholder") {
+        this.$emit('click-class', classInfo);
+      }
     }
   }
 }
@@ -96,6 +110,9 @@ export default {
     background: #eb7e7e;
   }
 
+  .placeholder {
+    background: none;
+  }
   /* Colors obtained from
   https://github.com/venkatesh-sivaraman/fireroad-server/blob/develop/requirements/static/requirements/css/req_preview.css */
   .course-none { background-color: #999; }

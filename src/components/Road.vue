@@ -79,6 +79,9 @@ export default {
   watch: {
     currentSemester: function(newSem, oldSem) {
       this.numSems = newSem >= 13 ? 16 : 13;
+    },
+    addingFromCard: function(new1, old1) {
+      console.log("adding from card changed from " + old1 + " to " + new1);
     }
   }
 }

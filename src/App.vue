@@ -118,7 +118,7 @@
             v-bind:subjects = "subjectsInfo"
             v-bind:roadID = "roadid"
             v-bind:currentSemester = "currentSemester"
-            v-bind:addingFromCard = "addingFromCard"
+            v-bind:addingFromCard = "addingFromCard && activeRoad==roadid"
             v-bind:itemAddingFromCard = "itemAddingFromCard"
             @add-at-placeholder = "addAtPlaceholder"
             @drop-class="dropClass"
