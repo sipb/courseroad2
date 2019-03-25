@@ -76,7 +76,6 @@
 
 <script>
 import Road from "./Road.vue"
-import $ from "jquery"
 
 export default {
   name: 'RoadTabs',
