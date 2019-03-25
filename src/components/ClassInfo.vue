@@ -1,5 +1,4 @@
 <template>
-  <v-container>
     <v-layout>
       <v-flex>
         <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" >
@@ -88,7 +87,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-  </v-container>
 </template>
 
 
