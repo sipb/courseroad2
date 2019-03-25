@@ -1,4 +1,3 @@
-
 <template>
   <div class = "requirement">
     <div v-if="!leaf">
@@ -21,7 +20,8 @@
       </span>
     </span>
     <span v-else>
-      <span v-if = "'title' in req">| </span><span style = "text-transform: cursive">{{ req.req }}</span>
+      <span v-if = "'title' in req">| </span>
+      <span style = "text-transform: cursive">{{ req.req }}</span>
     </span>
     <span v-if = "req.max === 0" style = "font-style:italic">
        (optional)
@@ -32,8 +32,6 @@
 
 
 <script>
-import $ from 'jquery'
-
 export default {
   name: 'requirement',
   props: ['req', 'leaf'],
