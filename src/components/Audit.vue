@@ -4,7 +4,7 @@
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
-      item-key="title"
+      item-key="index"
       item-children="reqs"
       open-on-click
       :activatable = "false"
@@ -99,18 +99,15 @@ export default {
     dialogReq: undefined
   }},
   computed: {
-    maxHeight: function() {
-      console.log(document.documentElement.clientWidth);
-      return "600px";
-    },
     selectedTrees: function() {
-      return this.selectedReqs.map(function(req){
+      return this.selectedReqs.map(function(req,index){
         if(req in this.reqTrees) {
-          return this.reqTrees[req];
+          return Object.assign({index: index},this.reqTrees[req]);
         } else {
           return {
             title: "loading...",
-            reqs: []
+            reqs: [],
+            index: index
           }
         }
       }, this);

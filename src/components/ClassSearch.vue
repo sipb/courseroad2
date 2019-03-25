@@ -1,5 +1,5 @@
 <template>
-  <v-container class="searchdiv" :style = "searchHeight + 'display: flex; flex-direction:column;'">
+  <v-container :style = "searchHeight + 'display: flex; flex-direction:column;'">
     <div>
       <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
       <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
@@ -265,66 +265,6 @@ export default {
         isNew: true
       });
     },
-    addClass: function(event, classItem) {
-      var semesterElem = document.elementFromPoint(event.x,event.y);
-      var semesterParent = $(semesterElem).parents(".semester-container");
-      var classElem = $(event.target);
-      // var semesterBox = semesterParent.find(".semester-drop-container");
-      var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
-      semesterBox.addClass("grey");
-      semesterBox.removeClass("red");
-      semesterBox.removeClass("green");
-      if(semesterParent.length) {
-        var semesterID = semesterParent.attr("id");
-        if(semesterID.substring(0,9)=="semester_") {
-          var semesterNum = parseInt(semesterID.substring(9))
-          var semesterType = semesterNum % 2;
-          var isOffered = (semesterType == 0 && classItem.item.offered_fall)
-                          || (semesterType == 1 && classItem.item.offered_spring);
-          if (isOffered) {
-            var newClass = {
-              overrideWarnings : false,
-              semester : semesterNum,
-              title : classItem.item.title,
-              id : classItem.item.subject_id,
-              units : classItem.item.total_units
-            }
-            this.$emit("add-class",newClass)
-          }
-        }
-      }
-      this.dragSemesterNum = -1;
-    },
-    testClass: function(event, classItem) {
-      var semesterElem = $(document.elementFromPoint(event.x,event.y));
-      var semesterParent = semesterElem.parents(".semester-container");
-      var classElem = $(event.target);
-      var semesterBox = semesterParent.find(".semester-drop-container");
-      if(semesterParent.length) {
-        var semesterID = semesterParent.attr("id");
-        if(semesterID.substring(0,9)=="semester_") {
-          var semesterNum = parseInt(semesterID.substring(9))
-          if(this.dragSemesterNum != semesterNum) {
-            var semesterType = semesterNum % 2;
-            var isOffered = (semesterType == 0 && classItem.item.offered_fall)
-                            || (semesterType == 1 && classItem.item.offered_spring);
-            if (!isOffered) {
-              semesterBox.removeClass("grey");
-              semesterBox.addClass("red");
-            } else {
-              semesterBox.removeClass("grey");
-              semesterBox.addClass("green");
-            }
-            var lastSemester = $("#semester_" + this.dragSemesterNum);
-            var lastSemesterBox = lastSemester.find(".semester-drop-container");
-            lastSemesterBox.addClass("grey");
-            lastSemesterBox.removeClass("red");
-            lastSemesterBox.removeClass("green");
-          }
-          this.dragSemesterNum = semesterNum;
-        }
-      }
-    },
     updateMenuStyle: function() {
       var searchInputElem = document.getElementById("searchInputTF");
       var searchInputRect = searchInputElem.getBoundingClientRect();
@@ -360,10 +300,3 @@ export default {
   }
 }
 </script>
-
-
-<style scoped>
-  .searchdiv {
-    /*padding: 1em;*/
-  }
-</style>
