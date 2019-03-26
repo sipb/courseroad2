@@ -11,7 +11,6 @@
           v-on:dragend = "drop"
           v-on:dragstart = "dragStart"
           v-on:click = "$emit('click-class',classInfo)"
-          @contextmenu = "$event.preventDefault();rightClickMenu=true"
           :id = "'class'+classInfo.id.replace('.','')+semesterIndex"
         >
           <div :class = "courseColor(classInfo.id)" style = "height:100%;">
@@ -68,8 +67,7 @@ export default {
         "HASS-A", "HASS-H", "HASS-S", "CI-H", "CI-HW"
       ],
       warningDialog: false,
-      shouldOverrideWarnings: this.classInfo.overrideWarnings,
-      rightClickMenu: false,
+      shouldOverrideWarnings: this.classInfo.overrideWarnings
     }
   },
   methods: {
