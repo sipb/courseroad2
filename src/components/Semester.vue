@@ -16,9 +16,13 @@
           Hours: {{Math.round(semesterInformation.expectedHours,1)}}
         </v-flex>
         <v-layout row xs6 v-if = "!isOpen">
-          <v-flex xs3 v-for = "subject in semesterSubjects">
-            <v-card dark color = "primary">
-              <v-card-text style = "padding: 0.3em;">{{subject.id}}</v-card-text>
+          <v-flex xs3 v-for = "subject in semesterSubjects" :key = "subject.id">
+            <v-card>
+              <div :class = "courseColor(subject.id)">
+                <v-card-text class = "mini-course">
+                  <b>{{subject.id}}</b>
+                </v-card-text>
+              </div>
             </v-card>
           </v-flex>
         </v-layout>
@@ -53,15 +57,18 @@
 <script>
 import Class from './Class.vue'
 import $ from "jquery"
+import colorMixin from "./../mixins/colorMixin.js"
 
 // $(".semester-container").on("dragover", function(event) {
 //   event.preventDefault();
 //   event.dataTransfer.dropEffect = "copy";
 // })
 
+
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear","addingFromCard", "itemAdding","currentSemester","draggingOver"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester","draggingOver"],
+  mixins: [colorMixin],
   data: function() {return {
     newYear: this.semesterYear,
   }},
@@ -113,9 +120,10 @@ export default {
     },
     semesterInformation: function() {
       var classesInfo = this.semesterSubjects.map(function(subj) {
-        var subjectIndex = this.allSubjects.map((s)=>s.subject_id).indexOf(subj.id);
-        if(subjectIndex >= 0) {
-          return this.allSubjects[subjectIndex];
+        if(subj.id in this.subjectsIndex) {
+          return this.allSubjects[this.subjectsIndex[subj.id]];
+        } else if(subj.id in this.genericIndex) {
+          return this.genericCourses[this.genericIndex[subj.id]];
         } else {
           return undefined;
         }
@@ -171,6 +179,12 @@ export default {
 <style scoped>
   .hovering {
     background: radial-gradient(lightgreen, rgba(0,0,0,0));
+  }
+  .mini-course {
+    padding: 0.3em;
+    overflow: hidden;
+    white-space: nowrap;
+    color: white;
   }
   .semesterBin {
 /*    display: flex;

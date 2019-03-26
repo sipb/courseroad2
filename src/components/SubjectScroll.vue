@@ -2,20 +2,25 @@
   <v-container grid-list-md>
     <v-layout row overflow-x>
         <v-flex v-for = "subject in subjects" :key = "subject.subject_id">
-          <v-card class = "subject" color = "primary" @click = "$emit('click-subject', subject.subject_id)">
-            <v-card-text class = "cardtext pa-1">
-              <div><b>{{subject.subject_id}}</b></div>
-              <p class = "subject-title">{{subject.title}}</p>
-            </v-card-text>
+          <v-card class = "subject" @click = "$emit('click-subject', subject.subject_id)">
+            <div :class = "courseColor(subject.subject_id)" style = "height:100%;">
+              <v-card-text class = "cardtext pa-1">
+                <div><b>{{subject.subject_id}}</b></div>
+                <p class = "subject-title">{{subject.title}}</p>
+              </v-card-text>
+            </div>
           </v-card>
         </v-flex>
     </v-layout>
   </v-container>
 </template>
 <script>
+import colorMixin from "./../mixins/colorMixin.js"
+
 export default {
   name: "SubjectScroll",
-  props: ["subjects"]
+  props: ["subjects"],
+  mixins: [colorMixin]
 }
 </script>
 <style>

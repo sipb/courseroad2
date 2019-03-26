@@ -1,5 +1,5 @@
 <template>
-  <v-container class="searchdiv" :style = "searchHeight + 'display: flex; flex-direction:column;'">
+  <v-container :style = "searchHeight + 'display: flex; flex-direction:column;'">
     <div>
       <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
       <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
@@ -19,17 +19,25 @@
           :rows-per-page-text= "'Results per page: '"
           :hide-headers= "true"
         >
-          <template slot = "items" slot-scope = "props">
-            <tr
-              draggable = "true"
-              v-on:dragend ="drop($event, props)"
-              v-on:drag = "drag($event, props)"
-              v-on:dragstart="dragStart($event, props)"
-              @click = "viewClassInfo(props)"
-            >
-              <td>{{props.item.subject_id}}</td>
-              <td>{{props.item.title}}</td>
-            </tr>
+          <template slot="items" slot-scope="props">
+            <v-hover>
+              <tr
+                slot-scope="{ hover }"
+                :class="{ 'elevation-3': hover }"
+                draggable = "true"
+                v-on:dragend ="drop($event, props)"
+                v-on:drag = "drag($event, props)"
+                v-on:dragstart="dragStart($event, props)"
+                @click = "viewClassInfo(props)"
+                style="cursor: grab; margin: 4px; display: block;"
+              >
+                <td style="padding: 0; white-space: nowrap; width: 30%;">
+                  <v-icon style="vertical-align: middle;">drag_indicator</v-icon>
+                  <span style="vertical-align: middle;"> {{props.item.subject_id}}</span>
+                </td>
+                <td style="width: 60%;">{{props.item.title}}</td>
+              </tr>
+            </v-hover>
           </template>
         </v-data-table>
       </div>
@@ -48,7 +56,7 @@ export default {
   components: {
     "filter-set": FilterSet,
   },
-  props: ['subjects', 'searchInput','classInfoStack','cookiesAllowed'],
+  props: ['subjects', 'searchInput','classInfoStack','cookiesAllowed','genericCourses'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -135,6 +143,9 @@ export default {
     }
   },
   computed: {
+    allSubjects: function() {
+      return this.genericCourses.concat(this.subjects);
+    },
     autocomplete: function () {
       //only display subjects if you are filtering by something
       var returnAny = false;
@@ -185,7 +196,7 @@ export default {
 
         // and or or function based on filter mode
         var filterAction = this.filterGroupModes[this.filterGroupMode];
-        var filteredSubjects =  this.subjects.filter(function(subject) {
+        var filteredSubjects =  this.allSubjects.filter(function(subject) {
           for(var attrs in filters) {
             //each test function in a filter group
             var testers = filters[attrs];
@@ -270,66 +281,6 @@ export default {
         isNew: true
       });
     },
-    addClass: function(event, classItem) {
-      var semesterElem = document.elementFromPoint(event.x,event.y);
-      var semesterParent = $(semesterElem).parents(".semester-container");
-      var classElem = $(event.target);
-      // var semesterBox = semesterParent.find(".semester-drop-container");
-      var semesterBox = $("#semester_"+this.dragSemesterNum).find(".semester-drop-container");
-      semesterBox.addClass("grey");
-      semesterBox.removeClass("red");
-      semesterBox.removeClass("green");
-      if(semesterParent.length) {
-        var semesterID = semesterParent.attr("id");
-        if(semesterID.substring(0,9)=="semester_") {
-          var semesterNum = parseInt(semesterID.substring(9))
-          var semesterType = semesterNum % 2;
-          var isOffered = (semesterType == 0 && classItem.item.offered_fall)
-                          || (semesterType == 1 && classItem.item.offered_spring);
-          if (isOffered) {
-            var newClass = {
-              overrideWarnings : false,
-              semester : semesterNum,
-              title : classItem.item.title,
-              id : classItem.item.subject_id,
-              units : classItem.item.total_units
-            }
-            this.$emit("add-class",newClass)
-          }
-        }
-      }
-      this.dragSemesterNum = -1;
-    },
-    testClass: function(event, classItem) {
-      var semesterElem = $(document.elementFromPoint(event.x,event.y));
-      var semesterParent = semesterElem.parents(".semester-container");
-      var classElem = $(event.target);
-      var semesterBox = semesterParent.find(".semester-drop-container");
-      if(semesterParent.length) {
-        var semesterID = semesterParent.attr("id");
-        if(semesterID.substring(0,9)=="semester_") {
-          var semesterNum = parseInt(semesterID.substring(9))
-          if(this.dragSemesterNum != semesterNum) {
-            var semesterType = semesterNum % 2;
-            var isOffered = (semesterType == 0 && classItem.item.offered_fall)
-                            || (semesterType == 1 && classItem.item.offered_spring);
-            if (!isOffered) {
-              semesterBox.removeClass("grey");
-              semesterBox.addClass("red");
-            } else {
-              semesterBox.removeClass("grey");
-              semesterBox.addClass("green");
-            }
-            var lastSemester = $("#semester_" + this.dragSemesterNum);
-            var lastSemesterBox = lastSemester.find(".semester-drop-container");
-            lastSemesterBox.addClass("grey");
-            lastSemesterBox.removeClass("red");
-            lastSemesterBox.removeClass("green");
-          }
-          this.dragSemesterNum = semesterNum;
-        }
-      }
-    },
     updateMenuStyle: function() {
       var searchInputElem = document.getElementById("searchInputTF");
       var searchInputRect = searchInputElem.getBoundingClientRect();
@@ -365,10 +316,3 @@ export default {
   }
 }
 </script>
-
-
-<style scoped>
-  .searchdiv {
-    /*padding: 1em;*/
-  }
-</style>
