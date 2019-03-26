@@ -56,7 +56,6 @@ export default {
   mixins: [colorMixin],
   data() {
     return {
-      dragSemesterNum: -1,
       warningDialog: false,
       shouldOverrideWarnings: this.classInfo.overrideWarnings
     }

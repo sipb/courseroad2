@@ -1,5 +1,4 @@
 <template>
-  <v-container>
     <v-layout>
       <v-flex>
         <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" >
@@ -28,9 +27,20 @@
               <table cellspacing= "4">
                 <tr v-if = "currentSubject.total_units!==undefined">
                   <td><b>Units</b></td>
-                  <td>{{currentSubject.total_units}} <span v-if = "currentSubject.lecture_units!==undefined&&currentSubject.lab_units!==undefined&&currentSubject.preparation_units!==undefined">total ({{currentSubject.lecture_units}}-{{currentSubject.lab_units}}-{{currentSubject.preparation_units}})</span></td>
+                  <td>{{currentSubject.total_units}}
+                    <span v-if = "currentSubject.lecture_units !== undefined
+                        && currentSubject.lab_units !== undefined
+                        && currentSubject.preparation_units !== undefined
+                    ">
+                      total ({{currentSubject.lecture_units}}-{{currentSubject.lab_units}}-{{currentSubject.preparation_units}})
+                    </span>
+                  </td>
                 </tr>
-                <tr v-if = "currentSubject.offeredFall!==undefined || currentSubject.offered_IAP !== undefined || currentSubject.offered_spring !== undefined || currentSubject.offered_summer !== undefined">
+                <tr v-if = "currentSubject.offeredFall !== undefined
+                    || currentSubject.offered_IAP !== undefined
+                    || currentSubject.offered_spring !== undefined
+                    || currentSubject.offered_summer !== undefined
+                ">
                   <td><b>Offered</b></td>
                   <td>
                     <ul class = "comma-separated">
@@ -39,12 +49,20 @@
                       <li v-if = "currentSubject.offered_spring">Spring</li>
                       <li v-if = "currentSubject.offered_summer">Summer</li>
                     </ul>
-                    <span v-if = "!currentSubject.offered_fall&&!currentSubject.offered_IAP&&!currentSubject.offered_spring&&!currentSubject.offered_summer">None</span>
+                    <span v-if = "!currentSubject.offered_fall
+                        && !currentSubject.offered_IAP
+                        && !currentSubject.offered_spring
+                        && !currentSubject.offered_summer
+                    ">
+                      None
+                    </span>
                   </td>
                 </tr>
                 <tr v-if = "currentSubject.instructors !== undefined">
                   <td><b>Instructor</b></td>
-                  <td><ul class = "comma-separated"><li v-for = "instructor in currentSubject.instructors">{{instructor}}</li></ul></td>
+                  <td><ul class = "comma-separated">
+                    <li v-for = "instructor in currentSubject.instructors">{{instructor}}</li>
+                  </ul></td>
                 </tr>
                 <tr v-if = "currentSubject.enrollment_number !== undefined">
                   <td><b>Average Enrollment</b></td>
@@ -66,8 +84,14 @@
               </table>
               <h3>Description</h3>
               <p>{{currentSubject.description}}</p>
-              <p v-if = "currentSubject.url !== undefined"><a target = "_blank" :href = "currentSubject.url">View in Course Catalog</a></p>
-              <p v-if = "currentSubject.subject_id in subjectsIndex"><a target = "_blank" :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">View Course Evaluations</a></p>
+              <p v-if = "currentSubject.url !== undefined">
+                <a target = "_blank" :href = "currentSubject.url">View in Course Catalog</a>
+              </p>
+              <p v-if = "currentSubject.subject_id in subjectsIndex">
+                <a target = "_blank" :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
+                  View Course Evaluations
+                </a>
+              </p>
               <div v-if = "currentSubject.equivalent_subjects !== undefined">
                 <h3>Equivalent Subjects</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
@@ -99,7 +123,6 @@
         </v-card>
       </v-flex>
     </v-layout>
-  </v-container>
 </template>
 
 
