@@ -13,7 +13,7 @@
               <div style = "padding: 0 0.5em 0 0;">
                 <h3>{{currentSubject.subject_id}}</h3>
               </div>
-              <div style = "padding: 0 0.5em 0 0;"><span>{{currentSubject.title}}</span></div>
+              <div style = "padding: 0 0.5em 0 0;"><span></span></div>
               <div style = "margin-left:auto">
                 <v-btn @click = "$emit('close-classinfo')" icon style = "margin: 0;">
                   <v-icon style = "margin:0; padding: 0;">
@@ -23,12 +23,19 @@
               </div>
             </v-flex>
           </v-card-title>
+
           <v-card-text class = "card-body">
             <div class = "card-body-container" id = "cardBody">
-              <v-btn @click = "addClass" small block class = "secondary">
-                Add to Road
-                <v-icon right>add</v-icon>
-              </v-btn>
+              <v-layout row>
+                <div style = "padding: 0 0 1em 0;"><h3>{{currentSubject.title}}</h3></div>
+
+                <v-btn v-if = "!addingFromCard" fab small style = "margin-left:auto;" @click = "addClass" class = "secondary">
+                  <v-icon>add</v-icon>
+                </v-btn>
+                <v-btn v-if = "addingFromCard" fab small style = "margin-left:auto;" @click = "cancelAddClass" class = "secondary">
+                  <v-icon>block</v-icon>
+                </v-btn>
+              </v-layout>
               <table cellspacing= "4">
                 <tr>
                   <td><b>Units</b></td>
@@ -104,7 +111,7 @@ export default {
   components: {
     'subject-scroll': SubjectScroll
   },
-  props: ["subjects", "classInfoStack", "subjectsIndex"],
+  props: ["subjects", "classInfoStack", "subjectsIndex", "addingFromCard"],
   data: function() {return {}},
   computed: {
     currentSubject: function() {
@@ -149,6 +156,9 @@ export default {
     },
     addClass: function() {
       this.$emit('add-class',this.currentSubject);
+    },
+    cancelAddClass: function() {
+      this.$emit('cancel-add-class');
     }
   },
   mounted() {

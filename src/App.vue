@@ -150,9 +150,11 @@
       v-bind:classInfoStack = "classInfoStack"
       v-bind:subjects = "subjectsInfo"
       v-bind:subjectsIndex = "subjectsIndexDict"
+      v-bind:addingFromCard = "addingFromCard"
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
       @add-class = "addFromCard"
+      @cancel-add-class = "cancelAddFromCard"
       @close-classinfo = "classInfoStack = []"
       v-on:click.native = "$event.stopPropagation()"
       >
@@ -460,6 +462,10 @@ export default {
     addFromCard: function(classItem) {
       this.addingFromCard = true;
       this.itemAdding = classItem;
+    },
+    cancelAddFromCard: function() {
+      this.addingFromCard = false;
+      this.itemAdding = undefined;
     },
     addAtPlaceholder: function(index) {
       var newClass = {
