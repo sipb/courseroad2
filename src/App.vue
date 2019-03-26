@@ -284,12 +284,6 @@ export default {
         semesterBox: semesterBox
       }
     },
-    resetSemesterBox: function(semesterBox) {
-      semesterBox.addClass("grey");
-      semesterBox.removeClass("red");
-      semesterBox.removeClass("green");
-      semesterBox.removeClass("yellow");
-    },
     getSemesterNum: function(semesterObjects) {
       if(semesterObjects.semesterParent.length) {
         var semesterID = semesterObjects.semesterParent.attr("id");
