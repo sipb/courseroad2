@@ -1,6 +1,13 @@
 
 <template>
-  <div class = "requirement" @click = "clickRequirement">
+  <div
+    class = "requirement"
+    :draggable = "canDrag"
+    v-on:drag = "drag"
+    v-on:dragend = "drop"
+    v-on:dragstart = "dragStart"
+    @click = "clickRequirement"
+  >
     <div v-if="!leaf">
       <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
       <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
@@ -33,7 +40,7 @@ import $ from 'jquery'
 
 export default {
   name: 'requirement',
-  props: ['req', 'leaf'],
+  props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
   data: function() {
     return {
       open: [],
@@ -42,6 +49,24 @@ export default {
     }
   },
   computed: {
+    classInfo: function() {
+      if('req' in this.req) {
+        if(this.req.req in this.subjectIndex) {
+          return this.subjects[this.subjectIndex[this.req.req]];
+        }
+        var attributeReq = this.req.req;
+        if(attributeReq.indexOf("GIR:")===0) {
+          attributeReq = attributeReq.substring(4);
+        }
+        if(attributeReq in this.genericIndex) {
+          return this.genericCourses[this.genericIndex[attributeReq]];
+        }
+      }
+      return undefined;
+    },
+    canDrag: function() {
+      return this.classInfo !== undefined;
+    },
     reqFulfilled: function() {
       if(this.req.fulfilled) {
         return {
@@ -74,6 +99,23 @@ export default {
         }
         this.$emit('push-stack', usedReq);
       }
+    },
+    drag: function(event) {
+      this.$emit("drag-class", {
+        drag: event,
+        classInfo: this.classInfo,
+        isNew: true
+      });
+    },
+    drop: function(event) {
+      this.$emit("drop-class", {
+        drop: event,
+        classInfo: this.classInfo,
+        isNew: true
+      });
+    },
+    dragStart: function(event) {
+      event.dataTransfer.setData('foo', 'bar');
     }
   }
 }

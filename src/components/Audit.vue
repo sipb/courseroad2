@@ -1,10 +1,10 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
-  <v-flex style="padding: 24px; overflow: scroll;">
+  <v-flex style="padding: 24px; overflow: auto;">
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
-      item-key="title"
+      item-key="index"
       item-children="reqs"
       open-on-click
       :activatable = "false"
@@ -27,6 +27,12 @@
         <requirement
           v-bind:req="item"
           v-bind:leaf="leaf"
+          v-bind:subjects = "subjects"
+          v-bind:subjectIndex = "subjectIndex"
+          v-bind:genericCourses = "genericCourses"
+          v-bind:genericIndex = "genericIndex"
+          @drag-class = "$emit('drag-class',$event)"
+          @drop-class = "$emit('drop-class',$event)"
           @push-stack = "$emit('push-stack',$event)"
         >
         </requirement>
@@ -64,7 +70,7 @@
     </v-dialog>
     <v-menu max-height="600px" absolute>
       <v-btn flat color = "primary" slot = "activator">
-        <v-icon>add</v-icon>Add a degree audit
+        <v-icon>add</v-icon>Add a Major/Minor
       </v-btn>
       <v-list dense>
         <v-list-tile
@@ -76,6 +82,12 @@
         </v-list-tile>
       </v-list>
     </v-menu>
+
+    <p><b>Warning:</b> This is an unofficial estimate that may not accurately reflect your degree progress.  Please visit
+    the <a target = "_blank" href = "https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
+    <a target = "_blank" href = "http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
+    <a target = "_blank" href = "http://catalog.mit.edu/degree-charts/">degree charts</a> and confirm
+    with your department advisor.</p>
   </v-flex>
 </template>
 
@@ -87,25 +99,22 @@ export default {
   components: {
     'requirement': Requirement,
   },
-  props: ['selectedReqs', 'reqTrees', 'reqList'],
+  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
   data: function() { return {
     tree: [],
     viewDialog: false,
     dialogReq: undefined
   }},
   computed: {
-    maxHeight: function() {
-      console.log(document.documentElement.clientWidth);
-      return "600px";
-    },
     selectedTrees: function() {
-      return this.selectedReqs.map(function(req){
+      return this.selectedReqs.map(function(req,index){
         if(req in this.reqTrees) {
-          return this.reqTrees[req];
+          return Object.assign({index: index},this.reqTrees[req]);
         } else {
           return {
             title: "loading...",
-            reqs: []
+            reqs: [],
+            index: index
           }
         }
       }, this);
