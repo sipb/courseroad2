@@ -5,29 +5,20 @@
     <div v-if = "doubleScroller">
       <div :id = "'ds0'+reqID">
         <span v-if = "requirement.reqs[0].expansionDesc.length>0 && (requirement.reqs[0].connectionType == 'any' || requirement.reqs[1].connectionType == 'any')">{{requirement.reqs[0].expansionDesc}}</span>
-        <subject-scroll @click-subject = "clickDouble(0,$event)" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
+        <subject-scroll @click-subject = "clickSubject($event,0)" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
       </div>
       <div :id = "'ds1'+reqID">
         <span v-if = "requirement.reqs[1].expansionDesc.length>0 && (requirement.reqs[1].connectionType == 'any' || requirement.reqs[0].connectionType == 'any')">{{requirement.reqs[1].expansionDesc}}</span>
-        <subject-scroll @click-subject = "clickDouble(1,$event)" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
+        <subject-scroll @click-subject = "clickSubject($event,1)" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
       </div>
     </div>
     <subject-scroll v-else @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
-    <div v-if = "open && !doubleScroller && requirement.reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
+    <div v-if = "open && nextReqs !== undefined" class = "expanded-req">
       <ExpansionReqs
         @close-expansion = "closeMyExpansion"
         @click-subject = "$emit('click-subject',$event)"
-        v-bind:requirement = "requirement.reqs[expansionIndex]"
-        v-bind:reqID = "reqID + '.' + expansionIndex"
-        >
-      </ExpansionReqs>
-    </div>
-    <div v-if = "open && doubleScroller && requirement.reqs[whichScroller].reqs[expansionIndex].reqs !== undefined" class = "expanded-req">
-      <ExpansionReqs
-        @close-expansion = "closeMyExpansion"
-        @click-subject = "$emit('click-subject',$event)"
-        v-bind:requirement = "requirement.reqs[whichScroller].reqs[expansionIndex]"
-        v-bind:reqID = "reqID + '.' + whichScroller + '.' + expansionIndex"
+        v-bind:requirement = "nextReqs"
+        v-bind:reqID = "reqID + (doubleScroller ? '.' + whichScroll : '') + '.' + expansionIndex"
         >
       </ExpansionReqs>
     </div>
@@ -47,6 +38,7 @@ export default {
   data: function() {return {
     open: false,
     expansionIndex: 0,
+    nextReqs: undefined,
     whichScroller: 0
   }},
   watch: {
@@ -65,30 +57,22 @@ export default {
     }
   },
   methods: {
-    clickDouble: function(scroller, subj) {
-      if(this.requirement.reqs[scroller].reqs[subj.index].reqs !== undefined) {
-        this.whichScroller = scroller;
-        this.expansionIndex = subj.index;
-        this.open = true;
-        Vue.nextTick(function() {
-          var scrollPoint = $("#"+$.escapeSelector(this.reqID+"."+this.whichScroller+"."+this.expansionIndex));
-          var topPoint = scrollPoint.offset().top;
-          var cardBody = $("#cardBody");
-          cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},200);
-        }.bind(this));
+    clickSubject: function(subj, scroller) {
+      var scrollPointID;
+      var nextReqs;
+      if(scroller !== undefined) {
+        scrollPointID = this.reqID + "." + this.whichScroller + "." + subj.index;
+        nextReqs = this.requirement.reqs[scroller].reqs[subj.index];
       } else {
-        if(subj.id.indexOf("GIR:")>=0) {
-          subj.id = subj.id.substring(4);
-        }
-        this.$emit("click-subject",subj);
+        scrollPointID = this.reqID + "." + subj.index;
+        nextReqs = this.requirement.reqs[subj.index];
       }
-    },
-    clickSubject: function(subj) {
-      if(this.requirement.reqs[subj.index].reqs !== undefined) {
+      if(nextReqs.reqs !== undefined) {
         this.expansionIndex = subj.index;
         this.open = true;
+        this.nextReqs = nextReqs;
         Vue.nextTick(function() {
-          var scrollPoint = $("#"+$.escapeSelector(this.reqID+"."+this.expansionIndex));
+          var scrollPoint = $("#"+$.escapeSelector(scrollPointID));
           var topPoint = scrollPoint.offset().top;
           var cardBody = $("#cardBody");
           cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},200);
