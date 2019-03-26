@@ -77,6 +77,7 @@
           @drop-class="dropClass"
           @drag-class="testClass"
           @view-class-info="pushClassStack"
+          @drag-start-class = "dragStartClass"
         >
         </class-search>
       </v-menu>
@@ -118,14 +119,16 @@
             v-bind:subjects = "subjectsInfo"
             v-bind:roadID = "roadid"
             v-bind:currentSemester = "currentSemester"
-            v-bind:addingFromCard = "addingFromCard && activeRoad==roadid"
-            v-bind:itemAddingFromCard = "itemAddingFromCard"
+            v-bind:addingFromCard = "addingFromCard && activeRoad===roadid"
+            v-bind:itemAdding = "itemAdding"
+            v-bind:dragSemesterNum = "(activeRoad===roadid) ? dragSemesterNum : -1"
             @add-at-placeholder = "addAtPlaceholder"
             @drop-class="dropClass"
             @drag-class="testClass"
             @remove-class = "removeClass"
             @click-class = "pushClassStack($event.id)"
             @change-year = "$refs.authcomponent.changeSemester($event)"
+            @drag-start-class = "dragStartClass"
           ></road>
         </v-tab-item>
       </v-tabs-items>
@@ -219,7 +222,7 @@ export default {
     classInfoStack: [],
     currentSemester: 0,
     addingFromCard: false,
-    itemAddingFromCard: undefined,
+    itemAdding: undefined,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -287,113 +290,77 @@ export default {
       semesterBox.removeClass("green");
       semesterBox.removeClass("yellow");
     },
-    classIsOffered: function(semesterObjects, event) {
+    getSemesterNum: function(semesterObjects) {
       if(semesterObjects.semesterParent.length) {
         var semesterID = semesterObjects.semesterParent.attr("id");
         if(semesterID.split("_")[2]==="semester") {
-          var semesterNum = parseInt(semesterID.split("_")[3]);
-          var semesterType = (semesterNum-1) % 3;
-          var classInfo = event.classInfo;
-          var isOffered;
-          if(classInfo === undefined) {
-            if(this.subjectsLoaded) {
-              if (event.basicClass.id in this.subjectsIndexDict) {
-                classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
-              } else if(semesterType >= 0) {
-                //not in catalog, might be a generic course (like PHY1 or HASS)
-                var matchingClasses = this.subjectsInfo.filter(function(subject) {
-                  var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
-                  return possible_attributes.includes(event.basicClass.id);
-                });
-                if(matchingClasses.length) {
-                  classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
-                    return {
-                      offered_fall: subjectA.offered_fall || subjectB.offeredFall,
-                      offered_spring: subjectA.offered_spring || subjectB.offered_spring,
-                      offered_IAP: subjectA.offered_IAP || subjectB.offered_IAP,
-                    }
-                  });
-                } else {
-                  classInfo = {
-                    offered_fall: false,
-                    offered_spring: false,
-                    offered_IAP: false,
-                  }
-                }
+          return parseInt(semesterID.split("_")[3]);
+        }
+      }
+      return -1;
+    },
+    dragStartClass: function(event) {
+      var classInfo = event.classInfo;
+      if(classInfo === undefined) {
+        if (event.basicClass.id in this.subjectsIndexDict) {
+          classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
+        } else {
+          var matchingClasses = this.subjectsInfo.filter(function(subject) {
+            var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
+            return possible_attributes.includes(event.basicClass.id);
+          });
+          if(matchingClasses.length) {
+            classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
+              return {
+                offered_fall: subjectA.offered_fall || subjectB.offeredFall,
+                offered_spring: subjectA.offered_spring || subjectB.offered_spring,
+                offered_IAP: subjectA.offered_IAP || subjectB.offered_IAP,
               }
-            } else {
-              classInfo = undefined;
+            });
+          } else {
+            classInfo = {
+              offered_fall: false,
+              offered_spring: false,
+              offered_IAP: false,
             }
-
-          }
-          if(classInfo !== undefined) {
-            if(semesterType>=0) {
-              isOffered = [classInfo.offered_fall, classInfo.offered_IAP, classInfo.offered_spring][semesterType];
-            } else {
-              isOffered = true;
-            }
-          }
-          return {
-            isOffered: isOffered,
-            semesterNum: semesterNum
           }
         }
       }
-      return {
-        isOffered: undefined
-      }
+      this.itemAdding = classInfo;
     },
     dropClass: function(event) {
       var semesterObjects = this.getRelevantObjects(event.drop);
-      this.resetSemesterBox(semesterObjects.semesterBox);
-      var semInfo = this.classIsOffered(semesterObjects, event);
-      if(semInfo.isOffered !== undefined) {
-        var inSameYear = Math.floor((semInfo.semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
-        if(semInfo.isOffered||!inSameYear) {
-          event.drop.preventDefault();
-          if(event.isNew) {
-            var newClass = {
-              overrideWarnings : false,
-              semester : semInfo.semesterNum,
-              title : event.classInfo.title,
-              id : event.classInfo.subject_id,
-              units : event.classInfo.total_units
-            }
-            this.addClass(newClass);
-          } else {
-            var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
-            this.moveClass(currentIndex, semInfo.semesterNum)
+      var semesterNum = this.getSemesterNum(semesterObjects);
+      var semesterType = (semesterNum - 1)%3;
+      var isOffered;
+      if(semesterType >= 0) {
+        isOffered = [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semesterType];
+      } else {
+        isOffered = true;
+      }
+      var inSameYear = Math.floor((semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
+      if(isOffered || !inSameYear) {
+        event.drop.preventDefault();
+        if(event.isNew) {
+          var newClass = {
+            overrideWarnings : false,
+            semester : semesterNum,
+            title : event.classInfo.title,
+            id : event.classInfo.subject_id,
+            units : event.classInfo.total_units
           }
+          this.addClass(newClass);
+        } else {
+          var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
+          this.moveClass(currentIndex, semesterNum);
         }
       }
       this.dragSemesterNum = -1;
+      this.itemAdding = undefined;
     },
     testClass: function(event) {
       var semesterObjects = this.getRelevantObjects(event.drag);
-      var semInfo = this.classIsOffered(semesterObjects, event);
-      if(semInfo.isOffered !== undefined) {
-        var inSameYear = Math.floor((semInfo.semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
-        if (!semInfo.isOffered) {
-          if(inSameYear) {
-            semesterObjects.semesterBox.removeClass("grey");
-            semesterObjects.semesterBox.addClass("red");
-          } else {
-            semesterObjects.semesterBox.removeClass("grey");
-            semesterObjects.semesterBox.addClass("yellow");
-          }
-        } else {
-          semesterObjects.semesterBox.removeClass("grey");
-          semesterObjects.semesterBox.addClass("green");
-        }
-      }
-      if(this.dragSemesterNum !== semInfo.semesterNum && this.dragSemesterNum != -1) {
-        var lastSemester = $("#road_"+$.escapeSelector(this.activeRoad)+"_semester_" + this.dragSemesterNum);
-        var lastSemesterBox = lastSemester.find(".semester-drop-container");
-        this.resetSemesterBox(lastSemesterBox)
-      }
-      if(semInfo.semesterNum !== undefined) {
-        this.dragSemesterNum = semInfo.semesterNum;
-      }
+      this.dragSemesterNum = this.getSemesterNum(semesterObjects);
     },
     updateFulfillment: function() {
       var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
@@ -498,19 +465,19 @@ export default {
     },
     addFromCard: function(classItem) {
       this.addingFromCard = true;
-      this.itemAddingFromCard = classItem;
+      this.itemAdding = classItem;
     },
     addAtPlaceholder: function(index) {
       var newClass = {
         overrideWarnings : false,
         semester : index,
-        title : this.itemAddingFromCard.title,
-        id : this.itemAddingFromCard.subject_id,
-        units : this.itemAddingFromCard.total_units
+        title : this.itemAdding.title,
+        id : this.itemAdding.subject_id,
+        units : this.itemAdding.total_units
       }
       this.addClass(newClass);
       this.addingFromCard = false;
-      this.itemAddingFromCard = undefined;
+      this.itemAdding = undefined;
     }
   },
   watch: {

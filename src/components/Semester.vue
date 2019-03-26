@@ -42,6 +42,7 @@
           @remove-class = "$emit('remove-class', $event)"
           @click-class = "$emit('click-class',$event)"
           @add-at-placeholder = "$emit('add-at-placeholder', $event)"
+          @drag-start-class = "$emit('drag-start-class', $event)"
         />
       </v-layout>
     </v-container>
@@ -60,7 +61,7 @@ import $ from "jquery"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear","addingFromCard", "itemAddingFromCard","currentSemester"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear","addingFromCard", "itemAdding","currentSemester","draggingOver"],
   data: function() {return {
     newYear: this.semesterYear,
   }},
@@ -69,8 +70,8 @@ export default {
   },
   computed: {
     semColor: function() {
-      if(this.addingFromCard) {
-        if(this.offeredNow) {
+      if(this.addingFromCard||this.draggingOver) {
+        if(this.index==0||this.offeredNow) {
           return "green";
         } else if(this.isSameYear) {
           return "red";
@@ -86,8 +87,8 @@ export default {
     },
     offeredNow: function() {
       var semType = (this.index-1)%3;
-      if(semType >= 0 && this.addingFromCard) {
-        return [this.itemAddingFromCard.offered_fall, this.itemAddingFromCard.offered_IAP, this.itemAddingFromCard.offered_spring][semType];
+      if(semType >= 0 && (this.addingFromCard||this.draggingOver)) {
+        return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
       } else if(this.addingFromCard) {
         return true;
       } else {

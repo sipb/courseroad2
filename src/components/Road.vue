@@ -17,14 +17,16 @@
       v-bind:isOpen = "visibleList[index-1]"
       v-bind:baseYear = "baseYear"
       v-bind:addingFromCard = "addingFromCard"
-      v-bind:itemAddingFromCard = "itemAddingFromCard"
+      v-bind:itemAdding = "itemAdding"
       v-bind:currentSemester = "currentSemester"
+      v-bind:draggingOver = "dragSemesterNum==index-1"
       @add-at-placeholder = "$emit('add-at-placeholder',$event)"
       @drag-class = "$emit('drag-class',$event)"
       @drop-class = "$emit('drop-class',$event)"
       @remove-class = "$emit('remove-class', $event)"
       @click-class = "$emit('click-class',$event)"
       @change-year = "changeYearDialog = true"
+      @drag-start-class = "$emit('drag-start-class',$event)"
       >
     </semester>
     <v-dialog v-model = "changeYearDialog">
@@ -60,7 +62,7 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects',"subjects","roadID","currentSemester","addingFromCard", "itemAddingFromCard"],
+  props: ['selectedSubjects',"subjects","roadID","currentSemester","addingFromCard", "itemAdding", "dragSemesterNum"],
   data: function () { return {
       visibleList: this.currentSemester >= 13 ? Array(16).fill(true) : Array(13).fill(true),
       changeYearDialog: false,
@@ -79,9 +81,6 @@ export default {
   watch: {
     currentSemester: function(newSem, oldSem) {
       this.numSems = newSem >= 13 ? 16 : 13;
-    },
-    addingFromCard: function(new1, old1) {
-      console.log("adding from card changed from " + old1 + " to " + new1);
     }
   }
 }

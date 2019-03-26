@@ -70,6 +70,12 @@ export default {
     dragStart: function(event) {
       // TODO: Rewrite as part of #53?
       event.dataTransfer.setData('foo', 'bar')
+      this.$emit('drag-start-class', {
+        dragstart: event,
+        basicClass: this.classInfo,
+        isNew: false,
+        currentSem: this.semesterIndex
+      })
     },
     drop: function(event) {
       this.$emit("drop-class",{
