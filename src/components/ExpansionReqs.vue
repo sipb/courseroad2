@@ -1,15 +1,27 @@
 <template>
   <div :id = "reqID">
     <v-btn v-if = "!requirement.topLevel" icon small @click = "closeMe"><v-icon>close</v-icon></v-btn>
-    <span v-if = "requirement.expansionDesc.length>0 && ((!requirement.topLevel && !doubleScroller) || requirement.connectionType == 'any')">{{requirement.expansionDesc}}</span>
+    <span v-if = "requirement.expansionDesc.length>0
+        && ((!requirement.topLevel && !doubleScroller) || requirement.connectionType == 'any')
+    ">
+      {{requirement.expansionDesc}}
+    </span>
     <div v-if = "doubleScroller">
       <div :id = "'ds0'+reqID">
-        <span v-if = "requirement.reqs[0].expansionDesc.length>0 && (requirement.reqs[0].connectionType == 'any' || requirement.reqs[1].connectionType == 'any')">{{requirement.reqs[0].expansionDesc}}</span>
-        <subject-scroll @click-subject = "clickSubject($event,0)" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
+        <span v-if = "requirement.reqs[0].expansionDesc.length>0
+            && (requirement.reqs[0].connectionType == 'any' || requirement.reqs[1].connectionType == 'any')
+        ">
+          {{requirement.reqs[0].expansionDesc}}
+        </span>
+        <subject-scroll @click-subject = "clickSubject($event, 0)" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
       </div>
       <div :id = "'ds1'+reqID">
-        <span v-if = "requirement.reqs[1].expansionDesc.length>0 && (requirement.reqs[1].connectionType == 'any' || requirement.reqs[0].connectionType == 'any')">{{requirement.reqs[1].expansionDesc}}</span>
-        <subject-scroll @click-subject = "clickSubject($event,1)" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
+        <span v-if = "requirement.reqs[1].expansionDesc.length>0
+            && (requirement.reqs[1].connectionType == 'any' || requirement.reqs[0].connectionType == 'any')
+        ">
+          {{requirement.reqs[1].expansionDesc}}
+        </span>
+        <subject-scroll @click-subject = "clickSubject($event, 1)" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
       </div>
     </div>
     <subject-scroll v-else @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
@@ -24,6 +36,8 @@
     </div>
   </div>
 </template>
+
+
 <script>
 import SubjectScroll from "../components/SubjectScroll.vue"
 import $ from "jquery"
@@ -102,6 +116,8 @@ export default {
   }
 }
 </script>
+
+
 <style>
 .expanded-req {
   margin: 1em;

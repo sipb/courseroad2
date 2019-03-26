@@ -113,7 +113,7 @@ export default {
   name: "ClassInfo",
   components: {
     'subject-scroll': SubjectScroll,
-    'expansion-reqs': ExpansionReqs
+    'expansion-reqs': ExpansionReqs,
   },
   props: ["subjects", "classInfoStack", "subjectsIndex", "genericCourses", "genericIndex"],
   mixins: [colorMixin],

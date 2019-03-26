@@ -5,7 +5,7 @@
     <v-hover>
       <v-badge overlap right color = "rgba(0,0,0,0)" style = "width:100%;" slot-scope = "{ hover }">
         <v-card
-          :class="[{classbox: true, satisfied: isSatisfied}, courseColor]"
+          :class="[{classbox: true,}, courseColor]"
           draggable
           v-on:drag = "drag"
           v-on:dragend = "drop"
@@ -56,7 +56,6 @@ export default {
   mixins: [colorMixin],
   data() {
     return {
-      isSatisfied: true,
       dragSemesterNum: -1,
       warningDialog: false,
       shouldOverrideWarnings: this.classInfo.overrideWarnings
@@ -99,13 +98,5 @@ export default {
     height: 8em;
     padding-top: 0;
     overflow:hidden;
-  }
-
-  .satisfied {
-    background: #00b300;
-  }
-  /* this is a bad color, change it */
-  .unsatisfied {
-    background: #eb7e7e;
   }
 </style>
