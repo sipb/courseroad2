@@ -165,6 +165,7 @@ export default {
       $("#cardBody").animate({scrollTop:0});
     },
     parseRequirements: function(requirements) {
+      //remove spaces after commas and slashes
       requirements = requirements.replace(/([,\/])\s+/g,"$1")
       function getParenGroup(str) {
         if(str[0]=="(") {
