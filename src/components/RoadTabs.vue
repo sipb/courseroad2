@@ -64,15 +64,17 @@
         </v-card>
       </v-dialog>
     </v-tabs>
-    <!-- this button gets obscured if the tab sliders are visible -->
-    <v-btn icon flat color = "primary" @click = "addDialog = true">
-      <v-icon>add</v-icon>
-    </v-btn>
+    <v-flex>
+      <v-btn icon flat color = "primary" @click = "addDialog = true">
+        <v-icon>add</v-icon>
+      </v-btn>
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
 import Road from "./Road.vue"
+
 export default {
   name: 'RoadTabs',
   components: {
@@ -105,9 +107,13 @@ export default {
       this.tabRoad = this.activeRoad;
     }
   }
-
 }
 </script>
 
 <style>
+/*This is to prevent it from monopolizing all the space*/
+.v-tabs__container {
+  display: unset;
+  white-space: unset;
+}
 </style>
