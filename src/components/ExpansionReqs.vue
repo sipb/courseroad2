@@ -2,14 +2,14 @@
   <div :id = "reqID">
     <v-btn v-if = "!requirement.topLevel" icon small @click = "closeMe"><v-icon>close</v-icon></v-btn>
     <span v-if = "requirement.expansionDesc.length>0
-        && ((!requirement.topLevel && !doubleScroller) || requirement.connectionType == 'any')
+        && ((!requirement.topLevel && !doubleScroller) || requirement.connectionType === 'any')
     ">
       {{requirement.expansionDesc}}
     </span>
     <div v-if = "doubleScroller">
       <div :id = "'ds0'+reqID">
         <span v-if = "requirement.reqs[0].expansionDesc.length>0
-            && (requirement.reqs[0].connectionType == 'any' || requirement.reqs[1].connectionType == 'any')
+            && (requirement.reqs[0].connectionType === 'any' || requirement.reqs[1].connectionType === 'any')
         ">
           {{requirement.reqs[0].expansionDesc}}
         </span>
@@ -17,7 +17,7 @@
       </div>
       <div :id = "'ds1'+reqID">
         <span v-if = "requirement.reqs[1].expansionDesc.length>0
-            && (requirement.reqs[1].connectionType == 'any' || requirement.reqs[0].connectionType == 'any')
+            && (requirement.reqs[1].connectionType === 'any' || requirement.reqs[0].connectionType === 'any')
         ">
           {{requirement.reqs[1].expansionDesc}}
         </span>
@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     doubleScroller: function() {
-      if(this.requirement.reqs.length == 2) {
+      if(this.requirement.reqs.length === 2) {
         return this.requirement.reqs.reduce(function(acc, nxt) {
           return acc && nxt.reqs !== undefined;
         }, true);
