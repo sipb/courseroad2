@@ -12,7 +12,6 @@
               <div style = "padding: 0 0.5em 0 0;">
                 <h3>{{currentSubject.subject_id}}</h3>
               </div>
-              <div style = "padding: 0 0.5em 0 0;"><span></span></div>
               <div style = "margin-left:auto">
                 <v-btn @click = "$emit('close-classinfo')" icon style = "margin: 0;">
                   <v-icon style = "margin:0; padding: 0; color:white;">
@@ -26,7 +25,7 @@
           <v-card-text class = "card-body">
             <div class = "card-body-container" id = "cardBody">
               <v-layout row>
-                <div style = "padding: 0 0 1em 0;"><h3>{{currentSubject.title}}</h3></div>
+                <div style = "padding: 0 0 0.5em 0;"><h3>{{currentSubject.title}}</h3></div>
 
                 <v-btn v-if = "!addingFromCard" fab small style = "margin-left:auto;" @click = "addClass" class = "secondary">
                   <v-icon>add</v-icon>

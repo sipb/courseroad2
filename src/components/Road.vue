@@ -19,7 +19,7 @@
       v-bind:addingFromCard = "addingFromCard"
       v-bind:itemAdding = "itemAdding"
       v-bind:currentSemester = "currentSemester"
-      v-bind:draggingOver = "dragSemesterNum==index-1"
+      v-bind:draggingOver = "dragSemesterNum===index-1"
       v-bind:subjectsIndex = "subjectsIndex"
       v-bind:genericCourses = "genericCourses"
       v-bind:genericIndex = "genericIndex"
