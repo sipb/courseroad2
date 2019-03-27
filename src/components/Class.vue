@@ -3,18 +3,30 @@
 <template>
   <v-flex md3 xs4>
     <v-card
-      class = "classbox"
+      v-if = "classInfo == 'placeholder'"
+      class = "placeholder classbox"
+    >
+      <v-container fill-height>
+        <v-layout>
+          <v-btn style = "margin: auto" large icon @click = "$emit('add-at-placeholder',semesterIndex)"><v-icon>add</v-icon></v-btn>
+        </v-layout>
+      </v-container>
+    </v-card>
+    <v-card
+      v-else
+      :class="[{classbox: true, satisfied: isSatisfied}]"
       draggable
       v-on:drag = "drag"
       v-on:dragend = "drop"
       v-on:dragstart = "dragStart"
-      v-on:click = "$emit('click-class',classInfo)"
+      v-on:click = "$emit('click-class', classInfo)"
     >
-      <div :class = "courseColor(classInfo.id)" style = "height:100%;">
+      <div style = "height:100%" :class = "courseColor(classInfo.id)">
         <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
         <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
       </div>
     </v-card>
+
   </v-flex>
 </template>
 
@@ -43,6 +55,12 @@ export default {
     dragStart: function(event) {
       // TODO: Rewrite as part of #53?
       event.dataTransfer.setData('foo', 'bar')
+      this.$emit('drag-start-class', {
+        dragstart: event,
+        basicClass: this.classInfo,
+        isNew: false,
+        currentSem: this.semesterIndex
+      })
     },
     drop: function(event) {
       this.$emit("drop-class",{
@@ -51,6 +69,11 @@ export default {
         isNew: false,
         currentSem: this.semesterIndex
       });
+    },
+    clickClass: function(classInfo) {
+      if(classInfo !== "placeholder") {
+        this.$emit('click-class', classInfo);
+      }
     }
   }
 }
@@ -76,5 +99,9 @@ export default {
   /* this is a bad color, change it */
   .unsatisfied {
     background: #eb7e7e;
+  }
+
+  .placeholder {
+    background: none;
   }
 </style>
