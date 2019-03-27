@@ -106,6 +106,7 @@
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
             @drag-class = "testClass"
+            @drag-start-class = "dragStartClass"
             @drop-class = "dropClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
