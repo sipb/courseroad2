@@ -110,6 +110,7 @@
             @drop-class = "dropClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
+            @push-stack = "pushClassStack"
           ></audit>
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>Problems with the course requirements? Request edits

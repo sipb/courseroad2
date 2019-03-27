@@ -5,6 +5,7 @@
     v-on:drag = "drag"
     v-on:dragend = "drop"
     v-on:dragstart = "dragStart"
+    @click = "clickRequirement"
   >
     <div v-if="!leaf">
       <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
@@ -91,6 +92,15 @@ export default {
     }
   },
   methods: {
+    clickRequirement: function(event) {
+      if(this.req.req !== undefined) {
+        var usedReq = this.req.req;
+        if(usedReq.indexOf("GIR:")===0) {
+          usedReq = usedReq.substring(4);
+        }
+        this.$emit('push-stack', usedReq);
+      }
+    },
     drag: function(event) {
       this.$emit("drag-class", {
         drag: event,
