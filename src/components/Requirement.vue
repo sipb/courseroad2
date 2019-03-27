@@ -106,6 +106,11 @@ export default {
     },
     dragStart: function(event) {
       event.dataTransfer.setData('foo', 'bar');
+      this.$emit('drag-start-class', {
+        dragstart: event,
+        classInfo: this.classInfo,
+        isNew: true
+      })
     }
   }
 }
