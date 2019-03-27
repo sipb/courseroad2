@@ -30,10 +30,10 @@
     </v-container>
 
     <v-container
-      class="grey lighten-3 semester-drop-container"
+      class="lighten-3 semester-drop-container"
       fluid
       grid-list-md
-      :class="semesterStyles"
+      :class="[semesterStyles,semColor]"
     >
       <v-layout wrap align-center justify-center row>
         <class
@@ -45,6 +45,8 @@
           @drop-class="$emit('drop-class',$event)"
           @remove-class = "$emit('remove-class', $event)"
           @click-class = "$emit('click-class',$event)"
+          @add-at-placeholder = "$emit('add-at-placeholder', $event)"
+          @drag-start-class = "$emit('drag-start-class', $event)"
         />
       </v-layout>
     </v-container>
@@ -65,7 +67,7 @@ import colorMixin from "./../mixins/colorMixin.js"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester","draggingOver"],
   mixins: [colorMixin],
   data: function() {return {
     newYear: this.semesterYear,
@@ -74,6 +76,32 @@ export default {
     'class': Class
   },
   computed: {
+    semColor: function() {
+      if(this.addingFromCard||this.draggingOver) {
+        if(this.index==0||this.offeredNow) {
+          return "green";
+        } else if(this.isSameYear) {
+          return "red";
+        } else {
+          return "yellow";
+        }
+      } else {
+        return "grey";
+      }
+    },
+    isSameYear: function() {
+      return Math.floor((this.index-1)/3) === Math.floor((this.currentSemester-1)/3);
+    },
+    offeredNow: function() {
+      var semType = (this.index-1)%3;
+      if(semType >= 0 && (this.addingFromCard||this.draggingOver)) {
+        return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
+      } else if(this.addingFromCard) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     semesterStyles: function() {
       return {
         semesterBin: true,
@@ -82,9 +110,13 @@ export default {
       }
     },
     semesterSubjects: function() {
-      return this.selectedSubjects.filter(subj => {
+      var semSubjs =  this.selectedSubjects.filter(subj => {
         return this.index === subj.semester;
       });
+      if(this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
+        semSubjs.push("placeholder");
+      }
+      return semSubjs;
     },
     semesterInformation: function() {
       var classesInfo = this.semesterSubjects.map(function(subj) {

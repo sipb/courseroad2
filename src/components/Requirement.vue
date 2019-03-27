@@ -1,4 +1,3 @@
-
 <template>
   <div
     class = "requirement"
@@ -28,7 +27,11 @@
       </span>
     </span>
     <span v-else>
-      | <span style = "text-transform: cursive">{{ req.req }}</span>
+      <span v-if = "'title' in req">| </span>
+      <span style = "text-transform: cursive">{{ req.req }}</span>
+    </span>
+    <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
+       (optional)
     </span>
     <div :class = "percentage_bar" :style = "percentage"></div>
   </div>
@@ -36,8 +39,6 @@
 
 
 <script>
-import $ from 'jquery'
-
 export default {
   name: 'requirement',
   props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
@@ -116,6 +117,11 @@ export default {
     },
     dragStart: function(event) {
       event.dataTransfer.setData('foo', 'bar');
+      this.$emit('drag-start-class', {
+        dragstart: event,
+        classInfo: this.classInfo,
+        isNew: true
+      })
     }
   }
 }
