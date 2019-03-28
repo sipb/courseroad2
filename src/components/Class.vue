@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     dragStart: function(event) {
-      // TODO: Rewrite as part of #53?
       event.dataTransfer.setData('classData', JSON.stringify({isNew: false,classInfo:this.classInfo}));
       this.$emit('drag-start-class', {
         dragstart: event,
