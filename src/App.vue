@@ -9,7 +9,7 @@
         v-bind:subjects = "subjectsInfo"
         @delete-road = "$refs.authcomponent.deleteRoad($event)"
         @set-name = "setRoadName($event.road, $event.name)"
-        @add-road = "addRoad"
+        @add-road = "addRoad(...arguments)"
         @change-active = "changeActiveRoad($event)"
         slot = "extension"
       >
@@ -356,16 +356,10 @@ export default {
     },
     addRoad: function(roadName, cos=["girs"], ss=[]) {
       var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
-      var newContents;
-      if(!this.duplicateRoad) {
-        newContents = {
+      var newContents = {
           coursesOfStudy: cos,
           selectedSubjects: ss,
         }
-      } else {
-        newContents = JSON.parse(JSON.stringify(this.roads[this.duplicateRoadSource].contents));
-      }
-
       var newRoad = {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
@@ -527,7 +521,6 @@ export default {
     activeRoad: function(newRoad,oldRoad) {
       window.activeRoad = newRoad;
       this.justLoaded = false;
-      this.duplicateRoadSource = newRoad;
       if(newRoad !== "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
         this.updateFulfillment();

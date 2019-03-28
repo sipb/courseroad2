@@ -59,7 +59,7 @@
             </v-flex>
           </v-layout>
           <v-card-actions>
-            <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="$emit('add-road', newRoadName); addDialog=false; newRoadName = ''">Create</v-btn>
+            <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="createRoad">Create</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -100,6 +100,15 @@ export default {
         }
       }.bind(this));
       return otherRoadNames.indexOf(roadName) >= 0;
+    },
+    createRoad: function() {
+      if(!this.duplicateRoad) {
+        this.$emit('add-road', this.newRoadName);
+      } else if(this.duplicateRoadSource in this.roads){
+        this.$emit('add-road', this.newRoadName, this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0), this.roads[this.duplicateRoadSource].contents.selectedSubjects.slice(0));
+      }
+      this.addDialog=false;
+      this.newRoadName = ''
     }
   },
   watch: {
