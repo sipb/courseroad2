@@ -3,7 +3,7 @@
   <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'road_'+roadID+'_semester_' + index" v-on:dragover.native.prevent>
     <!-- <div slot="header"> -->
     <v-container grid-list-xs slot = "header" style = "padding: 0;">
-      <v-layout row>
+      <v-layout>
         <v-flex xs6>
           <b>{{semesterType}}
             <v-hover>
@@ -33,21 +33,22 @@
       class="lighten-3 semester-drop-container"
       fluid
       grid-list-md
-      :class="[semesterStyles,semColor]"
+      :class="[semesterStyles, semColor]"
+      v-on:dragenter="dragenter"
+      v-on:dragleave="dragleave"
+      v-on:drop = "ondrop"
     >
-      <v-layout wrap align-center justify-center row>
-        <class
-          v-for="(subject, subjindex) in semesterSubjects"
-          v-bind:classInfo="subject"
-          v-bind:semesterIndex="index"
-          :key="subject.id + '-' + subjindex + '-' + index"
-          @drag-class="$emit('drag-class',$event)"
-          @drop-class="$emit('drop-class',$event)"
-          @remove-class = "$emit('remove-class', $event)"
-          @click-class = "$emit('click-class',$event)"
-          @add-at-placeholder = "$emit('add-at-placeholder', $event)"
-          @drag-start-class = "$emit('drag-start-class', $event)"
-        />
+      <v-layout wrap align-center justify-center row >
+          <class
+            v-for="(subject, subjindex) in semesterSubjects"
+            v-bind:classInfo="subject"
+            v-bind:semesterIndex="index"
+            :key="subject.id + '-' + subjindex + '-' + index"
+            @remove-class = "$emit('remove-class', $event)"
+            @click-class = "$emit('click-class',$event)"
+            @add-at-placeholder = "$emit('add-at-placeholder', $event)"
+            @drag-start-class = "$emit('drag-start-class', $event)"
+          />
       </v-layout>
     </v-container>
   </v-expansion-panel-content>
@@ -67,10 +68,12 @@ import colorMixin from "./../mixins/colorMixin.js"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester","draggingOver"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester"],
   mixins: [colorMixin],
   data: function() {return {
     newYear: this.semesterYear,
+    draggingOver: false,
+    dragCount: 0
   }},
   components: {
     'class': Class
@@ -110,7 +113,9 @@ export default {
       }
     },
     semesterSubjects: function() {
-      var semSubjs =  this.selectedSubjects.filter(subj => {
+      var semSubjs =  this.selectedSubjects.map(function(subj,ind) {
+        return Object.assign(subj,{index:ind});
+      }).filter(subj => {
         return this.index === subj.semester;
       });
       if(this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
@@ -161,16 +166,36 @@ export default {
     changeYear: function(event) {
       event.stopPropagation();
       this.$emit("change-year")
+    },
+    dragenter: function(event) {
+      this.draggingOver = true;
+      this.dragCount++;
+    },
+    dragleave: function(event) {
+      this.dragCount--;
+      if(this.dragCount == 0) {
+        this.draggingOver = false;
+      }
+    },
+    ondrop: function(event) {
+      if(this.offeredNow||this.index===0) {
+        var eventData = JSON.parse(event.dataTransfer.getData("text/plain"));
+        if(eventData.isNew) {
+          var newClass = {
+            overrideWarnings : false,
+            semester : this.index,
+            title : this.itemAdding.title,
+            id : this.itemAdding.subject_id,
+            units : this.itemAdding.total_units
+          }
+          this.$emit('add-class', newClass);
+        } else {
+          this.$emit('move-class', {classIndex: eventData.classInfo.index, semester: this.index})
+        }
+      }
+      this.draggingOver = false;
+      this.dragCount = 0;
     }
-    // dropped: function(event) {
-    //   // console.log("dropped");
-    //   // console.log(event);
-    // },
-    // dragenter: function(event) {
-    //   // console.log("drag enter");
-    //   // console.log(event);
-    //   // event.preventDefault();
-    // }
   }
 }
 </script>
@@ -200,5 +225,8 @@ export default {
 
   .light {
     /*background-color: #cde7f0;*/
+  }
+  .dragging {
+    background-color: purple;
   }
 </style>

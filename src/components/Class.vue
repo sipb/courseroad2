@@ -16,8 +16,6 @@
       v-else
       :class="[{classbox: true, satisfied: isSatisfied}]"
       draggable
-      v-on:drag = "drag"
-      v-on:dragend = "drop"
       v-on:dragstart = "dragStart"
       v-on:click = "$emit('click-class', classInfo)"
     >
@@ -44,31 +42,15 @@ export default {
     }
   },
   methods: {
-    drag: function(event) {
-      this.$emit("drag-class",{
-        drag: event,
-        basicClass: this.classInfo,
-        isNew: false,
-        currentSem: this.semesterIndex
-      });
-    },
     dragStart: function(event) {
       // TODO: Rewrite as part of #53?
-      event.dataTransfer.setData('foo', 'bar')
+      event.dataTransfer.setData('text/plain', JSON.stringify({isNew: false,classInfo:this.classInfo}));
       this.$emit('drag-start-class', {
         dragstart: event,
         basicClass: this.classInfo,
         isNew: false,
         currentSem: this.semesterIndex
       })
-    },
-    drop: function(event) {
-      this.$emit("drop-class",{
-        drop: event,
-        basicClass: this.classInfo,
-        isNew: false,
-        currentSem: this.semesterIndex
-      });
     },
     clickClass: function(classInfo) {
       if(classInfo !== "placeholder") {
