@@ -259,9 +259,6 @@ export default {
         }
       }
     },
-    // Store last dragover event's x and y position so we can fallback to that for getting the right drop location.
-    lastX: 0,
-    lastY: 0,
   }},
   computed: {
     roadref: function() {
@@ -289,29 +286,6 @@ export default {
         this.activeRoad = newid;
       }
       Vue.delete(this.roads, oldid);
-    },
-    getRelevantObjects: function(position) {
-      let semesterElem
-      if (position.x === 0 && position.y === 0) {
-        semesterElem = document.elementFromPoint(this.lastX, this.lastY)
-      } else {
-        semesterElem = document.elementFromPoint(position.x,position.y);
-      }
-      var semesterParent = $(semesterElem).parents(".semester-container");
-      var semesterBox = semesterParent.find(".semester-drop-container");
-      return {
-        semesterParent: semesterParent,
-        semesterBox: semesterBox
-      }
-    },
-    getSemesterNum: function(semesterObjects) {
-      if(semesterObjects.semesterParent.length) {
-        var semesterID = semesterObjects.semesterParent.attr("id");
-        if(semesterID.split("_")[2]==="semester") {
-          return parseInt(semesterID.split("_")[3]);
-        }
-      }
-      return -1;
     },
     dragStartClass: function(event) {
       var classInfo = event.classInfo;
@@ -545,11 +519,6 @@ export default {
   mounted() {
     window.$refs = this.$refs;
     window.activeRoad = this.activeRoad;
-
-    document.ondragover = (event) => {
-      this.lastX = event.x
-      this.lastY = event.y
-    }
 
     var borders = $(".v-navigation-drawer__border")
     var scrollers = $(".scroller")
