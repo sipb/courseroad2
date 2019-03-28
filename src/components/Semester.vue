@@ -179,7 +179,7 @@ export default {
     },
     ondrop: function(event) {
       if(this.offeredNow||!this.isSameYear||this.index===0) {
-        var eventData = JSON.parse(event.dataTransfer.getData("text/plain"));
+        var eventData = JSON.parse(event.dataTransfer.getData("classData"));
         if(eventData.isNew) {
           var newClass = {
             overrideWarnings : false,

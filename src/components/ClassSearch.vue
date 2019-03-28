@@ -258,7 +258,8 @@ export default {
   methods: {
     dragStart: function(event, classItem) {
       // TODO: Rewrite as part of #53?
-      event.dataTransfer.setData('text/plain', JSON.stringify({isNew:true}))
+      // event.dataTransfer.setData('foo','bar');
+      event.dataTransfer.setData('classData', JSON.stringify({isNew:true,classIndex:-1}))
       this.$emit('drag-start-class', {
         dragstart: event,
         classInfo: classItem.item,

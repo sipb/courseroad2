@@ -116,7 +116,7 @@ export default {
       });
     },
     dragStart: function(event) {
-      event.dataTransfer.setData('text/plain', JSON.stringify({isNew:true}));
+      event.dataTransfer.setData('classData', JSON.stringify({isNew:true,classIndex:-1}));
       this.$emit('drag-start-class', {
         dragstart: event,
         classInfo: this.classInfo,
