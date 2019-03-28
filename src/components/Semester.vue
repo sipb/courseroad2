@@ -178,7 +178,7 @@ export default {
       }
     },
     ondrop: function(event) {
-      if(this.offeredNow||this.index===0) {
+      if(this.offeredNow||!this.isSameYear||this.index===0) {
         var eventData = JSON.parse(event.dataTransfer.getData("text/plain"));
         if(eventData.isNew) {
           var newClass = {
