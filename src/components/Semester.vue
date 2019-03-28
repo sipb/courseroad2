@@ -81,7 +81,7 @@ export default {
   computed: {
     semColor: function() {
       if(this.addingFromCard||this.draggingOver) {
-        if(this.index==0||this.offeredNow) {
+        if(this.index===0||this.offeredNow) {
           return "green";
         } else if(this.isSameYear) {
           return "red";
@@ -173,7 +173,7 @@ export default {
     },
     dragleave: function(event) {
       this.dragCount--;
-      if(this.dragCount == 0) {
+      if(this.dragCount === 0) {
         this.draggingOver = false;
       }
     },
