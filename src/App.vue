@@ -14,7 +14,7 @@
         slot = "extension"
       >
       </road-tabs>
-      
+
       <import-export
         v-bind:roads="roads"
         v-bind:activeRoad="activeRoad"
@@ -323,26 +323,8 @@ export default {
       if(classInfo === undefined) {
         if (event.basicClass.id in this.subjectsIndexDict) {
           classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
-        } else {
-          var matchingClasses = this.subjectsInfo.filter(function(subject) {
-            var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
-            return possible_attributes.includes(event.basicClass.id);
-          });
-          if(matchingClasses.length) {
-            classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
-              return {
-                offered_fall: subjectA.offered_fall || subjectB.offeredFall,
-                offered_spring: subjectA.offered_spring || subjectB.offered_spring,
-                offered_IAP: subjectA.offered_IAP || subjectB.offered_IAP,
-              }
-            });
-          } else {
-            classInfo = {
-              offered_fall: false,
-              offered_spring: false,
-              offered_IAP: false,
-            }
-          }
+        } else if (event.basicClass.id in this.genericIndexDict) {
+          classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
         }
       }
       this.itemAdding = classInfo;
