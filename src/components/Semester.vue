@@ -211,22 +211,4 @@ export default {
     white-space: nowrap;
     color: white;
   }
-  .semesterBin {
-/*    display: flex;
-    justify-content: space-between;
-    padding: 5% 10% 5% 10%;
-*/
-    /*background-color: #bcdeea;*/
-  }
-
-  .dark {
-    /*background-color: #bcdeea;*/
-  }
-
-  .light {
-    /*background-color: #cde7f0;*/
-  }
-  .dragging {
-    background-color: purple;
-  }
 </style>
