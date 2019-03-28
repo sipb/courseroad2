@@ -3,7 +3,7 @@
   <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'road_'+roadID+'_semester_' + index" v-on:dragover.native.prevent>
     <!-- <div slot="header"> -->
     <v-container grid-list-xs slot = "header" style = "padding: 0;">
-      <v-layout>
+      <v-layout row>
         <v-flex xs6>
           <b>{{semesterType}}
             <v-hover>
