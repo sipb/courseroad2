@@ -33,7 +33,7 @@
       class="lighten-3 semester-drop-container"
       fluid
       grid-list-md
-      :class="[semesterStyles, semColor]"
+      :class="semColor"
       v-on:dragenter="dragenter"
       v-on:dragleave="dragleave"
       v-on:drop = "ondrop"
@@ -57,14 +57,7 @@
 
 <script>
 import Class from './Class.vue'
-import $ from "jquery"
 import colorMixin from "./../mixins/colorMixin.js"
-
-// $(".semester-container").on("dragover", function(event) {
-//   event.preventDefault();
-//   event.dataTransfer.dropEffect = "copy";
-// })
-
 
 export default {
   name: "semester",
@@ -103,13 +96,6 @@ export default {
         return true;
       } else {
         return false;
-      }
-    },
-    semesterStyles: function() {
-      return {
-        semesterBin: true,
-        dark: this.index % 2 == 0,
-        light: this.index % 2 == 1,
       }
     },
     semesterSubjects: function() {
