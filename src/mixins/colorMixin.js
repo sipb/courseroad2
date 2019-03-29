@@ -13,24 +13,24 @@ export default {
   },
   methods: {
     courseColor: function(id) {
-      let course  = id.split('.')[0];
-      let girAttrs = course.split(" ").filter((c)=>(this.validGeneric.indexOf(c)>=0));
-      if (this.validCourses.indexOf(course) !== -1) {
-        return 'course-' + course;
-      } else if (girAttrs.length >= 0) {
-        if(girAttrs.length == 1) {
-          var attr = girAttrs[0];
-          if(attr.indexOf("HASS") == 0) {
-            return 'generic-' + course;
-          } else if(attr.indexOf("CI") == 0) {
-            return 'generic-' + course;
+      if(id!==undefined) {
+        let course  = id.split('.')[0];
+        let girAttrs = course.split(" ").filter((c)=>(this.validGeneric.indexOf(c)>=0));
+        if (this.validCourses.indexOf(course) !== -1) {
+          return 'course-' + course;
+        } else if (girAttrs.length >= 0) {
+          if(girAttrs.length == 1) {
+            var attr = girAttrs[0];
+            if(attr.indexOf("HASS") == 0) {
+              return 'generic-' + course;
+            } else if(attr.indexOf("CI") == 0) {
+              return 'generic-' + course;
+            }
           }
+          return 'generic-GIR';
         }
-        return 'generic-GIR';
       }
-      else {
-        return 'course-none';
-      }
+      return 'course-none';
     }
   }
 }

@@ -18,7 +18,7 @@
         <v-layout row xs6 v-if = "!isOpen">
           <v-flex xs3 v-for = "subject in semesterSubjects" :key = "subject.id">
             <v-card>
-              <div :class = "courseColor(subject.id)">
+              <div v-if = "subject!=='placeholder'" :class = "courseColor(subject.id)">
                 <v-card-text class = "mini-course">
                   <b>{{subject.id}}</b>
                 </v-card-text>
