@@ -16,7 +16,7 @@
           Hours: {{Math.round(semesterInformation.expectedHours,1)}}
         </v-flex>
         <v-layout row xs6 v-if = "!isOpen">
-          <v-flex xs3 v-for = "subject in semesterSubjects" :key = "subject.id">
+          <v-flex xs3 v-for = "(subject,subjindex) in semesterSubjects" :key = "subject.id+'-'+subjindex+'-'+index">
             <v-card>
               <div v-if = "subject!=='placeholder'" :class = "courseColor(subject.id)">
                 <v-card-text class = "mini-course">
@@ -33,21 +33,22 @@
       class="lighten-3 semester-drop-container"
       fluid
       grid-list-md
-      :class="[semesterStyles,semColor]"
+      :class="semColor"
+      v-on:dragenter="dragenter"
+      v-on:dragleave="dragleave"
+      v-on:drop = "ondrop"
     >
-      <v-layout wrap align-center justify-center row>
-        <class
-          v-for="(subject, subjindex) in semesterSubjects"
-          v-bind:classInfo="subject"
-          v-bind:semesterIndex="index"
-          :key="subject.id + '-' + subjindex + '-' + index"
-          @drag-class="$emit('drag-class',$event)"
-          @drop-class="$emit('drop-class',$event)"
-          @remove-class = "$emit('remove-class', $event)"
-          @click-class = "$emit('click-class',$event)"
-          @add-at-placeholder = "$emit('add-at-placeholder', $event)"
-          @drag-start-class = "$emit('drag-start-class', $event)"
-        />
+      <v-layout wrap align-center justify-center row >
+          <class
+            v-for="(subject, subjindex) in semesterSubjects"
+            v-bind:classInfo="subject"
+            v-bind:semesterIndex="index"
+            :key="subject.id + '-' + subjindex + '-' + index"
+            @remove-class = "$emit('remove-class', $event)"
+            @click-class = "$emit('click-class',$event)"
+            @add-at-placeholder = "$emit('add-at-placeholder', $event)"
+            @drag-start-class = "$emit('drag-start-class', $event)"
+          />
       </v-layout>
     </v-container>
   </v-expansion-panel-content>
@@ -56,21 +57,16 @@
 
 <script>
 import Class from './Class.vue'
-import $ from "jquery"
 import colorMixin from "./../mixins/colorMixin.js"
-
-// $(".semester-container").on("dragover", function(event) {
-//   event.preventDefault();
-//   event.dataTransfer.dropEffect = "copy";
-// })
-
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester","draggingOver"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester"],
   mixins: [colorMixin],
   data: function() {return {
     newYear: this.semesterYear,
+    draggingOver: false,
+    dragCount: 0
   }},
   components: {
     'class': Class
@@ -78,7 +74,7 @@ export default {
   computed: {
     semColor: function() {
       if(this.addingFromCard||this.draggingOver) {
-        if(this.index==0||this.offeredNow) {
+        if(this.index===0||this.offeredNow) {
           return "green";
         } else if(this.isSameYear) {
           return "red";
@@ -102,15 +98,10 @@ export default {
         return false;
       }
     },
-    semesterStyles: function() {
-      return {
-        semesterBin: true,
-        dark: this.index % 2 == 0,
-        light: this.index % 2 == 1,
-      }
-    },
     semesterSubjects: function() {
-      var semSubjs =  this.selectedSubjects.filter(subj => {
+      var semSubjs =  this.selectedSubjects.map(function(subj,ind) {
+        return Object.assign(subj,{index:ind});
+      }).filter(subj => {
         return this.index === subj.semester;
       });
       if(this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
@@ -161,16 +152,36 @@ export default {
     changeYear: function(event) {
       event.stopPropagation();
       this.$emit("change-year")
+    },
+    dragenter: function(event) {
+      this.draggingOver = true;
+      this.dragCount++;
+    },
+    dragleave: function(event) {
+      this.dragCount--;
+      if(this.dragCount === 0) {
+        this.draggingOver = false;
+      }
+    },
+    ondrop: function(event) {
+      if(this.offeredNow||!this.isSameYear||this.index===0) {
+        var eventData = JSON.parse(event.dataTransfer.getData("classData"));
+        if(eventData.isNew) {
+          var newClass = {
+            overrideWarnings : false,
+            semester : this.index,
+            title : this.itemAdding.title,
+            id : this.itemAdding.subject_id,
+            units : this.itemAdding.total_units
+          }
+          this.$emit('add-class', newClass);
+        } else {
+          this.$emit('move-class', {classIndex: eventData.classInfo.index, semester: this.index})
+        }
+      }
+      this.draggingOver = false;
+      this.dragCount = 0;
     }
-    // dropped: function(event) {
-    //   // console.log("dropped");
-    //   // console.log(event);
-    // },
-    // dragenter: function(event) {
-    //   // console.log("drag enter");
-    //   // console.log(event);
-    //   // event.preventDefault();
-    // }
   }
 }
 </script>
@@ -185,20 +196,5 @@ export default {
     overflow: hidden;
     white-space: nowrap;
     color: white;
-  }
-  .semesterBin {
-/*    display: flex;
-    justify-content: space-between;
-    padding: 5% 10% 5% 10%;
-*/
-    /*background-color: #bcdeea;*/
-  }
-
-  .dark {
-    /*background-color: #bcdeea;*/
-  }
-
-  .light {
-    /*background-color: #cde7f0;*/
   }
 </style>

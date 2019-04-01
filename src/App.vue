@@ -14,7 +14,7 @@
         slot = "extension"
       >
       </road-tabs>
-      
+
       <import-export
         v-bind:roads="roads"
         v-bind:activeRoad="activeRoad"
@@ -74,9 +74,6 @@
           v-bind:classInfoStack = "classInfoStack"
           v-bind:cookiesAllowed = "cookiesAllowed"
           @add-class="addClass"
-          @move-class="moveClass"
-          @drop-class="dropClass"
-          @drag-class="testClass"
           @view-class-info="pushClassStack"
           @drag-start-class = "dragStartClass"
         >
@@ -105,9 +102,7 @@
             v-bind:subjectIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
-            @drag-class = "testClass"
             @drag-start-class = "dragStartClass"
-            @drop-class = "dropClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
             @push-stack = "pushClassStack"
@@ -142,8 +137,8 @@
             v-bind:genericIndex = "genericIndexDict"
             v-bind:dragSemesterNum = "(activeRoad===roadid) ? dragSemesterNum : -1"
             @add-at-placeholder = "addAtPlaceholder"
-            @drop-class="dropClass"
-            @drag-class="testClass"
+            @add-class = "addClass"
+            @move-class = "moveClass($event.classIndex,$event.semester)"
             @remove-class = "removeClass"
             @click-class = "pushClassStack($event.id)"
             @change-year = "$refs.authcomponent.changeSemester($event)"
@@ -264,9 +259,6 @@ export default {
         }
       }
     },
-    // Store last dragover event's x and y position so we can fallback to that for getting the right drop location.
-    lastX: 0,
-    lastY: 0,
   }},
   computed: {
     roadref: function() {
@@ -295,91 +287,16 @@ export default {
       }
       Vue.delete(this.roads, oldid);
     },
-    getRelevantObjects: function(position) {
-      let semesterElem
-      if (position.x === 0 && position.y === 0) {
-        semesterElem = document.elementFromPoint(this.lastX, this.lastY)
-      } else {
-        semesterElem = document.elementFromPoint(position.x,position.y);
-      }
-      var semesterParent = $(semesterElem).parents(".semester-container");
-      var semesterBox = semesterParent.find(".semester-drop-container");
-      return {
-        semesterParent: semesterParent,
-        semesterBox: semesterBox
-      }
-    },
-    getSemesterNum: function(semesterObjects) {
-      if(semesterObjects.semesterParent.length) {
-        var semesterID = semesterObjects.semesterParent.attr("id");
-        if(semesterID.split("_")[2]==="semester") {
-          return parseInt(semesterID.split("_")[3]);
-        }
-      }
-      return -1;
-    },
     dragStartClass: function(event) {
       var classInfo = event.classInfo;
       if(classInfo === undefined) {
         if (event.basicClass.id in this.subjectsIndexDict) {
           classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
-        } else {
-          var matchingClasses = this.subjectsInfo.filter(function(subject) {
-            var possible_attributes = [subject.gir_attribute, subject.hass_attribute, subject.communication_requirement];
-            return possible_attributes.includes(event.basicClass.id);
-          });
-          if(matchingClasses.length) {
-            classInfo = matchingClasses.reduce(function(subjectA, subjectB) {
-              return {
-                offered_fall: subjectA.offered_fall || subjectB.offeredFall,
-                offered_spring: subjectA.offered_spring || subjectB.offered_spring,
-                offered_IAP: subjectA.offered_IAP || subjectB.offered_IAP,
-              }
-            });
-          } else {
-            classInfo = {
-              offered_fall: false,
-              offered_spring: false,
-              offered_IAP: false,
-            }
-          }
+        } else if (event.basicClass.id in this.genericIndexDict) {
+          classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
         }
       }
       this.itemAdding = classInfo;
-    },
-    dropClass: function(event) {
-      var semesterObjects = this.getRelevantObjects(event.drop);
-      var semesterNum = this.getSemesterNum(semesterObjects);
-      var semesterType = (semesterNum - 1)%3;
-      var isOffered;
-      if(semesterType >= 0) {
-        isOffered = [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semesterType];
-      } else {
-        isOffered = true;
-      }
-      var inSameYear = Math.floor((semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
-      if(isOffered || !inSameYear) {
-        event.drop.preventDefault();
-        if(event.isNew) {
-          var newClass = {
-            overrideWarnings : false,
-            semester : semesterNum,
-            title : event.classInfo.title,
-            id : event.classInfo.subject_id,
-            units : event.classInfo.total_units
-          }
-          this.addClass(newClass);
-        } else {
-          var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
-          this.moveClass(currentIndex, semesterNum);
-        }
-      }
-      this.dragSemesterNum = -1;
-      this.itemAdding = undefined;
-    },
-    testClass: function(event) {
-      var semesterObjects = this.getRelevantObjects(event.drag);
-      this.dragSemesterNum = this.getSemesterNum(semesterObjects);
     },
     updateFulfillment: function() {
       var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
@@ -602,11 +519,6 @@ export default {
   mounted() {
     window.$refs = this.$refs;
     window.activeRoad = this.activeRoad;
-
-    document.ondragover = (event) => {
-      this.lastX = event.x
-      this.lastY = event.y
-    }
 
     var borders = $(".v-navigation-drawer__border")
     var scrollers = $(".scroller")
