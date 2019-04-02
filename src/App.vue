@@ -563,17 +563,17 @@ export default {
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
-        // this.subjectsInfo = response.data
-        // this.genericCourses = this.makeGenericCourses();
-        // this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
-        //   obj[item.subject_id] = index;
-        //   return obj;
-        // },{});
-        // this.genericIndexDict = this.genericCourses.reduce(function(obj, item, index) {
-        //   obj[item.subject_id] = index;
-        //   return obj;
-        // },{});
-        // this.subjectsLoaded = true;
+        this.subjectsInfo = response.data
+        this.genericCourses = this.makeGenericCourses();
+        this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
+          obj[item.subject_id] = index;
+          return obj;
+        },{});
+        this.genericIndexDict = this.genericCourses.reduce(function(obj, item, index) {
+          obj[item.subject_id] = index;
+          return obj;
+        },{});
+        this.subjectsLoaded = true;
       });
 
   },
