@@ -41,7 +41,7 @@
 <script>
 export default {
   name: 'requirement',
-  props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
+  props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex', 'subjectsLoaded'],
   data: function() {
     return {
       open: [],
@@ -66,7 +66,7 @@ export default {
       return undefined;
     },
     canDrag: function() {
-      return this.classInfo !== undefined;
+      return this.classInfo !== undefined || !this.subjectsLoaded;
     },
     reqFulfilled: function() {
       if(this.req.fulfilled) {
@@ -116,10 +116,14 @@ export default {
       });
     },
     dragStart: function(event) {
+      var usedInfo = this.classInfo;
+      if(usedInfo === undefined) {
+        usedInfo = {id: this.req.req};
+      }
       event.dataTransfer.setData('classData', JSON.stringify({isNew:true,classIndex:-1}));
       this.$emit('drag-start-class', {
         dragstart: event,
-        classInfo: this.classInfo,
+        classInfo: usedInfo,
         isNew: true
       })
     }
