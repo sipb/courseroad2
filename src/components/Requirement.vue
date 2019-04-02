@@ -64,7 +64,7 @@ export default {
       return undefined;
     },
     canDrag: function() {
-      return this.classInfo !== undefined || !this.subjectsLoaded;
+      return this.classInfo !== undefined || ('req' in this.req && !this.subjectsLoaded);
     },
     reqFulfilled: function() {
       if(this.req.fulfilled) {
