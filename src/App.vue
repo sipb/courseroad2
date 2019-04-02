@@ -136,6 +136,7 @@
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
             v-bind:dragSemesterNum = "(activeRoad===roadid) ? dragSemesterNum : -1"
+            v-bind:subjectsLoaded = "subjectsLoaded"
             @add-at-placeholder = "addAtPlaceholder"
             @add-class = "addClass"
             @move-class = "moveClass($event.classIndex,$event.semester)"

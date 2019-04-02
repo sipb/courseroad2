@@ -61,7 +61,7 @@ import colorMixin from "./../mixins/colorMixin.js"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester", "subjectsLoaded"],
   mixins: [colorMixin],
   data: function() {return {
     newYear: this.semesterYear,
@@ -76,7 +76,7 @@ export default {
       if(this.addingFromCard||this.draggingOver) {
         if(this.index===0||this.offeredNow) {
           return "green";
-        } else if(this.isSameYear) {
+        } else if(this.isSameYear||!this.subjectsLoaded||this.itemAdding===undefined) {
           return "red";
         } else {
           return "yellow";
@@ -89,6 +89,9 @@ export default {
       return Math.floor((this.index-1)/3) === Math.floor((this.currentSemester-1)/3);
     },
     offeredNow: function() {
+      if(!this.subjectsLoaded||this.itemAdding===undefined) {
+        return false;
+      }
       var semType = (this.index-1)%3;
       if(semType >= 0 && (this.addingFromCard||this.draggingOver)) {
         return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
@@ -164,7 +167,7 @@ export default {
       }
     },
     ondrop: function(event) {
-      if(this.offeredNow||!this.isSameYear||this.index===0) {
+      if(this.subjectsLoaded && this.itemAdding!== undefined && (this.offeredNow||!this.isSameYear||this.index===0)) {
         var eventData = JSON.parse(event.dataTransfer.getData("classData"));
         if(eventData.isNew) {
           var newClass = {
