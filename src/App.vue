@@ -297,6 +297,7 @@ export default {
         }
       }
       this.itemAdding = classInfo;
+      this.addingFromCard = false;
     },
     updateFulfillment: function() {
       var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
