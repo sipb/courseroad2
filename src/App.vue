@@ -104,6 +104,7 @@
             v-bind:subjectIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
+            v-bind:progressOverrides = "progressOverrides"
             @drag-start-class = "dragStartClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
@@ -261,7 +262,7 @@ export default {
         }
       }
     },
-    progressOverrides: {}
+    progressOverrides: {"major21e.0": 2, "major21e.1.3.1": 6, "major21e.1.10.0.1": 3, "major21e.1.8.0": 2, "major21e.1.9.1": 12, "major21e.1.5": 6, "major1.1.3": 51, "major21e.1.0.1.0": 1, "major21e.1.0.1.2": 2}
   }},
   computed: {
     roadref: function() {

@@ -98,7 +98,7 @@ export default {
   components: {
     'requirement': Requirement,
   },
-  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
+  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex', 'progressOverrides'],
   data: function() { return {
     tree: [],
     viewDialog: false,
@@ -108,7 +108,7 @@ export default {
     selectedTrees: function() {
       return this.selectedReqs.map(function(req,index){
         if(req in this.reqTrees) {
-          return Object.assign({index: index},this.reqTrees[req]);
+          return this.assignListIDs(Object.assign({index: index},this.reqTrees[req]));
         } else {
           return {
             title: "loading...",
@@ -144,6 +144,19 @@ export default {
     deleteReq: function(req) {
       var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
       this.$emit("remove-req",reqName);
+    },
+    assignListIDs: function(req) {
+      if("reqs" in req && "list-id" in req) {
+        var currentListID = req["list-id"];
+        if(currentListID.indexOf(".reql")>=0) {
+          req["list-id"] = req["list-id"].substring(0,req["list-id"].indexOf(".reql"));
+          currentListID = req["list-id"];
+        }
+        for(var r = 0; r < req.reqs.length; r++) {
+          Object.assign(this.assignListIDs(req.reqs[r]),{"list-id": currentListID+"."+r});
+        }
+      }
+      return req;
     }
   },
 
