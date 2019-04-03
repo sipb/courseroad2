@@ -14,17 +14,18 @@
             </v-layout>
           </v-container>
         </v-card>
+
         <v-card
           v-else
-          :class="[{classbox: true,}, courseColor]"
           draggable
           v-on:dragstart = "dragStart"
-          v-on:click = "$emit('click-class',classInfo)"
+          v-on:click = "$emit('click-class', classInfo)"
           :id = "'class'+classInfo.id.replace('.','')+semesterIndex"
         >
-          <div :class = "courseColor(classInfo.id)" style = "height:100%;">
+          <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
+          <div :class="cardClass(classInfo)">
             <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
-            <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
+            <v-card-text class="card-text"><b>{{classInfo.id}}</b>: {{classInfo.title}}</v-card-text>
           </div>
         </v-card>
         <v-btn v-if = "warnings.length>0&&(!classInfo.overrideWarnings||hover)" @click = "warningDialog = true" icon slot = "badge">
@@ -53,6 +54,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
   </v-flex>
 </template>
 
@@ -77,12 +79,15 @@ export default {
         basicClass: this.classInfo,
         isNew: false,
         currentSem: this.semesterIndex
-      })
+      });
     },
     clickClass: function(classInfo) {
       if(classInfo !== "placeholder") {
         this.$emit('click-class', classInfo);
       }
+    },
+    cardClass: function(classInfo) {
+      return `classbox ${this.courseColor(classInfo.id)}`;
     }
   }
 }
@@ -93,12 +98,31 @@ export default {
   .card-text {
     color: white;
     font-size: 1.1em;
-    padding-top: 0;
+    padding: 0;
+    margin: .2em .4em 0em .2em;
+    height: 100%;
   }
 
   .classbox {
+<<<<<<< HEAD
     height: 8em;
     padding-top: 0;
     overflow:hidden;
+=======
+    display: flex;
+    align-items: flex-start;
+    height: 5.6em; /* Chosen for three lines in the card, working with the set padding and margins. */
+    overflow: hidden;
+    padding: .2em .4em .4em .2em;
+    /* Multi-line truncation is not a supported feature of CSS right now.
+       Optimally, we would have multi-line truncation within the cards, but
+       currently extra words are clipped.
+    text-overflow: ellipsis;
+    white-space: nowrap; */
+  }
+
+  .placeholder {
+    background: none;
+>>>>>>> Improve card aesthetics
   }
 </style>
