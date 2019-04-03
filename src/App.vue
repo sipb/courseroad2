@@ -106,6 +106,7 @@
             @add-req = "addReq"
             @remove-req = "removeReq"
             @push-stack = "pushClassStack"
+            @update-progress = "updateProgress"
           ></audit>
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>Problems with the course requirements? Request edits
@@ -496,6 +497,9 @@ export default {
         }));
       }
       return genericCourses;
+    },
+    updateProgress: function(newProgress) {
+      Vue.set(this.progressOverrides, newProgress.listID, newProgress.progress);
     }
   },
   watch: {

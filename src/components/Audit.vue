@@ -33,6 +33,7 @@
           v-bind:genericIndex = "genericIndex"
           @drag-start-class = "$emit('drag-start-class',$event)"
           @push-stack = "$emit('push-stack',$event)"
+          @progress-dialog = "startProgressDialog"
         >
         </requirement>
       </template>
@@ -40,6 +41,26 @@
         <v-btn v-if="'reqs' in item" icon flat color = "info" @click.stop = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
       </template>
     </v-treeview>
+
+    <v-dialog v-model = "progressDialog">
+      <v-card v-if = "progressReq !== undefined">
+        <v-card-title><h2>Manual Progress: {{progressReq.title}}</h2></v-card-title>
+        <v-card-text>
+          <h3>{{capitalize(progressReq.threshold.criterion)}} Completed: {{newManualProgress}}/{{progressReq.threshold.cutoff}}</h3>
+          <v-slider
+            v-model = "newManualProgress"
+            :max = "progressReq.threshold.cutoff"
+            :min = "0"
+            :step = "1"
+            >
+          </v-slider>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color = "secondary" @click = "progressDialog = false; progressReq = undefined;">Cancel</v-btn>
+          <v-btn color = "primary" @click = "updateManualProgress">Update Progress</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-dialog v-model = "viewDialog">
       <div v-if = "dialogReq !== undefined">
@@ -102,7 +123,10 @@ export default {
   data: function() { return {
     tree: [],
     viewDialog: false,
-    dialogReq: undefined
+    dialogReq: undefined,
+    progressDialog: false,
+    progressReq: undefined,
+    newManualProgress: 0
   }},
   computed: {
     selectedTrees: function() {
@@ -157,6 +181,22 @@ export default {
         }
       }
       return req;
+    },
+    startProgressDialog: function(req) {
+      this.progressReq = req;
+      this.progressDialog = true;
+      if(this.progressReq["list-id"] in this.progressOverrides) {
+        this.newManualProgress = this.progressOverrides[this.progressReq["list-id"]];
+      }
+    },
+    capitalize: function(word) {
+      return word[0].toUpperCase() + word.substring(1);
+    },
+    updateManualProgress: function() {
+      this.$emit("update-progress", {listID: this.progressReq["list-id"], progress: this.newManualProgress});
+      this.progressReq = undefined;
+      this.progressDialog = false;
+      this.newManualProgress = 0;
     }
   },
 
