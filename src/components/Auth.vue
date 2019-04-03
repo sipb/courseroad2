@@ -161,6 +161,21 @@ export default {
         }
         this.logoutUser();
       }.bind(this))
+      this.getSecure("/prefs/progress_overrides/").then(function(response) {
+        if(response.status === 200 && response.data.success) {
+          this.$emit("set-overrides", response.data.progress_overrides);
+        } else {
+          return Promise.reject();
+        }
+        this.gettingUserData = false;
+      }.bind(this)).catch(function(err) {
+        alert(err);
+        this.gettingUserData = false;
+        if(err==="Token not valid") {
+          alert("Your token has expired.  Please log in again.");
+        }
+        this.logoutUser();
+      })
     },
 
     renumber: function(name, otherNames) {
