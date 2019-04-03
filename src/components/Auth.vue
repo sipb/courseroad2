@@ -41,7 +41,7 @@ function getQueryObject() {
 export default {
   name: "Auth",
   components: {},
-  props: ["roads", "justLoaded", "activeRoad", "conflictInfo"],
+  props: ["roads", "justLoaded", "activeRoad", "conflictInfo", "progressOverrides"],
   data: function() {return {
     accessInfo: undefined,
     loggedIn: false,

@@ -30,6 +30,7 @@
         v-bind:justLoaded = "justLoaded"
         v-bind:activeRoad = "activeRoad"
         v-bind:conflictInfo = "conflictInfo"
+        v-bind:progressOverrides = "progressOverrides"
         @delete-road = "deleteRoad"
         @set-road = "setRoad(...arguments)"
         @set-roads = "roads = $event"
@@ -40,6 +41,7 @@
         @reset-id = "resetID(...arguments)"
         @allow-cookies = "allowCookies"
         @set-sem = "setSemester"
+        @set-overrides = "progressOverrides = $event"
       >
       </auth>
 
@@ -259,6 +261,7 @@ export default {
         }
       }
     },
+    progressOverrides: {}
   }},
   computed: {
     roadref: function() {
