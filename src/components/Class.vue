@@ -5,10 +5,19 @@
     <v-hover>
       <v-badge overlap right color = "rgba(0,0,0,0)" style = "width:100%;" slot-scope = "{ hover }">
         <v-card
+          v-if = "classInfo == 'placeholder'"
+          class = "placeholder classbox"
+        >
+          <v-container fill-height>
+            <v-layout>
+              <v-btn style = "margin: auto" large icon @click = "$emit('add-at-placeholder',semesterIndex)"><v-icon>add</v-icon></v-btn>
+            </v-layout>
+          </v-container>
+        </v-card>
+        <v-card
+          v-else
           :class="[{classbox: true,}, courseColor]"
           draggable
-          v-on:drag = "drag"
-          v-on:dragend = "drop"
           v-on:dragstart = "dragStart"
           v-on:click = "$emit('click-class',classInfo)"
           :id = "'class'+classInfo.id.replace('.','')+semesterIndex"
@@ -61,25 +70,19 @@ export default {
     }
   },
   methods: {
-    drag: function(event) {
-      this.$emit("drag-class",{
-        drag: event,
-        basicClass: this.classInfo,
-        isNew: false,
-        currentSem: this.semesterIndex
-      });
-    },
     dragStart: function(event) {
-      // TODO: Rewrite as part of #53?
-      event.dataTransfer.setData('foo', 'bar')
-    },
-    drop: function(event) {
-      this.$emit("drop-class",{
-        drop: event,
+      event.dataTransfer.setData('classData', JSON.stringify({isNew: false,classInfo:this.classInfo}));
+      this.$emit('drag-start-class', {
+        dragstart: event,
         basicClass: this.classInfo,
         isNew: false,
         currentSem: this.semesterIndex
-      });
+      })
+    },
+    clickClass: function(classInfo) {
+      if(classInfo !== "placeholder") {
+        this.$emit('click-class', classInfo);
+      }
     }
   }
 }

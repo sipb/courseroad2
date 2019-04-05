@@ -31,8 +31,8 @@
           v-bind:subjectIndex = "subjectIndex"
           v-bind:genericCourses = "genericCourses"
           v-bind:genericIndex = "genericIndex"
-          @drag-class = "$emit('drag-class',$event)"
-          @drop-class = "$emit('drop-class',$event)"
+          @drag-start-class = "$emit('drag-start-class',$event)"
+          @push-stack = "$emit('push-stack',$event)"
         >
         </requirement>
       </template>

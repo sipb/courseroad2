@@ -16,15 +16,21 @@
       v-bind:roadID = "roadID"
       v-bind:isOpen = "visibleList[index-1]"
       v-bind:baseYear = "baseYear"
+      v-bind:addingFromCard = "addingFromCard"
+      v-bind:itemAdding = "itemAdding"
+      v-bind:currentSemester = "currentSemester"
+      v-bind:draggingOver = "dragSemesterNum===index-1"
       v-bind:subjectsIndex = "subjectsIndex"
       v-bind:genericCourses = "genericCourses"
       v-bind:genericIndex = "genericIndex"
-      @drag-class = "$emit('drag-class',$event)"
-      @drop-class = "$emit('drop-class',$event)"
+      @add-at-placeholder = "$emit('add-at-placeholder',$event)"
+      @add-class = "$emit('add-class', $event)"
+      @move-class = "$emit('move-class', $event)"
       @remove-class = "$emit('remove-class', $event)"
       @click-class = "$emit('click-class',$event)"
       @change-year = "changeYearDialog = true"
       @override-warnings = "$emit('override-warnings',$event)"
+      @drag-start-class = "$emit('drag-start-class',$event)"
       >
     </semester>
     <v-dialog v-model = "changeYearDialog">
@@ -60,9 +66,11 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects',"subjects","roadID","currentSemester", "subjectsIndex", "genericCourses", "genericIndex"],
-  data: function () { return {
-      visibleList: this.currentSemester >= 13 ? Array(16).fill(true) : Array(13).fill(true),
+  props: ['selectedSubjects',"subjects","roadID","currentSemester","addingFromCard", "itemAdding", "dragSemesterNum","subjectsIndex", "genericCourses", "genericIndex"],
+  data: function () {
+    let defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true,];
+    return {
+      visibleList: this.currentSemester >= 13 ? defaultOpen + [true, false, true,] : defaultOpen,
       changeYearDialog: false,
       newYear: (this.currentSemester-1) * 3,
       numSems: this.currentSemester >= 13 ? 16 : 13

@@ -25,8 +25,6 @@
                 slot-scope="{ hover }"
                 :class="{ 'elevation-3': hover }"
                 draggable = "true"
-                v-on:dragend ="drop($event, props)"
-                v-on:drag = "drag($event, props)"
                 v-on:dragstart="dragStart($event, props)"
                 @click = "viewClassInfo(props)"
                 style="cursor: grab; margin: 4px; display: block;"
@@ -258,23 +256,13 @@ export default {
     }
   },
   methods: {
-    drag: function(event, classItem) {
-      this.$emit("drag-class", {
-        drag: event,
-        classInfo: classItem.item,
-        isNew: true
-      });
-    },
     dragStart: function(event, classItem) {
-      // TODO: Rewrite as part of #53?
-      event.dataTransfer.setData('foo', 'bar')
-    },
-    drop: function(event, classItem) {
-      this.$emit("drop-class", {
-        drop: event,
+      event.dataTransfer.setData('classData', JSON.stringify({isNew:true,classIndex:-1}))
+      this.$emit('drag-start-class', {
+        dragstart: event,
         classInfo: classItem.item,
         isNew: true
-      });
+      })
     },
     updateMenuStyle: function() {
       var searchInputElem = document.getElementById("searchInputTF");

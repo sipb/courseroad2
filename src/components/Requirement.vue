@@ -1,4 +1,3 @@
-
 <template>
   <div
     class = "requirement"
@@ -6,6 +5,7 @@
     v-on:drag = "drag"
     v-on:dragend = "drop"
     v-on:dragstart = "dragStart"
+    @click = "clickRequirement"
   >
     <div v-if="!leaf">
       <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
@@ -27,7 +27,11 @@
       </span>
     </span>
     <span v-else>
-      | <span style = "text-transform: cursive">{{ req.req }}</span>
+      <span v-if = "'title' in req">| </span>
+      <span style = "text-transform: cursive">{{ req.req }}</span>
+    </span>
+    <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
+       (optional)
     </span>
     <div :class = "percentage_bar" :style = "percentage"></div>
   </div>
@@ -35,8 +39,6 @@
 
 
 <script>
-import $ from 'jquery'
-
 export default {
   name: 'requirement',
   props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
@@ -90,6 +92,15 @@ export default {
     }
   },
   methods: {
+    clickRequirement: function(event) {
+      if(this.req.req !== undefined) {
+        var usedReq = this.req.req;
+        if(usedReq.indexOf("GIR:")===0) {
+          usedReq = usedReq.substring(4);
+        }
+        this.$emit('push-stack', usedReq);
+      }
+    },
     drag: function(event) {
       this.$emit("drag-class", {
         drag: event,
@@ -105,7 +116,12 @@ export default {
       });
     },
     dragStart: function(event) {
-      event.dataTransfer.setData('foo', 'bar');
+      event.dataTransfer.setData('classData', JSON.stringify({isNew:true,classIndex:-1}));
+      this.$emit('drag-start-class', {
+        dragstart: event,
+        classInfo: this.classInfo,
+        isNew: true
+      })
     }
   }
 }

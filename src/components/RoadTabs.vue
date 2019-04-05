@@ -59,20 +59,22 @@
             </v-flex>
           </v-layout>
           <v-card-actions>
-            <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="$emit('add-road', newRoadName); addDialog=false; newRoadName = ''">Create</v-btn>
+            <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="createRoad">Create</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-tabs>
-    <!-- this button gets obscured if the tab sliders are visible -->
-    <v-btn icon flat color = "primary" @click = "addDialog = true">
-      <v-icon>add</v-icon>
-    </v-btn>
+    <v-flex>
+      <v-btn icon flat color = "primary" @click = "addDialog = true">
+        <v-icon>add</v-icon>
+      </v-btn>
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
 import Road from "./Road.vue"
+
 export default {
   name: 'RoadTabs',
   components: {
@@ -98,6 +100,15 @@ export default {
         }
       }.bind(this));
       return otherRoadNames.indexOf(roadName) >= 0;
+    },
+    createRoad: function() {
+      if(!this.duplicateRoad) {
+        this.$emit('add-road', this.newRoadName);
+      } else if(this.duplicateRoadSource in this.roads){
+        this.$emit('add-road', this.newRoadName, this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0), this.roads[this.duplicateRoadSource].contents.selectedSubjects.slice(0));
+      }
+      this.addDialog=false;
+      this.newRoadName = ''
     }
   },
   watch: {
@@ -105,9 +116,13 @@ export default {
       this.tabRoad = this.activeRoad;
     }
   }
-
 }
 </script>
 
 <style>
+/*This is to prevent it from monopolizing all the space*/
+.v-tabs__container {
+  display: unset;
+  white-space: unset;
+}
 </style>

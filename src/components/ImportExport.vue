@@ -40,6 +40,14 @@
           ></v-textarea>
 
           <v-spacer></v-spacer>
+          <v-flex v-if="otherRoadHasName(roadtitle)">
+            <v-card color="red">
+              <v-card-text>
+                <b>Invalid input!</b>
+                There's already a road with this name.
+              </v-card-text>
+            </v-card>
+          </v-flex>
           <v-flex v-if="badinput">
             <v-card color="red">
               <v-card-text>
@@ -65,6 +73,7 @@
             color="primary"
             flat
             @click="importRoad"
+            :disabled="otherRoadHasName(roadtitle)"
           >
             Import!
           </v-btn>
@@ -131,6 +140,12 @@ export default {
         this.badinput = false;
         this.dialog = false;
       }
+    },
+    otherRoadHasName: function(roadName) {
+      var otherRoadNames = Object.keys(this.roads).filter(function(road) {
+        return this.roads[road].name === roadName
+      }.bind(this));
+      return otherRoadNames.length > 0;
     },
   },
   mounted() {

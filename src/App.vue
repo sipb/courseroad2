@@ -9,7 +9,7 @@
         v-bind:subjects = "subjectsInfo"
         @delete-road = "$refs.authcomponent.deleteRoad($event)"
         @set-name = "setRoadName($event.road, $event.name)"
-        @add-road = "addRoad"
+        @add-road = "addRoad(...arguments)"
         @change-active = "changeActiveRoad($event)"
         slot = "extension"
       >
@@ -74,10 +74,8 @@
           v-bind:classInfoStack = "classInfoStack"
           v-bind:cookiesAllowed = "cookiesAllowed"
           @add-class="addClass"
-          @move-class="moveClass"
-          @drop-class="dropClass"
-          @drag-class="testClass"
           @view-class-info="pushClassStack"
+          @drag-start-class = "dragStartClass"
         >
         </class-search>
       </v-menu>
@@ -104,10 +102,10 @@
             v-bind:subjectIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
-            @drag-class = "testClass"
-            @drop-class = "dropClass"
+            @drag-start-class = "dragStartClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
+            @push-stack = "pushClassStack"
           ></audit>
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>Problems with the course requirements? Request edits
@@ -132,15 +130,20 @@
             v-bind:subjects = "subjectsInfo"
             v-bind:roadID = "roadid"
             v-bind:currentSemester = "currentSemester"
+            v-bind:addingFromCard = "addingFromCard && activeRoad===roadid"
+            v-bind:itemAdding = "itemAdding"
             v-bind:subjectsIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
-            @drop-class="dropClass"
-            @drag-class="testClass"
+            v-bind:dragSemesterNum = "(activeRoad===roadid) ? dragSemesterNum : -1"
+            @add-at-placeholder = "addAtPlaceholder"
+            @add-class = "addClass"
+            @move-class = "moveClass($event.classIndex,$event.semester)"
             @remove-class = "removeClass"
             @click-class = "pushClassStack($event.id)"
             @change-year = "$refs.authcomponent.changeSemester($event)"
             @override-warnings = "overrideWarnings($event.override,$event.classInfo)"
+            @drag-start-class = "dragStartClass"
           ></road>
         </v-tab-item>
       </v-tabs-items>
@@ -162,10 +165,13 @@
       v-bind:classInfoStack = "classInfoStack"
       v-bind:subjects = "subjectsInfo"
       v-bind:subjectsIndex = "subjectsIndexDict"
+      v-bind:addingFromCard = "addingFromCard"
       v-bind:genericCourses = "genericCourses"
       v-bind:genericIndex = "genericIndexDict"
       @pop-stack = "popClassStack"
       @push-stack = "pushClassStack"
+      @add-class = "addFromCard"
+      @cancel-add-class = "cancelAddFromCard"
       @close-classinfo = "classInfoStack = []"
       v-on:click.native = "$event.stopPropagation()"
       >
@@ -236,6 +242,8 @@ export default {
     showSearch: false,
     classInfoStack: [],
     currentSemester: 0,
+    addingFromCard: false,
+    itemAdding: undefined,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -252,9 +260,6 @@ export default {
         }
       }
     },
-    // Store last dragover event's x and y position so we can fallback to that for getting the right drop location.
-    lastX: 0,
-    lastY: 0,
   }},
   computed: {
     roadref: function() {
@@ -283,116 +288,16 @@ export default {
       }
       Vue.delete(this.roads, oldid);
     },
-    getRelevantObjects: function(position) {
-      let semesterElem
-      if (position.x === 0 && position.y === 0) {
-        semesterElem = document.elementFromPoint(this.lastX, this.lastY)
-      } else {
-        semesterElem = document.elementFromPoint(position.x,position.y);
-      }
-      var semesterParent = $(semesterElem).parents(".semester-container");
-      var semesterBox = semesterParent.find(".semester-drop-container");
-      return {
-        semesterParent: semesterParent,
-        semesterBox: semesterBox
-      }
-    },
-    resetSemesterBox: function(semesterBox) {
-      semesterBox.addClass("grey");
-      semesterBox.removeClass("red");
-      semesterBox.removeClass("green");
-      semesterBox.removeClass("yellow");
-    },
-    classIsOffered: function(semesterObjects, event) {
-      if(semesterObjects.semesterParent.length) {
-        var semesterID = semesterObjects.semesterParent.attr("id");
-        if(semesterID.split("_")[2]==="semester") {
-          var semesterNum = parseInt(semesterID.split("_")[3]);
-          var semesterType = (semesterNum-1) % 3;
-          var classInfo = event.classInfo;
-          var isOffered;
-          if(classInfo === undefined) {
-            if(this.subjectsLoaded) {
-              if(event.basicClass.id in this.subjectsIndexDict) {
-                classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
-              } else if(event.basicClass.id in this.genericIndexDict) {
-                classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
-              } else {
-                classInfo = undefined;
-              }
-            } else {
-              classInfo = undefined;
-            }
-
-          }
-          if(classInfo !== undefined) {
-            if(semesterType>=0) {
-              isOffered = [classInfo.offered_fall, classInfo.offered_IAP, classInfo.offered_spring][semesterType];
-            } else {
-              isOffered = true;
-            }
-          }
-          return {
-            isOffered: isOffered,
-            semesterNum: semesterNum
-          }
+    dragStartClass: function(event) {
+      var classInfo = event.classInfo;
+      if(classInfo === undefined) {
+        if (event.basicClass.id in this.subjectsIndexDict) {
+          classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
+        } else if (event.basicClass.id in this.genericIndexDict) {
+          classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
         }
       }
-      return {
-        isOffered: undefined
-      }
-    },
-    dropClass: function(event) {
-      var semesterObjects = this.getRelevantObjects(event.drop);
-      this.resetSemesterBox(semesterObjects.semesterBox);
-      var semInfo = this.classIsOffered(semesterObjects, event);
-      if(semInfo.isOffered !== undefined) {
-        var inSameYear = Math.floor((semInfo.semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
-        if(semInfo.isOffered||!inSameYear) {
-          event.drop.preventDefault();
-          if(event.isNew) {
-            var newClass = {
-              overrideWarnings : false,
-              semester : semInfo.semesterNum,
-              title : event.classInfo.title,
-              id : event.classInfo.subject_id,
-              units : event.classInfo.total_units
-            }
-            this.addClass(newClass);
-          } else {
-            var currentIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(event.basicClass);
-            this.moveClass(currentIndex, semInfo.semesterNum)
-          }
-        }
-      }
-      this.dragSemesterNum = -1;
-    },
-    testClass: function(event) {
-      var semesterObjects = this.getRelevantObjects(event.drag);
-      var semInfo = this.classIsOffered(semesterObjects, event);
-      if(semInfo.isOffered !== undefined) {
-        var inSameYear = Math.floor((semInfo.semesterNum-1)/3) === Math.floor((this.currentSemester-1)/3);
-        if (!semInfo.isOffered) {
-          if(inSameYear) {
-            semesterObjects.semesterBox.removeClass("grey");
-            semesterObjects.semesterBox.addClass("red");
-          } else {
-            semesterObjects.semesterBox.removeClass("grey");
-            semesterObjects.semesterBox.addClass("yellow");
-          }
-        } else {
-          semesterObjects.semesterBox.removeClass("grey");
-          semesterObjects.semesterBox.addClass("green");
-        }
-      }
-      if(this.dragSemesterNum !== semInfo.semesterNum && this.dragSemesterNum != -1) {
-        var lastSemester = $("#road_"+$.escapeSelector(this.activeRoad)+"_semester_" + this.dragSemesterNum);
-        var lastSemesterBox = lastSemester.find(".semester-drop-container");
-        this.resetSemesterBox(lastSemesterBox)
-      }
-      if(semInfo.semesterNum !== undefined) {
-        this.dragSemesterNum = semInfo.semesterNum;
-      }
+      this.itemAdding = classInfo;
     },
     updateFulfillment: function() {
       var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
@@ -426,16 +331,10 @@ export default {
     },
     addRoad: function(roadName, cos=["girs"], ss=[]) {
       var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
-      var newContents;
-      if(!this.duplicateRoad) {
-        newContents = {
+      var newContents = {
           coursesOfStudy: cos,
           selectedSubjects: ss,
         }
-      } else {
-        newContents = JSON.parse(JSON.stringify(this.roads[this.duplicateRoadSource].contents));
-      }
-
       var newRoad = {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
@@ -495,6 +394,26 @@ export default {
     },
     popClassStack: function() {
       this.classInfoStack.pop();
+    },
+    addFromCard: function(classItem) {
+      this.addingFromCard = true;
+      this.itemAdding = classItem;
+    },
+    cancelAddFromCard: function() {
+      this.addingFromCard = false;
+      this.itemAdding = undefined;
+    },
+    addAtPlaceholder: function(index) {
+      var newClass = {
+        overrideWarnings : false,
+        semester : index,
+        title : this.itemAdding.title,
+        id : this.itemAdding.subject_id,
+        units : this.itemAdding.total_units
+      }
+      this.addClass(newClass);
+      this.addingFromCard = false;
+      this.itemAdding = undefined;
     },
     getOfferedAttributes: function(gir, hass, ci) {
       var matchingClasses = this.subjectsInfo.filter(function(subject) {
@@ -581,7 +500,6 @@ export default {
     activeRoad: function(newRoad,oldRoad) {
       window.activeRoad = newRoad;
       this.justLoaded = false;
-      this.duplicateRoadSource = newRoad;
       if(newRoad !== "") {
         window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
         this.updateFulfillment();
@@ -606,11 +524,6 @@ export default {
   mounted() {
     window.$refs = this.$refs;
     window.activeRoad = this.activeRoad;
-
-    document.ondragover = (event) => {
-      this.lastX = event.x
-      this.lastY = event.y
-    }
 
     var borders = $(".v-navigation-drawer__border")
     var scrollers = $(".scroller")
