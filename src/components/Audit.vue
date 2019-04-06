@@ -177,7 +177,8 @@ export default {
           currentListID = req["list-id"];
         }
         for(var r = 0; r < req.reqs.length; r++) {
-          Object.assign(this.assignListIDs(req.reqs[r]),{"list-id": currentListID+"."+r});
+          Object.assign(req.reqs[r], {"list-id": currentListID + "." + r});
+          req.reqs[r] = this.assignListIDs(req.reqs[r]);
         }
       }
       return req;

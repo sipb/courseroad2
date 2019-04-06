@@ -503,6 +503,7 @@ export default {
       return genericCourses;
     },
     updateProgress: function(newProgress) {
+      console.log("setting progress overrides");
       Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     }
