@@ -2,8 +2,6 @@
   <div
     class = "requirement"
     :draggable = "canDrag"
-    v-on:drag = "drag"
-    v-on:dragend = "drop"
     v-on:dragstart = "dragStart"
     @click = "clickRequirement"
   >
@@ -66,7 +64,7 @@ export default {
       return undefined;
     },
     canDrag: function() {
-      return this.classInfo !== undefined;
+      return this.classInfo !== undefined || ('req' in this.req && (Object.keys(this.subjectsIndex).length===0));
     },
     reqFulfilled: function() {
       if(this.req.fulfilled) {
@@ -101,25 +99,15 @@ export default {
         this.$emit('push-stack', usedReq);
       }
     },
-    drag: function(event) {
-      this.$emit("drag-class", {
-        drag: event,
-        classInfo: this.classInfo,
-        isNew: true
-      });
-    },
-    drop: function(event) {
-      this.$emit("drop-class", {
-        drop: event,
-        classInfo: this.classInfo,
-        isNew: true
-      });
-    },
     dragStart: function(event) {
+      var usedInfo = this.classInfo;
+      if(usedInfo === undefined) {
+        usedInfo = {id: this.req.req};
+      }
       event.dataTransfer.setData('classData', JSON.stringify({isNew:true,classIndex:-1}));
       this.$emit('drag-start-class', {
         dragstart: event,
-        classInfo: this.classInfo,
+        classInfo: usedInfo,
         isNew: true
       })
     }

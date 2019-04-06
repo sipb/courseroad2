@@ -74,6 +74,9 @@ export default {
     'class': Class
   },
   computed: {
+    subjectsLoaded: function() {
+      return Object.keys(this.subjectsIndex).length > 0;
+    },
     warnings: function() {
       var allWarnings = Array(this.semesterSubjects.length).fill([]);
       for(var i = 0; i < this.semesterSubjects.length; i++) {
@@ -126,7 +129,7 @@ export default {
       if(this.addingFromCard||this.draggingOver) {
         if(this.index===0||this.offeredNow) {
           return "green";
-        } else if(this.isSameYear) {
+        } else if(this.isSameYear||!this.subjectsLoaded||this.itemAdding===undefined) {
           return "red";
         } else {
           return "yellow";
@@ -139,6 +142,9 @@ export default {
       return Math.floor((this.index-1)/3) === Math.floor((this.currentSemester-1)/3);
     },
     offeredNow: function() {
+      if(!this.subjectsLoaded||this.itemAdding===undefined) {
+        return false;
+      }
       var semType = (this.index-1)%3;
       if(semType >= 0 && (this.addingFromCard||this.draggingOver)) {
         return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
@@ -261,7 +267,7 @@ export default {
       }
     },
     ondrop: function(event) {
-      if(this.offeredNow||!this.isSameYear||this.index===0) {
+      if(this.subjectsLoaded && this.itemAdding!== undefined && (this.offeredNow||!this.isSameYear||this.index===0)) {
         var eventData = JSON.parse(event.dataTransfer.getData("classData"));
         if(eventData.isNew) {
           var newClass = {

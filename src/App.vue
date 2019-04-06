@@ -220,7 +220,6 @@ export default {
     reqTrees: {},
     reqList: [],
     dragSemesterNum: -1,
-    subjectsLoaded: false,
     gettingUserData: false,
     cookieName: "Default Cookie",
     accessInfo: undefined,
@@ -298,6 +297,7 @@ export default {
         }
       }
       this.itemAdding = classInfo;
+      this.addingFromCard = false;
     },
     updateFulfillment: function() {
       var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
@@ -575,7 +575,6 @@ export default {
           obj[item.subject_id] = index;
           return obj;
         },{});
-        this.subjectsLoaded = true;
       });
 
   },
