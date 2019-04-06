@@ -147,8 +147,8 @@ export default {
             if(roadData[r].status===200 && roadData[r].data.success) {
               roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
               roadData[r].data.file.changed = moment().format(DATE_FORMAT);
-              if(roadData[r].data.file.progressOverrides === undefined) {
-                roadData[r].data.file.progressOverrides = {};
+              if(roadData[r].data.file.contents.progressOverrides === undefined) {
+                roadData[r].data.file.contents.progressOverrides = {};
               }
               this.$emit("set-road", roadIDs[r], roadData[r].data.file);
             }
@@ -236,6 +236,7 @@ export default {
         var newRoad = Object.assign(this.roads[roadID], assignKeys);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
+          console.log(response);
           if(response.status!==200) {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {

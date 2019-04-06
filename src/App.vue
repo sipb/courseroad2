@@ -102,7 +102,7 @@
             v-bind:subjectIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
-            v-bind:progressOverrides = "roads[activeRoad].progressOverrides"
+            v-bind:progressOverrides = "roads[activeRoad].contents.progressOverrides"
             @drag-start-class = "dragStartClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
@@ -251,14 +251,14 @@ export default {
     //note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
     roads: {
       "$defaultroad$": {
-        progressOverrides: {},
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: "My First Road",
         agent: "",
         contents: {
           coursesOfStudy: ['girs'],
-          selectedSubjects: []
+          selectedSubjects: [],
+          progressOverrides: {},
         }
       }
     },
@@ -500,7 +500,8 @@ export default {
       return genericCourses;
     },
     updateProgress: function(newProgress) {
-      Vue.set(this.roads[this.activeRoad].progressOverrides, newProgress.listID, newProgress.progress);
+      Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
+      console.log(this.roads[this.activeRoad]);
     }
   },
   watch: {
