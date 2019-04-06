@@ -217,14 +217,14 @@ export default {
         this.getAuthorizationToken(code);
       }
     },
-    save: function() {
+    save: async function() {
       if(this.loggedIn) {
-        this.saveRemote();
+        return this.saveRemote();
       } else {
-        this.saveLocal();
+        return this.saveLocal();
       }
     },
-    saveRemote: function() {
+    saveRemote: async function() {
       this.currentlySaving = true;
       this.saveWarnings = [];
       var savePromises = [];
@@ -236,7 +236,9 @@ export default {
         var newRoad = Object.assign(this.roads[roadID], assignKeys);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
-          console.log(response);
+          if(this.oldid=='85') {
+            console.log(response);
+          }
           if(response.status!==200) {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {
@@ -267,7 +269,7 @@ export default {
         }.bind({oldid: roadID,data:this}))
         savePromises.push(savePromise);
       }
-      Promise.all(savePromises)
+      return Promise.all(savePromises)
       .then(function(saveResults) {
         for(var s = 0; s < saveResults.length; s++) {
           var savedResult = saveResults[s];
@@ -282,6 +284,7 @@ export default {
           this.$cookies.set("newRoads", {});
         }
         this.currentlySaving = false;
+        return saveResults;
       }.bind(this)).catch(function(err) {
         console.log(err);
         this.currentlySaving = false;
@@ -296,6 +299,7 @@ export default {
       for(var roadID in this.roads) {
         this.$emit("set-road-prop", roadID, "downloaded", moment().format(DATE_FORMAT));
       }
+      return true;
     },
     getNewRoadData: function() {
       var newRoadData = {};
