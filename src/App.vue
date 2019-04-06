@@ -301,10 +301,18 @@ export default {
     updateFulfillment: function() {
       for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
         var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        this.$refs.authcomponent.getSecure(`/requirements/progress/`+req+`/?road=`+this.activeRoad).then(function(response) {
-          //This is necessary so Vue knows about the new property on reqTrees
-          Vue.set(this.data.reqTrees, this.req, response.data);
-        }.bind({data: this, req:req}))
+        if(!this.$refs.authcomponent.loggedIn) {
+          var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")+",";
+          axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
+            //This is necessary so Vue knows about the new property on reqTrees
+            Vue.set(this.data.reqTrees, this.req, response.data);
+          }.bind({data: this, req:req}));
+        } else {
+          this.$refs.authcomponent.getSecure(`/requirements/progress/`+req+`/?road=`+this.activeRoad).then(function(response) {
+            //This is necessary so Vue knows about the new property on reqTrees
+            Vue.set(this.data.reqTrees, this.req, response.data);
+          }.bind({data: this, req:req}))
+        }
       }
     },
     addReq: function(event) {
