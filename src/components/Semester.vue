@@ -207,20 +207,20 @@ export default {
       if(req === id) {
         return true;
       }
-      if(req.indexOf(".")===-1) {
+      if(req.indexOf(".") === -1) {
         var subj;
         if(id in this.subjectsIndex) {
           subj = this.allSubjects[this.subjectsIndex[id]];
         } else if(id in this.genericIndex) {
           subj = this.genericCourses[this.genericIndex[id]];
         }
-        if(req.indexOf("GIR:")>=0) {
+        if(req.indexOf("GIR:") >= 0) {
           req = req.substring(4);
-          return subj.gir_attribute == req;
-        } else if(req.indexOf("HASS")>=0) {
-          return subj.hass_attribute == req;
-        } else if(req.indexOf("CI")>=0) {
-          return subj.communication_requirement == req;
+          return subj.gir_attribute === req;
+        } else if(req.indexOf("HASS") >= 0) {
+          return subj.hass_attribute === req;
+        } else if(req.indexOf("CI") >= 0) {
+          return subj.communication_requirement === req;
         }
       }
       return false;
