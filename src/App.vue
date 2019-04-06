@@ -102,6 +102,7 @@
             v-bind:subjectIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
+            v-bind:progressOverrides = "roads[activeRoad].progressOverrides"
             @drag-start-class = "dragStartClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
@@ -499,7 +500,7 @@ export default {
       return genericCourses;
     },
     updateProgress: function(newProgress) {
-      Vue.set(this.progressOverrides, newProgress.listID, newProgress.progress);
+      Vue.set(this.roads[this.activeRoad].progressOverrides, newProgress.listID, newProgress.progress);
     }
   },
   watch: {

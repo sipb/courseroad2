@@ -147,6 +147,9 @@ export default {
             if(roadData[r].status===200 && roadData[r].data.success) {
               roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
               roadData[r].data.file.changed = moment().format(DATE_FORMAT);
+              if(roadData[r].data.file.progressOverrides === undefined) {
+                roadData[r].data.file.progressOverrides = {};
+              }
               this.$emit("set-road", roadIDs[r], roadData[r].data.file);
             }
           }
