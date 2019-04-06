@@ -39,7 +39,7 @@
 <script>
 export default {
   name: 'requirement',
-  props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex', 'subjectsLoaded'],
+  props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
   data: function() {
     return {
       open: [],
@@ -64,7 +64,7 @@ export default {
       return undefined;
     },
     canDrag: function() {
-      return this.classInfo !== undefined || ('req' in this.req && !this.subjectsLoaded);
+      return this.classInfo !== undefined || ('req' in this.req && (Object.keys(this.subjectsIndex).length===0));
     },
     reqFulfilled: function() {
       if(this.req.fulfilled) {

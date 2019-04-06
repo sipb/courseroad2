@@ -23,7 +23,6 @@
       v-bind:subjectsIndex = "subjectsIndex"
       v-bind:genericCourses = "genericCourses"
       v-bind:genericIndex = "genericIndex"
-      v-bind:subjectsLoaded = "subjectsLoaded"
       @add-at-placeholder = "$emit('add-at-placeholder',$event)"
       @add-class = "$emit('add-class', $event)"
       @move-class = "$emit('move-class', $event)"
@@ -66,7 +65,7 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects',"subjects","roadID","currentSemester","addingFromCard", "itemAdding", "dragSemesterNum","subjectsIndex", "genericCourses", "genericIndex", "subjectsLoaded"],
+  props: ['selectedSubjects',"subjects","roadID","currentSemester","addingFromCard", "itemAdding", "dragSemesterNum","subjectsIndex", "genericCourses", "genericIndex"],
   data: function () {
     let defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true,];
     return {

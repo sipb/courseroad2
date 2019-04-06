@@ -31,7 +31,6 @@
           v-bind:subjectIndex = "subjectIndex"
           v-bind:genericCourses = "genericCourses"
           v-bind:genericIndex = "genericIndex"
-          v-bind:subjectsLoaded = "subjectsLoaded"
           @drag-start-class = "$emit('drag-start-class',$event)"
           @push-stack = "$emit('push-stack',$event)"
         >
@@ -99,7 +98,7 @@ export default {
   components: {
     'requirement': Requirement,
   },
-  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex', 'subjectsLoaded'],
+  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
   data: function() { return {
     tree: [],
     viewDialog: false,

@@ -61,7 +61,7 @@ import colorMixin from "./../mixins/colorMixin.js"
 
 export default {
   name: "semester",
-  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester", "subjectsLoaded"],
+  props:['selectedSubjects','index',"allSubjects","roadID","isOpen","baseYear", "subjectsIndex", "genericCourses", "genericIndex", "addingFromCard", "itemAdding","currentSemester"],
   mixins: [colorMixin],
   data: function() {return {
     newYear: this.semesterYear,
@@ -72,6 +72,9 @@ export default {
     'class': Class
   },
   computed: {
+    subjectsLoaded: function() {
+      return Object.keys(this.subjectsIndex).length > 0;
+    },
     semColor: function() {
       if(this.addingFromCard||this.draggingOver) {
         if(this.index===0||this.offeredNow) {
