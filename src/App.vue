@@ -299,10 +299,9 @@ export default {
       this.itemAdding = classInfo;
     },
     updateFulfillment: function() {
-      var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
       for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
         var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
+        this.$refs.authcomponent.getSecure(`/requirements/progress/`+req+`/?road=`+this.activeRoad).then(function(response) {
           //This is necessary so Vue knows about the new property on reqTrees
           Vue.set(this.data.reqTrees, this.req, response.data);
         }.bind({data: this, req:req}))
