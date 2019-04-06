@@ -15,7 +15,7 @@
           Units: {{semesterInformation.totalUnits}}
           Hours: {{Math.round(semesterInformation.expectedHours,1)}}
         </v-flex>
-        <v-layout row xs6 v-if = "!isOpen">
+        <v-layout row xs6 v-if = "!isOpen" style = "max-width:50%;">
           <v-flex xs3 v-for = "(subject,subjindex) in semesterSubjects" :key = "subject.id+'-'+subjindex+'-'+index">
             <v-card>
               <div v-if = "subject!=='placeholder'" :class = "courseColor(subject.id)">
