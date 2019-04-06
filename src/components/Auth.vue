@@ -26,6 +26,7 @@ import Vue from 'vue'
 import UAParser from "ua-parser-js"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
 var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
+// var FIREROAD_LINK = "http://localhost:8000"
 
 function getQueryObject() {
   var query = window.location.search.substring(1);
@@ -85,6 +86,7 @@ export default {
       var headerList = {headers: {
         "Authorization": 'Bearer ' + this.accessInfo.access_token,
         }};
+      console.log(headerList.headers.Authorization);
       return axios.get(FIREROAD_LINK+"/verify/", headerList)
       .then(function(verifyResponse) {
         if(verifyResponse.data.success) {
@@ -101,6 +103,7 @@ export default {
         var headerList = {headers: {
           "Authorization": 'Bearer ' + this.accessInfo.access_token,
           }};
+          console.log(headerList.headers.Authorization);
         return this.verify()
         .then(function(verifyResponse){
           if(params===false) {
@@ -161,21 +164,21 @@ export default {
         }
         this.logoutUser();
       }.bind(this))
-      this.getSecure("/prefs/progress_overrides/").then(function(response) {
-        if(response.status === 200 && response.data.success) {
-          this.$emit("set-overrides", response.data.progress_overrides);
-        } else {
-          return Promise.reject();
-        }
-        this.gettingUserData = false;
-      }.bind(this)).catch(function(err) {
-        alert(err);
-        this.gettingUserData = false;
-        if(err==="Token not valid") {
-          alert("Your token has expired.  Please log in again.");
-        }
-        this.logoutUser();
-      })
+      // this.getSecure("/prefs/progress_overrides/").then(function(response) {
+      //   if(response.status === 200 && response.data.success) {
+      //     this.$emit("set-overrides", response.data.progress_overrides);
+      //   } else {
+      //     return Promise.reject();
+      //   }
+      //   this.gettingUserData = false;
+      // }.bind(this)).catch(function(err) {
+      //   alert(err);
+      //   this.gettingUserData = false;
+      //   if(err==="Token not valid") {
+      //     alert("Your token has expired.  Please log in again.");
+      //   }
+      //   this.logoutUser();
+      // })
     },
 
     renumber: function(name, otherNames) {
@@ -297,11 +300,15 @@ export default {
         console.log(err);
         this.currentlySaving = false;
       }.bind(this));
+      // this.postSecure("/prefs/set_progress_overrides/", this.progressOverrides).then(function(response) {
+      //   // console.log(response);
+      // }.bind(this))
     },
     saveLocal: function() {
       this.currentlySaving = true;
       if(this.authCookiesAllowed) {
         this.$cookies.set("newRoads", this.getNewRoadData());
+        this.$cookies.set("progressOverrides", this.progressOverrides);
       }
       this.currentlySaving = false;
       for(var roadID in this.roads) {
@@ -452,6 +459,12 @@ export default {
         this.newRoads = Object.keys(newRoads);
       }
       this.allowCookies();
+    }
+
+    if(this.$cookies.isKey("progressOverrides")) {
+      var newOverrides = this.$cookies.get("progressOverrides");
+      console.log(newOverrides);
+
     }
 
     window.cookies = this.$cookies;

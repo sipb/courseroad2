@@ -263,7 +263,7 @@ export default {
         }
       }
     },
-    progressOverrides: {"major21e.0": 2, "major21e.1.3.1": 6, "major21e.1.10.0.1": 3, "major21e.1.8.0": 2, "major21e.1.9.1": 12, "major21e.1.5": 6, "major1.1.3": 51, "major21e.1.0.1.0": 1, "major21e.1.0.1.2": 2}
+    progressOverrides: {"major11.1.1": 46, "major21e.0": 2, "major21e.1.3.1": 6, "major21e.1.10.0.1": 3, "major21e.1.8.0": 2, "major21e.1.9.1": 12, "major21e.1.5": 6, "major1.1.3": 51, "major21e.1.0.1.0": 1, "major21e.1.0.1.2": 2}
   }},
   computed: {
     roadref: function() {
@@ -307,10 +307,19 @@ export default {
       var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
       for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
         var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
-          //This is necessary so Vue knows about the new property on reqTrees
-          Vue.set(this.data.reqTrees, this.req, response.data);
-        }.bind({data: this, req:req}))
+        if(this.$refs.authcomponent.loggedIn) {
+          // console.log("requirements/progress/"+req+"/"+subjectIDs);
+          this.$refs.authcomponent.getSecure("/requirements/progress/"+req+"/"+subjectIDs).then(function(response) {
+            console.log(this.req + ": " + response.data["list-id"] + ": " + response.data.percent_fulfilled);
+            Vue.set(this.data.reqTrees, this.req, response.data);
+          }.bind({data: this, req:req}))
+        } else {
+          axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
+            //This is necessary so Vue knows about the new property on reqTrees
+            Vue.set(this.data.reqTrees, this.req, response.data);
+          }.bind({data: this, req:req}))
+        }
+
       }
     },
     addReq: function(event) {
@@ -522,6 +531,11 @@ export default {
       if(newSearch.length > 0) {
         this.showSearch = true;
       }
+    },
+    progressOverrides: function(newProgress, oldProgress) {
+      this.$refs.authcomponent.save().then(function() {
+        this.updateFulfillment();
+      }.bind(this));
     }
   },
   mounted() {
