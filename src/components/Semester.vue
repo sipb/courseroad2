@@ -122,13 +122,6 @@ export default {
         return subj.semester <= this.index;
       })
     },
-    semesterStyles: function() {
-      return {
-        semesterBin: true,
-        dark: this.index % 2 == 0,
-        light: this.index % 2 == 1,
-      }
-    },
     semColor: function() {
       if(this.addingFromCard||this.draggingOver) {
         if(this.index===0||this.offeredNow) {
