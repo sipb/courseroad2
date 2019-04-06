@@ -303,7 +303,7 @@ export default {
         var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
         if(!this.$refs.authcomponent.loggedIn) {
           var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")+",";
-          axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
+          axios.post(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`,this.roads[this.activeRoad].contents).then(function(response) {
             //This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);
           }.bind({data: this, req:req}));
