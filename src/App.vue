@@ -142,6 +142,7 @@
             @remove-class = "removeClass"
             @click-class = "pushClassStack($event.id)"
             @change-year = "$refs.authcomponent.changeSemester($event)"
+            @override-warnings = "overrideWarnings($event.override,$event.classInfo)"
             @drag-start-class = "dragStartClass"
           ></road>
         </v-tab-item>
@@ -488,6 +489,10 @@ export default {
         }));
       }
       return genericCourses;
+    },
+    overrideWarnings(override, classInfo) {
+      var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      Vue.set(this.roads[this.activeRoad].contents.selectedSubjects[classIndex],"overrideWarnings", override);
     }
   },
   watch: {
@@ -560,7 +565,7 @@ export default {
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
-        this.subjectsInfo = response.data
+        this.subjectsInfo = response.data;
         this.genericCourses = this.makeGenericCourses();
         this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
           obj[item.subject_id] = index;

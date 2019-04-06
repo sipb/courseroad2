@@ -2,29 +2,57 @@
 
 <template>
   <v-flex md3 xs4>
-    <v-card
-      v-if = "classInfo == 'placeholder'"
-      class = "placeholder classbox"
-    >
-      <v-container fill-height>
-        <v-layout>
-          <v-btn style = "margin: auto" large icon @click = "$emit('add-at-placeholder',semesterIndex)"><v-icon>add</v-icon></v-btn>
-        </v-layout>
-      </v-container>
-    </v-card>
-    <v-card
-      v-else
-      :class="[{classbox: true, satisfied: isSatisfied}]"
-      draggable
-      v-on:dragstart = "dragStart"
-      v-on:click = "$emit('click-class', classInfo)"
-    >
-      <div style = "height:100%" :class = "courseColor(classInfo.id)">
-        <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
-        <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
-      </div>
-    </v-card>
-
+    <v-hover>
+      <v-badge overlap right color = "rgba(0,0,0,0)" style = "width:100%;" slot-scope = "{ hover }">
+        <v-card
+          v-if = "classInfo == 'placeholder'"
+          class = "placeholder classbox"
+        >
+          <v-container fill-height>
+            <v-layout>
+              <v-btn style = "margin: auto" large icon @click = "$emit('add-at-placeholder',semesterIndex)"><v-icon>add</v-icon></v-btn>
+            </v-layout>
+          </v-container>
+        </v-card>
+        <v-card
+          v-else
+          :class="[{classbox: true,}, courseColor]"
+          draggable
+          v-on:dragstart = "dragStart"
+          v-on:click = "$emit('click-class',classInfo)"
+          :id = "'class'+classInfo.id.replace('.','')+semesterIndex"
+        >
+          <div :class = "courseColor(classInfo.id)" style = "height:100%;">
+            <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
+            <v-card-text class="card-text"><b>{{classInfo.id}}:</b> {{classInfo.title}}</v-card-text>
+          </div>
+        </v-card>
+        <v-btn v-if = "warnings.length>0&&(!classInfo.overrideWarnings||hover)" @click = "warningDialog = true" icon slot = "badge">
+          <v-icon medium>
+            warning
+          </v-icon>
+        </v-btn>
+      </v-badge>
+    </v-hover>
+    <v-dialog v-model = "warningDialog">
+      <v-card>
+        <v-card-title>
+          <h3>Warnings for {{classInfo.id}}</h3>
+        </v-card-title>
+        <v-card-text>
+          <p v-for = "warning in warnings" v-html="warning"></p>
+          <v-switch
+            label = "Override Warnings"
+            color = "orange darken-3"
+            v-model = "shouldOverrideWarnings"
+          >
+          </v-switch>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click = "warningDialog = false; $emit('override-warnings',{override:shouldOverrideWarnings,classInfo:classInfo})">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-flex>
 </template>
 
@@ -33,12 +61,12 @@ import colorMixin from "./../mixins/colorMixin.js"
 
 export default {
   name: "class",
-  props: ['classInfo','semesterIndex'],
+  props: ['classInfo','semesterIndex','warnings'],
   mixins: [colorMixin],
   data() {
     return {
-      isSatisfied: true,
-      dragSemesterNum: -1
+      warningDialog: false,
+      shouldOverrideWarnings: this.classInfo.overrideWarnings
     }
   },
   methods: {
@@ -72,17 +100,5 @@ export default {
     height: 8em;
     padding-top: 0;
     overflow:hidden;
-  }
-
-  .satisfied {
-    background: #00b300;
-  }
-  /* this is a bad color, change it */
-  .unsatisfied {
-    background: #eb7e7e;
-  }
-
-  .placeholder {
-    background: none;
   }
 </style>
