@@ -46,6 +46,9 @@
       <v-card style = "padding: 2em">
         <v-btn icon flat style = "float:right" @click = "viewDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title>{{dialogReq["title"]}}</v-card-title>
+        <v-card-text v-if="'url' in dialogReq">
+          <a target="_blank" :href="dialogReq['url']">Link to the real, up to date requirements</a>
+        </v-card-text>
         <v-card-text v-if = "'desc' in dialogReq">{{dialogReq["desc"]}}</v-card-text>
         <v-card-text>
           <div class = "percentage-bar" :style = "percentage(dialogReq)">

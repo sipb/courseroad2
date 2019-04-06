@@ -106,13 +106,23 @@
                 <h3>Equivalent Subjects</h3>
                 <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "currentSubject.equivalent_subjects.map(classInfo)"></subject-scroll>
               </div>
-              <div v-if = "currentSubject.prerequisites !== undefined && parseRequirements(currentSubject.prerequisites).length>0">
-                <h3>Prerequisites</h3>
-                <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "parseRequirements(currentSubject.prerequisites).map(classInfo)"></subject-scroll>
+              <div v-if = "parsedPrereqs.reqs.length > 0">
+                <h3 id = "prereq0">Prerequisites</h3>
+                <expansion-reqs
+                  v-bind:requirement = "parsedPrereqs"
+                  v-bind:reqID = "'prereq0'"
+                  @click-subject = "clickRelatedSubject"
+                >
+                </expansion-reqs>
               </div>
-              <div v-if = "currentSubject.corequisites !== undefined && parseRequirements(currentSubject.corequisites).length>0">
-                <h3>Corequisites</h3>
-                <subject-scroll @click-subject = "clickRelatedSubject" v-bind:subjects = "parseRequirements(currentSubject.corequisites).map(classInfo)"></subject-scroll>
+              <div v-if = "parsedCoreqs.reqs.length > 0">
+                <h3 id = "coreq0">Corequisites</h3>
+                <expansion-reqs
+                  v-bind:requirement = "parsedCoreqs"
+                  v-bind:reqID = "'coreq0'"
+                  @click-subject = "clickRelatedSubject"
+                >
+                </expansion-reqs>
               </div>
               <div v-if = "currentSubject.related_subjects !== undefined">
                 <h3>Related subjects</h3>
@@ -129,12 +139,14 @@
 <script>
 import $ from "jquery";
 import SubjectScroll from "../components/SubjectScroll.vue"
+import ExpansionReqs from "../components/ExpansionReqs.vue"
 import colorMixin from "./../mixins/colorMixin.js"
 
 export default {
   name: "ClassInfo",
   components: {
-    'subject-scroll': SubjectScroll
+    'subject-scroll': SubjectScroll,
+    'expansion-reqs': ExpansionReqs,
   },
   props: ["subjects", "classInfoStack", "subjectsIndex", "genericCourses", "genericIndex",  "addingFromCard"],
   mixins: [colorMixin],
@@ -149,6 +161,24 @@ export default {
         curSubj = this.genericCourses[this.genericIndex[currentID]];
       }
       return curSubj;
+    },
+    parsedPrereqs: function() {
+      if(this.currentSubject.prerequisites !== undefined) {
+        return this.parseRequirements(this.currentSubject.prerequisites);
+      } else {
+        return {
+          reqs: []
+        }
+      }
+    },
+    parsedCoreqs: function() {
+      if(this.currentSubject.corequisites !== undefined) {
+        return this.parseRequirements(this.currentSubject.corequisites);
+      } else {
+        return {
+          reqs: []
+        }
+      }
     }
   },
   methods: {
@@ -163,20 +193,135 @@ export default {
         }
       }
     },
-    clickRelatedSubject: function(subjectID) {
-      this.$emit('push-stack', subjectID);
+    clickRelatedSubject: function(subject) {
+      this.$emit('push-stack', subject.id);
       $("#cardBody").animate({scrollTop:0});
     },
     parseRequirements: function(requirements) {
-      if(requirements) {
-        var allReqs = requirements.split(/, |\(|\)|\/| or/);
-        var filteredReqs = allReqs.filter(function(req) {
-          return req.length > 0 && req.indexOf("'") == -1 && req!=="or";
-        });
-        return filteredReqs;
-      } else {
-        return [];
+      //remove spaces after commas and slashes
+      requirements = requirements.replace(/([,\/])\s+/g,"$1")
+      function getParenGroup(str) {
+        if(str[0]=="(") {
+          var retString = "";
+          str = str.substring(1);
+          var nextParen;
+          var numParens = 1;
+          while(((nextParen = /[\(\)]/.exec(str))!==null)&&numParens>0) {
+            var parenIndex = nextParen.index;
+            var parenType = nextParen[0];
+            if(parenType == "(") {
+              numParens++;
+            } else {
+              numParens--;
+            }
+            retString += str.substring(0,parenIndex+1);
+            str = str.substring(parenIndex+1);
+          }
+          return [retString.substring(0,retString.length-1),str.substring(1),str.length>0?str.substring(0,1):undefined];
+        } else {
+          return undefined;
+        }
       }
+      function getNextReq(reqString) {
+        if(reqString[0] == "(") {
+          return getParenGroup(reqString);
+        } else {
+          var nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
+          if(nextMatch !== null) {
+            var nextReq = nextMatch[1];
+            var restOfString = nextMatch[3];
+            var delimiter = nextMatch[2];
+            return [nextReq, restOfString, delimiter];
+          } else {
+            return [reqString, "",undefined];
+          }
+        }
+      }
+      function isBaseReq(req) {
+        return /[\/\(\),]/g.exec(req) === null;
+      }
+      var getClassInfo = this.classInfo;
+      function parseReqs(reqString) {
+        var parsedReq = {reqs:[],subject_id: "",connectionType:"",title:"",expansionDesc:"",topLevel:false};
+        var onereq;
+        var connectionType = undefined;
+        var nextConnectionType = undefined;
+        while(reqString.length>0) {
+          [onereq, reqString, nextConnectionType] = getNextReq(reqString);
+          if(nextConnectionType !== undefined) {
+            connectionType = nextConnectionType;
+          }
+          if(isBaseReq(onereq)) {
+            if(onereq.indexOf("'")>=0) {
+              parsedReq.reqs.push({subject_id: onereq.replace(/'/g,""),title:""});
+            } else {
+              parsedReq.reqs.push(getClassInfo(onereq));
+            }
+          } else {
+            parsedReq.reqs.push(parseReqs(onereq));
+          }
+        }
+        if(connectionType == "/") {
+          parsedReq.connectionType = "any";
+        } else if(connectionType == ",") {
+          parsedReq.connectionType = "all";
+        }
+        function sortOrder(req) {
+          if(req.reqs !== undefined) {
+            return 0;
+          } else if(req.total_units !== undefined) {
+            return -1;
+          } else {
+            return 1;
+          }
+        }
+
+        parsedReq.reqs.sort(function(a,b) {
+          return sortOrder(a) - sortOrder(b);
+        })
+
+        function getReqTitle(req) {
+          if(req.total_units !== undefined) {
+            return req.subject_id;
+          } else if(typeof req === "string") {
+            return req;
+          } else {
+            return req.subject_id + " " + req.title;
+          }
+        }
+        if(parsedReq.reqs.length === 2) {
+          if(parsedReq.connectionType === "any") {
+            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+            parsedReq.title = "or " + getReqTitle(parsedReq.reqs[1]);
+            parsedReq.expansionDesc = "Select either:";
+          } else {
+            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+            parsedReq.title = "and " + getReqTitle(parsedReq.reqs[1]);
+            parsedReq.expansionDesc = "Select both:";
+          }
+        } else if(parsedReq.reqs.length > 2){
+          parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+          if(parsedReq.connectionType === "any") {
+            parsedReq.title = "or " + (parsedReq.reqs.length-1) + " others";
+            parsedReq.expansionDesc = "Select any:";
+          } else {
+            parsedReq.title = "and " + (parsedReq.reqs.length-1) + " others";
+            parsedReq.expansionDesc = "Select all:";
+          }
+        }
+        var connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
+        if(connectionMatch!==null) {
+          var connectionIndex = connectionMatch.index;
+          var firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g,"");
+          var secondPart = parsedReq.subject_id.substring(connectionIndex);
+          parsedReq.subject_id = firstPart;
+          parsedReq.title = secondPart + " " + parsedReq.title;
+        }
+        return parsedReq;
+      }
+      var rList = parseReqs(requirements);
+      rList.topLevel = true;
+      return rList;
     },
     adjustCardStyle: function() {
       var classInfoCard = $("#classInfoCard");
