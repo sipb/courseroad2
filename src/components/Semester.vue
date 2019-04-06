@@ -15,7 +15,7 @@
           Units: {{semesterInformation.totalUnits}}
           Hours: {{Math.round(semesterInformation.expectedHours,1)}}
         </v-flex>
-        <v-layout row xs6 v-if = "!isOpen">
+        <v-layout row xs6 v-if = "!isOpen" style = "max-width:50%;">
           <v-flex xs3 v-for = "(subject,subjindex) in semesterSubjects" :key = "subject.id+'-'+subjindex+'-'+index">
             <v-card>
               <div v-if = "subject!=='placeholder'" :class = "courseColor(subject.id)">
@@ -43,11 +43,13 @@
             v-for="(subject, subjindex) in semesterSubjects"
             v-bind:classInfo="subject"
             v-bind:semesterIndex="index"
+            v-bind:warnings = "warnings[subjindex]"
             :key="subject.id + '-' + subjindex + '-' + index"
             @remove-class = "$emit('remove-class', $event)"
             @click-class = "$emit('click-class',$event)"
             @add-at-placeholder = "$emit('add-at-placeholder', $event)"
             @drag-start-class = "$emit('drag-start-class', $event)"
+            @override-warnings = "$emit('override-warnings',$event)"
           />
       </v-layout>
     </v-container>
@@ -72,6 +74,54 @@ export default {
     'class': Class
   },
   computed: {
+    warnings: function() {
+      var allWarnings = Array(this.semesterSubjects.length).fill([]);
+      for(var i = 0; i < this.semesterSubjects.length; i++) {
+        var subjectWarnings = [];
+        var subjID = this.semesterSubjects[i].id;
+        var subj;
+        if(subjID in this.subjectsIndex) {
+          subj = this.allSubjects[this.subjectsIndex[subjID]]
+          var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
+          var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
+          if(prereqString !== undefined) {
+            var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects : this.concurrentSubjects);
+            if(!prereqsfulfilled) {
+              subjectWarnings.push("<b>Unsatisfied Prerequisite</b> - One or more prerequisites are not yet fulfilled.");
+            }
+          }
+          if(coreqString !== undefined) {
+            var coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
+            if(!coreqsfulfilled) {
+              subjectWarnings.push("<b>Unsatisfied Corequisite</b> - One or more corequisites are not yet fulfilled.");
+            }
+          }
+        } else if(subjID in this.genericIndex){
+          subj = this.genericCourses[this.genericIndex[subjID]];
+        }
+        if(subj !== undefined) {
+          var semType = (this.index-1)%3;
+          if(semType >= 0) {
+            var isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
+            if(!isUsuallyOffered) {
+              subjectWarnings.push("<b>Not offered</b> - According to the course catalog, " + subjID + " is not usually offered in " + this.semesterType + ".");
+            }
+          }
+        }
+        allWarnings[i] = subjectWarnings;
+      }
+      return allWarnings;
+    },
+    previousSubjects: function() {
+      return this.selectedSubjects.filter(subj => {
+        return subj.semester < this.index;
+      });
+    },
+    concurrentSubjects: function() {
+      return this.selectedSubjects.filter(subj => {
+        return subj.semester <= this.index;
+      })
+    },
     semColor: function() {
       if(this.addingFromCard||this.draggingOver) {
         if(this.index===0||this.offeredNow) {
@@ -152,6 +202,53 @@ export default {
     changeYear: function(event) {
       event.stopPropagation();
       this.$emit("change-year")
+    },
+    classSatisfies: function(req, id) {
+      if(req === id) {
+        return true;
+      }
+      if(req.indexOf(".") === -1) {
+        var subj;
+        if(id in this.subjectsIndex) {
+          subj = this.allSubjects[this.subjectsIndex[id]];
+        } else if(id in this.genericIndex) {
+          subj = this.genericCourses[this.genericIndex[id]];
+        }
+        if(req.indexOf("GIR:") >= 0) {
+          req = req.substring(4);
+          return subj.gir_attribute === req;
+        } else if(req.indexOf("HASS") >= 0) {
+          return subj.hass_attribute === req;
+        } else if(req.indexOf("CI") >= 0) {
+          return subj.communication_requirement === req;
+        }
+      }
+      return false;
+    },
+    reqFulfilled: function(reqString, subjects) {
+      var allIDs = subjects.map((s)=>s.id);
+      reqString = reqString.replace(/''/g, "\"").replace(/,[\s]+/g,",");
+      var splitReq = reqString.split(/(,|\(|\)|\/)/);
+      for(var i = 0; i < splitReq.length; i++) {
+        if(splitReq[i].indexOf("\"")>=0) {
+          splitReq[i] = "true";
+        }
+        if("()/, ".indexOf(splitReq[i])<0) {
+          if(allIDs.indexOf(splitReq[i])>=0) {
+            splitReq[i] = "true";
+          } else {
+            var anyClassSatisfies  = subjects.map((s)=>this.classSatisfies(splitReq[i],s.id)).reduce((a,b)=>a||b,false);
+            if(anyClassSatisfies) {
+              splitReq[i] = "true";
+            } else {
+              splitReq[i] = "false"
+            }
+          }
+        }
+      }
+      var reqExpression = splitReq.join("").replace(/\//g,"||").replace(/,/g,"&&");
+      //i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
+      return eval(reqExpression);
     },
     dragenter: function(event) {
       this.draggingOver = true;

@@ -111,7 +111,7 @@
           ></audit>
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>Problems with the course requirements? Request edits
-              <a href="https://fireroad.mit.edu/requirements/">here</a> or
+              <a target="_blank" href="https://fireroad.mit.edu/requirements/">here</a> or
               send an email to <a href="mailto:courseroad@mit.edu">courseroad@mit.edu</a>.
             </p>
           </v-flex>
@@ -144,6 +144,7 @@
             @remove-class = "removeClass"
             @click-class = "pushClassStack($event.id)"
             @change-year = "$refs.authcomponent.changeSemester($event)"
+            @override-warnings = "overrideWarnings($event.override,$event.classInfo)"
             @drag-start-class = "dragStartClass"
           ></road>
         </v-tab-item>
@@ -499,6 +500,10 @@ export default {
       }
       return genericCourses;
     },
+    overrideWarnings(override, classInfo) {
+      var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      Vue.set(this.roads[this.activeRoad].contents.selectedSubjects[classIndex],"overrideWarnings", override);
+    },
     updateProgress: function(newProgress) {
       Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
@@ -575,7 +580,7 @@ export default {
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
     axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
       .then(response => {
-        this.subjectsInfo = response.data
+        this.subjectsInfo = response.data;
         this.genericCourses = this.makeGenericCourses();
         this.subjectsIndexDict = this.subjectsInfo.reduce(function(obj, item, index) {
           obj[item.subject_id] = index;

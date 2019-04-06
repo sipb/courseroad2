@@ -29,6 +29,7 @@
       @remove-class = "$emit('remove-class', $event)"
       @click-class = "$emit('click-class',$event)"
       @change-year = "changeYearDialog = true"
+      @override-warnings = "$emit('override-warnings',$event)"
       @drag-start-class = "$emit('drag-start-class',$event)"
       >
     </semester>
