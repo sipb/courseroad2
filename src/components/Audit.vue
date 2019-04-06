@@ -197,7 +197,9 @@ export default {
       return word[0].toUpperCase() + word.substring(1);
     },
     updateManualProgress: function() {
-      this.$emit("update-progress", {listID: this.progressReq["list-id"], progress: this.newManualProgress});
+      if(this.progressReq["list-id"] !== undefined) {
+        this.$emit("update-progress", {listID: this.progressReq["list-id"], progress: this.newManualProgress});
+      }
       this.progressReq = undefined;
       this.progressDialog = false;
       this.newManualProgress = 0;
