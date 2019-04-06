@@ -313,9 +313,6 @@ export default {
         } else {
           this.$refs.authcomponent.getSecure(`/requirements/progress/`+req+`/?road=`+this.activeRoad).then(function(response) {
             //This is necessary so Vue knows about the new property on reqTrees
-            if(this.req==="major21e") {
-              console.log(response.data);
-            }
             Vue.set(this.data.reqTrees, this.req, response.data);
           }.bind({data: this, req:req}))
         }
@@ -503,7 +500,6 @@ export default {
       return genericCourses;
     },
     updateProgress: function(newProgress) {
-      console.log("setting progress overrides");
       Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     }

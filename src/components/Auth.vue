@@ -236,9 +236,6 @@ export default {
         var newRoad = Object.assign(this.roads[roadID], assignKeys);
         var savePromise = this.postSecure("/sync/sync_road/",newRoad)
         .then(function(response) {
-          if(this.oldid=='85') {
-            console.log(response);
-          }
           if(response.status!==200) {
             return Promise.reject("Unable to save road " + this.oldid);
           } else {
