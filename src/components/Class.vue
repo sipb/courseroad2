@@ -1,7 +1,7 @@
 <!-- this is a cool idea for class info on click: https://vuetifyjs.com/en/components/expansion-panels#popout-inset -->
 
 <template>
-  <v-flex md3 xs4>
+  <v-flex lg2 md3 xs4>
     <v-hover>
       <v-badge overlap right color = "rgba(0,0,0,0)" style = "width:100%;" slot-scope = "{ hover }">
         <v-card
@@ -25,7 +25,7 @@
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
             <v-icon style = "margin: 4px" small @click = "$emit('remove-class',classInfo); $event.stopPropagation();">cancel</v-icon>
-            <v-card-text class="card-text"><b>{{classInfo.id}}</b>: {{classInfo.title}}</v-card-text>
+            <v-card-text class="card-text"><span style="font-weight: bold; font-size: 1.1em;">{{classInfo.id}}</span> {{classInfo.title}}</v-card-text>
           </div>
         </v-card>
         <v-btn v-if = "warnings.length>0&&(!classInfo.overrideWarnings||hover)" @click = "warningDialog = true" icon slot = "badge">
@@ -104,14 +104,9 @@ export default {
   }
 
   .classbox {
-<<<<<<< HEAD
-    height: 8em;
-    padding-top: 0;
-    overflow:hidden;
-=======
     display: flex;
     align-items: flex-start;
-    height: 5.6em; /* Chosen for three lines in the card, working with the set padding and margins. */
+    height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
     overflow: hidden;
     padding: .2em .4em .4em .2em;
     /* Multi-line truncation is not a supported feature of CSS right now.
@@ -123,6 +118,5 @@ export default {
 
   .placeholder {
     background: none;
->>>>>>> Improve card aesthetics
   }
 </style>
