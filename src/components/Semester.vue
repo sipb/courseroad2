@@ -60,6 +60,13 @@
 <script>
 import Class from './Class.vue'
 import colorMixin from "./../mixins/colorMixin.js"
+var EQUIVALENCE_PAIRS = [
+  ["6.0001", "6.00"],
+  ["6.0002", "6.00"]
+];
+var EQUIVALENCE_SETS = [
+  [["6.0001", "6.0002"], "6.00"]
+];
 
 export default {
   name: "semester",
@@ -213,6 +220,12 @@ export default {
       if(req === id) {
         return true;
       }
+      for(var ep = 0; ep < EQUIVALENCE_PAIRS.length; ep++) {
+        var eqPair = EQUIVALENCE_PAIRS[ep];
+        if(req == eqPair[0] && id == eqPair[1]) {
+          return true;
+        }
+      }
       if(req.indexOf(".") === -1) {
         var subj;
         if(id in this.subjectsIndex) {
@@ -243,8 +256,15 @@ export default {
           if(allIDs.indexOf(splitReq[i])>=0) {
             splitReq[i] = "true";
           } else {
-            var anyClassSatisfies  = subjects.map((s)=>this.classSatisfies(splitReq[i],s.id)).reduce((a,b)=>a||b,false);
-            if(anyClassSatisfies) {
+            var anyClassSatisfiesAlone  = subjects.map((s)=>this.classSatisfies(splitReq[i],s.id)).reduce((a,b)=>a||b,false);
+            var anyClassesSatisfyTogether = false;
+            for(var e = 0; e < EQUIVALENCE_SETS.length; e++) {
+              if(EQUIVALENCE_SETS[e][1] == splitReq[i] && EQUIVALENCE_SETS[e][0].reduce((acc, sid)=>acc && allIDs.indexOf(sid)>=0,true)) {
+                anyClassesSatisfyTogether = true;
+                break;
+              }
+            }
+            if(anyClassSatisfiesAlone || anyClassesSatisfyTogether) {
               splitReq[i] = "true";
             } else {
               splitReq[i] = "false"
@@ -252,7 +272,9 @@ export default {
           }
         }
       }
+      console.log(reqString);
       var reqExpression = splitReq.join("").replace(/\//g,"||").replace(/,/g,"&&");
+      console.log(reqExpression);
       //i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
       return eval(reqExpression);
     },
