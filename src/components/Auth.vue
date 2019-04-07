@@ -217,14 +217,14 @@ export default {
         this.getAuthorizationToken(code);
       }
     },
-    save: async function() {
+    save: function() {
       if(this.loggedIn) {
-        return this.saveRemote();
+        this.saveRemote();
       } else {
-        return this.saveLocal();
+        this.saveLocal();
       }
     },
-    saveRemote: async function() {
+    saveRemote: function() {
       this.currentlySaving = true;
       this.saveWarnings = [];
       var savePromises = [];
@@ -281,7 +281,6 @@ export default {
           this.$cookies.set("newRoads", {});
         }
         this.currentlySaving = false;
-        return saveResults;
       }.bind(this)).catch(function(err) {
         console.log(err);
         this.currentlySaving = false;
@@ -296,7 +295,6 @@ export default {
       for(var roadID in this.roads) {
         this.$emit("set-road-prop", roadID, "downloaded", moment().format(DATE_FORMAT));
       }
-      return true;
     },
     getNewRoadData: function() {
       var newRoadData = {};

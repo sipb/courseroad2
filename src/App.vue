@@ -305,18 +305,10 @@ export default {
     updateFulfillment: function() {
       for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
         var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        if(!this.$refs.authcomponent.loggedIn) {
-          var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")+",";
-          axios.post(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`,this.roads[this.activeRoad].contents).then(function(response) {
-            //This is necessary so Vue knows about the new property on reqTrees
-            Vue.set(this.data.reqTrees, this.req, response.data);
-          }.bind({data: this, req:req}));
-        } else {
-          this.$refs.authcomponent.getSecure(`/requirements/progress/`+req+`/?road=`+this.activeRoad).then(function(response) {
-            //This is necessary so Vue knows about the new property on reqTrees
-            Vue.set(this.data.reqTrees, this.req, response.data);
-          }.bind({data: this, req:req}))
-        }
+        axios.post(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`,this.roads[this.activeRoad].contents).then(function(response) {
+          //This is necessary so Vue knows about the new property on reqTrees
+          Vue.set(this.data.reqTrees, this.req, response.data);
+        }.bind({data: this, req:req}));
       }
     },
     addReq: function(event) {
@@ -522,11 +514,10 @@ export default {
     roads: {
       handler: function(newRoads,oldRoads) {
         this.justLoaded = false;
-        this.$refs.authcomponent.save().then(function(results) {
-          if(this.activeRoad != "") {
-            this.updateFulfillment();
-          }
-        }.bind(this));
+        if(this.activeRoad != "") {
+          this.updateFulfillment();
+        }
+        this.$refs.authcomponent.save();
       },
       deep: true
     },
