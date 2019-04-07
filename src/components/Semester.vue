@@ -272,9 +272,7 @@ export default {
           }
         }
       }
-      console.log(reqString);
       var reqExpression = splitReq.join("").replace(/\//g,"||").replace(/,/g,"&&");
-      console.log(reqExpression);
       //i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
       return eval(reqExpression);
     },
