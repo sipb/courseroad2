@@ -153,19 +153,19 @@ export default {
         else if (this.index === 0 || this.offeredNow) {
           return {
             bgColor: 'green',
-            message: 'Drop to add class',
+            message: 'No problems detected!',
             textColor: 'DarkGreen'
           }
         } else if (this.isSameYear) {
           return {
             bgColor: 'red',
-            message: 'Class not available this semester',
+            message: 'Subject not available this semester',
             textColor: 'DarkRed'
           }
         } else {
           return {
             bgColor: 'yellow',
-            message: 'Class may not be available this semester',
+            message: 'Subject may not be available this semester',
             textColor: 'DarkGoldenRod'
           }
         }
