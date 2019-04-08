@@ -315,7 +315,7 @@ export default {
     background: radial-gradient(lightgreen, rgba(0,0,0,0));
   }
   .mini-course {
-    padding: 0.3em;
+    padding: 0.3em 0.5em;
     overflow: hidden;
     white-space: nowrap;
     color: white;
