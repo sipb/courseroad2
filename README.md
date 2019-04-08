@@ -8,7 +8,7 @@ CourseRoad allows you to look more than one semester ahead make fully informed c
 # Installation
 TODO: do a practice install from scratch and make this section better.
 
-`npm install` in the base directory should 'just work'.
+`npm install` in the base directory should 'just work' (might need to prepend `sudo ` if your npm environment is messy like mine).
 
 If that doesn't work... just do `npm install <package> --save-dev` for every package mentioned in error messages until it works (have to run command below).
 
