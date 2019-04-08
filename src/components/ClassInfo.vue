@@ -80,7 +80,11 @@
                 </tr>
                 <tr v-if = "currentSubject.rating !== undefined">
                   <td><b>Average Rating</b></td>
-                  <td>{{currentSubject.rating}}</td>
+                  <td>
+                    <a target="_blank" :href="'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
+                      {{currentSubject.rating}}
+                    </a>
+                  </td>
                 </tr>
                 <tr v-if = "currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined">
                   <td><b>Hours</b></td>
