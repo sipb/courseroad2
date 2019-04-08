@@ -73,6 +73,7 @@ export default {
   },
   methods: {
     loginUser: function(event) {
+      // TODO: need to replace with name of actual site
       window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
     },
     logoutUser: function(event) {
@@ -210,6 +211,7 @@ export default {
       var queryObject = getQueryObject();
       if("code" in queryObject) {
         var code = queryObject["code"];
+        // TODO: have to put the name of the actual site here
         window.history.pushState("CourseRoad Home","CourseRoad Home","/#"+this.activeRoad);
         this.getAuthorizationToken(code);
       }
