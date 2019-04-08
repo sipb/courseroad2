@@ -43,17 +43,31 @@
     </v-treeview>
 
     <v-dialog v-model = "progressDialog">
-      <v-card v-if = "progressReq !== undefined">
+      <v-card v-if = "progressReq !== undefined" style = "padding: 1em;">
+        <v-btn icon flat style = "float:right" @click = "progressDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title><h2>Manual Progress: {{progressReq.title}}</h2></v-card-title>
         <v-card-text>
           <h3>{{capitalize(progressReq.threshold.criterion)}} Completed: {{newManualProgress}}/{{progressReq.threshold.cutoff}}</h3>
-          <v-slider
-            v-model = "newManualProgress"
-            :max = "progressReq.threshold.cutoff"
-            :min = "0"
-            :step = "1"
-            >
-          </v-slider>
+          <v-layout row>
+            <v-flex
+             shrink
+             style = "width: 3em;"
+             >
+             <v-text-field
+               v-model="newManualProgress"
+               type="number"
+             ></v-text-field>
+            </v-flex>
+            <v-flex>
+              <v-slider
+              v-model = "newManualProgress"
+              :max = "progressReq.threshold.cutoff"
+              :min = "0"
+              :step = "1"
+              >
+            </v-slider>
+          </v-flex>
+        </v-layout>
         </v-card-text>
         <v-card-actions>
           <v-btn color = "secondary" @click = "progressDialog = false; progressReq = undefined;">Cancel</v-btn>
