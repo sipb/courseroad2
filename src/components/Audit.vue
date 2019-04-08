@@ -17,7 +17,7 @@
               <!-- {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }} -->
             </v-icon>
             <v-icon v-else :style = "fulfilledIcon(item)">
-              {{ item['plain-string'] ? item.fulfilled ? "star" : "star_outline": item.fulfilled ? "check_box" : "check_box_outline_blank"}}
+              {{ item['plain-string'] ? item.fulfilled ? "assignment_turned_in" : "assignment": item.fulfilled ? "done" : "remove"}}
             </v-icon>
           </template>
           <span>{{item.percent_fulfilled}}%</span>
