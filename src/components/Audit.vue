@@ -187,7 +187,7 @@ export default {
       return req;
     },
     startProgressDialog: function(req) {
-      this.progressReq = req;
+      this.progressReq = Object.assign({threshold: {criterion: "subject", cutoff: 1, type: "GTE"}}, req);
       this.progressDialog = true;
       if(this.progressReq["list-id"] in this.progressOverrides) {
         this.newManualProgress = this.progressOverrides[this.progressReq["list-id"]];
