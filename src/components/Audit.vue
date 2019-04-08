@@ -186,15 +186,21 @@ export default {
       var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
       this.$emit("remove-req",reqName);
     },
+    //gives each list and sublist an id
+    //progress overrides are a dictionary where the keys are these list ids and the values are the manual progress
+    //for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
     assignListIDs: function(req) {
       if("reqs" in req && "list-id" in req) {
         var currentListID = req["list-id"];
         if(currentListID.indexOf(".reql")>=0) {
+          //if the requirement is top level, it will have .reql at the end and this needs to be removed
           req["list-id"] = req["list-id"].substring(0,req["list-id"].indexOf(".reql"));
           currentListID = req["list-id"];
         }
         for(var r = 0; r < req.reqs.length; r++) {
+          //give each sub-requirement a list id of [parent list id].[index]
           Object.assign(req.reqs[r], {"list-id": currentListID + "." + r});
+          //assign list ids to each of the children
           req.reqs[r] = this.assignListIDs(req.reqs[r]);
         }
       }
