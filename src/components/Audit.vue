@@ -11,7 +11,7 @@
     >
       <!-- TODO: useful icons can go here if you can figure out how -->
       <template slot="prepend" slot-scope="{ item, leaf, open }">
-        <v-tooltip left>
+        <v-tooltip left  @click.native = "clickRequirement(item)">
           <template slot = "activator">
             <v-icon v-if="'reqs' in item" :style = "fulfilledIcon(item)">
               <!-- {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }} -->
@@ -32,7 +32,7 @@
           v-bind:genericCourses = "genericCourses"
           v-bind:genericIndex = "genericIndex"
           @drag-start-class = "$emit('drag-start-class',$event)"
-          @push-stack = "$emit('push-stack',$event)"
+           @click.native = "clickRequirement(item)"
         >
         </requirement>
       </template>
@@ -147,7 +147,16 @@ export default {
     deleteReq: function(req) {
       var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
       this.$emit("remove-req",reqName);
-    }
+    },
+    clickRequirement: function(item) {
+      if(item.req !== undefined) {
+        var usedReq = item.req;
+        if(usedReq.indexOf("GIR:")===0) {
+          usedReq = usedReq.substring(4);
+        }
+        this.$emit('push-stack', usedReq);
+      }
+    },
   },
 
 }
