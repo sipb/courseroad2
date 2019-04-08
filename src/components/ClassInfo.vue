@@ -1,7 +1,7 @@
 <template>
     <v-layout>
       <v-flex>
-        <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" >
+        <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" width="40%" height="40%">
           <v-card-title :class = "['card-header',courseColor(currentSubject.subject_id)]">
             <v-flex style = "display: flex; flex-direction: row; align-items: center;">
               <div style = "padding: 0; margin: 0; display: block;">
@@ -327,30 +327,28 @@ export default {
       rList.topLevel = true;
       return rList;
     },
-    adjustCardStyle: function() {
-      var classInfoCard = $("#classInfoCard");
-      var searchInput = $("#searchInputTF");
-      var cardWidth = searchInput.outerWidth();
-      var cardLeft = cardWidth + searchInput.offset().left;
-      var browserWidth = $(window).width();
-      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
-    },
     addClass: function() {
       this.$emit('add-class',this.currentSubject);
     },
     cancelAddClass: function() {
       this.$emit('cancel-add-class');
     }
-  },
-  mounted() {
-    this.adjustCardStyle();
-    $(window).resize(this.adjustCardStyle);
   }
 }
 </script>
 
 
 <style>
+#classInfoCard {
+  right: 24px;
+}
+
+@media only screen and (max-width:959px) {
+  #classInfoCard {
+    right: 16px;
+  }
+}
+
 .card-header {
   padding: 0.5em 1em;
   display: inline-block;
