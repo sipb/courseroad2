@@ -15,8 +15,8 @@
           Units: {{semesterInformation.totalUnits}}
           Hours: {{Math.round(semesterInformation.expectedHours,1)}}
         </v-flex>
-        <v-layout row xs6 v-if = "!isOpen" style = "max-width:50%;">
-          <v-flex xs3 v-for = "(subject,subjindex) in semesterSubjects" :key = "subject.id+'-'+subjindex+'-'+index">
+        <v-layout row xs6 style="max-width: 50%;">
+          <v-flex xs3 v-for = "(subject,subjindex) in semesterSubjects" :key = "subject.id+'-'+subjindex+'-'+index" v-if="!isOpen">
             <v-card>
               <div v-if = "subject!=='placeholder'" :class = "courseColor(subject.id)">
                 <v-card-text class = "mini-course">
@@ -24,6 +24,9 @@
                 </v-card-text>
               </div>
             </v-card>
+          </v-flex>
+          <v-flex xs10 v-if="isOpen" :style="{ 'color': semData.textColor }">
+            {{ semData.message }}
           </v-flex>
         </v-layout>
       </v-layout>
@@ -33,7 +36,7 @@
       class="lighten-3 semester-drop-container"
       fluid
       grid-list-md
-      :class="semColor"
+      :class="semData.bgColor"
       v-on:dragenter="dragenter"
       v-on:dragleave="dragleave"
       v-on:drop = "ondrop"
@@ -132,17 +135,46 @@ export default {
         return subj.semester <= this.index;
       })
     },
-    semColor: function() {
-      if(this.addingFromCard||this.draggingOver) {
-        if(this.index===0||this.offeredNow) {
-          return "green";
-        } else if(this.isSameYear||!this.subjectsLoaded||this.itemAdding===undefined) {
-          return "red";
+    semData: function() {
+      if (this.addingFromCard || this.draggingOver) {
+        if (!this.subjectsLoaded) {
+          return {
+            bgColor: 'red',
+            message: 'Loading subjects... give us a minute',
+            textColor: 'DarkRed'
+          }
+        } else if (this.itemAdding === undefined) {
+          return {
+            bgColor: 'red',
+            message: 'If you see this message, contact courseroad@mit.edu and tell them "710".',
+            textColor: 'DarkRed'
+          }
+        }
+        else if (this.index === 0 || this.offeredNow) {
+          return {
+            bgColor: 'green',
+            message: 'No problems detected!',
+            textColor: 'DarkGreen'
+          }
+        } else if (this.isSameYear) {
+          return {
+            bgColor: 'red',
+            message: 'Subject not available this semester',
+            textColor: 'DarkRed'
+          }
         } else {
-          return "yellow";
+          return {
+            bgColor: 'yellow',
+            message: 'Subject may not be available this semester',
+            textColor: 'DarkGoldenRod'
+          }
         }
       } else {
-        return "grey";
+        return {
+          bgColor: 'grey',
+          message: '',
+          textColor: ''
+        }
       }
     },
     isSameYear: function() {
