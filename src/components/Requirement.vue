@@ -77,13 +77,16 @@ export default {
       }
     },
     percentage: function() {
-      var pfulfilled = this.req.percent_fulfilled
-      var pstring = "--percent: "+this.req.percent_fulfilled+"%";
+      var pfulfilled = this.req.percent_fulfilled;
+      var pcolor = this.req.fulfilled ? "#00b300" : (this.req.percent_fulfilled > 15 ? "#efce15": "#ef8214");
+      var pstring = "--percent: " + pfulfilled +"%; --bar-color: " + pcolor + "; --bg-color: lightgrey";
       return pstring;
     },
     percentage_bar: function() {
+      var showPBar = ("reqs" in this.req || "threshold" in this.req);
       var pblock = {
-        "percentage-bar": ("reqs" in this.req || "threshold" in this.req)
+        "percentage-bar": showPBar,
+        "p-bar": showPBar
       }
       return pblock
     }
@@ -114,8 +117,7 @@ export default {
     font-size: 0.75em;
   }
 
-  .percentage-bar {
+  .p-bar {
     height: 4px;
-    background: linear-gradient(90deg, #00b300 var(--percent), lightgrey var(--percent));
   }
 </style>

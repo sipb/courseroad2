@@ -51,7 +51,7 @@
         </v-card-text>
         <v-card-text v-if = "'desc' in dialogReq">{{dialogReq["desc"]}}</v-card-text>
         <v-card-text>
-          <div class = "percentage-bar" :style = "percentage(dialogReq)">
+          <div class = "percentage-bar p-block" :style = "percentage(dialogReq)">
             {{dialogReq["percent_fulfilled"]}}% fulfilled
           </div>
         </v-card-text>
@@ -140,8 +140,9 @@ export default {
       this.dialogReq = req;
     },
     percentage: function(req) {
-      var pfulfilled = req.percent_fulfilled
-      var pstring = "--percent: " + req.percent_fulfilled+"%";
+      var pfulfilled = req.percent_fulfilled;
+      var pcolor = req.fulfilled ? "#00b300" : (req.percent_fulfilled > 15 ? "#efce15": "#ef8214");
+      var pstring = "--percent: " + pfulfilled +"%; --bar-color: " + pcolor + "; --bg-color: #ffffff";
       return pstring;
     },
     deleteReq: function(req) {
@@ -162,10 +163,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+
 .percentage-bar {
+  background: linear-gradient(90deg, var(--bar-color) var(--percent), var(--bg-color) var(--percent));
+}
+.p-block{
   height: 30px;
-  background: linear-gradient(90deg, #00b300 var(--percent), rgba(255,255,255,0) var(--percent));
   border: 1px solid gray;
   padding-left: 5px;
   padding-top: 5px;
