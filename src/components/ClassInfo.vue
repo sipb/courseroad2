@@ -1,7 +1,7 @@
 <template>
     <v-layout>
       <v-flex>
-        <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" width="40%" height="40%">
+        <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" width="30%" height="40%" min-width="23em">
           <v-card-title :class = "['card-header',courseColor(currentSubject.subject_id)]">
             <v-flex style = "display: flex; flex-direction: row; align-items: center;">
               <div style = "padding: 0; margin: 0; display: block;">
