@@ -1,7 +1,7 @@
 <template>
     <v-layout>
       <v-flex>
-        <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" >
+        <v-card class = "class-info-card" id = "classInfoCard" style = "display: flex; flex-direction:column;" width="30%" height="40%" min-width="23em">
           <v-card-title :class = "['card-header',courseColor(currentSubject.subject_id)]">
             <v-flex style = "display: flex; flex-direction: row; align-items: center;">
               <div style = "padding: 0; margin: 0; display: block;">
@@ -80,7 +80,11 @@
                 </tr>
                 <tr v-if = "currentSubject.rating !== undefined">
                   <td><b>Average Rating</b></td>
-                  <td>{{currentSubject.rating}}</td>
+                  <td>
+                    <a target="_blank" :href="'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
+                      {{currentSubject.rating}}
+                    </a>
+                  </td>
                 </tr>
                 <tr v-if = "currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined">
                   <td><b>Hours</b></td>
@@ -323,30 +327,28 @@ export default {
       rList.topLevel = true;
       return rList;
     },
-    adjustCardStyle: function() {
-      var classInfoCard = $("#classInfoCard");
-      var searchInput = $("#searchInputTF");
-      var cardWidth = searchInput.outerWidth();
-      var cardLeft = cardWidth + searchInput.offset().left;
-      var browserWidth = $(window).width();
-      classInfoCard.css({right: browserWidth - cardLeft, width: cardWidth});
-    },
     addClass: function() {
       this.$emit('add-class',this.currentSubject);
     },
     cancelAddClass: function() {
       this.$emit('cancel-add-class');
     }
-  },
-  mounted() {
-    this.adjustCardStyle();
-    $(window).resize(this.adjustCardStyle);
   }
 }
 </script>
 
 
 <style>
+#classInfoCard {
+  right: 24px;
+}
+
+@media only screen and (max-width:959px) {
+  #classInfoCard {
+    right: 16px;
+  }
+}
+
 .card-header {
   padding: 0.5em 1em;
   display: inline-block;
