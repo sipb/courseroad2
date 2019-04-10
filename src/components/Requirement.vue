@@ -3,35 +3,43 @@
     class = "requirement"
     :draggable = "canDrag"
     v-on:dragstart = "dragStart"
+    @mouseover = "hoveringOver = true"
+    @mouseleave = "hoveringOver = false"
   >
-    <div v-if="!leaf">
-      <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
-      <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
-      <span v-else-if = "'title' in req">{{ req["title"] }}</span>
-      <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
-      <!--fake padding for scroll-->
-      &nbsp &nbsp &nbsp
-      <v-btn icon flat fixed v-if = "showDelete" @click = "viewDialog = true;"><v-icon>delete</v-icon></v-btn>
-    </div>
-    <span v-else>
-      <span v-if="'title' in req">{{ req.title }}</span>
-    </span>
-
-    <span v-if = "!req['plain-string']">
-      <span v-if="!('title' in req) && 'req' in req">
-        <span :class="reqFulfilled">{{ req.req }}</span>
-        <span style = "font-style:italic" v-if = "'threshold-desc' in req">({{ req['threshold-desc']}})</span>
+  <v-layout row>
+    <v-flex>
+      <div v-if="!leaf">
+        <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
+        <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
+        <span v-else-if = "'title' in req">{{ req["title"] }}</span>
+        <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
+        <!--fake padding for scroll-->
+        &nbsp &nbsp &nbsp
+        <v-btn icon flat fixed v-if = "showDelete" @click = "viewDialog = true;"><v-icon>delete</v-icon></v-btn>
+      </div>
+      <span v-else>
+        <span v-if="'title' in req">{{ req.title }}</span>
       </span>
-    </span>
-    <span v-else>
-      <span v-if = "'title' in req">| </span>
-      <span style = "text-transform: cursive">{{ req.req }}</span>
-    </span>
-    <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
-       (optional)
-    </span>
-    <div :class = "percentage_bar" :style = "percentage"></div>
+
+      <span v-if = "!req['plain-string']">
+        <span v-if="!('title' in req) && 'req' in req">
+          <span :class="reqFulfilled">{{ req.req }}</span>
+          <span style = "font-style:italic" v-if = "'threshold-desc' in req">({{ req['threshold-desc']}})</span>
+        </span>
+      </span>
+      <span v-else>
+        <span v-if = "'title' in req">| </span>
+        <span style = "text-transform: cursive">{{ req.req }}</span>
+      </span>
+      <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
+         (optional)
+      </span>
+      <div :class = "percentage_bar" :style = "percentage"></div>
+    </v-flex>
+    <v-icon @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" v-if = "hoveringOver" small :color = "iconClass">info</v-icon>
+  </v-layout>
   </div>
+
 </template>
 
 
@@ -43,7 +51,9 @@ export default {
     return {
       open: [],
       viewDialog: false,
-      showDelete: false
+      showDelete: false,
+      hoveringOver: false,
+      iconHover: false,
     }
   },
   computed: {
@@ -61,6 +71,9 @@ export default {
         }
       }
       return undefined;
+    },
+    iconClass: function() {
+      return this.iconHover ? "info" : "grey";
     },
     canDrag: function() {
       return this.classInfo !== undefined || ('req' in this.req && (Object.keys(this.subjectIndex).length===0));

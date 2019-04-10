@@ -32,12 +32,10 @@
           v-bind:genericCourses = "genericCourses"
           v-bind:genericIndex = "genericIndex"
           @drag-start-class = "$emit('drag-start-class',$event)"
-           @click.native = "clickRequirement(item)"
+          @click.native = "clickRequirement(item)"
+          @click-info = "reqInfo($event, item)"
         >
         </requirement>
-      </template>
-      <template slot = "append" slot-scope = "{ item, leaf }">
-        <v-btn v-if="'reqs' in item" icon flat color = "info" @click.stop = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
       </template>
     </v-treeview>
 
