@@ -8,34 +8,36 @@
   >
   <v-layout row>
     <v-flex>
-      <div v-if="!leaf">
-        <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
-        <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
-        <span v-else-if = "'title' in req">{{ req["title"] }}</span>
-        <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
-        <!--fake padding for scroll-->
-        &nbsp &nbsp &nbsp
-      </div>
-      <span v-else>
-        <span v-if="'title' in req">{{ req.title }}</span>
-      </span>
-
-      <span v-if = "!req['plain-string']">
-        <span v-if="!('title' in req) && 'req' in req">
-          <span :class="reqFulfilled">{{ req.req }}</span>
-          <span style = "font-style:italic" v-if = "'threshold-desc' in req">({{ req['threshold-desc']}})</span>
+      <div>
+        <div v-if="!leaf" style = "display: inline;">
+          <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
+          <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
+          <span v-else-if = "'title' in req">{{ req["title"] }}</span>
+          <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
+          <!--fake padding for scroll-->
+          &nbsp &nbsp &nbsp
+        </div>
+        <span v-else>
+          <span v-if="'title' in req">{{ req.title }}</span>
         </span>
-      </span>
-      <span v-else>
-        <span v-if = "'title' in req">| </span>
-        <span style = "text-transform: cursive">{{ req.req }}</span>
-      </span>
-      <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
-         (optional)
-      </span>
-      <div :class = "percentage_bar" :style = "percentage"></div>
+        <span v-if = "!req['plain-string']">
+          <span v-if="!('title' in req) && 'req' in req">
+            <span :class="reqFulfilled">{{ req.req }}</span>
+            <span style = "font-style:italic" v-if = "'threshold-desc' in req">({{ req['threshold-desc']}})</span>
+          </span>
+        </span>
+        <span v-else>
+          <span v-if = "'title' in req">| </span>
+          <span style = "text-transform: cursive">{{ req.req }}</span>
+        </span>
+        <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
+           (optional)
+        </span>
+        <span v-if = "hoveringOver && ('reqs' in req || 'threshold' in req) && 'percent_fulfilled' in req && req.percent_fulfilled !== 'N/A'":style = "'float: right; color: '+percentageTextColor">{{req.percent_fulfilled}}%</span>
+        <div :class = "percentage_bar" :style = "percentage"></div>
+      </div>
     </v-flex>
-    <v-icon v-if = "'reqs' in req && hoveringOver" @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" small :color = "iconColor">info</v-icon>
+    <v-icon style = "padding-left: 0.2em; padding-right: 0em;" v-if = "'reqs' in req && hoveringOver" @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" small :color = "iconColor">info</v-icon>
   </v-layout>
   </div>
 
@@ -86,10 +88,15 @@ export default {
         }
       }
     },
+    percentageTextColor: function() {
+      return this.req.fulfilled ? "#008400": (this.req.percent_fulfilled > 15 ? "#d1b82b": "#d3701f");
+    },
+    percentageColor: function() {
+      return this.req.fulfilled ? "#00b300" : (this.req.percent_fulfilled > 15 ? "#efce15": "#ef8214");
+    },
     percentage: function() {
       var pfulfilled = this.req.percent_fulfilled;
-      var pcolor = this.req.fulfilled ? "#00b300" : (this.req.percent_fulfilled > 15 ? "#efce15": "#ef8214");
-      var pstring = "--percent: " + pfulfilled +"%; --bar-color: " + pcolor + "; --bg-color: lightgrey";
+      var pstring = "--percent: " + pfulfilled +"%; --bar-color: " + this.percentageColor + "; --bg-color: lightgrey";
       return pstring;
     },
     percentage_bar: function() {

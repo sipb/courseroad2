@@ -11,17 +11,9 @@
     >
       <!-- TODO: useful icons can go here if you can figure out how -->
       <template slot="prepend" slot-scope="{ item, leaf, open }">
-        <v-tooltip left  @click.native = "clickRequirement(item)">
-          <template slot = "activator">
-            <v-icon v-if="'reqs' in item" :style = "fulfilledIcon(item)">
-              <!-- {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }} -->
-            </v-icon>
-            <v-icon v-else :style = "fulfilledIcon(item)">
-              {{ item['plain-string'] ? item.fulfilled ? "assignment_turned_in" : "assignment": item.fulfilled ? "done" : "remove"}}
-            </v-icon>
-          </template>
-          <span>{{item.percent_fulfilled}}%</span>
-        </v-tooltip>
+        <v-icon v-if = "!('reqs' in item)" :style = "fulfilledIcon(item)">
+          {{ item['plain-string'] ? item.fulfilled ? "assignment_turned_in" : "assignment": item.fulfilled ? "done" : "remove"}}
+        </v-icon>
       </template>
       <template slot = "label" slot-scope = "{ item, leaf}">
         <requirement
