@@ -35,7 +35,7 @@
       </span>
       <div :class = "percentage_bar" :style = "percentage"></div>
     </v-flex>
-    <v-icon @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" v-if = "hoveringOver" small :color = "iconClass">info</v-icon>
+    <v-icon v-if = "'reqs' in req && hoveringOver" @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" small :color = "iconColor">info</v-icon>
   </v-layout>
   </div>
 
@@ -69,7 +69,7 @@ export default {
       }
       return undefined;
     },
-    iconClass: function() {
+    iconColor: function() {
       return this.iconHover ? "info" : "grey";
     },
     canDrag: function() {
