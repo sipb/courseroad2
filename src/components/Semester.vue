@@ -98,7 +98,7 @@ export default {
           var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
           var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
           if(prereqString !== undefined) {
-            var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects : this.concurrentSubjects);
+            var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects);
             if(!prereqsfulfilled) {
               subjectWarnings.push("<b>Unsatisfied Prerequisite</b> - One or more prerequisites are not yet fulfilled.");
             }
@@ -124,11 +124,6 @@ export default {
         allWarnings[i] = subjectWarnings;
       }
       return allWarnings;
-    },
-    previousSubjects: function() {
-      return this.selectedSubjects.filter(subj => {
-        return subj.semester < this.index;
-      });
     },
     concurrentSubjects: function() {
       return this.selectedSubjects.filter(subj => {
@@ -247,6 +242,22 @@ export default {
     changeYear: function(event) {
       event.stopPropagation();
       this.$emit("change-year")
+    },
+    previousSubjects: function(subj) {
+      var subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(",")[0] == "1";
+      return this.selectedSubjects.filter(s => {
+        var subj2 = this.allSubjects[this.subjectsIndex[s.id]];
+        if(subj2 !== undefined) {
+          var inPreviousSemester = s.semester < this.index;
+          var inPreviousQuarter = s.semester == this.index
+                                  && subjInQuarter2
+                                  && subj2.quarter_information !== undefined
+                                  && subj2.quarter_information.split(",")[0] == "0";
+          return inPreviousSemester || inPreviousQuarter;
+        } else {
+          return false;
+        }
+      });
     },
     classSatisfies: function(req, id) {
       if(req === id) {
