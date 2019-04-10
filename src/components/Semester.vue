@@ -97,6 +97,9 @@ export default {
           subj = this.allSubjects[this.subjectsIndex[subjID]]
           var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
           var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
+          if(subj.subject_id === "6.041A") {
+            console.log(this.previousSubjects(subj));
+          }
           if(prereqString !== undefined) {
             var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects);
             if(!prereqsfulfilled) {
@@ -247,16 +250,15 @@ export default {
       var subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(",")[0] == "1";
       return this.selectedSubjects.filter(s => {
         var subj2 = this.allSubjects[this.subjectsIndex[s.id]];
+        var inPreviousSemester = s.semester < this.index;
+        var inPreviousQuarter = false;
         if(subj2 !== undefined) {
-          var inPreviousSemester = s.semester < this.index;
           var inPreviousQuarter = s.semester == this.index
                                   && subjInQuarter2
                                   && subj2.quarter_information !== undefined
                                   && subj2.quarter_information.split(",")[0] == "0";
-          return inPreviousSemester || inPreviousQuarter;
-        } else {
-          return false;
         }
+        return inPreviousSemester || inPreviousQuarter;
       });
     },
     classSatisfies: function(req, id) {
