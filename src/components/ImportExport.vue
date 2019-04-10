@@ -17,7 +17,10 @@
           class="headline grey lighten-2"
           primary-title
         >
-          Import Road
+            Import Road
+            <v-flex align-end>
+              <v-btn icon flat style = "float:right;" @click = "dialog = false"><v-icon>close</v-icon></v-btn>
+            </v-flex>
         </v-card-title>
 
         <v-card-text>

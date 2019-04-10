@@ -35,7 +35,10 @@
     </semester>
     <v-dialog v-model = "changeYearDialog">
       <v-card>
-        <v-card-title>Change Class Year</v-card-title>
+        <v-btn icon flat style = "float:right" @click = "changeYearDialog = false"><v-icon>close</v-icon></v-btn>
+        <v-card-title>
+          Change Class Year
+        </v-card-title>
         <v-card-text>
           <v-select
             v-model = "newYear"

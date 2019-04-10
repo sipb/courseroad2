@@ -36,6 +36,7 @@
     </v-hover>
     <v-dialog v-model = "warningDialog">
       <v-card>
+        <v-btn icon flat style = "float:right" @click = "warningDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title>
           <h3>Warnings for {{classInfo.id}}</h3>
         </v-card-title>

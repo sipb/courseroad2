@@ -18,6 +18,7 @@
       </v-tab>
       <v-dialog v-model = "editDialog" @input = "newRoadName = ''">
         <v-card style = "padding: 2em">
+          <v-btn icon flat style = "float:right" @click = "editDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Edit Road</v-card-title>
           <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
           <v-card-actions>
@@ -31,6 +32,7 @@
       </v-dialog>
       <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads">
         <v-card style = "padding: 2em">
+          <v-btn icon flat style = "float:right" @click = "deleteDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Permanently Delete {{roads[tabRoad].name}}?</v-card-title>
           <v-card-text>This action cannot be undone.</v-card-text>
           <v-card-actions>
@@ -41,6 +43,7 @@
       </v-dialog>
       <v-dialog v-model = "addDialog" width = "500" @input = "newRoadName = ''">
         <v-card style = "padding: 2em">
+          <v-btn icon flat style = "float:right" @click = "addDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Create Road</v-card-title>
           <v-text-field v-model = "newRoadName"></v-text-field>
           <v-layout row>
