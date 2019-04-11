@@ -15,7 +15,7 @@
           <span v-else-if = "'title' in req">{{ req["title"] }}</span>
           <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
           <!--fake padding for scroll-->
-          &nbsp &nbsp &nbsp
+          &nbsp
         </div>
         <span v-else>
           <span v-if="'title' in req">{{ req.title }}</span>
