@@ -12,7 +12,11 @@
       <!-- TODO: useful icons can go here if you can figure out how -->
       <template slot="prepend" slot-scope="{ item, leaf, open }">
         <v-icon v-if = "!('reqs' in item)" :style = "fulfilledIcon(item)">
-          {{ item['plain-string'] ? item.fulfilled ? "assignment_turned_in" : "assignment": item.fulfilled ? "done" : "remove"}}
+          {{ item['plain-string'] ?
+          (item["list-id"] in progressOverrides ?
+            (item.fulfilled ? "assignment_turned_in" : "assignment") :
+            "assignment_late" ) :
+          item.fulfilled ? "done" : "remove"}}
         </v-icon>
       </template>
       <template slot = "label" slot-scope = "{ item, leaf}">
@@ -91,7 +95,7 @@ export default {
   components: {
     'requirement': Requirement,
   },
-  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
+  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex', 'progressOverrides'],
   data: function() { return {
     tree: [],
     viewDialog: false,

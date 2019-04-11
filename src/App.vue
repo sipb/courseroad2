@@ -102,6 +102,7 @@
             v-bind:subjectIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
+            v-bind:progressOverrides = "roads[activeRoad].contents.progressOverrides"
             @drag-start-class = "dragStartClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
