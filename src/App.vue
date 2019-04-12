@@ -102,10 +102,12 @@
             v-bind:subjectIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
+            v-bind:progressOverrides = "roads[activeRoad].contents.progressOverrides"
             @drag-start-class = "dragStartClass"
             @add-req = "addReq"
             @remove-req = "removeReq"
             @push-stack = "pushClassStack"
+            @update-progress = "updateProgress"
           ></audit>
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>Problems with the course requirements? Request edits
@@ -255,7 +257,8 @@ export default {
         agent: "",
         contents: {
           coursesOfStudy: ['girs'],
-          selectedSubjects: []
+          selectedSubjects: [],
+          progressOverrides: {},
         }
       }
     },
@@ -300,13 +303,12 @@ export default {
       this.addingFromCard = false;
     },
     updateFulfillment: function() {
-      var subjectIDs = this.roads[this.activeRoad].contents.selectedSubjects.map((s)=>s.id.toString()).join(",")
       for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
         var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        axios.get(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`+subjectIDs).then(function(response) {
+        axios.post(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`,this.roads[this.activeRoad].contents).then(function(response) {
           //This is necessary so Vue knows about the new property on reqTrees
           Vue.set(this.data.reqTrees, this.req, response.data);
-        }.bind({data: this, req:req}))
+        }.bind({data: this, req:req}));
       }
     },
     addReq: function(event) {
@@ -493,6 +495,10 @@ export default {
     overrideWarnings(override, classInfo) {
       var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
       Vue.set(this.roads[this.activeRoad].contents.selectedSubjects[classIndex],"overrideWarnings", override);
+    },
+    updateProgress: function(newProgress) {
+      Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
+      Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     }
   },
   watch: {

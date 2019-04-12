@@ -92,11 +92,15 @@ export default {
   methods: {
     clickRequirement: function(event) {
       if(this.req.req !== undefined) {
-        var usedReq = this.req.req;
-        if(usedReq.indexOf("GIR:")===0) {
-          usedReq = usedReq.substring(4);
+        if(!this.req["plain-string"]) {
+          var usedReq = this.req.req;
+          if(usedReq.indexOf("GIR:")===0) {
+            usedReq = usedReq.substring(4);
+          }
+          this.$emit('push-stack', usedReq);
+        } else {
+          this.$emit('progress-dialog', this.req);
         }
-        this.$emit('push-stack', usedReq);
       }
     },
     dragStart: function(event) {
