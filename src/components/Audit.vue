@@ -4,7 +4,7 @@
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
-      item-key="index"
+      item-key="uniqueKey"
       item-children="reqs"
       open-on-click
       :activatable = "false"
@@ -147,14 +147,14 @@ export default {
   }},
   computed: {
     selectedTrees: function() {
-      return this.selectedReqs.map(function(req,index){
+      return this.selectedReqs.map(function(req,index) {
         if(req in this.reqTrees) {
-          return this.assignListIDs(Object.assign({index: index},this.reqTrees[req]));
+          return this.assignListIDs(Object.assign({},this.reqTrees[req]), index);
         } else {
           return {
             title: "loading...",
             reqs: [],
-            index: index
+            uniqueKey: index
           }
         }
       }, this);
@@ -189,7 +189,7 @@ export default {
     //gives each list and sublist an id
     //progress overrides are a dictionary where the keys are these list ids and the values are the manual progress
     //for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
-    assignListIDs: function(req) {
+    assignListIDs: function(req, index) {
       if("reqs" in req && "list-id" in req) {
         var currentListID = req["list-id"];
         if(currentListID.indexOf(".reql")>=0) {
@@ -197,11 +197,12 @@ export default {
           req["list-id"] = req["list-id"].substring(0,req["list-id"].indexOf(".reql"));
           currentListID = req["list-id"];
         }
+        req.uniqueKey = index + "-" + req["list-id"];
         for(var r = 0; r < req.reqs.length; r++) {
           //give each sub-requirement a list id of [parent list id].[index]
           Object.assign(req.reqs[r], {"list-id": currentListID + "." + r});
           //assign list ids to each of the children
-          req.reqs[r] = this.assignListIDs(req.reqs[r]);
+          req.reqs[r] = this.assignListIDs(req.reqs[r], index);
         }
       }
       return req;
