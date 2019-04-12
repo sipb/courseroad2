@@ -15,7 +15,6 @@
           <span v-else-if = "'title' in req">{{ req["title"] }}</span>
           <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
           <!--fake padding for scroll-->
-          &nbsp
         </div>
         <span v-else>
           <span v-if="'title' in req">{{ req.title }}</span>
@@ -33,6 +32,7 @@
         <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
            (optional)
         </span>
+        <span v-if = "!leaf || req['plain-string'] !== undefined">&nbsp</span>
         <span v-if = "hoveringOver && ('reqs' in req || 'threshold' in req) && 'percent_fulfilled' in req && req.percent_fulfilled !== 'N/A'":style = "'float: right; color: '+percentageTextColor">{{req.percent_fulfilled}}%</span>
         <div :class = "percentage_bar" :style = "percentage"></div>
       </div>
