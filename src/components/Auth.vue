@@ -147,6 +147,9 @@ export default {
             if(roadData[r].status===200 && roadData[r].data.success) {
               roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
               roadData[r].data.file.changed = moment().format(DATE_FORMAT);
+              if(roadData[r].data.file.contents.progressOverrides === undefined) {
+                roadData[r].data.file.contents.progressOverrides = {};
+              }
               this.$emit("set-road", roadIDs[r], roadData[r].data.file);
             }
           }
@@ -263,7 +266,7 @@ export default {
         }.bind({oldid: roadID,data:this}))
         savePromises.push(savePromise);
       }
-      Promise.all(savePromises)
+      return Promise.all(savePromises)
       .then(function(saveResults) {
         for(var s = 0; s < saveResults.length; s++) {
           var savedResult = saveResults[s];

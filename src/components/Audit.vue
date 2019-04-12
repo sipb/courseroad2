@@ -4,7 +4,7 @@
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
-      item-key="index"
+      item-key="uniqueKey"
       item-children="reqs"
       open-on-click
       :activatable = "false"
@@ -34,6 +34,40 @@
         </requirement>
       </template>
     </v-treeview>
+
+    <v-dialog v-model = "progressDialog">
+      <v-card v-if = "progressReq !== undefined" style = "padding: 1em;">
+        <v-btn icon flat style = "float:right" @click = "progressDialog = false"><v-icon>close</v-icon></v-btn>
+        <v-card-title><h2>Manual Progress: {{progressReq.title}}</h2></v-card-title>
+        <v-card-text>
+          <h3>{{capitalize(progressReq.threshold.criterion)}} Completed: {{newManualProgress}}/{{progressReq.threshold.cutoff}}</h3>
+          <v-layout row>
+            <v-flex
+             shrink
+             style = "width: 3em;"
+             >
+             <v-text-field
+               v-model="newManualProgress"
+               type="number"
+             ></v-text-field>
+            </v-flex>
+            <v-flex>
+              <v-slider
+              v-model = "newManualProgress"
+              :max = "progressReq.threshold.cutoff"
+              :min = "0"
+              :step = "1"
+              >
+            </v-slider>
+          </v-flex>
+        </v-layout>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color = "secondary" @click = "progressDialog = false; progressReq = undefined;">Cancel</v-btn>
+          <v-btn color = "primary" @click = "updateManualProgress">Update Progress</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-dialog v-model = "viewDialog">
       <div v-if = "dialogReq !== undefined">
@@ -99,18 +133,21 @@ export default {
   data: function() { return {
     tree: [],
     viewDialog: false,
-    dialogReq: undefined
+    dialogReq: undefined,
+    progressDialog: false,
+    progressReq: undefined,
+    newManualProgress: 0
   }},
   computed: {
     selectedTrees: function() {
-      return this.selectedReqs.map(function(req,index){
+      return this.selectedReqs.map(function(req,index) {
         if(req in this.reqTrees) {
-          return Object.assign({index: index},this.reqTrees[req]);
+          return this.assignListIDs(Object.assign({},this.reqTrees[req]), index);
         } else {
           return {
             title: "loading...",
             reqs: [],
-            index: index
+            uniqueKey: index
           }
         }
       }, this);
@@ -145,13 +182,56 @@ export default {
     },
     clickRequirement: function(item) {
       if(item.req !== undefined) {
-        var usedReq = item.req;
-        if(usedReq.indexOf("GIR:")===0) {
-          usedReq = usedReq.substring(4);
+        if(!item["plain-string"]) {
+          var usedReq = item.req;
+          if(usedReq.indexOf("GIR:")===0) {
+            usedReq = usedReq.substring(4);
+          }
+          this.$emit('push-stack', usedReq);
+        } else {
+          this.startProgressDialog(item);
         }
-        this.$emit('push-stack', usedReq);
       }
     },
+    //gives each list and sublist an id
+    //progress overrides are a dictionary where the keys are these list ids and the values are the manual progress
+    //for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
+    assignListIDs: function(req, index) {
+      if("reqs" in req && "list-id" in req) {
+        var currentListID = req["list-id"];
+        if(currentListID.indexOf(".reql")>=0) {
+          //if the requirement is top level, it will have .reql at the end and this needs to be removed
+          req["list-id"] = req["list-id"].substring(0,req["list-id"].indexOf(".reql"));
+          currentListID = req["list-id"];
+        }
+        req.uniqueKey = index + "-" + req["list-id"];
+        for(var r = 0; r < req.reqs.length; r++) {
+          //give each sub-requirement a list id of [parent list id].[index]
+          Object.assign(req.reqs[r], {"list-id": currentListID + "." + r});
+          //assign list ids to each of the children
+          req.reqs[r] = this.assignListIDs(req.reqs[r], index);
+        }
+      }
+      return req;
+    },
+    startProgressDialog: function(req) {
+      this.progressReq = Object.assign({threshold: {criterion: "subject", cutoff: 1, type: "GTE"}}, req);
+      this.progressDialog = true;
+      if(this.progressReq["list-id"] in this.progressOverrides) {
+        this.newManualProgress = this.progressOverrides[this.progressReq["list-id"]];
+      }
+    },
+    capitalize: function(word) {
+      return word[0].toUpperCase() + word.substring(1);
+    },
+    updateManualProgress: function() {
+      if(this.progressReq["list-id"] !== undefined) {
+        this.$emit("update-progress", {listID: this.progressReq["list-id"], progress: this.newManualProgress});
+      }
+      this.progressReq = undefined;
+      this.progressDialog = false;
+      this.newManualProgress = 0;
+    }
   },
 
 }
