@@ -11,7 +11,7 @@
     >
       <!-- TODO: useful icons can go here if you can figure out how -->
       <template slot="prepend" slot-scope="{ item, leaf, open }">
-        <v-icon v-if = "!('reqs' in item)" :style = "fulfilledIcon(item)">
+        <v-icon v-if = "!('reqs' in item)" :style = "fulfilledIcon(item)" @click = "clickRequirement(item)">
           {{ item['plain-string'] ?
           (item["list-id"] in progressOverrides ?
             (item.fulfilled ? "assignment_turned_in" : "assignment") :
