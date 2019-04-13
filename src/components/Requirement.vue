@@ -32,7 +32,7 @@
         <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
            (optional)
         </span>
-        <span v-if = "!leaf || req['plain-string'] !== undefined">&nbsp</span>
+        <span v-if = "'req' in req || 'threshold' in req">&nbsp</span>
         <span v-if = "hoveringOver && ('reqs' in req || 'threshold' in req) && 'percent_fulfilled' in req && req.percent_fulfilled !== 'N/A'":style = "'float: right; color: '+percentageTextColor">{{req.percent_fulfilled}}%</span>
         <div :class = "percentage_bar" :style = "percentage"></div>
       </div>
