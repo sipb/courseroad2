@@ -244,16 +244,16 @@ export default {
       this.$emit("change-year")
     },
     previousSubjects: function(subj) {
-      var subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(",")[0] == "1";
+      var subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(",")[0] === "1";
       return this.selectedSubjects.filter(s => {
         var subj2 = this.allSubjects[this.subjectsIndex[s.id]];
         var inPreviousSemester = s.semester < this.index;
         var inPreviousQuarter = false;
         if(subj2 !== undefined) {
-          inPreviousQuarter = s.semester == this.index
+          inPreviousQuarter = s.semester === this.index
                                   && subjInQuarter2
                                   && subj2.quarter_information !== undefined
-                                  && subj2.quarter_information.split(",")[0] == "0";
+                                  && subj2.quarter_information.split(",")[0] === "0";
         }
         return inPreviousSemester || inPreviousQuarter;
       });
