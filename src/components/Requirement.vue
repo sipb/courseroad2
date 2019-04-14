@@ -1,11 +1,11 @@
 <template>
-  <div
-    class = "requirement"
-    :draggable = "canDrag"
-    v-on:dragstart = "dragStart"
-    @mouseover = "hoveringOver = true"
-    @mouseleave = "hoveringOver = false"
-  >
+<div
+  class = "requirement"
+  :draggable = "canDrag"
+  v-on:dragstart = "dragStart"
+  @mouseover = "hoveringOver = true"
+  @mouseleave = "hoveringOver = false"
+>
   <v-layout row>
     <v-flex>
       <div>
@@ -14,7 +14,6 @@
           <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
           <span v-else-if = "'title' in req">{{ req["title"] }}</span>
           <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
-          <!--fake padding for scroll-->
         </div>
         <span v-else>
           <span v-if="'title' in req">{{ req.title }}</span>
@@ -39,8 +38,7 @@
     </v-flex>
     <v-icon style = "padding-left: 0.2em; padding-right: 0em;" v-if = "'reqs' in req && hoveringOver" @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" small :color = "iconColor">info</v-icon>
   </v-layout>
-  </div>
-
+</div>
 </template>
 
 
