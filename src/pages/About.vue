@@ -60,6 +60,13 @@
                 into it. We are working to fix this.
               </p>
             </li>
+            <li>
+              <h3>Open Search on Click</h3>
+              <p>The search bar sometimes fails to open when you click on it.  This seems to be
+                computer/browser-dependent, and we are investigating.  It should always open
+                when you start typing to search for a class.
+              </p>
+            </li>
           </ul>
         </div>
       </p>
