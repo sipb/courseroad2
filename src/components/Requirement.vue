@@ -30,8 +30,7 @@
       <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
          (optional)
       </span>
-      <span v-if = "'req' in req || 'threshold' in req">&nbsp</span>
-      <span v-if = "hoveringOver && ('reqs' in req || 'threshold' in req) && 'percent_fulfilled' in req && req.percent_fulfilled !== 'N/A'":style = "'float: right; color: '+percentageTextColor">{{req.percent_fulfilled}}%</span>
+      <span v-if = "hoveringOver && ('reqs' in req || 'threshold' in req) && 'percent_fulfilled' in req && req.percent_fulfilled !== 'N/A'":style = "'float: right; color: '+percentageTextColor">&nbsp{{req.percent_fulfilled}}%</span>
       <div :class = "percentage_bar" :style = "percentage"></div>
     </v-flex>
     <v-icon style = "padding-left: 0.2em; padding-right: 0em;" v-if = "'reqs' in req && hoveringOver" @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" small :color = "iconColor">info</v-icon>
