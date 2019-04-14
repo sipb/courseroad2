@@ -1,5 +1,7 @@
 <template>
-  <p>About CourseRoad</p>
+  <v-container>
+    <h1 class = "text-sm-center">About CourseRoad</h1>
+  </v-container>
 </template>
 
 <script>
