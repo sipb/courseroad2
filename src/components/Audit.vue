@@ -9,14 +9,13 @@
       open-on-click
       :activatable = "false"
     >
-      <!-- TODO: useful icons can go here if you can figure out how -->
       <template slot="prepend" slot-scope="{ item, leaf, open }">
         <v-icon v-if = "!('reqs' in item)" :style = "fulfilledIcon(item)" @click = "clickRequirement(item)">
           {{ item['plain-string'] ?
-          (item["list-id"] in progressOverrides ?
-            (item.fulfilled ? "assignment_turned_in" : "assignment") :
-            "assignment_late" ) :
-          item.fulfilled ? "done" : "remove"}}
+              (item["list-id"] in progressOverrides ?
+                  (item.fulfilled ? "assignment_turned_in" : "assignment") :
+                  "assignment_late" ) :
+              item.fulfilled ? "done" : "remove"}}
         </v-icon>
       </template>
       <template slot = "label" slot-scope = "{ item, leaf}">
