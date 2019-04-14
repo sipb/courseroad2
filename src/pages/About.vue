@@ -23,26 +23,24 @@
         an update to course requirements, visit <a href = "fireroad.mit.edu">the fireroad website</a>.
       </p>
       <p>Github Respositories:</p>
-      <p class = "px-5"><div>
+      <p class = "px-5">
         <ul style = "display: inline-block; text-align: left;">
           <li><a href = "https://github.com/venkatesh-sivaraman/FireRoad">iOS App</a></li>
           <li><a href = "https://github.com/venkatesh-sivaraman/FireRoad-Android">Android App</a></li>
           <li><a href = "https://github.com/venkatesh-sivaraman/fireroad-server">FireRoad Server</a></li>
         </ul>
-      </div></p>
+      </p>
       <p class = "px-5">Download the app for <a href = "https://itunes.apple.com/us/app/fireroad-mit-course-planner/id1330678450">iOS</a>
         or <a href = "https://play.google.com/store/apps/details?id=com.base12innovations.android.fireroad&hl=en_US">Android</a>
       </p>
       <h2>Maintainers</h2>
       <p class = "px-5">
-        <div>
-          <ul style = "display: inline-block; text-align: left">
-            <li>Nate Foss</li>
-            <li>Sophie Mori</li>
-            <li>Michael Nguyen</li>
-            <li>Georgia Shay</li>
-          </ul>
-        </div>
+        <ul style = "display: inline-block; text-align: left">
+          <li>Nate Foss</li>
+          <li>Sophie Mori</li>
+          <li>Michael Nguyen</li>
+          <li>Georgia Shay</li>
+        </ul>
       </p>
       <p class = "px-5">If you have questions or comments, please email <a href = "courseroad-dev.mit.edu">us</a>.</p>
       <h2>Old CourseRoad</h2>
@@ -52,23 +50,21 @@
       </p>
       <h2>Known Issues</h2>
       <p class = "px-5">
-        <div>
-          <ul style = "display: inline-block; text-align: left;">
-            <li>
-              <h3>Scrolling Issues</h3>
-              <p>The semester view does not scroll correctly while you are dragging classes
-                into it. We are working to fix this.
-              </p>
-            </li>
-            <li>
-              <h3>Open Search on Click</h3>
-              <p>The search bar sometimes fails to open when you click on it.  This seems to be
-                computer/browser-dependent, and we are investigating.  It should always open
-                when you start typing to search for a class.
-              </p>
-            </li>
-          </ul>
-        </div>
+        <ul style = "display: inline-block; text-align: left;">
+          <li>
+            <h3>Scrolling Issues</h3>
+            <p>The semester view does not scroll correctly while you are dragging classes
+              into it. We are working to fix this.
+            </p>
+          </li>
+          <li>
+            <h3>Open Search on Click</h3>
+            <p>The search bar sometimes fails to open when you click on it.  This seems to be
+              computer/browser-dependent, and we are investigating.  It should always open
+              when you start typing to search for a class.
+            </p>
+          </li>
+        </ul>
       </p>
     </div>
   </v-container>
