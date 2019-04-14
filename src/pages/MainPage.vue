@@ -321,14 +321,14 @@ export default {
     },
     setActiveRoad: function() {
       var roadHash = window.location.hash;
-      if(roadHash.length&&roadHash.substring(0,5)==="#road") {
-        var roadRequested = roadHash.substring(5);
+      if(roadHash.length&&roadHash.substring(0,7)==="#/#road") {
+        var roadRequested = roadHash.substring(7);
         if(roadRequested in this.roads) {
-          this.activeRoad = roadHash.substring(5);
+          this.activeRoad = roadHash.substring(7);
           return true;
         }
       }
-      // window.location.hash = "#road" + this.activeRoad;
+      window.location.hash = "#/#road" + this.activeRoad;
       return false;
     },
     addRoad: function(roadName, cos=["girs"], ss=[]) {
@@ -506,7 +506,7 @@ export default {
     activeRoad: function(newRoad,oldRoad) {
       this.justLoaded = false;
       if(newRoad !== "") {
-        // window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
+        window.history.pushState({},this.roads[newRoad].name,"/#/#road"+newRoad);
         this.updateFulfillment();
       }
     },
