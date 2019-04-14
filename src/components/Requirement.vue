@@ -1,38 +1,42 @@
 <template>
-  <div
-    class = "requirement"
-    :draggable = "canDrag"
-    v-on:dragstart = "dragStart"
-    @click = "clickRequirement"
-  >
-    <div v-if="!leaf">
-      <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
-      <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
-      <span v-else-if = "'title' in req">{{ req["title"] }}</span>
-      <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
-      <!--fake padding for scroll-->
-      &nbsp &nbsp &nbsp
-      <v-btn icon flat fixed v-if = "showDelete" @click = "viewDialog = true;"><v-icon>delete</v-icon></v-btn>
-    </div>
-    <span v-else>
-      <span v-if="'title' in req">{{ req.title }}</span>
-    </span>
-
-    <span v-if = "!req['plain-string']">
-      <span v-if="!('title' in req) && 'req' in req">
-        <span :class="reqFulfilled">{{ req.req }}</span>
-        <span style = "font-style:italic" v-if = "'threshold-desc' in req">({{ req['threshold-desc']}})</span>
+<div
+  class = "requirement"
+  :draggable = "canDrag"
+  v-on:dragstart = "dragStart"
+  @mouseover = "hoveringOver = true"
+  @mouseleave = "hoveringOver = false"
+>
+  <v-layout row>
+    <v-flex>
+      <div v-if="!leaf" style = "display: inline;">
+        <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
+        <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
+        <span v-else-if = "'title' in req">{{ req["title"] }}</span>
+        <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
+      </div>
+      <span v-else>
+        <span v-if="'title' in req">{{ req.title }}</span>
       </span>
-    </span>
-    <span v-else>
-      <span v-if = "'title' in req">| </span>
-      <span style = "text-transform: cursive">{{ req.req }}</span>
-    </span>
-    <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
-       (optional)
-    </span>
-    <div :class = "percentage_bar" :style = "percentage"></div>
-  </div>
+      <span v-if = "!req['plain-string']">
+        <span v-if="!('title' in req) && 'req' in req">
+          <span :class="reqFulfilled">{{ req.req }}</span>
+          <span style = "font-style:italic" v-if = "'threshold-desc' in req">({{ req['threshold-desc']}})</span>
+        </span>
+      </span>
+      <span v-else>
+        <span v-if = "'title' in req">| </span>
+        <span style = "text-transform: cursive">{{ req.req }}</span>
+      </span>
+      <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
+         (optional)
+      </span>
+      <span v-if = "'req' in req || 'threshold' in req">&nbsp</span>
+      <span v-if = "hoveringOver && ('reqs' in req || 'threshold' in req) && 'percent_fulfilled' in req && req.percent_fulfilled !== 'N/A'":style = "'float: right; color: '+percentageTextColor">{{req.percent_fulfilled}}%</span>
+      <div :class = "percentage_bar" :style = "percentage"></div>
+    </v-flex>
+    <v-icon style = "padding-left: 0.2em; padding-right: 0em;" v-if = "'reqs' in req && hoveringOver" @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" small :color = "iconColor">info</v-icon>
+  </v-layout>
+</div>
 </template>
 
 
@@ -43,8 +47,8 @@ export default {
   data: function() {
     return {
       open: [],
-      viewDialog: false,
-      showDelete: false
+      hoveringOver: false,
+      iconHover: false,
     }
   },
   computed: {
@@ -63,6 +67,9 @@ export default {
       }
       return undefined;
     },
+    iconColor: function() {
+      return this.iconHover ? "info" : "grey";
+    },
     canDrag: function() {
       return this.classInfo !== undefined || ('req' in this.req && (Object.keys(this.subjectIndex).length===0));
     },
@@ -77,32 +84,27 @@ export default {
         }
       }
     },
+    percentageTextColor: function() {
+      return this.req.fulfilled ? "#008400": (this.req.percent_fulfilled > 15 ? "#d1b82b": "#d3701f");
+    },
+    percentageColor: function() {
+      return this.req.fulfilled ? "#00b300" : (this.req.percent_fulfilled > 15 ? "#efce15": "#ef8214");
+    },
     percentage: function() {
-      var pfulfilled = this.req.percent_fulfilled
-      var pstring = "--percent: "+this.req.percent_fulfilled+"%";
+      var pfulfilled = this.req.percent_fulfilled;
+      var pstring = "--percent: " + pfulfilled +"%; --bar-color: " + this.percentageColor + "; --bg-color: lightgrey";
       return pstring;
     },
     percentage_bar: function() {
+      var showPBar = ("reqs" in this.req || "threshold" in this.req);
       var pblock = {
-        "percentage-bar": ("reqs" in this.req || "threshold" in this.req)
+        "percentage-bar": showPBar,
+        "p-bar": showPBar
       }
       return pblock
     }
   },
   methods: {
-    clickRequirement: function(event) {
-      if(this.req.req !== undefined) {
-        if(!this.req["plain-string"]) {
-          var usedReq = this.req.req;
-          if(usedReq.indexOf("GIR:")===0) {
-            usedReq = usedReq.substring(4);
-          }
-          this.$emit('push-stack', usedReq);
-        } else {
-          this.$emit('progress-dialog', this.req);
-        }
-      }
-    },
     dragStart: function(event) {
       var usedInfo = this.classInfo;
       if(usedInfo === undefined) {
@@ -128,8 +130,7 @@ export default {
     font-size: 0.75em;
   }
 
-  .percentage-bar {
+  .p-bar {
     height: 4px;
-    background: linear-gradient(90deg, #00b300 var(--percent), lightgrey var(--percent));
   }
 </style>

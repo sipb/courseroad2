@@ -1,6 +1,7 @@
 <template>
   <v-dialog v-model = "conflictDialog" v-if = "conflictInfo != undefined">
     <v-card>
+      <v-btn icon flat style = "float:right" @click = "conflictDialog = false"><v-icon>close</v-icon></v-btn>
       <v-card-title>Save Conflict</v-card-title>
       <v-layout row>
         <v-flex xs6 style = "padding: 2em">

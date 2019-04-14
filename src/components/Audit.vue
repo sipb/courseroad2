@@ -9,19 +9,14 @@
       open-on-click
       :activatable = "false"
     >
-      <!-- TODO: useful icons can go here if you can figure out how -->
       <template slot="prepend" slot-scope="{ item, leaf, open }">
-        <v-tooltip left>
-          <template slot = "activator">
-            <v-icon v-if="'reqs' in item" :style = "fulfilledIcon(item)">
-              <!-- {{ open ? 'assignment_returned' : item.fulfilled ? 'assignment_turned_in' : 'assignment' }} -->
-            </v-icon>
-            <v-icon v-else :style = "fulfilledIcon(item)">
-              {{ item['plain-string'] ? item.fulfilled ? "star" : "star_outline": item.fulfilled ? "check_box" : "check_box_outline_blank"}}
-            </v-icon>
-          </template>
-          <span>{{item.percent_fulfilled}}%</span>
-        </v-tooltip>
+        <v-icon v-if = "!('reqs' in item)" :style = "fulfilledIcon(item)" @click = "clickRequirement(item)">
+          {{ item['plain-string'] ?
+              (item["list-id"] in progressOverrides ?
+                  (item.fulfilled ? "assignment_turned_in" : "assignment") :
+                  "assignment_late" ) :
+              item.fulfilled ? "done" : "remove"}}
+        </v-icon>
       </template>
       <template slot = "label" slot-scope = "{ item, leaf}">
         <requirement
@@ -32,13 +27,10 @@
           v-bind:genericCourses = "genericCourses"
           v-bind:genericIndex = "genericIndex"
           @drag-start-class = "$emit('drag-start-class',$event)"
-          @push-stack = "$emit('push-stack',$event)"
-          @progress-dialog = "startProgressDialog"
+          @click.native = "clickRequirement(item)"
+          @click-info = "reqInfo($event, item)"
         >
         </requirement>
-      </template>
-      <template slot = "append" slot-scope = "{ item, leaf }">
-        <v-btn v-if="'reqs' in item" icon flat color = "info" @click.stop = "reqInfo($event, item)"><v-icon>info</v-icon></v-btn>
       </template>
     </v-treeview>
 
@@ -86,7 +78,7 @@
         </v-card-text>
         <v-card-text v-if = "'desc' in dialogReq">{{dialogReq["desc"]}}</v-card-text>
         <v-card-text>
-          <div class = "percentage-bar" :style = "percentage(dialogReq)">
+          <div class = "percentage-bar p-block" :style = "percentage(dialogReq)">
             {{dialogReq["percent_fulfilled"]}}% fulfilled
           </div>
         </v-card-text>
@@ -178,13 +170,27 @@ export default {
       this.dialogReq = req;
     },
     percentage: function(req) {
-      var pfulfilled = req.percent_fulfilled
-      var pstring = "--percent: " + req.percent_fulfilled+"%";
+      var pfulfilled = req.percent_fulfilled;
+      var pcolor = req.fulfilled ? "#00b300" : (req.percent_fulfilled > 15 ? "#efce15": "#ef8214");
+      var pstring = "--percent: " + pfulfilled +"%; --bar-color: " + pcolor + "; --bg-color: #ffffff";
       return pstring;
     },
     deleteReq: function(req) {
       var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
       this.$emit("remove-req",reqName);
+    },
+    clickRequirement: function(item) {
+      if(item.req !== undefined) {
+        if(!item["plain-string"]) {
+          var usedReq = item.req;
+          if(usedReq.indexOf("GIR:")===0) {
+            usedReq = usedReq.substring(4);
+          }
+          this.$emit('push-stack', usedReq);
+        } else {
+          this.startProgressDialog(item);
+        }
+      }
     },
     //gives each list and sublist an id
     //progress overrides are a dictionary where the keys are these list ids and the values are the manual progress
@@ -230,10 +236,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+
 .percentage-bar {
+  background: linear-gradient(90deg, var(--bar-color) var(--percent), var(--bg-color) var(--percent));
+}
+.p-block{
   height: 30px;
-  background: linear-gradient(90deg, #00b300 var(--percent), rgba(255,255,255,0) var(--percent));
   border: 1px solid gray;
   padding-left: 5px;
   padding-top: 5px;
