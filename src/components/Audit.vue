@@ -1,9 +1,9 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
   <v-flex style="padding: 24px; overflow: auto;">
-    <a class = "grey lighten-3" style = "color: inherit; border-radius: 10px; padding: 8px; display: inline-block;">
+    <router-link to = "/about" class = "grey lighten-3" style = "color: inherit; text-decoration: none; border-radius: 10px; padding: 8px; display: inline-block;">
       <h2 style = "font-family: Garamond">CourseRoad</h2>
-    </a>
+    </router-link>
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
