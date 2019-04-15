@@ -92,6 +92,16 @@
     >
       <v-container fill-height style = "padding: 0;">
         <v-layout fill-height column>
+          <v-layout shrink style = "padding: 14px; padding-bottom: 0;" row>
+            <v-flex shrink class = "blue-grey lighten-5" style = "color: inherit; text-decoration: none; border-radius: 2px; padding: 8px; display: inline-block;">
+                <v-icon small >check_box</v-icon> <h3 style = "display: inline;">C o u r s e R o a d</h3>
+            </v-flex>
+            <v-flex>
+              <router-link to = "/about" style = "font-size: 0.8em; float: right;" >
+                about
+              </router-link>
+            </v-flex>
+          </v-layout>
           <audit
             v-if = "activeRoad !== ''"
             v-bind:reqTrees="reqTrees"
