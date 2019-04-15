@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "build": "webpack --config build/webpack.config.dev.js",
-    "dev": "webpack-dev-server --config build/webpack.config.dev.js"
+    "build-dev": "webpack --env.APP_URL=https://courseroad.mit.edu/dev --mode=production --config build/webpack.config.dev.js",
+    "build-prod": "webpack --env.APP_URL=https://courseroad.mit.edu --mode=production --config build/webpack.config.dev.js",
+    "dev": "webpack-dev-server --env.APP_URL=http://localhost:8080 --mode=development --config build/webpack.config.dev.js"
   },
   "repository": {
     "type": "git",
