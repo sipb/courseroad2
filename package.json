@@ -28,7 +28,7 @@
     "ua-parser-js": "^0.7.19",
     "vue-context": "^3.4.0",
     "vue-cookies": "^1.5.12",
-    "vue-router": "^3.0.1",
+    "vue-router": "^3.0.4",
     "vue-scrolling-table": "^0.2.2",
     "vuetify": "^1.4.3"
   },

@@ -328,7 +328,7 @@ export default {
           return true;
         }
       }
-      window.location.hash = "#road" + this.activeRoad;
+      // window.location.hash = "#road" + this.activeRoad;
       return false;
     },
     addRoad: function(roadName, cos=["girs"], ss=[]) {
@@ -504,10 +504,9 @@ export default {
   watch: {
     //call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function(newRoad,oldRoad) {
-      window.activeRoad = newRoad;
       this.justLoaded = false;
       if(newRoad !== "") {
-        window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
+        // window.history.pushState({},this.roads[newRoad].name,"/#road"+newRoad);
         this.updateFulfillment();
       }
     },
@@ -528,8 +527,6 @@ export default {
     }
   },
   mounted() {
-    window.$refs = this.$refs;
-    window.activeRoad = this.activeRoad;
 
     var borders = $(".v-navigation-drawer__border")
     var scrollers = $(".scroller")
