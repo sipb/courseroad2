@@ -37,9 +37,15 @@
       <p class = "px-5">
         <ul style = "display: inline-block; text-align: left">
           <li>Nate Foss</li>
+          <li>Georgia Shay</li>
           <li>Sophie Mori</li>
           <li>Michael Nguyen</li>
-          <li>Georgia Shay</li>
+        </ul>
+      </p>
+      <h2>Past maintainers</h2>
+      <p class = "px-5">
+        <ul style = "display: inline-block; text-align: left">
+          <li>Danny Ben-David</li>
         </ul>
       </p>
       <p class = "px-5">If you have questions or comments, please email <a href = "courseroad-dev.mit.edu">us</a>.</p>
