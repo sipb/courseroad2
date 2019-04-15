@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './BaseApp.vue'
+import App from './App.vue'
 import MainPage from './pages/MainPage.vue'
 import About from "./pages/About.vue"
 import Vuetify from 'vuetify'
