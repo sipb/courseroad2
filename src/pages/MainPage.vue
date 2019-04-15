@@ -213,7 +213,6 @@ import Vue from 'vue'
 import ClassInfo from "./../components/ClassInfo.vue"
 import ImportExport from "./../components/ImportExport.vue"
 
-var MAIN_URL = "http://localhost:8080"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
 
 export default {
