@@ -17,6 +17,9 @@ If that doesn't work... just do `npm install <package> --save-dev` for every pac
 
 # Publishing
 
+
+actually, I'm just going to make a script. ignore this for now
+
 How to push changes to the live site:
 1. `npm run build`
 2. `scp -r dist YOUR_KERB@athena.dialup.mit.edu:` (puts a copy of the dist folder in your home directory in athena)
