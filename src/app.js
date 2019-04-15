@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './BaseApp.vue'
-import MainPage from './App.vue'
+import MainPage from './pages/MainPage.vue'
 import About from "./pages/About.vue"
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
