@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     loginUser: function(event) {
-      window.location.href = "https://fireroad-dev.mit.edu/login/?redirect=http://localhost:8080"
+      window.location.href = `https://fireroad-dev.mit.edu/login/?redirect=${process.env.APP_URL}`
     },
     logoutUser: function(event) {
       this.$cookies.remove("accessInfo");
