@@ -17,15 +17,5 @@ If that doesn't work... just do `npm install <package> --save-dev` for every pac
 
 # Publishing
 
-
-actually, I'm just going to make a script. ignore this for now
-
 How to push changes to the live site:
-1. `npm run build`
-2. `scp -r dist YOUR_KERB@athena.dialup.mit.edu:` (puts a copy of the dist folder in your home directory in athena)
-3. ssh into an athena machine with `ssh npfoss@athena.dialup.mit.edu`
-4. `aklog athena sipb` (to get the permissions right so you can edit the courseroad folder)
-5. `mv dist/* /mit/courseroad/web_scripts/courseroad/dev/`
-6. go to [courseroad.mit.edu/dev/](https://courseroad.mit.edu/dev/) and make sure it works
-7. `cd /mit/courseroad/web_scripts/courseroad/`
-8. `mv dev/* .`
+run ./deploy.sh [dev or prod] [kerberos]
