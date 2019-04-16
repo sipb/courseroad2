@@ -191,11 +191,30 @@
     </class-info>
 
 
-    <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
-      This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
-      <v-btn small depressed color = "primary" @click = "allowCookies">
-        OK
-      </v-btn>
+    <v-footer v-if = "!dismissedOld || !cookiesAllowed" fixed class = "pa-2" style = "height: unset;">
+      <v-layout column>
+        <v-flex v-if = "!dismissedOld">
+          <v-layout row>
+            <v-flex grow>
+              Looking for the old courseroad?  Visit the old website <a href = "courseroad.mit.edu/old">here</a> and export your roads!
+            </v-flex>
+            <v-btn small depressed color = "primary" @click = "dismissedOld = true;">
+              OK
+            </v-btn>
+          </v-layout>
+        </v-flex>
+        <v-divider v-if = "!dismissedOld && !cookiesAllowed"/>
+        <v-flex v-if = "!cookiesAllowed">
+          <v-layout row>
+            <v-flex>
+              This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
+            </v-flex>
+            <v-btn small depressed color = "primary" @click = "allowCookies">
+              OK
+            </v-btn>
+          </v-layout>
+        </v-flex>
+      </v-layout>
     </v-footer>
   </v-app>
 </template>
@@ -255,6 +274,7 @@ export default {
     currentSemester: 0,
     addingFromCard: false,
     itemAdding: undefined,
+    dismissedOld: false,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
