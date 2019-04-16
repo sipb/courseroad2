@@ -515,7 +515,7 @@ export default {
     activeRoad: function(newRoad,oldRoad) {
       this.justLoaded = false;
       if(newRoad !== "") {
-        window.history.pushState({},this.roads[newRoad].name,"/#/#road"+newRoad);
+        window.history.pushState({},this.roads[newRoad].name,"./#/#road"+newRoad);
         this.updateFulfillment();
       }
     },
