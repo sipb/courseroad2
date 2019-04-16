@@ -196,7 +196,7 @@
         <v-flex v-if = "!dismissedOld">
           <v-layout row align-center>
             <v-flex>
-              Looking for the old courseroad?  Visit the old website <a href = "courseroad.mit.edu/old">here</a> and export your roads!
+              Looking for the old courseroad?  Visit the old website <a target = "_blank" href = "https://courseroad.mit.edu/old">here</a> and export your roads!
             </v-flex>
             <v-flex shrink>
               <v-btn small flat color = "primary" @click = "dismissedOld = true;" class = "ma-1">
