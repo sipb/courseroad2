@@ -212,7 +212,7 @@
               This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
             </v-flex>
             <v-flex shrink>
-              <v-btn small flat color = "primary" @click = "allowCookies" class = "ma-1">
+              <v-btn small depressed color = "primary" @click = "allowCookies" class = "ma-1">
                 OK
               </v-btn>
             </v-flex>
