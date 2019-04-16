@@ -1,7 +1,7 @@
 npm run build-$1
-scp -r dist $2@athena.dialup.mit.edu: $3
-if ["$1" -eq "dev"]; then
-  ssh $2@athena.dialup.mit.edu $3 'aklog athena sipb && mv dist/* /mit/courseroad/web_scripts/courseroad/dev/'
+scp -r -o GSSAPIAuthentication=yes -o GSSAPIDelegateCredentials=yes dist $2@athena.dialup.mit.edu:
+if [ "$1" = "dev" ]; then
+  ssh $2@athena.dialup.mit.edu -K 'aklog athena sipb && mv dist/* /mit/courseroad/web_scripts/courseroad/dev/' $3
 else
-  ssh $2@athena.dialup.mit.edu $3 'aklog athena sipb && mv dist/* /mit/courseroad/web_scripts/courseroad/'
+  echo "prod"
 fi
