@@ -94,11 +94,12 @@
         <v-layout fill-height column>
           <v-layout shrink style = "padding: 14px; padding-bottom: 0;" row>
             <v-flex shrink class = "blue-grey lighten-5" style = "color: inherit; text-decoration: none; border-radius: 2px; padding: 8px; display: inline-block;">
-                <v-icon small >check_box</v-icon> <h3 style = "display: inline;">C o u r s e R o a d</h3>
+                <v-icon size="1.3em" color="#00b300">check_box</v-icon>
+                <h3 style = "display: inline;">C o u r s e R o a d</h3>
             </v-flex>
             <v-flex>
               <router-link to = "/about" style = "font-size: 0.8em; float: right;" >
-                about
+                <i>about</i>
               </router-link>
             </v-flex>
           </v-layout>
