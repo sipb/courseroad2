@@ -191,7 +191,7 @@
     </class-info>
 
 
-    <v-footer v-if = "!dismissedOld || !cookiesAllowed" fixed class = "pa-2" style = "height: unset;">
+    <v-footer v-if = "!dismissedOld || !cookiesAllowed" fixed class = "py-1 px-2" style = "height: unset;">
       <v-layout column>
         <v-flex v-if = "!dismissedOld">
           <v-layout row align-center>
@@ -205,7 +205,7 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-divider v-if = "!dismissedOld && !cookiesAllowed" class = "pa-1"/>
+        <v-divider v-if = "!dismissedOld && !cookiesAllowed" class = "ma-1"/>
         <v-flex v-if = "!cookiesAllowed">
           <v-layout row align-center>
             <v-flex>
