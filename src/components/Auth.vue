@@ -213,7 +213,7 @@ export default {
       var queryObject = getQueryObject();
       if("code" in queryObject) {
         var code = queryObject["code"];
-        window.history.pushState("CourseRoad Home","CourseRoad Home","/#"+this.activeRoad);
+        window.history.pushState("CourseRoad Home","CourseRoad Home","./#"+this.activeRoad);
         this.getAuthorizationToken(code);
       }
     },
