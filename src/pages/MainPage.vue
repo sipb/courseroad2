@@ -191,7 +191,7 @@
     </class-info>
 
 
-    <v-footer v-if = "!dismissedOld || !cookiesAllowed" fixed class = "py-1 px-2" style = "height: unset;">
+    <v-footer v-if = "!dismissedOld || (!cookiesAllowed && !dismissedCookies)" fixed class = "py-1 px-2" style = "height: unset;">
       <v-layout column>
         <v-flex v-if = "!dismissedOld">
           <v-layout row align-center>
@@ -199,14 +199,14 @@
               Looking for the old courseroad?  Visit the old website <a target = "_blank" href = "https://courseroad.mit.edu/old">here</a> and export your roads!
             </v-flex>
             <v-flex shrink>
-              <v-btn small flat color = "primary" @click = "dismissedOld = true;" class = "ma-1">
-                OK
+              <v-btn small icon flat @click = "dismissedOld = true;" class = "ma-1">
+                <v-icon>close</v-icon>
               </v-btn>
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-divider v-if = "!dismissedOld && !cookiesAllowed" class = "ma-1"/>
-        <v-flex v-if = "!cookiesAllowed">
+        <v-divider v-if = "!dismissedOld && !cookiesAllowed && !dismissedCookies" class = "ma-1"/>
+        <v-flex v-if = "!cookiesAllowed && !dismissedCookies">
           <v-layout row align-center>
             <v-flex>
               This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
@@ -214,6 +214,11 @@
             <v-flex shrink>
               <v-btn small flat color = "primary" @click = "allowCookies" class = "ma-1">
                 OK
+              </v-btn>
+            </v-flex>
+            <v-flex shrink>
+              <v-btn small icon flat @click = "dismissedCookies = true;" class = "ma-1">
+                <v-icon>close</v-icon>
               </v-btn>
             </v-flex>
           </v-layout>
@@ -279,6 +284,7 @@ export default {
     addingFromCard: false,
     itemAdding: undefined,
     dismissedOld: false,
+    dismissedCookies: false,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
