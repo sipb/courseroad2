@@ -18,4 +18,7 @@ If that doesn't work... just do `npm install <package> --save-dev` for every pac
 # Publishing
 
 How to push changes to the live site:
-run ./deploy.sh [dev or prod] [kerberos]
+```bash
+./deploy.sh [dev or prod] [kerberos]
+```
+which will deploy the code to the [dev](https://courseroad.mit.edu/dev/) and [main](https://courseroad.mit.edu/) sites respectively.
