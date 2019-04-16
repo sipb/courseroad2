@@ -199,20 +199,20 @@
               Looking for the old courseroad?  Visit the old website <a href = "courseroad.mit.edu/old">here</a> and export your roads!
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color = "primary" @click = "dismissedOld = true;" class = "ma-1">
+              <v-btn small flat color = "primary" @click = "dismissedOld = true;" class = "ma-1">
                 OK
               </v-btn>
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-divider v-if = "!dismissedOld && !cookiesAllowed"/>
+        <v-divider v-if = "!dismissedOld && !cookiesAllowed" class = "pa-1"/>
         <v-flex v-if = "!cookiesAllowed">
           <v-layout row align-center>
             <v-flex>
               This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color = "primary" @click = "allowCookies" class = "ma-1">
+              <v-btn small flat color = "primary" @click = "allowCookies" class = "ma-1">
                 OK
               </v-btn>
             </v-flex>
