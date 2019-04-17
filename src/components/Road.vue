@@ -37,12 +37,12 @@
       <v-card>
         <v-btn icon flat style = "float:right" @click = "changeYearDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title>
-          Change Class Year
+          <h1>I am a...</h1>
         </v-card-title>
         <v-card-text>
           <v-select
             v-model = "newYear"
-            :items = "[{value: 0,text:'1st Year'},{value: 1,text:'2nd Year'},{value:2,text:'3rd Year'},{value:3,text:'4th Year'},{value:4,text:'5th Year'}]"
+            :items = "[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
           >
 
           </v-select>
@@ -75,7 +75,7 @@ export default {
     return {
       visibleList: this.currentSemester >= 13 ? defaultOpen + [true, false, true,] : defaultOpen,
       changeYearDialog: false,
-      newYear: (this.currentSemester-1) * 3,
+      newYear: parseInt((this.currentSemester-1) / 3),
       numSems: this.currentSemester >= 13 ? 16 : 13
     }
   },
