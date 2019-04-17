@@ -7,7 +7,7 @@
     </router-link>
     <div class = "text-sm-center pa-2">
       <h1>About CourseRoad</h1>
-      <p class = "px-5">CourseRoad is a an academic planner for MIT students.  It allows students to
+      <p class = "px-5">CourseRoad is a student-run academic planner for MIT students.  It allows students to
         plan out their degrees, test out different majors, and view class information.
         CourseRoad integrates with FireRoad, so you can download the FireRoad app to
         plan your degree on the go!
