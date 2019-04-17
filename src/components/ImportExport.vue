@@ -133,24 +133,21 @@ export default {
           // sanitize
           let ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
-            let listToUse = undefined
-            let indexToUse = undefined
+            let subject = undefined
             if (this.subjectsIndex[s.id] !== undefined) {
-              listToUse = this.subjects
-              indexToUse = this.subjectsIndex
+              subject = this.subjects[this.subjectsIndex[s.id]]
             } else if (this.genericIndex[s.id] !== undefined){
-              listToUse = this.genericCourses
-              indexToUse = this.genericIndex
+              subject = this.genericCourses[this.genericIndex[s.id]]
             }
 
-            if (listToUse !== undefined){
+            if (subject !== undefined){
               expectedFields.map((f) => {
                 if (s[f] === undefined) {
-                  // right now (4/16/19) 'units' is the only thing this doesn't work
+                  // right now (4/16/19) 'units' is the only one that doesn't match and needs an exception
                   if (f === 'units'){
-                    s[f] = listToUse[indexToUse[s.id]]['total_units']
+                    s[f] = subject['total_units']
                   } else {
-                    s[f] = listToUse[indexToUse[s.id]][f]
+                    s[f] = subject[f]
                   }
                 }
               })
