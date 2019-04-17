@@ -22,8 +22,6 @@
       >
       </import-export>
 
-      <v-spacer></v-spacer>
-
       <auth
         ref = "authcomponent"
         v-bind:roads = "roads"
@@ -42,8 +40,6 @@
         @set-sem = "setSemester"
       >
       </auth>
-
-      <v-spacer></v-spacer>
 
       <v-menu
         attach

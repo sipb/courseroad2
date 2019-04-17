@@ -1,5 +1,5 @@
 <template>
-  <v-layout row >
+  <v-layout row grow>
     <v-btn class = "collapse-button" outline round color="primary" @click="exportRoad">
       <span class = "hidden-sm-and-down">Export</span>
       <font-awesome-icon class = "hidden-md-and-up" icon = "download"/>

@@ -1,5 +1,5 @@
 <template>
-  <v-layout row align-baseline>
+  <v-layout row align-center grow>
     <v-btn class = "collapse-button" v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
       <span class = "hidden-sm-and-down">Login</span>
       <font-awesome-icon class = "hidden-md-and-up" icon = "sign-in-alt"/>
