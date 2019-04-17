@@ -18,6 +18,10 @@
       <import-export
         v-bind:roads="roads"
         v-bind:activeRoad="activeRoad"
+        v-bind:subjects = "subjectsInfo"
+        v-bind:subjectsIndex = "subjectsIndexDict"
+        v-bind:genericCourses = "genericCourses"
+        v-bind:genericIndex = "genericIndexDict"
         @add-road = "addRoad"
       >
       </import-export>

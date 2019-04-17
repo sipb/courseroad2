@@ -91,7 +91,7 @@
 export default {
   name: "import-export",
   components: {},
-  props: ["roads", "activeRoad"],
+  props: ["roads", "activeRoad", "subjects", "subjectsIndex", "genericCourses", "genericIndex"],
   data: function(){ return {
     dialog: false,
     inputtext: "",
@@ -124,13 +124,45 @@ export default {
         fail = true;
       }
 
+      let expectedFields = ["index", "title", "overrideWarnings", "semester", "units", "id",]
+
       if (!fail) {
         try {
           // parse text and add to roads
           var obj = JSON.parse(this.inputtext);
-          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, obj.selectedSubjects)
+          // sanitize
+          let ss = obj.selectedSubjects.map((s) => {
+            // make sure it has everything, if not fill in from subjectsIndex or genericCourses
+            let subject = undefined
+            if (this.subjectsIndex[s.id] !== undefined) {
+              subject = this.subjects[this.subjectsIndex[s.id]]
+            } else if (this.genericIndex[s.id] !== undefined){
+              subject = this.genericCourses[this.genericIndex[s.id]]
+            }
+
+            if (subject !== undefined){
+              expectedFields.map((f) => {
+                if (s[f] === undefined) {
+                  // right now (4/16/19) 'units' is the only one that doesn't match and needs an exception
+                  if (f === 'units'){
+                    s[f] = subject['total_units']
+                  } else {
+                    s[f] = subject[f]
+                  }
+                }
+              })
+              return s
+            }
+            console.log('ignoring ' + s.id)
+            return undefined
+          }).filter((s) => {
+            return s !== undefined;
+          })
+          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, ss)
         } catch(error) {
           fail = true;
+          console.log('import failed with error:')
+          console.error(error)
         }
       }
 
