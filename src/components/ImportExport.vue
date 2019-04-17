@@ -136,8 +136,12 @@ export default {
               // make sure it has everything, if not fill in from subjectsIndex
               expectedFields.map((f) => {
                 if (s[f] === undefined) {
-                  s[f] = this.subjects[this.subjectsIndex[s.id]][f]
                   // right now (4/16/19) 'units' is the only thing this doesn't work for
+                  if (f === 'units'){
+                    s[f] = this.subjects[this.subjectsIndex[s.id]]['total_units']
+                  } else {
+                    s[f] = this.subjects[this.subjectsIndex[s.id]][f]
+                  }
                 }
               })
               return s
