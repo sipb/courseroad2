@@ -1,6 +1,6 @@
 <template>
   <v-container :style = "searchHeight + 'display: flex; flex-direction:column;'">
-    <div>
+    <div style = "overflow:scroll;">
       <filter-set v-model = "chosenFilters.girInput" v-bind:label="'GIR'" v-bind:filters="allFilters.girInput"></filter-set>
       <filter-set v-model = "chosenFilters.hassInput" v-bind:label="'HASS'" v-bind:filters="allFilters.hassInput"></filter-set>
       <filter-set v-model = "chosenFilters.ciInput" v-bind:label = "'CI'" v-bind:filters="allFilters.ciInput"></filter-set>
