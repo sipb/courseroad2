@@ -90,8 +90,8 @@
                   <td><b>Hours</b></td>
                   <td>
                     <table cellspacing = "0">
-                      <tr v-if = "currentSubject.in_class_hours !== undefined">{{currentSubject.in_class_hours}} in class</tr>
-                      <tr v-if = "currentSubject.out_of_class_hours !== undefined">{{currentSubject.out_of_class_hours}} out of class</tr>
+                      <tr v-if = "currentSubject.in_class_hours !== undefined">{{currentSubject.in_class_hours.toFixed(2)}} in class</tr>
+                      <tr v-if = "currentSubject.out_of_class_hours !== undefined">{{currentSubject.out_of_class_hours.toFixed(2)}} out of class</tr>
                     </table>
                   </td>
                 </tr>
