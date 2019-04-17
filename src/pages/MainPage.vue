@@ -41,41 +41,43 @@
       >
       </auth>
 
-      <v-menu
-        attach
-        v-model = "showSearch"
-        :close-on-content-click="false"
-        :close-on-click = "false"
-        fixed
-        offset-y
-        input-activator
-      >
-        <v-text-field
-          id = "searchInputTF"
-          autocomplete = "false"
-          class = "expanded-search"
-          prepend-icon="search"
-          v-model = "searchInput"
-          placeholder = "Add classes"
-          slot = "activator"
+      <v-layout grow>
+        <v-menu
+          attach
+          v-model = "showSearch"
+          :close-on-content-click="false"
+          :close-on-click = "false"
+          fixed
+          offset-y
+          input-activator
+          style = "width: 100%;"
         >
-        </v-text-field>
-        <class-search
-          id = "searchMenu"
-          ref = "searchMenu"
-          class = "search-menu"
-          v-bind:searchInput = "searchInput"
-          v-bind:subjects="subjectsInfo"
-          v-bind:genericCourses = "genericCourses"
-          v-bind:classInfoStack = "classInfoStack"
-          v-bind:cookiesAllowed = "cookiesAllowed"
-          @add-class="addClass"
-          @view-class-info="pushClassStack"
-          @drag-start-class = "dragStartClass"
-        >
-        </class-search>
-      </v-menu>
-
+          <v-text-field
+            id = "searchInputTF"
+            autocomplete = "false"
+            class = "expanded-search"
+            prepend-icon="search"
+            v-model = "searchInput"
+            placeholder = "Add classes"
+            slot = "activator"
+          >
+          </v-text-field>
+          <class-search
+            id = "searchMenu"
+            ref = "searchMenu"
+            class = "search-menu"
+            v-bind:searchInput = "searchInput"
+            v-bind:subjects="subjectsInfo"
+            v-bind:genericCourses = "genericCourses"
+            v-bind:classInfoStack = "classInfoStack"
+            v-bind:cookiesAllowed = "cookiesAllowed"
+            @add-class="addClass"
+            @view-class-info="pushClassStack"
+            @drag-start-class = "dragStartClass"
+          >
+          </class-search>
+        </v-menu>
+      </v-layout>
     </v-toolbar>
 
 
@@ -637,6 +639,6 @@ export default {
     background: white;
   }
   .expanded-search {
-    width: 22em;
+    max-width: 22em;
   }
 </style>
