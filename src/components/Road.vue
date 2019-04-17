@@ -42,7 +42,7 @@
         <v-card-text>
           <v-select
             v-model = "newYear"
-            :items = "[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'5th Year'}]"
+            :items = "[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
           >
 
           </v-select>
