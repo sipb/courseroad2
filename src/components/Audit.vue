@@ -201,7 +201,7 @@ export default {
       progressDialog: false,
       progressReq: undefined,
       newManualProgress: 0,
-      isEditing: true,
+      isEditing: false,
     };
   },
   computed: {
