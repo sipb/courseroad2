@@ -427,7 +427,7 @@ export default {
       this.addingFromCard = false;
       this.itemAdding = undefined;
     },
-    getOfferedAttributes: function(gir, hass, ci) {
+    getMatchingAttributes: function(gir, hass, ci) {
       var matchingClasses = this.subjectsInfo.filter(function(subject) {
         if(gir !== undefined && subject.gir_attribute !== gir) {
           return false;
@@ -440,14 +440,19 @@ export default {
         }
         return true;
       });
-      return matchingClasses.reduce(function(offeredObject, nextClass) {
+      var totalObject = matchingClasses.reduce(function(accumObject, nextClass) {
         return {
-          offered_spring: offeredObject.offered_spring || nextClass.offered_spring,
-          offered_summer: offeredObject.offered_summer || nextClass.offered_summer,
-          offered_IAP: offeredObject.offered_IAP || nextClass.offered_IAP,
-          offered_fall: offeredObject.offered_fall || nextClass.offered_fall
+          offered_spring: accumObject.offered_spring || nextClass.offered_spring,
+          offered_summer: accumObject.offered_summer || nextClass.offered_summer,
+          offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
+          offered_fall: accumObject.offered_fall || nextClass.offered_fall,
+          in_class_hours: accumObject.in_class_hours + (nextClass.in_class_hours !== undefined ? nextClass.in_class_hours : 0),
+          out_of_class_hours: accumObject.out_of_class_hours + (nextClass.out_of_class_hours !== undefined ? nextClass.out_of_class_hours : 0)
         }
-      }, {offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false})
+      }, {offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0});
+      totalObject.in_class_hours /= matchingClasses.length;
+      totalObject.out_of_class_hours /= matchingClasses.length;
+      return totalObject;
     },
     makeGenericCourses: function() {
       var girAttributes = {"PHY1": ["Physics 1 GIR","p1"], "PHY2": ["Physics 2 GIR","p2"], "CHEM": ["Chemistry GIR","c"], "BIOL": ["Biology GIR","b"], "CAL1": ["Calculus I GIR","m1"], "CAL2": ["Calculus II GIR","m2"], "LAB": ["Lab GIR","l1"], "REST": ["REST GIR","r"]};
@@ -465,7 +470,7 @@ export default {
       // commun_int - cih: hc, cihw: hw
       var baseurl = "http://student.mit.edu/catalog/search.cgi?search=&style=verbatim&when=*&termleng=4&days_offered=*&start_time=*&duration=*&total_units=*"
       for(var gir in girAttributes) {
-        var offeredGir = this.getOfferedAttributes(gir, undefined, undefined);
+        var offeredGir = this.getMatchingAttributes(gir, undefined, undefined);
         genericCourses.push(Object.assign({},baseGeneric,offeredGir,{
           gir_attribute: gir,
           title: "Generic " + girAttributes[gir][0],
@@ -474,14 +479,14 @@ export default {
         }));
       }
       for(var hass in hassAttributes) {
-        var offeredHass = this.getOfferedAttributes(undefined, hass, undefined);
+        var offeredHass = this.getMatchingAttributes(undefined, hass, undefined);
         genericCourses.push(Object.assign({},baseGeneric,offeredHass,{
           hass_attribute: hass,
           title: "Generic " + hass,
           subject_id: hass,
           url: baseurl + "&cred="+hassAttributes[hass][1]+"&commun_int=*"
         }));
-        var offeredHassCI = this.getOfferedAttributes(undefined, hass, "CI-H");
+        var offeredHassCI = this.getMatchingAttributes(undefined, hass, "CI-H");
         genericCourses.push(Object.assign({},baseGeneric,offeredHassCI,{
           hass_attribute: hass,
           communication_requirement: "CI-H",
@@ -491,7 +496,7 @@ export default {
         }));
       }
       for(var ci in ciAttributes) {
-        var offeredCI = this.getOfferedAttributes(undefined, undefined, ci);
+        var offeredCI = this.getMatchingAttributes(undefined, undefined, ci);
         genericCourses.push(Object.assign({},baseGeneric, offeredCI, {
           communication_requirement: ci,
           title: "Generic " + ci,
