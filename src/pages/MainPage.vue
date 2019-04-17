@@ -92,7 +92,7 @@
     >
       <v-container fill-height style = "padding: 0;">
         <v-layout fill-height column>
-          <v-layout shrink style = "padding: 14px; padding-bottom: 0;" row>
+          <v-layout shrink style = "padding: 14px; padding-bottom: 0;" row align-center>
             <v-flex shrink class = "blue-grey lighten-5" style = "color: inherit; text-decoration: none; border-radius: 2px; padding: 8px; display: inline-block;">
                 <v-icon size="1.3em" color="#00b300">check_box</v-icon>
                 <h3 style = "display: inline;">C o u r s e R o a d</h3>
@@ -191,11 +191,39 @@
     </class-info>
 
 
-    <v-footer v-if = "!cookiesAllowed" fixed class = "pa-2">
-      This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
-      <v-btn small depressed color = "primary" @click = "allowCookies">
-        OK
-      </v-btn>
+    <v-footer v-if = "!dismissedOld || (!cookiesAllowed && !dismissedCookies)" fixed class = "py-1 px-2" style = "height: unset;">
+      <v-layout column>
+        <v-flex v-if = "!dismissedOld">
+          <v-layout row align-center>
+            <v-flex>
+              Looking for the old courseroad?  Visit the old website <a target = "_blank" href = "https://courseroad.mit.edu/old">here</a> and export your roads!
+            </v-flex>
+            <v-flex shrink>
+              <v-btn small icon flat @click = "dismissedOld = true;" class = "ma-1">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-divider v-if = "!dismissedOld && !cookiesAllowed && !dismissedCookies" class = "ma-1"/>
+        <v-flex v-if = "!cookiesAllowed && !dismissedCookies">
+          <v-layout row align-center>
+            <v-flex>
+              This site uses cookies and session storage to store your data and login token.  Click OK to consent to the use of cookies.
+            </v-flex>
+            <v-flex shrink>
+              <v-btn small depressed color = "primary" @click = "allowCookies" class = "ma-1">
+                OK
+              </v-btn>
+            </v-flex>
+            <v-flex shrink>
+              <v-btn small icon flat @click = "dismissedCookies = true;" class = "ma-1">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
     </v-footer>
   </v-app>
 </template>
@@ -255,6 +283,8 @@ export default {
     currentSemester: 0,
     addingFromCard: false,
     itemAdding: undefined,
+    dismissedOld: false,
+    dismissedCookies: false,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
