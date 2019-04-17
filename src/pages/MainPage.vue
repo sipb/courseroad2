@@ -95,10 +95,10 @@
           <v-layout shrink style = "padding: 14px; padding-bottom: 0;" row align-center>
             <v-flex shrink class = "blue-grey lighten-5" style = "color: inherit; text-decoration: none; border-radius: 2px; padding: 8px; display: inline-block;">
                 <v-icon size="1.3em" color="#00b300">check_box</v-icon>
-                <h3 style = "display: inline;">C o u r s e R o a d</h3>
+                <h3 style = "display: inline; user-select: none;">C o u r s e R o a d</h3>
             </v-flex>
             <v-flex>
-              <router-link to = "/about" style = "font-size: 0.8em; float: right;" >
+              <router-link to="/about" style="float: right;" >
                 <i>about</i>
               </router-link>
             </v-flex>
