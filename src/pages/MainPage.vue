@@ -209,7 +209,7 @@
         <v-flex v-if = "!cookiesAllowed && !dismissedCookies">
           <v-layout row align-center>
             <v-flex>
-              This site uses cookies and session storage to store your data and login information.  Click OK to consent to the use of cookies.
+              This site uses cookies and session storage to store your data and login token.  Click OK to consent to the use of cookies.
             </v-flex>
             <v-flex shrink>
               <v-btn small depressed color = "primary" @click = "allowCookies" class = "ma-1">
