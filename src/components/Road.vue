@@ -37,7 +37,7 @@
       <v-card>
         <v-btn icon flat style = "float:right" @click = "changeYearDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title>
-          <h3>I am a...</h3>
+          <h1>I am a...</h1>
         </v-card-title>
         <v-card-text>
           <v-select
