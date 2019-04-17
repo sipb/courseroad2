@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     loginUser: function(event) {
-      window.location.href = `https://fireroad-dev.mit.edu/login/?redirect=${process.env.APP_URL}`
+      window.location.href = FIREROAD_LINK + `/login/?redirect=${process.env.APP_URL}`
     },
     logoutUser: function(event) {
       this.$cookies.remove("accessInfo");
@@ -196,7 +196,7 @@ export default {
     },
 
     getAuthorizationToken: function(code) {
-      axios.get(`https://fireroad-dev.mit.edu/fetch_token/?code=`+code).then(function(response) {
+      axios.get(FIREROAD_LINK + `/fetch_token/?code=`+code).then(function(response) {
         if(response.data.success) {
           if(this.data.authCookiesAllowed) {
             this.data.$cookies.set("accessInfo", response.data.access_info);
