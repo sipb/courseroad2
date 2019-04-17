@@ -55,7 +55,7 @@
           <li>Danny Ben-David</li>
         </ul>
       </p>
-      <p class="px-3">If you have questions or comments, please <a href="mailto:courseroad-dev@mit.edu">email</a> us.</p>
+      <p class="px-3">If you have questions or comments, please <a href="mailto:courseroad@mit.edu">email</a> us.</p>
       <h2>FireRoad</h2>
       <p class="px-3">We would like to thank FireRoad for collaborating with us
         on this project and allowing us to integrate the two services. FireRoad
@@ -76,7 +76,7 @@
         or <a href="https://play.google.com/store/apps/details?id=com.base12innovations.android.fireroad&hl=en_US">Android</a>.
       </p>
       <h2>Old CourseRoad</h2>
-      <p class="px-3">The old CourseRoad has been moved to <a href="courseroad.mit.edu/old">courseroad.mit.edu/old</a>.</p>
+      <p class="px-3">The old CourseRoad has been moved to <a href="https://courseroad.mit.edu/old">courseroad.mit.edu/old</a>.</p>
       <p class="px-3">You can export your roads from the old CourseRoad and
         import them here to transfer your data.
       </p>
