@@ -1,7 +1,8 @@
 <template>
   <v-layout row >
     <v-btn outline round color="primary" @click="exportRoad">
-      Export
+      <span>Export</span>
+      <font-awesome-icon icon = "download"/>
     </v-btn>
 
     <v-dialog
@@ -9,7 +10,8 @@
       width="500"
     >
       <v-btn slot="activator" outline round color="primary">
-        Import
+        <span>Import</span>
+        <font-awesome-icon icon = "upload"/>
       </v-btn>
 
       <v-card>

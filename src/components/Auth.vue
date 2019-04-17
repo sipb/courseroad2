@@ -1,10 +1,12 @@
 <template>
   <v-layout row align-baseline>
     <v-btn v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
-      Login
+      <span>Login</span>
+      <font-awesome-icon icon = "sign-in-alt"/>
     </v-btn>
     <v-btn v-if = "loggedIn" outline round color = "primary" @click = "logoutUser">
-      Logout
+      <span>Logout</span>
+      <font-awesome-icon icon = "sign-out-alt"/>
     </v-btn>
     <v-tooltip bottom :disabled = "saveWarnings.length===0">
       <v-icon slot = "activator" v-if = "!currentlySaving && !gettingUserData" :color = "saveColor">
