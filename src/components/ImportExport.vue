@@ -91,7 +91,7 @@
 export default {
   name: "import-export",
   components: {},
-  props: ["roads", "activeRoad", "subjects", "subjectsIndex"],
+  props: ["roads", "activeRoad", "subjects", "subjectsIndex", "genericCourses", "genericIndex"],
   data: function(){ return {
     dialog: false,
     inputtext: "",
@@ -132,15 +132,25 @@ export default {
           var obj = JSON.parse(this.inputtext);
           // sanitize
           let ss = obj.selectedSubjects.map((s) => {
+            // make sure it has everything, if not fill in from subjectsIndex or genericCourses
+            let listToUse = undefined
+            let indexToUse = undefined
             if (this.subjectsIndex[s.id] !== undefined) {
-              // make sure it has everything, if not fill in from subjectsIndex
+              listToUse = this.subjects
+              indexToUse = this.subjectsIndex
+            } else if (this.genericIndex[s.id] !== undefined){
+              listToUse = this.genericCourses
+              indexToUse = this.genericIndex
+            }
+
+            if (listToUse !== undefined){
               expectedFields.map((f) => {
                 if (s[f] === undefined) {
                   // right now (4/16/19) 'units' is the only thing this doesn't work for
                   if (f === 'units'){
-                    s[f] = this.subjects[this.subjectsIndex[s.id]]['total_units']
+                    s[f] = listToUse[indexToUse[s.id]]['total_units']
                   } else {
-                    s[f] = this.subjects[this.subjectsIndex[s.id]][f]
+                    s[f] = listToUse[indexToUse[s.id]][f]
                   }
                 }
               })
