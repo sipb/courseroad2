@@ -38,8 +38,8 @@
         <ul style = "display: inline-block; text-align: left">
           <li>Nate Foss</li>
           <li>Georgia Shay</li>
-          <li>Sophie Mori</li>
           <li>Michael Nguyen</li>
+          <li>Sophie Mori</li>
         </ul>
       </p>
       <h2>Past maintainers</h2>
