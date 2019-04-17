@@ -146,7 +146,7 @@ export default {
             if (listToUse !== undefined){
               expectedFields.map((f) => {
                 if (s[f] === undefined) {
-                  // right now (4/16/19) 'units' is the only thing this doesn't work for
+                  // right now (4/16/19) 'units' is the only thing this doesn't work
                   if (f === 'units'){
                     s[f] = listToUse[indexToUse[s.id]]['total_units']
                   } else {
