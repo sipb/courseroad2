@@ -1,17 +1,17 @@
 <template>
   <v-layout row >
-    <v-btn outline round color="primary" @click="exportRoad">
-      <span>Export</span>
-      <font-awesome-icon icon = "download"/>
+    <v-btn class = "collapse-button" outline round color="primary" @click="exportRoad">
+      <span class = "hidden-sm-and-down">Export</span>
+      <font-awesome-icon class = "hidden-md-and-up" icon = "download"/>
     </v-btn>
 
     <v-dialog
       v-model="dialog"
       width="500"
     >
-      <v-btn slot="activator" outline round color="primary">
-        <span>Import</span>
-        <font-awesome-icon icon = "upload"/>
+      <v-btn class = "collapse-button" slot="activator" outline round color="primary">
+        <span class = "hidden-sm-and-down">Import</span>
+        <font-awesome-icon class = "hidden-md-and-up" icon = "upload"/>
       </v-btn>
 
       <v-card>
