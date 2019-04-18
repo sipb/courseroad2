@@ -30,7 +30,6 @@
 import Vue from 'vue';
 import UAParser from "ua-parser-js";
 var DATE_FORMAT="YYYY-MM-DDTHH:mm:ss.SSS000Z";
-var FIREROAD_LINK="https://fireroad-dev.mit.edu";
 
 function getQueryObject() {
   var query=window.location.search.substring(1);
