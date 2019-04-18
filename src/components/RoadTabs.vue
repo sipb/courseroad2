@@ -61,7 +61,7 @@
           <v-text-field v-if="addDialog" autofocus placeholder="New road name" v-model = "newRoadName"></v-text-field>
             <v-layout row>
               <v-flex xs6>
-                <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
+                <v-switch v-model = "duplicateRoad" label = "Duplicate existing"></v-switch>
               </v-flex>
               <v-flex>
                 <v-select :disabled = "!duplicateRoad" :items = "Object.keys(roads)" v-model = "duplicateRoadSource">

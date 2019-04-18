@@ -50,7 +50,7 @@
         <v-card-text>
           <p v-for = "warning in warnings" v-html="warning"></p>
           <v-switch
-            label = "Override Warnings"
+            label = "Override warnings"
             color = "orange darken-3"
             v-model = "shouldOverrideWarnings"
           >
