@@ -87,6 +87,7 @@
           v-model = "searchInput"
           placeholder = "Add classes"
           slot = "activator"
+          autofocus
         >
         </v-text-field>
         <class-search
