@@ -16,53 +16,68 @@
             <v-icon>edit</v-icon>
           </v-btn>
       </v-tab>
-      <v-dialog v-model = "editDialog" @input = "newRoadName = ''">
-        <v-card style = "padding: 2em">
-          <v-btn icon flat style = "float:right" @click = "editDialog = false"><v-icon>close</v-icon></v-btn>
+      <v-dialog v-model = "editDialog" @input = "newRoadName = ''" max-width="600">
+        <v-card>
+          <v-btn icon flat style = "float:right" @click = "editDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
           <v-card-title>Edit Road</v-card-title>
-          <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
+          <v-card-text>
+            <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
+          </v-card-text>
           <v-card-actions>
-            <v-btn color = "primary" :disabled = "otherRoadHasName(tabRoad, newRoadName)" @click = "$emit('set-name', {road: tabRoad,name: newRoadName}); editDialog = false; newRoadName = ''">Submit</v-btn>
+            <v-spacer></v-spacer>
             <v-btn color = "error" @click = "editDialog = false; deleteDialog = true;">
-              Delete Road
               <v-icon>delete</v-icon>
+              Delete Road
+            </v-btn>
+            <v-btn
+              color = "primary"
+              :disabled = "otherRoadHasName(tabRoad, newRoadName)"
+              @click = "$emit('set-name', {road: tabRoad,name: newRoadName}); editDialog = false; newRoadName = ''"
+            >
+              Submit
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads">
-        <v-card style = "padding: 2em">
+      <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads" max-width="600">
+        <v-card>
           <v-btn icon flat style = "float:right" @click = "deleteDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Permanently Delete {{roads[tabRoad].name}}?</v-card-title>
           <v-card-text>This action cannot be undone.</v-card-text>
           <v-card-actions>
-            <v-btn @click = "deleteDialog = false; editDialog = true;">Cancel</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn flat @click = "deleteDialog = false; editDialog = true;">Cancel</v-btn>
             <v-btn @click = "deleteDialog = false; $emit('delete-road',tabRoad); newRoadName = ''" color = "error">Delete</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model = "addDialog" width = "500" @input = "newRoadName = ''">
-        <v-card style = "padding: 2em">
+      <v-dialog v-model = "addDialog" @input = "newRoadName = ''" max-width="600">
+        <v-card>
           <v-btn icon flat style = "float:right" @click = "addDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Create Road</v-card-title>
-          <v-text-field v-model = "newRoadName"></v-text-field>
-          <v-layout row>
-            <v-flex xs6>
-              <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
-            </v-flex>
-            <v-flex>
-              <v-select :disabled = "!duplicateRoad" :items = "Object.keys(roads)" v-model = "duplicateRoadSource">
-                <template slot = "item" slot-scope = "{item}">
-                  {{roads[item].name}}
-                </template>
-                <template slot = "selection" slot-scope = "{item}">
-                  {{roads[item].name}}
-                </template>
-              </v-select>
-            </v-flex>
-          </v-layout>
+          <v-card-text>
+          <v-text-field placeholder="New road name" v-model = "newRoadName"></v-text-field>
+            <v-layout row>
+              <v-flex xs6>
+                <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
+              </v-flex>
+              <v-flex>
+                <v-select :disabled = "!duplicateRoad" :items = "Object.keys(roads)" v-model = "duplicateRoadSource">
+                  <template slot = "item" slot-scope = "{item}">
+                    {{roads[item].name}}
+                  </template>
+                  <template slot = "selection" slot-scope = "{item}">
+                    {{roads[item].name}}
+                  </template>
+                </v-select>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
           <v-card-actions>
-            <v-btn :disabled = "otherRoadHasName('', newRoadName)" color = "primary" @click="createRoad">Create</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn :disabled = "otherRoadHasName('', newRoadName) || newRoadName === ''" color = "primary" @click="createRoad">Create</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -95,14 +110,14 @@ export default {
   }},
   methods: {
     otherRoadHasName: function(roadID, roadName) {
-      var otherRoadNames = Object.keys(this.roads).map(function(road) {
+      const otherRoadNames = Object.keys(this.roads).map(function(road) {
         if(road == roadID) {
           return undefined;
         } else {
-          return this.roads[road].name
+          return this.roads[road].name.toLowerCase();
         }
       }.bind(this));
-      return otherRoadNames.indexOf(roadName) >= 0;
+      return otherRoadNames.indexOf(roadName.toLowerCase()) >= 0;
     },
     createRoad: function() {
       if(!this.duplicateRoad) {

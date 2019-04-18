@@ -4,25 +4,15 @@
       Export
     </v-btn>
 
-    <v-dialog
-      v-model="dialog"
-      width="500"
-    >
+    <v-dialog v-model="dialog" max-width="600">
       <v-btn slot="activator" outline round color="primary">
         Import
       </v-btn>
-
       <v-card>
-        <v-card-title
-          class="headline grey lighten-2"
-          primary-title
-        >
-            Import Road
-            <v-flex align-end>
-              <v-btn icon flat style = "float:right;" @click = "dialog = false"><v-icon>close</v-icon></v-btn>
-            </v-flex>
+        <v-btn icon flat style = "float:right;" @click = "dialog = false"><v-icon>close</v-icon></v-btn>
+        <v-card-title class="headline lighten-2" primary-title>
+          Import Road
         </v-card-title>
-
         <v-card-text>
           <v-text-field
             v-model="roadtitle"
@@ -34,12 +24,13 @@
           <v-spacer></v-spacer>
           <input id="file" type="file" />
 
-          <v-spacer></v-spacer>
           <v-textarea
+            style="margin-top: 10px;"
             v-model="inputtext"
             label="Or copy/paste a road here"
             full-width
             single-line
+            outline
           ></v-textarea>
 
           <v-spacer></v-spacer>
@@ -61,20 +52,13 @@
           </v-flex>
         </v-card-text>
 
-        <v-divider></v-divider>
         <v-card-actions>
-          <v-btn
-            color="primary"
-            flat
-            @click="dialog = false"
-          >
+          <v-spacer></v-spacer>
+          <v-btn flat @click="dialog = false">
             Cancel
           </v-btn>
-
-          <v-spacer></v-spacer>
           <v-btn
             color="primary"
-            flat
             @click="importRoad"
             :disabled="otherRoadHasName(roadtitle)"
           >
