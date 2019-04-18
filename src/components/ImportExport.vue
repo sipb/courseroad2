@@ -115,6 +115,14 @@ export default {
           // parse text and add to roads
           var obj = JSON.parse(this.inputtext);
           // sanitize
+          let newss = obj.selectedSubjects.map((s) => {
+            if ('subject_id' in s) {
+              s.id = s.subject_id
+              delete s.subject_id
+            }
+            return s
+          });
+          obj.selectedSubjects = newss
           let ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
             let subject = undefined

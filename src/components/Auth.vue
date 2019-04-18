@@ -149,6 +149,14 @@ export default {
               if(roadData[r].data.file.contents.progressOverrides === undefined) {
                 roadData[r].data.file.contents.progressOverrides = {};
               }
+              let newss = roadData[r].data.file.contents.selectedSubjects.map((s) => {
+                if ('subject_id' in s) {
+                  s.id = s.subject_id
+                  delete s.subject_id
+                }
+                return s
+              });
+              roadData[r].data.file.contents.selectedSubjects = newss
               this.$emit("set-road", roadIDs[r], roadData[r].data.file);
             }
           }
