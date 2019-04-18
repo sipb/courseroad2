@@ -5,22 +5,21 @@
         <v-icon>arrow_back</v-icon>
       </v-btn>
     </router-link>
-    <div class="text-sm" style="margin: 0px 60px;">
+    <div class="text-sm" style="margin: 0px auto; max-width: 48em;">
       <h1>About CourseRoad</h1>
       <p class="px-3">CourseRoad is a student-run academic planner for MIT students.
         It allows students to plan out their degrees, test out paths for different
         majors, and view class information. CourseRoad is integrated with FireRoad,
         so you can download the FireRoad app to plan your degree on the go!
       </p>
-      <h2>Github Repository</h2>
-      <p class="px-3">The Github repository is open-source and located at
-        <a href="https://github.com/npfoss/courseroad2">CourseRoad 2</a>.
+      <p class="px-3">The source code is open source and located on
+        <a href="https://github.com/npfoss/courseroad2">Github</a>.
       </p>
       <h2>Known Issues</h2>
       <p class="px-3">
         <ul style="display: inline-block;">
           <li>
-            <h3>Scrolling issues</h3>
+            <h3>Scrolling while dragging</h3>
             <p>The semester view does not scroll adaptively when you are dragging
               classes into it. We are working to fix this.
             </p>
@@ -63,7 +62,7 @@
         an update to course requirements, visit the <a href="https://fireroad.mit.edu">
         FireRoad website</a>.
       </p>
-      <h3 class="px-3">Github Respositories</h3>
+      <h3 class="px-3">Github Repositories</h3>
       <p class="px-3">
         <ul style="display: inline-block;">
           <li><a href="https://github.com/venkatesh-sivaraman/FireRoad">iOS App</a></li>
