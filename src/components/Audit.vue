@@ -3,15 +3,14 @@
 
   <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;">
     <div style="display: flex; align-content: space-between; margin: 12px 0px;">
-      <template v-slot:prepend>
-        <v-icon
-          :key="`icon-${isEditing}`"
-          :color="isEditing ? 'success' : 'info'"
-          @click="isEditing = !isEditing"
-          v-text="isEditing ? 'save' : 'edit'"
-          style="margin-right: 8px;"
-        ></v-icon>
-      </template>
+      <v-icon
+        v-slot:prepend
+        :key="`icon-${isEditing}`"
+        :color="isEditing ? 'success' : 'info'"
+        @click="isEditing = !isEditing"
+        v-text="isEditing ? 'save' : 'edit'"
+        style="margin-right: 8px;"
+      ></v-icon>
       <v-autocomplete
         v-model="changeReqs"
         :hint="!isEditing ? 'Click the icon to edit' : 'Click the icon to save'"
