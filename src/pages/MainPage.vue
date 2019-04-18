@@ -382,7 +382,7 @@ export default {
     updateFulfillment: function() {
       for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
         var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        axios.post(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`,this.roads[this.activeRoad].contents).then(function(response) {
+        axios.post(process.env.FIREROAD_URL + `/requirements/progress/`+req+`/`,this.roads[this.activeRoad].contents).then(function(response) {
           //This is necessary so Vue knows about the new property on reqTrees
           Vue.set(this.data.reqTrees, this.req, response.data);
         }.bind({data: this, req:req}));
@@ -629,7 +629,7 @@ export default {
 
     this.setActiveRoad();
 
-    axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
+    axios.get(process.env.FIREROAD_URL + `/requirements/list_reqs/`)
       .then(response => {
         const ordered = {};
         Object.keys(response.data).sort().forEach(function(key) {
@@ -648,7 +648,7 @@ export default {
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
-    axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
+    axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`)
       .then(response => {
         this.subjectsInfo = response.data;
         this.genericCourses = this.makeGenericCourses();

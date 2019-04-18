@@ -43,7 +43,8 @@ module.exports = (env) => {
         template: 'index.html',
         inject: true
       }),
-      new webpack.DefinePlugin({ 'process.env.APP_URL': JSON.stringify(env.APP_URL) })
+      new webpack.DefinePlugin({ 'process.env.APP_URL': JSON.stringify(env.APP_URL) }),
+      new webpack.DefinePlugin({ 'process.env.FIREROAD_URL': JSON.stringify(env.FIREROAD_URL) })
     ]
   }
 }
