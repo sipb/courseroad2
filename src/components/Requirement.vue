@@ -37,11 +37,10 @@
          (optional)
       </span>
       <span
-        v-if="
-          hoveringOver &&
-          ('reqs' in req || 'threshold' in req) &&
-          'percent_fulfilled' in req
-          && req.percent_fulfilled !== 'N/A'"
+        v-if="hoveringOver
+            && ('reqs' in req || 'threshold' in req)
+            && 'percent_fulfilled' in req
+            && req.percent_fulfilled !== 'N/A'"
         :style = "'float: right; color: '+percentageTextColor"
       >
         &nbsp{{req.percent_fulfilled}}%
