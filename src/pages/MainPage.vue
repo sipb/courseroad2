@@ -43,7 +43,7 @@
         v-bind:subjectsIndex = "subjectsIndexDict"
         v-bind:genericCourses = "genericCourses"
         v-bind:genericIndex = "genericIndexDict"
-        @add-road = "addRoad"
+        @add-road = "addRoad(...arguments)"
       >
       </import-export>
 
@@ -408,11 +408,12 @@ export default {
       window.location.hash = "#/#road" + this.activeRoad;
       return false;
     },
-    addRoad: function(roadName, cos=["girs"], ss=[]) {
+    addRoad: function(roadName, cos=["girs"], ss=[], overrides={}) {
       var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
       var newContents = {
           coursesOfStudy: cos,
           selectedSubjects: ss,
+          progressOverrides: overrides,
         }
       var newRoad = {
         downloaded: moment().format(DATE_FORMAT),

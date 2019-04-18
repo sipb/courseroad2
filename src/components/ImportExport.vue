@@ -115,6 +115,11 @@ export default {
           // parse text and add to roads
           var obj = JSON.parse(this.inputtext);
           // sanitize
+          // progressOverrides must be defined
+          if (obj.progressOverrides === undefined){
+            obj.progressOverrides = {}
+          }
+          // subject_id issue
           let newss = obj.selectedSubjects.map((s) => {
             if ('subject_id' in s) {
               s.id = s.subject_id
@@ -150,7 +155,7 @@ export default {
           }).filter((s) => {
             return s !== undefined;
           })
-          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, ss)
+          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, ss, obj.progressOverrides)
         } catch(error) {
           fail = true;
           console.log('import failed with error:')
