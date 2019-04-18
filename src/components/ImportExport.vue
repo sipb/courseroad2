@@ -4,7 +4,7 @@
       Export
     </v-btn>
 
-    <v-dialog v-model="dialog" width="600px">
+    <v-dialog v-model="dialog" max-width="600">
       <v-btn slot="activator" outline round color="primary">
         Import
       </v-btn>

@@ -16,7 +16,7 @@
             <v-icon>edit</v-icon>
           </v-btn>
       </v-tab>
-      <v-dialog v-model = "editDialog" @input = "newRoadName = ''" max-width="600px">
+      <v-dialog v-model = "editDialog" @input = "newRoadName = ''" max-width="600">
         <v-card>
           <v-btn icon flat style = "float:right" @click = "editDialog = false">
             <v-icon>close</v-icon>
@@ -41,7 +41,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads" max-width="600px">
+      <v-dialog v-model = "deleteDialog" v-if = "tabRoad in roads" max-width="600">
         <v-card>
           <v-btn icon flat style = "float:right" @click = "deleteDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Permanently Delete {{roads[tabRoad].name}}?</v-card-title>
@@ -53,7 +53,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model = "addDialog" @input = "newRoadName = ''" max-width="600px">
+      <v-dialog v-model = "addDialog" @input = "newRoadName = ''" max-width="600">
         <v-card>
           <v-btn icon flat style = "float:right" @click = "addDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Create Road</v-card-title>

@@ -35,7 +35,7 @@
         </v-btn>
       </v-badge>
     </v-hover>
-    <v-dialog v-model = "warningDialog" max-width="600px">
+    <v-dialog v-model = "warningDialog" max-width="600">
       <v-card>
         <v-btn icon flat style = "float:right" @click = "warningDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title>

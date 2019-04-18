@@ -90,7 +90,7 @@
     <v-navigation-drawer
       id="left-panel"
       width="350"
-      mobile-break-point="800"
+      mobile-break-point="600"
       class="side-panel elevation-2 scroller"
       app
     >
