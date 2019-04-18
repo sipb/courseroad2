@@ -20,7 +20,7 @@
           draggable
           v-on:dragstart = "dragStart"
           v-on:click = "$emit('click-class', classInfo)"
-          :id = "'class'+classInfo.id.replace('.','')+semesterIndex"
+          :id = "'class'+classInfo.subject_id.replace('.','')+semesterIndex"
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
@@ -39,7 +39,7 @@
       <v-card>
         <v-btn icon flat style = "float:right" @click = "warningDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title>
-          <h3>Warnings for {{classInfo.id}}</h3>
+          <h3>Warnings for {{classInfo.subject_id}}</h3>
         </v-card-title>
         <v-card-text>
           <p v-for = "warning in warnings" v-html="warning"></p>
@@ -88,7 +88,7 @@ export default {
       }
     },
     cardClass: function(classInfo) {
-      return `classbox ${this.courseColor(classInfo.id)}`;
+      return `classbox ${this.courseColor(classInfo.subject_id)}`;
     }
   }
 }

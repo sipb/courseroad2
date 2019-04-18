@@ -2,7 +2,7 @@
   <v-container grid-list-md style = "padding: 0.5em;">
     <v-layout row overflow-x>
         <v-flex v-for = "(subject,index) in subjects" :key = "subject.subject_id">
-          <v-card class = "subject" @click = "$emit('click-subject', {id:subject.subject_id,index:index})">
+          <v-card class = "subject" @click = "$emit('click-subject', {subject_id:subject.subject_id,index:index})">
             <div :class = "courseColor(subject.subject_id)" style = "height:100%;">
               <v-card-text class = "cardtext pa-1">
                 <div><b>{{subject.subject_id}}</b></div>

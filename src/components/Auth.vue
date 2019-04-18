@@ -139,6 +139,7 @@ export default {
       }.bind(this)).then(function([roadIDs,roadData]) {
         if(roadData !== undefined) {
           this.renumberRoads(roadData);
+          console.log(roadData)
           if(this.justLoaded) {
             Vue.delete(this.roads, "$defaultroad$");
           }
@@ -149,6 +150,13 @@ export default {
               if(roadData[r].data.file.contents.progressOverrides === undefined) {
                 roadData[r].data.file.contents.progressOverrides = {};
               }
+              roadData[r].data.file.contents.selectedSubjects = roadData[r].data.file.contents.selectedSubjects.map((s) => {
+                if ('id' in s){
+                  s.subject_id = s.id
+                  delete s.id
+                }
+                return s
+              })
               this.$emit("set-road", roadIDs[r], roadData[r].data.file);
             }
           }

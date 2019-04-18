@@ -13,7 +13,7 @@
             <v-card style = "padding: 1em">
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for = "req in conflictInfo.other_contents.coursesOfStudy"> {{req}} </span></p>
-              <p>Selected Subjects: <span v-for = "(course, index) in conflictInfo.other_contents.selectedSubjects" :class = "colorSubject(index, 'remote')"> {{course.id}} </span></p>
+              <p>Selected Subjects: <span v-for = "(course, index) in conflictInfo.other_contents.selectedSubjects" :class = "colorSubject(index, 'remote')"> {{course.subject_id}} </span></p>
             </v-card>
           </v-list>
           <v-btn color = "primary" @click = "$emit('update-local', conflictInfo.id) ">Keep Remote</v-btn>
@@ -27,7 +27,7 @@
             <v-card style = "padding: 1em">
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for = "req in roads[conflictInfo.id].contents.coursesOfStudy"> {{req}} </span></p>
-              <p>Selected Subjects: <span v-for = "(course, index) in roads[conflictInfo.id].contents.selectedSubjects" :class = "colorSubject(index, 'local')"> {{course.id}} </span></p>
+              <p>Selected Subjects: <span v-for = "(course, index) in roads[conflictInfo.id].contents.selectedSubjects" :class = "colorSubject(index, 'local')"> {{course.subject_id}} </span></p>
             </v-card>
           </v-list>
           <v-btn color = "primary" @click = "$emit('update-remote', conflictInfo.id)">Keep Local</v-btn>
@@ -81,8 +81,8 @@ export default {
       this.conflictDialog = false;
     },
     colorSubject: function(subjectIndex, subjectList) {
-      var remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + " " + s.semester).renumberDuplicates();
-      var localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + " " + s.semester).renumberDuplicates();
+      var remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.subject_id + " " + s.semester).renumberDuplicates();
+      var localSubjects = this.roads[this.conflictInfo.subject_id].contents.selectedSubjects.map((s) => s.subject_id + " " + s.semester).renumberDuplicates();
       var currentSubject;
       if(subjectList === "remote") {
         currentSubject = remoteSubjects[subjectIndex];

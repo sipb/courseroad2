@@ -107,7 +107,7 @@ export default {
     dragStart: function(event) {
       var usedInfo = this.classInfo;
       if(usedInfo === undefined) {
-        usedInfo = {id: this.req.req};
+        usedInfo = {subject_id: this.req.req};
       }
       event.dataTransfer.setData('classData', JSON.stringify({isNew:true,classIndex:-1}));
       this.$emit('drag-start-class', {

@@ -118,10 +118,10 @@ export default {
           let ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
             let subject = undefined
-            if (this.subjectsIndex[s.id] !== undefined) {
-              subject = this.subjects[this.subjectsIndex[s.id]]
-            } else if (this.genericIndex[s.id] !== undefined){
-              subject = this.genericCourses[this.genericIndex[s.id]]
+            if (this.subjectsIndex[s.subject_id] !== undefined) {
+              subject = this.subjects[this.subjectsIndex[s.subject_id]]
+            } else if (this.genericIndex[s.subject_id] !== undefined){
+              subject = this.genericCourses[this.genericIndex[s.subject_id]]
             }
 
             if (subject !== undefined){
@@ -137,7 +137,7 @@ export default {
               })
               return s
             }
-            console.log('ignoring ' + s.id)
+            console.log('ignoring ' + s.subject_id)
             return undefined
           }).filter((s) => {
             return s !== undefined;

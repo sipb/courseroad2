@@ -487,7 +487,7 @@ export default {
         overrideWarnings : false,
         semester : index,
         title : this.itemAdding.title,
-        id : this.itemAdding.subject_id,
+        subject_id : this.itemAdding.subject_id,
         units : this.itemAdding.total_units
       }
       this.addClass(newClass);

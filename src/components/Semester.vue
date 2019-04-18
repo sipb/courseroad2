@@ -16,11 +16,11 @@
           Est. Hours: {{semesterInformation.expectedHours.toFixed(1)}}
         </v-flex>
         <v-layout row xs6 style="max-width: 50%;">
-          <v-flex xs3 v-for = "(subject,subjindex) in semesterSubjects" :key = "subject.id+'-'+subjindex+'-'+index" v-if="!isOpen">
+          <v-flex xs3 v-for = "(subject,subjindex) in semesterSubjects" :key = "subject.subject_id+'-'+subjindex+'-'+index" v-if="!isOpen">
             <v-card>
-              <div v-if = "subject!=='placeholder'" :class = "courseColor(subject.id)">
+              <div v-if = "subject!=='placeholder'" :class = "courseColor(subject.subject_id)">
                 <v-card-text class = "mini-course">
-                  <b>{{subject.id}}</b>
+                  <b>{{subject.subject_id}}</b>
                 </v-card-text>
               </div>
             </v-card>
@@ -47,7 +47,7 @@
             v-bind:classInfo="subject"
             v-bind:semesterIndex="index"
             v-bind:warnings = "warnings[subjindex]"
-            :key="subject.id + '-' + subjindex + '-' + index"
+            :key="subject.subject_id + '-' + subjindex + '-' + index"
             @remove-class = "$emit('remove-class', $event)"
             @click-class = "$emit('click-class',$event)"
             @add-at-placeholder = "$emit('add-at-placeholder', $event)"
@@ -91,7 +91,7 @@ export default {
       var allWarnings = Array(this.semesterSubjects.length).fill([]);
       for(var i = 0; i < this.semesterSubjects.length; i++) {
         var subjectWarnings = [];
-        var subjID = this.semesterSubjects[i].id;
+        var subjID = this.semesterSubjects[i].subject_id;
         var subj;
         if(subjID in this.subjectsIndex) {
           subj = this.allSubjects[this.subjectsIndex[subjID]]
@@ -201,10 +201,10 @@ export default {
     },
     semesterInformation: function() {
       var classesInfo = this.semesterSubjects.map(function(subj) {
-        if(subj.id in this.subjectsIndex) {
-          return this.allSubjects[this.subjectsIndex[subj.id]];
-        } else if(subj.id in this.genericIndex) {
-          return this.genericCourses[this.genericIndex[subj.id]];
+        if(subj.subject_id in this.subjectsIndex) {
+          return this.allSubjects[this.subjectsIndex[subj.subject_id]];
+        } else if(subj.subject_id in this.genericIndex) {
+          return this.genericCourses[this.genericIndex[subj.subject_id]];
         } else {
           return undefined;
         }
@@ -246,7 +246,7 @@ export default {
     previousSubjects: function(subj) {
       var subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(",")[0] === "1";
       return this.selectedSubjects.filter(s => {
-        var subj2 = this.allSubjects[this.subjectsIndex[s.id]];
+        var subj2 = this.allSubjects[this.subjectsIndex[s.subject_id]];
         var inPreviousSemester = s.semester < this.index;
         var inPreviousQuarter = false;
         if(subj2 !== undefined) {
@@ -287,7 +287,7 @@ export default {
       return false;
     },
     reqFulfilled: function(reqString, subjects) {
-      var allIDs = subjects.map((s)=>s.id);
+      var allIDs = subjects.map((s)=>s.subject_id);
       reqString = reqString.replace(/''/g, "\"").replace(/,[\s]+/g,",");
       var splitReq = reqString.split(/(,|\(|\)|\/)/);
       for(var i = 0; i < splitReq.length; i++) {
@@ -298,7 +298,7 @@ export default {
           if(allIDs.indexOf(splitReq[i])>=0) {
             splitReq[i] = "true";
           } else {
-            var anyClassSatisfiesAlone  = subjects.map((s)=>this.classSatisfies(splitReq[i],s.id)).reduce((a,b)=>a||b,false);
+            var anyClassSatisfiesAlone  = subjects.map((s)=>this.classSatisfies(splitReq[i],s.subject_id)).reduce((a,b)=>a||b,false);
             var anyClassesSatisfyTogether = false;
             for(var e = 0; e < EQUIVALENCE_SETS.length; e++) {
               if(EQUIVALENCE_SETS[e][1] == splitReq[i] && EQUIVALENCE_SETS[e][0].reduce((acc, sid)=>acc && allIDs.indexOf(sid)>=0,true)) {
@@ -336,7 +336,7 @@ export default {
             overrideWarnings : false,
             semester : this.index,
             title : this.itemAdding.title,
-            id : this.itemAdding.subject_id,
+            subject_id : this.itemAdding.subject_id,
             units : this.itemAdding.total_units
           }
           this.$emit('add-class', newClass);
