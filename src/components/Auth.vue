@@ -25,7 +25,6 @@
 import Vue from 'vue'
 import UAParser from "ua-parser-js"
 var DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z"
-var FIREROAD_LINK = `https://fireroad-dev.mit.edu`;
 
 function getQueryObject() {
   var query = window.location.search.substring(1);
@@ -73,7 +72,7 @@ export default {
   },
   methods: {
     loginUser: function(event) {
-      window.location.href = FIREROAD_LINK + `/login/?redirect=${process.env.APP_URL}`
+      window.location.href = `${process.env.FIREROAD_URL}/login/?redirect=${process.env.APP_URL}`
     },
     logoutUser: function(event) {
       this.$cookies.remove("accessInfo");
@@ -85,7 +84,7 @@ export default {
       var headerList = {headers: {
         "Authorization": 'Bearer ' + this.accessInfo.access_token,
         }};
-      return axios.get(FIREROAD_LINK+"/verify/", headerList)
+      return axios.get(process.env.FIREROAD_URL+"/verify/", headerList)
       .then(function(verifyResponse) {
         if(verifyResponse.data.success) {
           this.$emit("set-sem", verifyResponse.data.current_semester);
@@ -104,9 +103,9 @@ export default {
         return this.verify()
         .then(function(verifyResponse){
           if(params===false) {
-            return axiosFunc(FIREROAD_LINK+link,headerList);
+            return axiosFunc(process.env.FIREROAD_URL+link,headerList);
           } else {
-            return axiosFunc(FIREROAD_LINK+link,params,headerList);
+            return axiosFunc(process.env.FIREROAD_URL+link,params,headerList);
           }
         });
       } else {
@@ -196,7 +195,7 @@ export default {
     },
 
     getAuthorizationToken: function(code) {
-      axios.get(FIREROAD_LINK + `/fetch_token/?code=`+code).then(function(response) {
+      axios.get(process.env.FIREROAD_URL + `/fetch_token/?code=`+code).then(function(response) {
         if(response.data.success) {
           if(this.data.authCookiesAllowed) {
             this.data.$cookies.set("accessInfo", response.data.access_info);
