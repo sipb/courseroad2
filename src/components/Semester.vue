@@ -6,7 +6,7 @@
     v-on:dragover.native.prevent
   >
     <v-container grid-list-xs slot = "header" style = "padding: 0;">
-      <v-layout row style="user-select: none;">
+      <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
           <span style="width: 6em; display: inline-block;">
             <b>

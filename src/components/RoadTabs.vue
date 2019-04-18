@@ -23,7 +23,7 @@
           </v-btn>
           <v-card-title>Edit Road</v-card-title>
           <v-card-text>
-            <v-text-field autofocus v-model = "newRoadName" label = "Road Name"></v-text-field>
+            <v-text-field v-if="editDialog" autofocus v-model = "newRoadName" label = "Road Name"></v-text-field>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -58,7 +58,7 @@
           <v-btn icon flat style = "float:right" @click = "addDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Create Road</v-card-title>
           <v-card-text>
-          <v-text-field autofocus placeholder="New road name" v-model = "newRoadName"></v-text-field>
+          <v-text-field v-if="addDialog" autofocus placeholder="New road name" v-model = "newRoadName"></v-text-field>
             <v-layout row>
               <v-flex xs6>
                 <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
