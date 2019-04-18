@@ -2,6 +2,27 @@
 <template>
   <v-app id="app-wrapper"
   >
+    <v-dialog v-model="showMobile" fullscreen>
+      <v-card height="100%">
+        <v-container fill-height>
+          <v-layout column>
+            <v-flex grow>
+              <v-card-title primary-title>
+                <h1 style="font-size: 3em;">Hello there!</h1>
+              </v-card-title>
+              <v-card-text>
+                <p style="font-size: 1.5em;">It looks like you're browsing CourseRoad from mobile! For a better mobile experience, consider downloading
+                  the FireRoad app instead, available on Android and iOS.</p>
+              </v-card-text>
+            </v-flex>
+            <v-flex shrink style="justify-content: center;">
+              <v-btn style="width: 100%; margin: 0 0 10% 0;" :href="appLink" color="info"><v-icon>vertical_align_bottom</v-icon> Download</v-btn><br>
+              <a href="#" @click="showMobile = false" style="font-size: 1.25em; display: block; text-align: center;">No thanks, take me to the desktop site.</a>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <v-toolbar fixed app dense class="elevation-2">
       <road-tabs
         v-bind:roads = "roads"
@@ -242,6 +263,7 @@ import RoadTabs from "./../components/RoadTabs.vue"
 import ConflictDialog from "./../components/ConflictDialog.vue"
 import Auth from "./../components/Auth.vue"
 import $ from 'jquery'
+import UAParser from 'ua-parser-js'
 import Vue from 'vue'
 import ClassInfo from "./../components/ClassInfo.vue"
 import ImportExport from "./../components/ImportExport.vue"
@@ -304,10 +326,21 @@ export default {
           selectedSubjects: [],
           progressOverrides: {},
         }
-      }
+      },
     },
+    showMobile: ['mobile', 'tablet'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
   }},
   computed: {
+    appLink: function () {
+      switch (new UAParser(navigator.userAgent).getOS().name) {
+        case 'Android':
+          return 'http://play.google.com/store/apps/details?id=com.base12innovations.android.fireroad'
+        case 'iOS':
+          return 'https://itunes.apple.com/us/app/fireroad-mit-course-planner/id1330678450?mt=8'
+        default:
+          return null
+      }
+    },
     roadref: function() {
       return "#road" + this.activeRoad
     }
