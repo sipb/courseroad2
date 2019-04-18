@@ -1,6 +1,34 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
-  <v-flex style="padding: 24px; overflow: auto;">
+
+  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;">
+    <div style="display: flex; align-content: space-between; margin: 12px 0px;">
+      <v-icon
+        v-slot:prepend
+        :key="`icon-${isEditing}`"
+        :color="isEditing ? 'success' : 'info'"
+        @click="isEditing = !isEditing"
+        v-text="isEditing ? 'save' : 'edit'"
+        style="margin-right: 8px;"
+      ></v-icon>
+      <v-autocomplete
+        v-model="changeReqs"
+        :hint="!isEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+        :items="getCourses"
+        item-text="medium-title"
+        item-value="key"
+        :readonly="!isEditing"
+        :label="`${isEditing ? 'Edit your courses' : 'Your courses'}`"
+        persistent-hint
+        multiple
+        chips
+        deletable-chips
+        dense
+        no-data-text="'No results found'"
+      >
+      </v-autocomplete>
+    </div>
+
     <v-treeview
       v-model="tree"
       :items="selectedTrees"
@@ -109,28 +137,14 @@
         </v-card>
       </div>
     </v-dialog>
-    <v-menu max-height="600" absolute>
-      <v-btn flat color="primary" slot="activator">
-        <v-icon>add</v-icon>Add a Major/Minor
-      </v-btn>
-      <v-list dense>
-        <v-list-tile
-          v-for="(item, key) in reqList"
-          v-bind:key="(item, key)"
-          @click="addReqTree(key)"
-        >
-          <v-list-tile-title style="font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-menu>
 
-    <p>
-      <b>Warning:</b> This is an unofficial tool that may not accurately reflect degree progress. Please view
-      the
-      <a target="_blank" href="https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
-      <a target="_blank" href="http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
-      <a target="_blank" href="http://catalog.mit.edu/degree-charts/">degree charts</a> and confirm
-      with department advisors.
+    <p style="padding-top: 24px;">
+      <b>Warning:</b> This is an unofficial tool that may not accurately reflect
+      degree progress. Please view the
+      <a target = "_blank" href = "https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
+      <a target = "_blank" href = "http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
+      <a target = "_blank" href = "http://catalog.mit.edu/degree-charts/">degree charts</a>
+      and confirm with department advisors.
     </p>
   </v-flex>
 </template>
@@ -163,7 +177,59 @@ export default {
       newManualProgress: 0
     };
   },
+  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex', 'progressOverrides'],
+  data() {
+    return {
+      tree: [],
+      viewDialog: false,
+      dialogReq: undefined,
+      progressDialog: false,
+      progressReq: undefined,
+      newManualProgress: 0,
+      isEditing: false,
+    };
+  },
   computed: {
+    changeReqs: {
+      get: function() {
+        return this.selectedReqs;
+      },
+      set: function(newReqs) {
+        const currentReqs = this.selectedReqs;
+        if (currentReqs.length > newReqs.length) {
+          const diff = currentReqs.find(x => !newReqs.includes(x));
+          this.$emit("remove-req", diff);
+        } else {
+          const newReq = newReqs[newReqs.length - 1];
+          this.$emit("add-req", newReq);
+        }
+      },
+    },
+    getCourses: function() {
+      const list = this.reqList;
+      const courses = Object.keys(list).map(x => Object.assign(list[x], {key: x}));
+      const sortKey = "medium-title";
+      // NOTE: brute force way sorting the courses given the fields we have
+      courses.sort(function(c1, c2) {
+        const a = c1[sortKey].toLowerCase();
+        const b = c2[sortKey].toLowerCase();
+        if (a.includes("major") && b.includes("major") || a.includes("minor") && b.includes("minor")) {
+          let n1 = a.split(" ")[0].split("-")[0];
+          let n2 = b.split(" ")[0].split("-")[0];
+          n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;
+          n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;
+          if (n1 == n2) return a.localeCompare(b);
+          return !isNaN(n1) && !isNaN(n2) || isNaN(n1) && isNaN(n2)
+            ? n1 - n2
+            : (!isNaN(n1) ? -1 : 1);
+        } else if (a.includes("major") && b.includes("minor")) return -1;
+        else if (b.includes("major") && a.includes("minor")) return 1;
+        else if (a.includes("major") || a.includes("minor")) return -1;
+        else if (b.includes("major") || b.includes("minor")) return 1;
+        else return a.localeCompare(b);
+      });
+      return courses;
+    },
     selectedTrees: function() {
       return this.selectedReqs.map(function(req, index) {
         if (req in this.reqTrees) {
@@ -192,9 +258,6 @@ export default {
         return "";
       }
     },
-    addReqTree: function(req) {
-      this.$emit("add-req", req);
-    },
     reqInfo: function(event, req) {
       event.preventDefault();
       event.stopPropagation();
@@ -217,10 +280,7 @@ export default {
       return pstring;
     },
     deleteReq: function(req) {
-      var reqName = req["list-id"].substring(
-        0,
-        req["list-id"].indexOf(".reql")
-      );
+      var reqName = req["list-id"].substring(0, req["list-id"].indexOf(".reql"));
       this.$emit("remove-req", reqName);
     },
     clickRequirement: function(item) {
@@ -286,8 +346,8 @@ export default {
       this.progressDialog = false;
       this.newManualProgress = 0;
     }
-  }
-};
+  },
+}
 </script>
 
 <style>
