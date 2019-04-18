@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model = "conflictDialog" v-if = "conflictInfo != undefined">
+  <v-dialog v-model = "conflictDialog" v-if = "conflictInfo != undefined" max-width="600px">
     <v-card>
       <v-btn icon flat style = "float:right" @click = "conflictDialog = false"><v-icon>close</v-icon></v-btn>
       <v-card-title>Save Conflict</v-card-title>

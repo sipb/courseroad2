@@ -33,7 +33,7 @@
       @drag-start-class = "$emit('drag-start-class',$event)"
       >
     </semester>
-    <v-dialog v-model = "changeYearDialog">
+    <v-dialog v-model = "changeYearDialog" max-width="600px">
       <v-card>
         <v-btn icon flat style = "float:right" @click = "changeYearDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title>
@@ -48,10 +48,11 @@
           </v-select>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click = "changeYearDialog = false">
+          <v-spacer></v-spacer>
+          <v-btn flat @click = "changeYearDialog = false">
             Cancel
           </v-btn>
-          <v-btn @click = "$emit('change-year',newYear); changeYearDialog = false;">
+          <v-btn color = "primary" @click = "$emit('change-year',newYear); changeYearDialog = false;">
             Submit
           </v-btn>
         </v-card-actions>
