@@ -138,22 +138,8 @@
         </v-card>
       </div>
     </v-dialog>
-    <v-menu max-height="600" absolute>
-      <v-btn flat color="primary" slot="activator">
-        <v-icon>add</v-icon>Add a Major/Minor
-      </v-btn>
-      <v-list dense>
-        <v-list-tile
-          v-for="(item, key) in reqList"
-          v-bind:key="(item, key)"
-          @click="addReqTree(key)"
-        >
-          <v-list-tile-title style="font-size:12px;">{{item["medium-title"]}}</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-menu>
 
-    <p style="padding-top: 24px;">>
+    <p style="padding-top: 24px;">
       <b>Warning:</b> This is an unofficial tool that may not accurately reflect
       degree progress. Please view the
       <a target = "_blank" href = "https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
@@ -223,8 +209,26 @@ export default {
     getCourses: function() {
       const list = this.reqList;
       const courses = Object.keys(list).map(x => Object.assign(list[x], {key: x}));
-      const sortKey = "title";
-      courses.sort(function(a, b) { return a[sortKey] - b[sortKey] });
+      const sortKey = "medium-title";
+      // NOTE: brute force way sorting the courses given the fields we have
+      courses.sort(function(c1, c2) {
+        const a = c1[sortKey].toLowerCase();
+        const b = c2[sortKey].toLowerCase();
+        if (a.includes("major") && b.includes("major") || a.includes("minor") && b.includes("minor")) {
+          let n1 = a.split(" ")[0].split("-")[0];
+          let n2 = b.split(" ")[0].split("-")[0];
+          n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;
+          n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;
+          if (n1 == n2) return a.localeCompare(b);
+          return !isNaN(n1) && !isNaN(n2) || isNaN(n1) && isNaN(n2)
+            ? n1 - n2
+            : (!isNaN(n1) ? -1 : 1);
+        } else if (a.includes("major") && b.includes("minor")) return -1;
+        else if (b.includes("major") && a.includes("minor")) return 1;
+        else if (a.includes("major") || a.includes("minor")) return -1;
+        else if (b.includes("major") || b.includes("minor")) return 1;
+        else return a.localeCompare(b);
+      });
       return courses;
     },
     selectedTrees: function() {
