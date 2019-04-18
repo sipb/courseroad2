@@ -112,11 +112,11 @@
       </v-list>
     </v-menu>
 
-    <p><b>Warning:</b> This is an unofficial estimate that may not accurately reflect your degree progress.  Please visit
+    <p><b>Warning:</b> This is an unofficial tool that may not accurately reflect degree progress. Please view
     the <a target = "_blank" href = "https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
     <a target = "_blank" href = "http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
     <a target = "_blank" href = "http://catalog.mit.edu/degree-charts/">degree charts</a> and confirm
-    with your department advisor.</p>
+    with department advisors.</p>
   </v-flex>
 </template>
 
