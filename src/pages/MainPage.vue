@@ -124,7 +124,7 @@
             </v-flex>
             <v-flex>
               <router-link to="/about" style="float: right;" >
-                <i>about</i>
+                About
               </router-link>
             </v-flex>
           </v-layout>
@@ -146,6 +146,14 @@
             @update-progress = "updateProgress"
           ></audit>
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+            <p>
+              <b>Warning:</b> This is an unofficial tool that may not accurately
+              reflect degree progress. Please view the
+              <a target="_blank" href="https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
+              <a target="_blank" href="http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
+              <a target="_blank" href="http://catalog.mit.edu/degree-charts/">degree charts</a>
+              and confirm with your department advisors.
+            </p>
             <p>Problems with the course requirements? Request edits
               <a target="_blank" href="https://fireroad.mit.edu/requirements/">here</a> or
               send an email to <a target="_blank" href="mailto:courseroad@mit.edu">courseroad@mit.edu</a>.
@@ -159,21 +167,21 @@
     <v-content app id="center-panel">
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
-          v-for = "roadid in Object.keys(roads)"
-          :key = "roadid"
-          :value = "roadid"
+          v-for = "roadId in Object.keys(roads)"
+          :key = "roadId"
+          :value = "roadId"
           >
           <road
-            v-bind:selectedSubjects="roads[roadid].contents.selectedSubjects"
+            v-bind:selectedSubjects="roads[roadId].contents.selectedSubjects"
             v-bind:subjects = "subjectsInfo"
-            v-bind:roadID = "roadid"
+            v-bind:roadID = "roadId"
             v-bind:currentSemester = "currentSemester"
-            v-bind:addingFromCard = "addingFromCard && activeRoad===roadid"
+            v-bind:addingFromCard = "addingFromCard && activeRoad===roadId"
             v-bind:itemAdding = "itemAdding"
             v-bind:subjectsIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
-            v-bind:dragSemesterNum = "(activeRoad===roadid) ? dragSemesterNum : -1"
+            v-bind:dragSemesterNum = "(activeRoad===roadId) ? dragSemesterNum : -1"
             @add-at-placeholder = "addAtPlaceholder"
             @add-class = "addClass"
             @move-class = "moveClass($event.classIndex,$event.semester)"

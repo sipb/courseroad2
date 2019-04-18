@@ -120,7 +120,7 @@
           </v-card-text>
           <v-card-text v-if="'req' in dialogReq">{{dialogReq["req"]}}</v-card-text>
           <v-card-text>
-            <b>Satisfying Courses</b>
+            <b>Satisfying courses</b>
             <div v-for="course in dialogReq['sat_courses']" v-bind:key="course">{{course}}</div>
           </v-card-text>
           <v-card-actions>
@@ -137,15 +137,6 @@
         </v-card>
       </div>
     </v-dialog>
-
-    <p style="padding-top: 24px;">
-      <b>Warning:</b> This is an unofficial tool that may not accurately reflect
-      degree progress. Please view the
-      <a target = "_blank" href = "https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
-      <a target = "_blank" href = "http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
-      <a target = "_blank" href = "http://catalog.mit.edu/degree-charts/">degree charts</a>
-      and confirm with department advisors.
-    </p>
   </v-flex>
 </template>
 

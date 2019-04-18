@@ -384,4 +384,9 @@ export default {
 .comma-separated li:last-child:after {
   content: "";
 }
+
+table td:first-child {
+  padding-right: 1em;
+}
+
 </style>
