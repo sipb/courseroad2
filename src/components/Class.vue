@@ -6,7 +6,7 @@
       <v-badge slot-scope="{ hover }" overlap right color="rgba(0,0,0,0)" style="width:100%;">
         <v-card
           v-if="classInfo == 'placeholder'"
-          class="placeholder classbox"
+          class="placeholder"
         >
           <v-container fill-height>
             <v-layout align-center justify-center>
@@ -23,22 +23,32 @@
 
         <v-card
           v-else
-          :id="'class'+classInfo.id.replace('.','')+semesterIndex"
+          :id="'class' + classInfo.id.replace('.','') + semesterIndex"
           draggable
           @dragstart="dragStart"
           @click="$emit('click-class', classInfo)"
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
-          <div :class="cardClass(classInfo)">
-            <v-icon style="margin: 4px" small @click="$emit('remove-class',classInfo); $event.stopPropagation();">
+          <div :class="cardClass(classInfo)" :style="cardHeight">
+            <v-icon
+              style="margin: 4px"
+              small
+              @click="$emit('remove-class', classInfo); $event.stopPropagation();"
+            >
               cancel
             </v-icon>
             <v-card-text class="card-text">
-              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ classInfo.title }}
+              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span>
+              {{ classInfo.title }}
             </v-card-text>
           </div>
         </v-card>
-        <v-btn v-if="warnings.length>0&&(!classInfo.overrideWarnings||hover)" slot="badge" icon @click="warningDialog = true">
+        <v-btn
+          v-if="warnings.length > 0 && (!classInfo.overrideWarnings || hover)"
+          slot="badge"
+          icon
+          @click="warningDialog = true"
+        >
           <v-icon medium>
             warning
           </v-icon>
@@ -54,7 +64,7 @@
           <h3>Warnings for {{ classInfo.id }}</h3>
         </v-card-title>
         <v-card-text>
-          <p v-for="warning in warnings" v-html="warning" />
+          <p v-for="warning in warnings" :key="warning" v-html="warning" />
           <v-switch
             v-model="shouldOverrideWarnings"
             label="Override warnings"
@@ -62,7 +72,10 @@
           />
         </v-card-text>
         <v-card-actions style="justify-content: flex-end;">
-          <v-btn flat @click="warningDialog = false; $emit('override-warnings',{override:shouldOverrideWarnings,classInfo:classInfo})">
+          <v-btn
+            flat
+            @click="warningDialog = false; $emit('override-warnings', {override: shouldOverrideWarnings, classInfo: classInfo})"
+          >
             Close
           </v-btn>
         </v-card-actions>
@@ -83,6 +96,18 @@ export default {
       warningDialog: false,
       shouldOverrideWarnings: this.classInfo.overrideWarnings
     };
+  },
+  computed: {
+    cardHeight: function () {
+      switch (this.$vuetify.breakpoint.name) {
+        /* Chosen for n lines in the card, working with the set padding and margins. */
+        case 'xs': return 'height: 5.8em;'; // 3 lines
+        case 'sm': return 'height: 5.8em;'; // 3 lines
+        case 'md': return 'height: 5.8em;'; // 3 lines
+        case 'lg': return 'height: 4.2em;'; // 2 lines
+        case 'xl': return 'height: 4.2em;'; // 2 lines
+      }
+    }
   },
   methods: {
     dragStart: function (event) {
@@ -118,7 +143,6 @@ export default {
   .classbox {
     display: flex;
     align-items: flex-start;
-    height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
     overflow: hidden;
     padding: .2em .4em .4em .2em;
     /* Multi-line truncation is not a supported feature of CSS right now.
@@ -126,6 +150,7 @@ export default {
        currently extra words are clipped.
     text-overflow: ellipsis;
     white-space: nowrap; */
+    hyphens: auto;
   }
 
   .placeholder {
