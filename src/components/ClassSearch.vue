@@ -25,15 +25,15 @@
                 slot-scope="{ hover }"
                 :class="{ 'elevation-3': hover }"
                 draggable="true"
-                style="cursor: grab; margin: 4px; display: block;"
+                style="cursor: grab; margin: 4px;"
                 @dragstart="dragStart($event, props)"
                 @click="viewClassInfo(props)"
               >
-                <td style="padding: 0px 4px; white-space: nowrap; width: 30%;">
+                <td style="padding: 0px; white-space: nowrap; width: 30%;">
                   <v-icon style="vertical-align: middle;">drag_indicator</v-icon>
                   <span style="vertical-align: middle;"> {{props.item.subject_id}}</span>
                 </td>
-                <td style="padding: 0px 4px; width: 60%;">{{props.item.title}}</td>
+                <td style="padding: 2px 4px 2px 0px; width: 60%;">{{props.item.title}}</td>
               </tr>
             </v-hover>
           </template>
