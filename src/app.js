@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import MainPage from './pages/MainPage.vue'
-import About from "./pages/About.vue"
+import About from './pages/About.vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import $ from 'jquery'
-import VueCookies from "vue-cookies"
-import "./assets/css/coursecolors.css"
+import VueCookies from 'vue-cookies'
+import './assets/css/coursecolors.css'
 import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(Vuetify)
@@ -22,10 +22,10 @@ var router = new VueRouter({
   routes
 })
 
-VueCookies.config('3d');
+VueCookies.config('3d')
 
 new Vue({
-  el: "#app",
+  el: '#app',
   router: router,
   render: h => h(App)
-});
+})
