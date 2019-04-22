@@ -24,7 +24,7 @@ export default {
   mixins: [colorMixin]
 }
 </script>
-<style>
+<style scoped>
   .overflow-x {
     overflow-x: auto;
   }

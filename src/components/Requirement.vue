@@ -161,4 +161,11 @@ export default {
   .p-bar {
     height: 4px;
   }
+  .percentage-bar {
+    background: linear-gradient(
+      90deg,
+      var(--bar-color) var(--percent),
+      var(--bg-color) var(--percent)
+    );
+  }
 </style>

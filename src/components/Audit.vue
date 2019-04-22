@@ -341,7 +341,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .percentage-bar {
   background: linear-gradient(
     90deg,
