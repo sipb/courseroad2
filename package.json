@@ -31,7 +31,7 @@
     "vue-cookies": "^1.5.12",
     "vue-router": "^3.0.4",
     "vue-scrolling-table": "^0.2.2",
-    "vuetify": "1.5.11"
+    "vuetify": "^1.5.12"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
