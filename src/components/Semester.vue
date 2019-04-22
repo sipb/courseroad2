@@ -156,7 +156,7 @@ export default {
         else if (this.index === 0 || this.offeredNow) {
           return {
             bgColor: 'green',
-            message: 'No problems detected!',
+            message: 'Add class here',
             textColor: 'DarkGreen'
           }
         } else if (this.isSameYear) {
