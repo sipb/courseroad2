@@ -9,31 +9,31 @@ export default {
       validGeneric: ['PHY1', 'PHY2', 'CHEM', 'BIOL', 'CAL1', 'CAL2', 'LAB', 'REST',
         'HASS-A', 'HASS-H', 'HASS-S', 'CI-H', 'CI-HW'
       ]
-    }
+    };
   },
   methods: {
     courseColor: function (id) {
       if (id !== undefined) {
-        let course = id.split('.')[0]
+        let course = id.split('.')[0];
         if (course.indexOf('GIR:') >= 0) {
-          course = course.substring(0, course.indexOf('GIR:')) + course.substring(course.indexOf('GIR:') + 4)
+          course = course.substring(0, course.indexOf('GIR:')) + course.substring(course.indexOf('GIR:') + 4);
         }
-        let girAttrs = course.split(' ').filter((c) => (this.validGeneric.indexOf(c) >= 0))
+        let girAttrs = course.split(' ').filter((c) => (this.validGeneric.indexOf(c) >= 0));
         if (this.validCourses.indexOf(course) !== -1) {
-          return 'course-' + course
+          return 'course-' + course;
         } else if (girAttrs.length > 0) {
           if (girAttrs.length == 1) {
-            var attr = girAttrs[0]
+            var attr = girAttrs[0];
             if (attr.indexOf('HASS') == 0) {
-              return 'generic-' + course
+              return 'generic-' + course;
             } else if (attr.indexOf('CI') == 0) {
-              return 'generic-' + course
+              return 'generic-' + course;
             }
           }
-          return 'generic-GIR'
+          return 'generic-GIR';
         }
       }
-      return 'course-none'
+      return 'course-none';
     }
   }
-}
+};

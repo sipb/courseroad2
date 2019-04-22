@@ -10,6 +10,9 @@
         "max": 1,
         "allowFirstLine": false
       }
+    }],
+    "semi": [2, "always", {
+      "omitLastInOneLineBlock": true
     }]
   }
 

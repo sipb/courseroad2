@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import colorMixin from './../mixins/colorMixin.js'
+import colorMixin from './../mixins/colorMixin.js';
 
 export default {
   name: 'Class',
@@ -82,28 +82,28 @@ export default {
     return {
       warningDialog: false,
       shouldOverrideWarnings: this.classInfo.overrideWarnings
-    }
+    };
   },
   methods: {
     dragStart: function (event) {
-      event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo }))
+      event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo }));
       this.$emit('drag-start-class', {
         dragstart: event,
         basicClass: this.classInfo,
         isNew: false,
         currentSem: this.semesterIndex
-      })
+      });
     },
     clickClass: function (classInfo) {
       if (classInfo !== 'placeholder') {
-        this.$emit('click-class', classInfo)
+        this.$emit('click-class', classInfo);
       }
     },
     cardClass: function (classInfo) {
-      return `classbox ${this.courseColor(classInfo.id)}`
+      return `classbox ${this.courseColor(classInfo.id)}`;
     }
   }
-}
+};
 </script>
 
 <style scoped>

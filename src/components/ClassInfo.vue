@@ -191,10 +191,10 @@
 </template>
 
 <script>
-import $ from 'jquery'
-import SubjectScroll from '../components/SubjectScroll.vue'
-import ExpansionReqs from '../components/ExpansionReqs.vue'
-import colorMixin from './../mixins/colorMixin.js'
+import $ from 'jquery';
+import SubjectScroll from '../components/SubjectScroll.vue';
+import ExpansionReqs from '../components/ExpansionReqs.vue';
+import colorMixin from './../mixins/colorMixin.js';
 
 export default {
   name: 'ClassInfo',
@@ -207,184 +207,184 @@ export default {
   data: function () { return {} },
   computed: {
     currentSubject: function () {
-      var currentID = this.classInfoStack[this.classInfoStack.length - 1]
-      var curSubj
+      var currentID = this.classInfoStack[this.classInfoStack.length - 1];
+      var curSubj;
       if (currentID in this.subjectsIndex) {
-        curSubj = this.subjects[this.subjectsIndex[currentID]]
+        curSubj = this.subjects[this.subjectsIndex[currentID]];
       } else {
-        curSubj = this.genericCourses[this.genericIndex[currentID]]
+        curSubj = this.genericCourses[this.genericIndex[currentID]];
       }
-      return curSubj
+      return curSubj;
     },
     parsedPrereqs: function () {
       if (this.currentSubject.prerequisites !== undefined) {
-        return this.parseRequirements(this.currentSubject.prerequisites)
+        return this.parseRequirements(this.currentSubject.prerequisites);
       } else {
         return {
           reqs: []
-        }
+        };
       }
     },
     parsedCoreqs: function () {
       if (this.currentSubject.corequisites !== undefined) {
-        return this.parseRequirements(this.currentSubject.corequisites)
+        return this.parseRequirements(this.currentSubject.corequisites);
       } else {
         return {
           reqs: []
-        }
+        };
       }
     }
   },
   methods: {
     classInfo: function (subjectID) {
-      var subj = this.subjects[this.subjectsIndex[subjectID]]
+      var subj = this.subjects[this.subjectsIndex[subjectID]];
       if (subj !== undefined) {
-        return subj
+        return subj;
       } else {
         return {
           subject_id: subjectID,
           title: ''
-        }
+        };
       }
     },
     clickRelatedSubject: function (subject) {
-      this.$emit('push-stack', subject.id)
-      $('#cardBody').animate({ scrollTop: 0 })
+      this.$emit('push-stack', subject.id);
+      $('#cardBody').animate({ scrollTop: 0 });
     },
     parseRequirements: function (requirements) {
       // remove spaces after commas and slashes
-      requirements = requirements.replace(/([,\/])\s+/g, '$1')
+      requirements = requirements.replace(/([,\/])\s+/g, '$1');
       function getParenGroup (str) {
         if (str[0] == '(') {
-          var retString = ''
-          str = str.substring(1)
-          var nextParen
-          var numParens = 1
+          var retString = '';
+          str = str.substring(1);
+          var nextParen;
+          var numParens = 1;
           while (((nextParen = /[\(\)]/.exec(str)) !== null) && numParens > 0) {
-            var parenIndex = nextParen.index
-            var parenType = nextParen[0]
+            var parenIndex = nextParen.index;
+            var parenType = nextParen[0];
             if (parenType == '(') {
-              numParens++
+              numParens++;
             } else {
-              numParens--
+              numParens--;
             }
-            retString += str.substring(0, parenIndex + 1)
-            str = str.substring(parenIndex + 1)
+            retString += str.substring(0, parenIndex + 1);
+            str = str.substring(parenIndex + 1);
           }
-          return [retString.substring(0, retString.length - 1), str.substring(1), str.length > 0 ? str.substring(0, 1) : undefined]
+          return [retString.substring(0, retString.length - 1), str.substring(1), str.length > 0 ? str.substring(0, 1) : undefined];
         } else {
-          return undefined
+          return undefined;
         }
       }
       function getNextReq (reqString) {
         if (reqString[0] == '(') {
-          return getParenGroup(reqString)
+          return getParenGroup(reqString);
         } else {
-          var nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString)
+          var nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
           if (nextMatch !== null) {
-            var nextReq = nextMatch[1]
-            var restOfString = nextMatch[3]
-            var delimiter = nextMatch[2]
-            return [nextReq, restOfString, delimiter]
+            var nextReq = nextMatch[1];
+            var restOfString = nextMatch[3];
+            var delimiter = nextMatch[2];
+            return [nextReq, restOfString, delimiter];
           } else {
-            return [reqString, '', undefined]
+            return [reqString, '', undefined];
           }
         }
       }
       function isBaseReq (req) {
-        return /[\/\(\),]/g.exec(req) === null
+        return /[\/\(\),]/g.exec(req) === null;
       }
-      var getClassInfo = this.classInfo
+      var getClassInfo = this.classInfo;
       function parseReqs (reqString) {
-        var parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false }
-        var onereq
-        var connectionType = undefined
-        var nextConnectionType = undefined
+        var parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
+        var onereq;
+        var connectionType = undefined;
+        var nextConnectionType = undefined;
         while (reqString.length > 0) {
-          [onereq, reqString, nextConnectionType] = getNextReq(reqString)
+          [onereq, reqString, nextConnectionType] = getNextReq(reqString);
           if (nextConnectionType !== undefined) {
-            connectionType = nextConnectionType
+            connectionType = nextConnectionType;
           }
           if (isBaseReq(onereq)) {
             if (onereq.indexOf("'") >= 0) {
-              parsedReq.reqs.push({ subject_id: onereq.replace(/'/g, ''), title: '' })
+              parsedReq.reqs.push({ subject_id: onereq.replace(/'/g, ''), title: '' });
             } else {
-              parsedReq.reqs.push(getClassInfo(onereq))
+              parsedReq.reqs.push(getClassInfo(onereq));
             }
           } else {
-            parsedReq.reqs.push(parseReqs(onereq))
+            parsedReq.reqs.push(parseReqs(onereq));
           }
         }
         if (connectionType == '/') {
-          parsedReq.connectionType = 'any'
+          parsedReq.connectionType = 'any';
         } else if (connectionType == ',') {
-          parsedReq.connectionType = 'all'
+          parsedReq.connectionType = 'all';
         }
         function sortOrder (req) {
           if (req.reqs !== undefined) {
-            return 0
+            return 0;
           } else if (req.total_units !== undefined) {
-            return -1
+            return -1;
           } else {
-            return 1
+            return 1;
           }
         }
 
         parsedReq.reqs.sort(function (a, b) {
-          return sortOrder(a) - sortOrder(b)
-        })
+          return sortOrder(a) - sortOrder(b);
+        });
 
         function getReqTitle (req) {
           if (req.total_units !== undefined) {
-            return req.subject_id
+            return req.subject_id;
           } else if (typeof req === 'string') {
-            return req
+            return req;
           } else {
-            return req.subject_id + ' ' + req.title
+            return req.subject_id + ' ' + req.title;
           }
         }
         if (parsedReq.reqs.length === 2) {
           if (parsedReq.connectionType === 'any') {
-            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0])
-            parsedReq.title = 'or ' + getReqTitle(parsedReq.reqs[1])
-            parsedReq.expansionDesc = 'Select either:'
+            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+            parsedReq.title = 'or ' + getReqTitle(parsedReq.reqs[1]);
+            parsedReq.expansionDesc = 'Select either:';
           } else {
-            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0])
-            parsedReq.title = 'and ' + getReqTitle(parsedReq.reqs[1])
-            parsedReq.expansionDesc = 'Select both:'
+            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+            parsedReq.title = 'and ' + getReqTitle(parsedReq.reqs[1]);
+            parsedReq.expansionDesc = 'Select both:';
           }
         } else if (parsedReq.reqs.length > 2) {
-          parsedReq.subject_id = getReqTitle(parsedReq.reqs[0])
+          parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
           if (parsedReq.connectionType === 'any') {
-            parsedReq.title = 'or ' + (parsedReq.reqs.length - 1) + ' others'
-            parsedReq.expansionDesc = 'Select any:'
+            parsedReq.title = 'or ' + (parsedReq.reqs.length - 1) + ' others';
+            parsedReq.expansionDesc = 'Select any:';
           } else {
-            parsedReq.title = 'and ' + (parsedReq.reqs.length - 1) + ' others'
-            parsedReq.expansionDesc = 'Select all:'
+            parsedReq.title = 'and ' + (parsedReq.reqs.length - 1) + ' others';
+            parsedReq.expansionDesc = 'Select all:';
           }
         }
-        var connectionMatch = /(and|or)/.exec(parsedReq.subject_id)
+        var connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
         if (connectionMatch !== null) {
-          var connectionIndex = connectionMatch.index
-          var firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '')
-          var secondPart = parsedReq.subject_id.substring(connectionIndex)
-          parsedReq.subject_id = firstPart
-          parsedReq.title = secondPart + ' ' + parsedReq.title
+          var connectionIndex = connectionMatch.index;
+          var firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '');
+          var secondPart = parsedReq.subject_id.substring(connectionIndex);
+          parsedReq.subject_id = firstPart;
+          parsedReq.title = secondPart + ' ' + parsedReq.title;
         }
-        return parsedReq
+        return parsedReq;
       }
-      var rList = parseReqs(requirements)
-      rList.topLevel = true
-      return rList
+      var rList = parseReqs(requirements);
+      rList.topLevel = true;
+      return rList;
     },
     addClass: function () {
-      this.$emit('add-class', this.currentSubject)
+      this.$emit('add-class', this.currentSubject);
     },
     cancelAddClass: function () {
-      this.$emit('cancel-add-class')
+      this.$emit('cancel-add-class');
     }
   }
-}
+};
 </script>
 
 <style scoped>

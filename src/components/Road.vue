@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import Semester from './Semester.vue'
+import Semester from './Semester.vue';
 
 export default {
   name: 'Semester',
@@ -70,27 +70,27 @@ export default {
   },
   props: ['selectedSubjects', 'subjects', 'roadID', 'currentSemester', 'addingFromCard', 'itemAdding', 'dragSemesterNum', 'subjectsIndex', 'genericCourses', 'genericIndex'],
   data: function () {
-    let defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true]
-    let numSemesters = 16// this.currentSemester >= 13 ? 16 : 13
+    let defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
+    let numSemesters = 16;// this.currentSemester >= 13 ? 16 : 13
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
       newYear: parseInt((this.currentSemester - 1) / 3),
       numSems: numSemesters
-    }
+    };
   },
   computed: {
     baseYear: function () {
-      var today = new Date()
-      var currentYear = today.getFullYear()
-      var baseYear = (today.getMonth() >= 4 && today.getMonth() <= 10) ? currentYear + 1 : currentYear
-      return baseYear - Math.floor((this.currentSemester - 1) / 3)
+      var today = new Date();
+      var currentYear = today.getFullYear();
+      var baseYear = (today.getMonth() >= 4 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
+      return baseYear - Math.floor((this.currentSemester - 1) / 3);
     }
   },
   watch: {
     currentSemester: function (newSem, oldSem) {
-      this.numSems = newSem >= 13 ? 16 : 13
+      this.numSems = newSem >= 13 ? 16 : 13;
     }
   }
-}
+};
 </script>

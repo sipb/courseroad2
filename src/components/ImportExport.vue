@@ -85,89 +85,89 @@ export default {
       inputtext: '',
       roadtitle: '',
       badinput: false
-    }
+    };
   },
   mounted () {
     // read uploaded files
     var onFileChange = (event) => {
-      var reader = new FileReader()
+      var reader = new FileReader();
       reader.onload = (event) => {
-        this.inputtext = event.target.result
-      }
+        this.inputtext = event.target.result;
+      };
 
       if (event.target.files[0]) {
         // would have been undefined if user exited file select dialog
-        let name = event.target.files[0].name
+        let name = event.target.files[0].name;
         // check for valid type hopefully
         if (name.substr(name.length - 5) === '.road') {
           // update title unless they already input one
           if (this.roadtitle === '') {
-            this.roadtitle = name.substr(0, name.length - 5)
+            this.roadtitle = name.substr(0, name.length - 5);
           }
           // finally, read the file
-          reader.readAsText(event.target.files[0])
+          reader.readAsText(event.target.files[0]);
         } else {
           // wrong file type
-          this.badinput = true
-          setTimeout(() => { this.badinput = false }, 7000)
+          this.badinput = true;
+          setTimeout(() => { this.badinput = false }, 7000);
         }
       }
-    }
+    };
 
-    document.getElementById('file').addEventListener('change', onFileChange)
+    document.getElementById('file').addEventListener('change', onFileChange);
   },
   methods: {
     exportRoad: function (event) {
-      var filename = this.roads[this.activeRoad].name + '.road'
-      var text = JSON.stringify(this.roads[this.activeRoad].contents)
+      var filename = this.roads[this.activeRoad].name + '.road';
+      var text = JSON.stringify(this.roads[this.activeRoad].contents);
 
       // for some reason this is the way you download files...
       //    create an element, click it, and remove it
-      var element = document.createElement('a')
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
-      element.setAttribute('download', filename)
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', filename);
 
-      element.style.display = 'none'
-      document.body.appendChild(element)
+      element.style.display = 'none';
+      document.body.appendChild(element);
 
-      element.click()
+      element.click();
 
-      document.body.removeChild(element)
+      document.body.removeChild(element);
     },
     importRoad: function (event) {
-      let fail = false
+      let fail = false;
       // check for legal input
       if (this.inputtext === '' || this.roadtitle === '') {
-        fail = true
+        fail = true;
       }
 
-      let expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'id' ]
+      let expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'id' ];
 
       if (!fail) {
         try {
           // parse text and add to roads
-          var obj = JSON.parse(this.inputtext)
+          var obj = JSON.parse(this.inputtext);
           // sanitize
           // progressOverrides must be defined
           if (obj.progressOverrides === undefined) {
-            obj.progressOverrides = {}
+            obj.progressOverrides = {};
           }
           // subject_id issue
           let newss = obj.selectedSubjects.map((s) => {
             if ('subject_id' in s) {
-              s.id = s.subject_id
-              delete s.subject_id
+              s.id = s.subject_id;
+              delete s.subject_id;
             }
-            return s
-          })
-          obj.selectedSubjects = newss
+            return s;
+          });
+          obj.selectedSubjects = newss;
           let ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
-            let subject
+            let subject;
             if (this.subjectsIndex[s.id] !== undefined) {
-              subject = this.subjects[this.subjectsIndex[s.id]]
+              subject = this.subjects[this.subjectsIndex[s.id]];
             } else if (this.genericIndex[s.id] !== undefined) {
-              subject = this.genericCourses[this.genericIndex[s.id]]
+              subject = this.genericCourses[this.genericIndex[s.id]];
             }
 
             if (subject !== undefined) {
@@ -175,44 +175,44 @@ export default {
                 if (s[f] === undefined) {
                   // right now (4/16/19) 'units' is the only one that doesn't match and needs an exception
                   if (f === 'units') {
-                    s[f] = subject['total_units']
+                    s[f] = subject['total_units'];
                   } else {
-                    s[f] = subject[f]
+                    s[f] = subject[f];
                   }
                 }
-              })
-              return s
+              });
+              return s;
             }
-            console.log('ignoring ' + s.id)
-            return undefined
+            console.log('ignoring ' + s.id);
+            return undefined;
           }).filter((s) => {
-            return s !== undefined
-          })
-          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, ss, obj.progressOverrides)
+            return s !== undefined;
+          });
+          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, ss, obj.progressOverrides);
         } catch (error) {
-          fail = true
-          console.log('import failed with error:')
-          console.error(error)
+          fail = true;
+          console.log('import failed with error:');
+          console.error(error);
         }
       }
 
       if (fail) {
-        this.badinput = true
+        this.badinput = true;
         // make warning go away after 7 seconds
-        setTimeout(() => { this.badinput = false }, 7000)
+        setTimeout(() => { this.badinput = false }, 7000);
       } else {
-        this.badinput = false
-        this.dialog = false
+        this.badinput = false;
+        this.dialog = false;
       }
     },
     otherRoadHasName: function (roadName) {
       var otherRoadNames = Object.keys(this.roads).filter(function (road) {
-        return this.roads[road].name === roadName
-      }.bind(this))
-      return otherRoadNames.length > 0
+        return this.roads[road].name === roadName;
+      }.bind(this));
+      return otherRoadNames.length > 0;
     }
   }
-}
+};
 </script>
 
 <style scoped>

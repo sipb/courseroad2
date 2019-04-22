@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import Road from './Road.vue'
+import Road from './Road.vue';
 
 export default {
   name: 'RoadTabs',
@@ -118,40 +118,40 @@ export default {
       duplicateRoadSource: '$defaultroad$',
       newRoadName: '',
       tabRoad: this.activeRoad
-    }
+    };
   },
   watch: {
     activeRoad: function (newRoad, oldRoad) {
-      this.tabRoad = this.activeRoad
+      this.tabRoad = this.activeRoad;
     }
   },
   methods: {
     otherRoadHasName: function (roadID, roadName) {
       const otherRoadNames = Object.keys(this.roads).map(function (road) {
         if (road == roadID) {
-          return undefined
+          return undefined;
         } else {
-          return this.roads[road].name.toLowerCase()
+          return this.roads[road].name.toLowerCase();
         }
-      }.bind(this))
-      return otherRoadNames.indexOf(roadName.toLowerCase()) >= 0
+      }.bind(this));
+      return otherRoadNames.indexOf(roadName.toLowerCase()) >= 0;
     },
     createRoad: function () {
       if (!this.duplicateRoad) {
-        this.$emit('add-road', this.newRoadName)
+        this.$emit('add-road', this.newRoadName);
       } else if (this.duplicateRoadSource in this.roads) {
         this.$emit('add-road',
           this.newRoadName,
           this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
           this.roads[this.duplicateRoadSource].contents.selectedSubjects.slice(0),
           Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
-        )
+        );
       }
-      this.addDialog = false
-      this.newRoadName = ''
+      this.addDialog = false;
+      this.newRoadName = '';
     }
   }
-}
+};
 </script>
 
 <style scoped>

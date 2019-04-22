@@ -18,13 +18,13 @@
   </v-container>
 </template>
 <script>
-import colorMixin from './../mixins/colorMixin.js'
+import colorMixin from './../mixins/colorMixin.js';
 
 export default {
   name: 'SubjectScroll',
   mixins: [colorMixin],
   props: ['subjects']
-}
+};
 </script>
 <style scoped>
   .overflow-x {

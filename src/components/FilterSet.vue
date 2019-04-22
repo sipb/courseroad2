@@ -24,15 +24,15 @@ export default {
   props: ['value', 'label', 'filters'],
   methods: {
     changeFilter (newValues) {
-      this.$emit('input', newValues)
+      this.$emit('input', newValues);
     },
     buttonClicked (event) {
       // Focus the search input in case user wants to start typing after
       // selecting a filter
-      document.getElementById('searchInputTF').focus()
+      document.getElementById('searchInputTF').focus();
     }
   }
-}
+};
 </script>
 
 <style scoped>

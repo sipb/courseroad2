@@ -45,9 +45,9 @@
 </template>
 
 <script>
-import SubjectScroll from '../components/SubjectScroll.vue'
-import $ from 'jquery'
-import Vue from 'vue'
+import SubjectScroll from '../components/SubjectScroll.vue';
+import $ from 'jquery';
+import Vue from 'vue';
 
 export default {
   name: 'ExpansionReqs',
@@ -61,68 +61,68 @@ export default {
       expansionIndex: 0,
       nextReqs: undefined,
       whichScroller: 0
-    }
+    };
   },
   computed: {
     doubleScroller: function () {
       if (this.requirement.reqs.length === 2) {
         return this.requirement.reqs.reduce(function (acc, nxt) {
-          return acc && nxt.reqs !== undefined
-        }, true)
+          return acc && nxt.reqs !== undefined;
+        }, true);
       }
-      return false
+      return false;
     }
   },
   watch: {
     requirement: function (newReq, oldReq) {
-      this.open = false
+      this.open = false;
     }
   },
   methods: {
     clickSubject: function (subj, scroller) {
-      var scrollPointID
-      var nextReqs
+      var scrollPointID;
+      var nextReqs;
       if (scroller !== undefined) {
-        scrollPointID = this.reqID + '.' + this.whichScroller + '.' + subj.index
-        nextReqs = this.requirement.reqs[scroller].reqs[subj.index]
+        scrollPointID = this.reqID + '.' + this.whichScroller + '.' + subj.index;
+        nextReqs = this.requirement.reqs[scroller].reqs[subj.index];
       } else {
-        scrollPointID = this.reqID + '.' + subj.index
-        nextReqs = this.requirement.reqs[subj.index]
+        scrollPointID = this.reqID + '.' + subj.index;
+        nextReqs = this.requirement.reqs[subj.index];
       }
       if (nextReqs.reqs !== undefined) {
-        this.expansionIndex = subj.index
-        this.open = true
-        this.nextReqs = nextReqs
+        this.expansionIndex = subj.index;
+        this.open = true;
+        this.nextReqs = nextReqs;
         Vue.nextTick(function () {
-          var scrollPoint = $('#' + $.escapeSelector(scrollPointID))
-          var topPoint = scrollPoint.offset().top
-          var cardBody = $('#cardBody')
-          cardBody.animate({ scrollTop: scrollPoint.offset().top - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200)
-        })
+          var scrollPoint = $('#' + $.escapeSelector(scrollPointID));
+          var topPoint = scrollPoint.offset().top;
+          var cardBody = $('#cardBody');
+          cardBody.animate({ scrollTop: scrollPoint.offset().top - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
+        });
       } else {
         if (subj.id.indexOf('GIR:') >= 0) {
-          subj.id = subj.id.substring(4)
+          subj.id = subj.id.substring(4);
         }
-        this.$emit('click-subject', subj)
+        this.$emit('click-subject', subj);
       }
     },
     closeMe: function (subj) {
-      this.$emit('close-expansion')
+      this.$emit('close-expansion');
     },
     closeMyExpansion: function (event) {
-      this.open = false
-      var scrollPoint
+      this.open = false;
+      var scrollPoint;
       if (!this.doubleScroller) {
-        scrollPoint = $('#' + $.escapeSelector(this.reqID))
+        scrollPoint = $('#' + $.escapeSelector(this.reqID));
       } else {
-        scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID))
+        scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID));
       }
-      var topPoint = scrollPoint.offset().top
-      var cardBody = $('#cardBody')
-      cardBody.animate({ scrollTop: scrollPoint.offset().top - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350)
+      var topPoint = scrollPoint.offset().top;
+      var cardBody = $('#cardBody');
+      cardBody.animate({ scrollTop: scrollPoint.offset().top - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
     }
   }
-}
+};
 </script>
 
 <style scoped>

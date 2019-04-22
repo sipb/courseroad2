@@ -68,15 +68,15 @@
 </template>
 
 <script>
-import Class from './Class.vue'
-import colorMixin from './../mixins/colorMixin.js'
+import Class from './Class.vue';
+import colorMixin from './../mixins/colorMixin.js';
 var EQUIVALENCE_PAIRS = [
   ['6.0001', '6.00'],
   ['6.0002', '6.00']
-]
+];
 var EQUIVALENCE_SETS = [
   [['6.0001', '6.0002'], '6.00']
-]
+];
 
 export default {
   name: 'Semester',
@@ -90,54 +90,54 @@ export default {
       newYear: this.semesterYear,
       draggingOver: false,
       dragCount: 0
-    }
+    };
   },
   computed: {
     subjectsLoaded: function () {
-      return Object.keys(this.subjectsIndex).length > 0
+      return Object.keys(this.subjectsIndex).length > 0;
     },
     warnings: function () {
-      var allWarnings = Array(this.semesterSubjects.length).fill([])
+      var allWarnings = Array(this.semesterSubjects.length).fill([]);
       for (var i = 0; i < this.semesterSubjects.length; i++) {
-        var subjectWarnings = []
-        var subjID = this.semesterSubjects[i].id
-        var subj
+        var subjectWarnings = [];
+        var subjID = this.semesterSubjects[i].id;
+        var subj;
         if (subjID in this.subjectsIndex) {
-          subj = this.allSubjects[this.subjectsIndex[subjID]]
-          var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites
-          var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites
+          subj = this.allSubjects[this.subjectsIndex[subjID]];
+          var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
+          var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
           if (prereqString !== undefined) {
-            var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects)
+            var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects);
             if (!prereqsfulfilled) {
-              subjectWarnings.push('<b>Unsatisfied prerequisite</b> — One or more prerequisites are not yet fulfilled.')
+              subjectWarnings.push('<b>Unsatisfied prerequisite</b> — One or more prerequisites are not yet fulfilled.');
             }
           }
           if (coreqString !== undefined) {
-            var coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects)
+            var coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
             if (!coreqsfulfilled) {
-              subjectWarnings.push('<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.')
+              subjectWarnings.push('<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.');
             }
           }
         } else if (subjID in this.genericIndex) {
-          subj = this.genericCourses[this.genericIndex[subjID]]
+          subj = this.genericCourses[this.genericIndex[subjID]];
         }
         if (subj !== undefined) {
-          var semType = (this.index - 1) % 3
+          var semType = (this.index - 1) % 3;
           if (semType >= 0) {
-            var isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType]
+            var isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
             if (!isUsuallyOffered) {
-              subjectWarnings.push('<b>Not offered</b> — According to the course catalog, ' + subjID + ' is not usually offered in ' + this.semesterType + '.')
+              subjectWarnings.push('<b>Not offered</b> — According to the course catalog, ' + subjID + ' is not usually offered in ' + this.semesterType + '.');
             }
           }
         }
-        allWarnings[i] = subjectWarnings
+        allWarnings[i] = subjectWarnings;
       }
-      return allWarnings
+      return allWarnings;
     },
     concurrentSubjects: function () {
       return this.selectedSubjects.filter(subj => {
-        return subj.semester <= this.index
-      })
+        return subj.semester <= this.index;
+      });
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -146,199 +146,199 @@ export default {
             bgColor: 'red',
             message: 'Loading subjects... give us a minute',
             textColor: 'DarkRed'
-          }
+          };
         } else if (this.itemAdding === undefined) {
           return {
             bgColor: 'red',
             message: 'If you see this message, contact courseroad@mit.edu and tell them "710".',
             textColor: 'DarkRed'
-          }
+          };
         } else if (this.index === 0 || this.offeredNow) {
           return {
             bgColor: 'green',
             message: 'Add class here',
             textColor: 'DarkGreen'
-          }
+          };
         } else if (this.isSameYear) {
           return {
             bgColor: 'red',
             message: 'Subject not available this semester',
             textColor: 'DarkRed'
-          }
+          };
         } else {
           return {
             bgColor: 'yellow',
             message: 'Subject may not be available this semester',
             textColor: 'DarkGoldenRod'
-          }
+          };
         }
       } else {
         return {
           bgColor: 'grey',
           message: '',
           textColor: ''
-        }
+        };
       }
     },
     isSameYear: function () {
-      return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3)
+      return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
     },
     offeredNow: function () {
       if (!this.subjectsLoaded || this.itemAdding === undefined) {
-        return false
+        return false;
       }
-      var semType = (this.index - 1) % 3
+      var semType = (this.index - 1) % 3;
       if (semType >= 0 && (this.addingFromCard || this.draggingOver)) {
-        return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType]
+        return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
       } else if (this.addingFromCard) {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     },
     semesterSubjects: function () {
       var semSubjs = this.selectedSubjects.map(function (subj, ind) {
-        return Object.assign(subj, { index: ind })
+        return Object.assign(subj, { index: ind });
       }).filter(subj => {
-        return this.index === subj.semester
-      })
+        return this.index === subj.semester;
+      });
       if (this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
-        semSubjs.push('placeholder')
+        semSubjs.push('placeholder');
       }
-      return semSubjs
+      return semSubjs;
     },
     semesterInformation: function () {
       var classesInfo = this.semesterSubjects.map(function (subj) {
         if (subj.id in this.subjectsIndex) {
-          return this.allSubjects[this.subjectsIndex[subj.id]]
+          return this.allSubjects[this.subjectsIndex[subj.id]];
         } else if (subj.id in this.genericIndex) {
-          return this.genericCourses[this.genericIndex[subj.id]]
+          return this.genericCourses[this.genericIndex[subj.id]];
         } else {
-          return undefined
+          return undefined;
         }
       }.bind(this)).filter(function (subj) {
-        return subj !== undefined
-      })
+        return subj !== undefined;
+      });
       var addNums = function (a, b) {
-        a = isNaN(a) ? 0 : a
-        b = isNaN(b) ? 0 : b
-        return a + b
-      }
-      var totalUnits = classesInfo.map((s) => s.total_units).reduce(addNums, 0)
-      var expectedHours = classesInfo.map((s) => s.in_class_hours + s.out_of_class_hours).reduce(addNums, 0)
+        a = isNaN(a) ? 0 : a;
+        b = isNaN(b) ? 0 : b;
+        return a + b;
+      };
+      var totalUnits = classesInfo.map((s) => s.total_units).reduce(addNums, 0);
+      var expectedHours = classesInfo.map((s) => s.in_class_hours + s.out_of_class_hours).reduce(addNums, 0);
       return {
         totalUnits: totalUnits,
         expectedHours: expectedHours
-      }
+      };
     },
     semesterYear: function () {
       if (this.index === 0) {
-        return ''
+        return '';
       } else {
-        return Math.floor((this.index - 2) / 3) + this.baseYear
+        return Math.floor((this.index - 2) / 3) + this.baseYear;
       }
     },
     semesterType: function () {
       if (this.index === 0) {
-        return 'Prior Credit'
+        return 'Prior Credit';
       } else {
-        return ['Fall', 'IAP', 'Spring'][(this.index - 1) % 3]
+        return ['Fall', 'IAP', 'Spring'][(this.index - 1) % 3];
       }
     }
   },
   methods: {
     changeYear: function (event) {
-      event.stopPropagation()
-      this.$emit('change-year')
+      event.stopPropagation();
+      this.$emit('change-year');
     },
     previousSubjects: function (subj) {
-      var subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1'
+      var subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
       return this.selectedSubjects.filter(s => {
-        var subj2 = this.allSubjects[this.subjectsIndex[s.id]]
-        var inPreviousSemester = s.semester < this.index
-        var inPreviousQuarter = false
+        var subj2 = this.allSubjects[this.subjectsIndex[s.id]];
+        var inPreviousSemester = s.semester < this.index;
+        var inPreviousQuarter = false;
         if (subj2 !== undefined) {
           inPreviousQuarter = s.semester === this.index &&
                                   subjInQuarter2 &&
                                   subj2.quarter_information !== undefined &&
-                                  subj2.quarter_information.split(',')[0] === '0'
+                                  subj2.quarter_information.split(',')[0] === '0';
         }
-        return inPreviousSemester || inPreviousQuarter
-      })
+        return inPreviousSemester || inPreviousQuarter;
+      });
     },
     classSatisfies: function (req, id) {
       if (req === id) {
-        return true
+        return true;
       }
       for (var ep = 0; ep < EQUIVALENCE_PAIRS.length; ep++) {
-        var eqPair = EQUIVALENCE_PAIRS[ep]
+        var eqPair = EQUIVALENCE_PAIRS[ep];
         if (req == eqPair[0] && id == eqPair[1]) {
-          return true
+          return true;
         }
       }
       if (req.indexOf('.') === -1) {
-        var subj
+        var subj;
         if (id in this.subjectsIndex) {
-          subj = this.allSubjects[this.subjectsIndex[id]]
+          subj = this.allSubjects[this.subjectsIndex[id]];
         } else if (id in this.genericIndex) {
-          subj = this.genericCourses[this.genericIndex[id]]
+          subj = this.genericCourses[this.genericIndex[id]];
         }
         if (req.indexOf('GIR:') >= 0) {
-          req = req.substring(4)
-          return subj.gir_attribute === req
+          req = req.substring(4);
+          return subj.gir_attribute === req;
         } else if (req.indexOf('HASS') >= 0) {
-          return subj.hass_attribute === req
+          return subj.hass_attribute === req;
         } else if (req.indexOf('CI') >= 0) {
-          return subj.communication_requirement === req
+          return subj.communication_requirement === req;
         }
       }
-      return false
+      return false;
     },
     reqFulfilled: function (reqString, subjects) {
-      var allIDs = subjects.map((s) => s.id)
-      reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',')
-      var splitReq = reqString.split(/(,|\(|\)|\/)/)
+      var allIDs = subjects.map((s) => s.id);
+      reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',');
+      var splitReq = reqString.split(/(,|\(|\)|\/)/);
       for (var i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
-          splitReq[i] = 'true'
+          splitReq[i] = 'true';
         }
         if ('()/, '.indexOf(splitReq[i]) < 0) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
-            splitReq[i] = 'true'
+            splitReq[i] = 'true';
           } else {
-            var anyClassSatisfiesAlone = subjects.map((s) => this.classSatisfies(splitReq[i], s.id)).reduce((a, b) => a || b, false)
-            var anyClassesSatisfyTogether = false
+            var anyClassSatisfiesAlone = subjects.map((s) => this.classSatisfies(splitReq[i], s.id)).reduce((a, b) => a || b, false);
+            var anyClassesSatisfyTogether = false;
             for (var e = 0; e < EQUIVALENCE_SETS.length; e++) {
               if (EQUIVALENCE_SETS[e][1] == splitReq[i] && EQUIVALENCE_SETS[e][0].reduce((acc, sid) => acc && allIDs.indexOf(sid) >= 0, true)) {
-                anyClassesSatisfyTogether = true
-                break
+                anyClassesSatisfyTogether = true;
+                break;
               }
             }
             if (anyClassSatisfiesAlone || anyClassesSatisfyTogether) {
-              splitReq[i] = 'true'
+              splitReq[i] = 'true';
             } else {
-              splitReq[i] = 'false'
+              splitReq[i] = 'false';
             }
           }
         }
       }
-      var reqExpression = splitReq.join('').replace(/\//g, '||').replace(/,/g, '&&')
+      var reqExpression = splitReq.join('').replace(/\//g, '||').replace(/,/g, '&&');
       // i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
-      return eval(reqExpression)
+      return eval(reqExpression);
     },
     dragenter: function (event) {
-      this.draggingOver = true
-      this.dragCount++
+      this.draggingOver = true;
+      this.dragCount++;
     },
     dragleave: function (event) {
-      this.dragCount--
+      this.dragCount--;
       if (this.dragCount === 0) {
-        this.draggingOver = false
+        this.draggingOver = false;
       }
     },
     ondrop: function (event) {
       if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || !this.isSameYear || this.index === 0)) {
-        var eventData = JSON.parse(event.dataTransfer.getData('classData'))
+        var eventData = JSON.parse(event.dataTransfer.getData('classData'));
         if (eventData.isNew) {
           var newClass = {
             overrideWarnings: false,
@@ -346,17 +346,17 @@ export default {
             title: this.itemAdding.title,
             id: this.itemAdding.subject_id,
             units: this.itemAdding.total_units
-          }
-          this.$emit('add-class', newClass)
+          };
+          this.$emit('add-class', newClass);
         } else {
-          this.$emit('move-class', { classIndex: eventData.classInfo.index, semester: this.index })
+          this.$emit('move-class', { classIndex: eventData.classInfo.index, semester: this.index });
         }
       }
-      this.draggingOver = false
-      this.dragCount = 0
+      this.draggingOver = false;
+      this.dragCount = 0;
     }
   }
-}
+};
 </script>
 
 <style scoped>

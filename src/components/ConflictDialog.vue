@@ -58,31 +58,31 @@
 <script>
 Array.prototype.diff = function (a) {
   return this.filter(function (i) {
-    return a.indexOf(i) === -1
-  })
-}
+    return a.indexOf(i) === -1;
+  });
+};
 
 Array.prototype.count = function (elem) {
-  var countElem = 0
+  var countElem = 0;
   for (var i = 0; i < this.length; i++) {
     if (this[i] == elem) {
-      countElem++
+      countElem++;
     }
   }
-  return countElem
-}
+  return countElem;
+};
 
 Array.prototype.renumberDuplicates = function () {
   return this.map(function (elem, index) {
     if (this.count(elem) > 1) {
-      var appendNumber = this.slice(0, index).count(elem)
-      return elem + '-' + appendNumber.toString()
+      var appendNumber = this.slice(0, index).count(elem);
+      return elem + '-' + appendNumber.toString();
     } else {
-      return elem
+      return elem;
     }
-  }.bind(this))
-}
-window.Array = Array
+  }.bind(this));
+};
+window.Array = Array;
 
 export default {
   name: 'ConflictDialog',
@@ -90,34 +90,34 @@ export default {
   data: function () {
     return {
       conflictDialog: false
-    }
+    };
   },
   methods: {
     startConflict: function () {
-      this.conflictDialog = true
+      this.conflictDialog = true;
     },
     resolveConflict: function () {
-      this.conflictDialog = false
+      this.conflictDialog = false;
     },
     colorSubject: function (subjectIndex, subjectList) {
-      var remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates()
-      var localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates()
-      var currentSubject
+      var remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
+      var localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
+      var currentSubject;
       if (subjectList === 'remote') {
-        currentSubject = remoteSubjects[subjectIndex]
+        currentSubject = remoteSubjects[subjectIndex];
         if (remoteSubjects.diff(localSubjects).indexOf(currentSubject) >= 0) {
-          return 'blue--text'
+          return 'blue--text';
         }
       } else if (subjectList === 'local') {
-        currentSubject = localSubjects[subjectIndex]
+        currentSubject = localSubjects[subjectIndex];
         if (localSubjects.diff(remoteSubjects).indexOf(currentSubject) >= 0) {
-          return 'blue--text'
+          return 'blue--text';
         }
       }
-      return ''
+      return '';
     }
   }
-}
+};
 </script>
 
 <style scoped>

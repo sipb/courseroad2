@@ -152,7 +152,7 @@
 </template>
 
 <script>
-import Requirement from './Requirement.vue'
+import Requirement from './Requirement.vue';
 export default {
   name: 'Audit',
   components: {
@@ -177,7 +177,7 @@ export default {
       progressDialog: false,
       progressReq: undefined,
       newManualProgress: 0
-    }
+    };
   },
   data () {
     return {
@@ -188,48 +188,48 @@ export default {
       progressReq: undefined,
       newManualProgress: 0,
       isEditing: false
-    }
+    };
   },
   computed: {
     changeReqs: {
       get: function () {
-        return this.selectedReqs
+        return this.selectedReqs;
       },
       set: function (newReqs) {
-        const currentReqs = this.selectedReqs
+        const currentReqs = this.selectedReqs;
         if (currentReqs.length > newReqs.length) {
-          const diff = currentReqs.find(x => !newReqs.includes(x))
-          this.$emit('remove-req', diff)
+          const diff = currentReqs.find(x => !newReqs.includes(x));
+          this.$emit('remove-req', diff);
         } else {
-          const newReq = newReqs[newReqs.length - 1]
-          this.$emit('add-req', newReq)
+          const newReq = newReqs[newReqs.length - 1];
+          this.$emit('add-req', newReq);
         }
       }
     },
     getCourses: function () {
-      const list = this.reqList
-      const courses = Object.keys(list).map(x => Object.assign(list[x], { key: x }))
-      const sortKey = 'medium-title'
+      const list = this.reqList;
+      const courses = Object.keys(list).map(x => Object.assign(list[x], { key: x }));
+      const sortKey = 'medium-title';
       // NOTE: brute force way sorting the courses given the fields we have
       courses.sort(function (c1, c2) {
-        const a = c1[sortKey].toLowerCase()
-        const b = c2[sortKey].toLowerCase()
+        const a = c1[sortKey].toLowerCase();
+        const b = c2[sortKey].toLowerCase();
         if (a.includes('major') && b.includes('major') || a.includes('minor') && b.includes('minor')) {
-          let n1 = a.split(' ')[0].split('-')[0]
-          let n2 = b.split(' ')[0].split('-')[0]
-          n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1
-          n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2
-          if (n1 == n2) return a.localeCompare(b)
+          let n1 = a.split(' ')[0].split('-')[0];
+          let n2 = b.split(' ')[0].split('-')[0];
+          n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;
+          n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;
+          if (n1 == n2) return a.localeCompare(b);
           return !isNaN(n1) && !isNaN(n2) || isNaN(n1) && isNaN(n2)
             ? n1 - n2
-            : (!isNaN(n1) ? -1 : 1)
-        } else if (a.includes('major') && b.includes('minor')) return -1
-        else if (b.includes('major') && a.includes('minor')) return 1
-        else if (a.includes('major') || a.includes('minor')) return -1
-        else if (b.includes('major') || b.includes('minor')) return 1
-        else return a.localeCompare(b)
-      })
-      return courses
+            : (!isNaN(n1) ? -1 : 1);
+        } else if (a.includes('major') && b.includes('minor')) return -1;
+        else if (b.includes('major') && a.includes('minor')) return 1;
+        else if (a.includes('major') || a.includes('minor')) return -1;
+        else if (b.includes('major') || b.includes('minor')) return 1;
+        else return a.localeCompare(b);
+      });
+      return courses;
     },
     selectedTrees: function () {
       return this.selectedReqs.map(function (req, index) {
@@ -237,15 +237,15 @@ export default {
           return this.assignListIDs(
             Object.assign({}, this.reqTrees[req]),
             index
-          )
+          );
         } else {
           return {
             title: 'loading...',
             reqs: [],
             uniqueKey: index
-          }
+          };
         }
-      }, this)
+      }, this);
     }
   },
   methods: {
@@ -254,46 +254,46 @@ export default {
         req.fulfilled &&
         (req.req != undefined || req.sat_courses.length > 0)
       ) {
-        return 'color: #00b300;'
+        return 'color: #00b300;';
       } else {
-        return ''
+        return '';
       }
     },
     reqInfo: function (event, req) {
-      event.preventDefault()
-      event.stopPropagation()
-      this.viewDialog = true
-      this.dialogReq = req
+      event.preventDefault();
+      event.stopPropagation();
+      this.viewDialog = true;
+      this.dialogReq = req;
     },
     percentage: function (req) {
-      var pfulfilled = req.percent_fulfilled
+      var pfulfilled = req.percent_fulfilled;
       var pcolor = req.fulfilled
         ? '#00b300'
         : req.percent_fulfilled > 15
           ? '#efce15'
-          : '#ef8214'
+          : '#ef8214';
       var pstring =
         '--percent: ' +
         pfulfilled +
         '%; --bar-color: ' +
         pcolor +
-        '; --bg-color: #ffffff'
-      return pstring
+        '; --bg-color: #ffffff';
+      return pstring;
     },
     deleteReq: function (req) {
-      var reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'))
-      this.$emit('remove-req', reqName)
+      var reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
+      this.$emit('remove-req', reqName);
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {
         if (!item['plain-string']) {
-          var usedReq = item.req
+          var usedReq = item.req;
           if (usedReq.indexOf('GIR:') === 0) {
-            usedReq = usedReq.substring(4)
+            usedReq = usedReq.substring(4);
           }
-          this.$emit('push-stack', usedReq)
+          this.$emit('push-stack', usedReq);
         } else {
-          this.startProgressDialog(item)
+          this.startProgressDialog(item);
         }
       }
     },
@@ -302,53 +302,53 @@ export default {
     // for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
     assignListIDs: function (req, index) {
       if ('reqs' in req && 'list-id' in req) {
-        var currentListID = req['list-id']
+        var currentListID = req['list-id'];
         if (currentListID.indexOf('.reql') >= 0) {
           // if the requirement is top level, it will have .reql at the end and this needs to be removed
           req['list-id'] = req['list-id'].substring(
             0,
             req['list-id'].indexOf('.reql')
-          )
-          currentListID = req['list-id']
+          );
+          currentListID = req['list-id'];
         }
-        req.uniqueKey = index + '-' + req['list-id']
+        req.uniqueKey = index + '-' + req['list-id'];
         for (var r = 0; r < req.reqs.length; r++) {
           // give each sub-requirement a list id of [parent list id].[index]
-          Object.assign(req.reqs[r], { 'list-id': currentListID + '.' + r })
+          Object.assign(req.reqs[r], { 'list-id': currentListID + '.' + r });
           // assign list ids to each of the children
-          req.reqs[r] = this.assignListIDs(req.reqs[r], index)
+          req.reqs[r] = this.assignListIDs(req.reqs[r], index);
         }
       }
-      return req
+      return req;
     },
     startProgressDialog: function (req) {
       this.progressReq = Object.assign(
         { threshold: { criterion: 'subject', cutoff: 1, type: 'GTE' } },
         req
-      )
-      this.progressDialog = true
+      );
+      this.progressDialog = true;
       if (this.progressReq['list-id'] in this.progressOverrides) {
         this.newManualProgress = this.progressOverrides[
           this.progressReq['list-id']
-        ]
+        ];
       }
     },
     capitalize: function (word) {
-      return word[0].toUpperCase() + word.substring(1)
+      return word[0].toUpperCase() + word.substring(1);
     },
     updateManualProgress: function () {
       if (this.progressReq['list-id'] !== undefined) {
         this.$emit('update-progress', {
           listID: this.progressReq['list-id'],
           progress: this.newManualProgress
-        })
+        });
       }
-      this.progressReq = undefined
-      this.progressDialog = false
-      this.newManualProgress = 0
+      this.progressReq = undefined;
+      this.progressDialog = false;
+      this.newManualProgress = 0;
     }
   }
-}
+};
 </script>
 
 <style scoped>
