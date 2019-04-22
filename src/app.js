@@ -6,8 +6,8 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import $ from 'jquery'
 import VueCookies from "vue-cookies"
-// import 'vuetify/dist/vuetify.min.css'
 import "./assets/css/coursecolors.css"
+import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(Vuetify)
 Vue.use(VueCookies)
