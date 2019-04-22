@@ -6,13 +6,13 @@
       >
       <v-tabs-slider></v-tabs-slider>
       <v-tab
-        :key = "roadid"
-        :href = "`#${roadid}`"
-        v-for = "roadid in Object.keys(roads)"
-        @click = "$emit('change-active', roadid)"
+        :key = "roadId"
+        :href = "`#${roadId}`"
+        v-for = "roadId in Object.keys(roads)"
+        @click = "$emit('change-active', roadId)"
         >
-          {{roads[roadid].name}}
-          <v-btn icon flat v-show = "roadid == tabRoad" @click = "newRoadName = roads[roadid].name; editDialog = true;">
+          {{roads[roadId].name}}
+          <v-btn icon flat v-show = "roadId == tabRoad" @click = "newRoadName = roads[roadId].name; editDialog = true;">
             <v-icon>edit</v-icon>
           </v-btn>
       </v-tab>
@@ -23,7 +23,7 @@
           </v-btn>
           <v-card-title>Edit Road</v-card-title>
           <v-card-text>
-            <v-text-field v-model = "newRoadName" label = "Road Name"></v-text-field>
+            <v-text-field v-if="editDialog" autofocus v-model = "newRoadName" label = "Road Name"></v-text-field>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -58,10 +58,10 @@
           <v-btn icon flat style = "float:right" @click = "addDialog = false"><v-icon>close</v-icon></v-btn>
           <v-card-title>Create Road</v-card-title>
           <v-card-text>
-          <v-text-field placeholder="New road name" v-model = "newRoadName"></v-text-field>
+          <v-text-field v-if="addDialog" autofocus placeholder="New road name" v-model = "newRoadName"></v-text-field>
             <v-layout row>
               <v-flex xs6>
-                <v-switch v-model = "duplicateRoad" label = "Duplicate Existing"></v-switch>
+                <v-switch v-model = "duplicateRoad" label = "Duplicate existing"></v-switch>
               </v-flex>
               <v-flex>
                 <v-select :disabled = "!duplicateRoad" :items = "Object.keys(roads)" v-model = "duplicateRoadSource">

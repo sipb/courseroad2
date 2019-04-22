@@ -19,6 +19,8 @@
             outline
             label="Road name"
             clearable
+            v-if="dialog"
+            autofocus
           ></v-text-field>
 
           <v-spacer></v-spacer>

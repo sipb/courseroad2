@@ -9,8 +9,12 @@
   <v-layout row>
     <v-flex>
       <div v-if="!leaf" style = "display: inline;">
-        <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">{{ req["title-no-degree"] }}</span>
-        <span v-else-if = "'short-title' in req && req['short-title'] != ''">{{ req['short-title']}}</span>
+        <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
+          {{ req["title-no-degree"] }}
+        </span>
+        <span v-else-if = "'short-title' in req && req['short-title'] != ''">
+          {{ req['short-title']}}
+        </span>
         <span v-else-if = "'title' in req">{{ req["title"] }}</span>
         <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
       </div>
@@ -20,7 +24,9 @@
       <span v-if = "!req['plain-string']">
         <span v-if="!('title' in req) && 'req' in req">
           <span :class="reqFulfilled">{{ req.req }}</span>
-          <span style = "font-style:italic" v-if = "'threshold-desc' in req">({{ req['threshold-desc']}})</span>
+          <span style = "font-style:italic" v-if = "'threshold-desc' in req">
+            ({{ req['threshold-desc']}})
+          </span>
         </span>
       </span>
       <span v-else>
@@ -30,10 +36,28 @@
       <span v-if = "req.max === 0 && leaf" style = "font-style:italic">
          (optional)
       </span>
-      <span v-if = "hoveringOver && ('reqs' in req || 'threshold' in req) && 'percent_fulfilled' in req && req.percent_fulfilled !== 'N/A'":style = "'float: right; color: '+percentageTextColor">&nbsp{{req.percent_fulfilled}}%</span>
+      <span
+        v-if="hoveringOver
+            && ('reqs' in req || 'threshold' in req)
+            && 'percent_fulfilled' in req
+            && req.percent_fulfilled !== 'N/A'"
+        :style = "'float: right; color: '+percentageTextColor"
+      >
+        &nbsp{{req.percent_fulfilled}}%
+        <v-icon
+          style="padding-left: 0.2em; padding-right: 0em;"
+          v-if="'reqs' in req && hoveringOver"
+          @mouseover = "iconHover = true"
+          @mouseleave = "iconHover = false"
+          @click.stop = "$emit('click-info', $event)"
+          small
+          :color = "iconColor"
+        >
+          info
+        </v-icon>
+      </span>
       <div :class = "percentage_bar" :style = "percentage"></div>
     </v-flex>
-    <v-icon style = "padding-left: 0.2em; padding-right: 0em;" v-if = "'reqs' in req && hoveringOver" @mouseover = "iconHover = true" @mouseleave = "iconHover = false" @click.stop = "$emit('click-info', $event)" small :color = "iconColor">info</v-icon>
   </v-layout>
 </div>
 </template>
@@ -70,7 +94,8 @@ export default {
       return this.iconHover ? "info" : "grey";
     },
     canDrag: function() {
-      return this.classInfo !== undefined || ('req' in this.req && (Object.keys(this.subjectIndex).length===0));
+      return this.classInfo !== undefined ||
+        ('req' in this.req && (Object.keys(this.subjectIndex).length === 0));
     },
     reqFulfilled: function() {
       if(this.req.fulfilled) {
@@ -84,14 +109,18 @@ export default {
       }
     },
     percentageTextColor: function() {
-      return this.req.fulfilled ? "#008400": (this.req.percent_fulfilled > 15 ? "#d1b82b": "#d3701f");
+      return this.req.fulfilled
+        ? "#008400"
+        : (this.req.percent_fulfilled > 15 ? "#d1b82b" : "#d3701f");
     },
     percentageColor: function() {
-      return this.req.fulfilled ? "#00b300" : (this.req.percent_fulfilled > 15 ? "#efce15": "#ef8214");
+      return this.req.fulfilled
+        ? "#00b300"
+        : (this.req.percent_fulfilled > 15 ? "#efce15" : "#ef8214");
     },
     percentage: function() {
-      var pfulfilled = this.req.percent_fulfilled;
-      var pstring = "--percent: " + pfulfilled +"%; --bar-color: " + this.percentageColor + "; --bg-color: lightgrey";
+      const pfulfilled = this.req.percent_fulfilled;
+      const pstring = `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
       return pstring;
     },
     percentage_bar: function() {

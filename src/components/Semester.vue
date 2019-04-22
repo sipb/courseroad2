@@ -1,19 +1,27 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
-  <v-expansion-panel-content dropzone = "copy" class = "semester-container" :id = "'road_'+roadID+'_semester_' + index" v-on:dragover.native.prevent>
-    <!-- <div slot="header"> -->
+  <v-expansion-panel-content
+    dropzone = "copy"
+    :id = "'road_'+roadID+'_semester_' + index"
+    v-on:dragover.native.prevent
+  >
     <v-container grid-list-xs slot = "header" style = "padding: 0;">
-      <v-layout row>
+      <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
-          <b>{{semesterType}}
-            <v-hover>
-              <span slot-scope = "{ hover }" @click = "changeYear" :class = "hover ? 'hovering' : ''">
-                {{semesterYear}}
-              </span>
-            </v-hover>
-          </b>
-          Units: {{semesterInformation.totalUnits}}
-          Est. Hours: {{semesterInformation.expectedHours.toFixed(1)}}
+          <span style="width: 6em; display: inline-block;">
+            <b>
+              {{semesterType}}
+              <v-hover>
+                <span slot-scope = "{ hover }" @click = "changeYear" :class = "hover && 'hovering'">
+                  {{semesterYear}}
+                </span>
+              </v-hover>
+            </b>
+          </span>
+          <span style="min-width: 4.5em; display: inline-block;">
+            Units: {{semesterInformation.totalUnits}}
+          </span>
+          Hours: {{semesterInformation.expectedHours.toFixed(1)}}
         </v-flex>
         <v-layout row xs6 style="max-width: 50%;">
           <v-flex xs3 v-for = "(subject,subjindex) in semesterSubjects" :key = "subject.id+'-'+subjindex+'-'+index" v-if="!isOpen">
@@ -33,7 +41,7 @@
     </v-container>
 
     <v-container
-      class="lighten-3 semester-drop-container"
+      class="lighten-3"
       fluid
       grid-list-md
       :class="semData.bgColor"
@@ -100,13 +108,13 @@ export default {
           if(prereqString !== undefined) {
             var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects);
             if(!prereqsfulfilled) {
-              subjectWarnings.push("<b>Unsatisfied Prerequisite</b> - One or more prerequisites are not yet fulfilled.");
+              subjectWarnings.push("<b>Unsatisfied prerequisite</b> — One or more prerequisites are not yet fulfilled.");
             }
           }
           if(coreqString !== undefined) {
             var coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
             if(!coreqsfulfilled) {
-              subjectWarnings.push("<b>Unsatisfied Corequisite</b> - One or more corequisites are not yet fulfilled.");
+              subjectWarnings.push("<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.");
             }
           }
         } else if(subjID in this.genericIndex){
@@ -117,7 +125,7 @@ export default {
           if(semType >= 0) {
             var isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
             if(!isUsuallyOffered) {
-              subjectWarnings.push("<b>Not offered</b> - According to the course catalog, " + subjID + " is not usually offered in " + this.semesterType + ".");
+              subjectWarnings.push("<b>Not offered</b> — According to the course catalog, " + subjID + " is not usually offered in " + this.semesterType + ".");
             }
           }
         }
@@ -354,7 +362,7 @@ export default {
 
 <style scoped>
   .hovering {
-    background: radial-gradient(lightgreen, rgba(0,0,0,0));
+    text-decoration: underline dashed;
   }
   .mini-course {
     padding: 0.3em 0.5em;

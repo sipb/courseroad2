@@ -87,7 +87,7 @@
                   </td>
                 </tr>
                 <tr v-if = "currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined">
-                  <td><b>{{currentSubject.subject_id in genericIndex ? "Average* " : ""}}Hours</b></td>
+                  <td><b>{{currentSubject.subject_id in genericIndex ? "Average* hours" : "Hours"}}</b></td>
                   <td>
                     <table cellspacing = "0">
                       <tr v-if = "currentSubject.in_class_hours !== undefined">{{currentSubject.in_class_hours.toFixed(2)}} in class</tr>
@@ -100,7 +100,7 @@
               <h3>Description</h3>
               <p>{{currentSubject.description}}</p>
               <p v-if = "currentSubject.url !== undefined">
-                <a target = "_blank" :href = "currentSubject.url">View in Course Catalog</a>
+                <a target = "_blank" :href = "currentSubject.url">View in course catalog</a>
               </p>
               <p v-if = "currentSubject.subject_id in subjectsIndex">
                 <a target = "_blank" :href = "'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
@@ -384,4 +384,9 @@ export default {
 .comma-separated li:last-child:after {
   content: "";
 }
+
+table td:first-child {
+  padding-right: 1em;
+}
+
 </style>

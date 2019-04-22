@@ -9,8 +9,14 @@
           class = "placeholder classbox"
         >
           <v-container fill-height>
-            <v-layout>
-              <v-btn style = "margin: auto" large icon @click = "$emit('add-at-placeholder',semesterIndex)"><v-icon>add</v-icon></v-btn>
+            <v-layout align-center justify-center>
+              <v-btn
+                large
+                icon
+                @click = "$emit('add-at-placeholder',semesterIndex)"
+              >
+                <v-icon>add</v-icon>
+              </v-btn>
             </v-layout>
           </v-container>
         </v-card>
@@ -44,7 +50,7 @@
         <v-card-text>
           <p v-for = "warning in warnings" v-html="warning"></p>
           <v-switch
-            label = "Override Warnings"
+            label = "Override warnings"
             color = "orange darken-3"
             v-model = "shouldOverrideWarnings"
           >
