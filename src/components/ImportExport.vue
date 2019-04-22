@@ -2,7 +2,7 @@
   <v-layout row grow>
     <v-btn class = "collapse-button" outline round color="primary" @click="exportRoad">
       <span class = "hidden-sm-and-down">Export</span>
-      <font-awesome-icon class = "hidden-md-and-up" icon = "download"/>
+      <font-awesome-icon class = "hidden-md-and-up" icon = "cloud-download-alt"/>
     </v-btn>
 
     <v-dialog
@@ -11,7 +11,7 @@
     >
       <v-btn class = "collapse-button" slot="activator" outline round color="primary">
         <span class = "hidden-sm-and-down">Import</span>
-        <font-awesome-icon class = "hidden-md-and-up" icon = "upload"/>
+        <font-awesome-icon class = "hidden-md-and-up" icon = "cloud-upload-alt"/>
       </v-btn>
       <v-card>
         <v-btn icon flat style = "float:right;" @click = "dialog = false"><v-icon>close</v-icon></v-btn>
