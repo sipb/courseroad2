@@ -2,4 +2,5 @@ node_modules
 dist
 .idea
 .babelrc
+package-lock.json
 *~
