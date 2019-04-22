@@ -118,7 +118,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .expanded-req {
   margin: 1em;
   padding: 0.5em;

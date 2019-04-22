@@ -35,7 +35,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .filter-group {
   margin: 2px 0px;
   display: flex;

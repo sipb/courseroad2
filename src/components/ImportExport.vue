@@ -7,41 +7,37 @@
 
     <v-dialog
       v-model="dialog"
-      width="500"
+      max-width="600"
     >
       <v-btn class = "collapse-button" slot="activator" outline round color="primary">
         <span class = "hidden-sm-and-down">Import</span>
         <font-awesome-icon class = "hidden-md-and-up" icon = "upload"/>
       </v-btn>
-
       <v-card>
-        <v-card-title
-          class="headline grey lighten-2"
-          primary-title
-        >
-            Import Road
-            <v-flex align-end>
-              <v-btn icon flat style = "float:right;" @click = "dialog = false"><v-icon>close</v-icon></v-btn>
-            </v-flex>
+        <v-btn icon flat style = "float:right;" @click = "dialog = false"><v-icon>close</v-icon></v-btn>
+        <v-card-title class="headline lighten-2" primary-title>
+          Import Road
         </v-card-title>
-
         <v-card-text>
           <v-text-field
             v-model="roadtitle"
             outline
             label="Road name"
             clearable
+            v-if="dialog"
+            autofocus
           ></v-text-field>
 
           <v-spacer></v-spacer>
           <input id="file" type="file" />
 
-          <v-spacer></v-spacer>
           <v-textarea
+            style="margin-top: 10px;"
             v-model="inputtext"
             label="Or copy/paste a road here"
             full-width
             single-line
+            outline
           ></v-textarea>
 
           <v-spacer></v-spacer>
@@ -63,20 +59,13 @@
           </v-flex>
         </v-card-text>
 
-        <v-divider></v-divider>
         <v-card-actions>
-          <v-btn
-            color="primary"
-            flat
-            @click="dialog = false"
-          >
+          <v-spacer></v-spacer>
+          <v-btn flat @click="dialog = false">
             Cancel
           </v-btn>
-
-          <v-spacer></v-spacer>
           <v-btn
             color="primary"
-            flat
             @click="importRoad"
             :disabled="otherRoadHasName(roadtitle)"
           >
@@ -93,7 +82,7 @@
 export default {
   name: "import-export",
   components: {},
-  props: ["roads", "activeRoad"],
+  props: ["roads", "activeRoad", "subjects", "subjectsIndex", "genericCourses", "genericIndex"],
   data: function(){ return {
     dialog: false,
     inputtext: "",
@@ -126,13 +115,58 @@ export default {
         fail = true;
       }
 
+      let expectedFields = ["index", "title", "overrideWarnings", "semester", "units", "id",]
+
       if (!fail) {
         try {
           // parse text and add to roads
           var obj = JSON.parse(this.inputtext);
-          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, obj.selectedSubjects)
+          // sanitize
+          // progressOverrides must be defined
+          if (obj.progressOverrides === undefined){
+            obj.progressOverrides = {}
+          }
+          // subject_id issue
+          let newss = obj.selectedSubjects.map((s) => {
+            if ('subject_id' in s) {
+              s.id = s.subject_id
+              delete s.subject_id
+            }
+            return s
+          });
+          obj.selectedSubjects = newss
+          let ss = obj.selectedSubjects.map((s) => {
+            // make sure it has everything, if not fill in from subjectsIndex or genericCourses
+            let subject = undefined
+            if (this.subjectsIndex[s.id] !== undefined) {
+              subject = this.subjects[this.subjectsIndex[s.id]]
+            } else if (this.genericIndex[s.id] !== undefined){
+              subject = this.genericCourses[this.genericIndex[s.id]]
+            }
+
+            if (subject !== undefined){
+              expectedFields.map((f) => {
+                if (s[f] === undefined) {
+                  // right now (4/16/19) 'units' is the only one that doesn't match and needs an exception
+                  if (f === 'units'){
+                    s[f] = subject['total_units']
+                  } else {
+                    s[f] = subject[f]
+                  }
+                }
+              })
+              return s
+            }
+            console.log('ignoring ' + s.id)
+            return undefined
+          }).filter((s) => {
+            return s !== undefined;
+          })
+          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, ss, obj.progressOverrides)
         } catch(error) {
           fail = true;
+          console.log('import failed with error:')
+          console.error(error)
         }
       }
 
@@ -187,5 +221,8 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
+.collapse-button {
+  min-width: 0;
+}
 </style>

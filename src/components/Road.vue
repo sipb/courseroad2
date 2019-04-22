@@ -33,25 +33,26 @@
       @drag-start-class = "$emit('drag-start-class',$event)"
       >
     </semester>
-    <v-dialog v-model = "changeYearDialog">
+    <v-dialog v-model = "changeYearDialog" max-width="600">
       <v-card>
         <v-btn icon flat style = "float:right" @click = "changeYearDialog = false"><v-icon>close</v-icon></v-btn>
         <v-card-title>
-          Change Class Year
+          <h1>I am a...</h1>
         </v-card-title>
         <v-card-text>
           <v-select
             v-model = "newYear"
-            :items = "[{value: 0,text:'1st Year'},{value: 1,text:'2nd Year'},{value:2,text:'3rd Year'},{value:3,text:'4th Year'},{value:4,text:'5th Year'}]"
+            :items = "[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
           >
 
           </v-select>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click = "changeYearDialog = false">
+          <v-spacer></v-spacer>
+          <v-btn flat @click = "changeYearDialog = false">
             Cancel
           </v-btn>
-          <v-btn @click = "$emit('change-year',newYear); changeYearDialog = false;">
+          <v-btn color = "primary" @click = "$emit('change-year',newYear); changeYearDialog = false;">
             Submit
           </v-btn>
         </v-card-actions>
@@ -72,11 +73,12 @@ export default {
   props: ['selectedSubjects',"subjects","roadID","currentSemester","addingFromCard", "itemAdding", "dragSemesterNum","subjectsIndex", "genericCourses", "genericIndex"],
   data: function () {
     let defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true,];
+    let numSemesters = 16;//this.currentSemester >= 13 ? 16 : 13
     return {
-      visibleList: this.currentSemester >= 13 ? defaultOpen + [true, false, true,] : defaultOpen,
+      visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true,]) : defaultOpen,
       changeYearDialog: false,
-      newYear: (this.currentSemester-1) * 3,
-      numSems: this.currentSemester >= 13 ? 16 : 13
+      newYear: parseInt((this.currentSemester-1) / 3),
+      numSems: numSemesters,
     }
   },
   computed: {

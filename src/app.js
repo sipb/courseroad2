@@ -7,6 +7,7 @@ import VueRouter from 'vue-router'
 import $ from 'jquery'
 import VueCookies from "vue-cookies"
 import "./assets/css/coursecolors.css"
+import 'vuetify/dist/vuetify.min.css'
 
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { faSignInAlt, faSignOutAlt, faDownload, faUpload } from "@fortawesome/free-solid-svg-icons"

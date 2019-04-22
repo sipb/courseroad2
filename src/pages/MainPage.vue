@@ -2,6 +2,27 @@
 <template>
   <v-app id="app-wrapper"
   >
+    <v-dialog v-model="showMobile" fullscreen>
+      <v-card height="100%">
+        <v-container fill-height>
+          <v-layout column>
+            <v-flex grow>
+              <v-card-title primary-title>
+                <h1 style="font-size: 3em;">Hello there!</h1>
+              </v-card-title>
+              <v-card-text>
+                <p style="font-size: 1.5em;">It looks like you're browsing CourseRoad from mobile! For a better mobile experience, consider downloading
+                  the FireRoad app instead, available on Android and iOS.</p>
+              </v-card-text>
+            </v-flex>
+            <v-flex shrink style="justify-content: center;">
+              <v-btn style="width: 100%; margin: 0 0 10% 0;" :href="appLink" color="info"><v-icon>vertical_align_bottom</v-icon> Download</v-btn><br>
+              <a href="#" @click="showMobile = false" style="font-size: 1.25em; display: block; text-align: center;">No thanks, take me to the desktop site.</a>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <v-toolbar fixed app dense class="elevation-2">
       <road-tabs
         v-bind:roads = "roads"
@@ -18,7 +39,11 @@
       <import-export
         v-bind:roads="roads"
         v-bind:activeRoad="activeRoad"
-        @add-road = "addRoad"
+        v-bind:subjects = "subjectsInfo"
+        v-bind:subjectsIndex = "subjectsIndexDict"
+        v-bind:genericCourses = "genericCourses"
+        v-bind:genericIndex = "genericIndexDict"
+        @add-road = "addRoad(...arguments)"
       >
       </import-export>
 
@@ -60,6 +85,7 @@
             v-model = "searchInput"
             placeholder = "Add classes"
             slot = "activator"
+            autofocus
           >
           </v-text-field>
           <class-search
@@ -84,20 +110,20 @@
     <v-navigation-drawer
       id="left-panel"
       width="350"
-      mobile-break-point="800"
+      mobile-break-point="600"
       class="side-panel elevation-2 scroller"
       app
     >
       <v-container fill-height style = "padding: 0;">
         <v-layout fill-height column>
           <v-layout shrink style = "padding: 14px; padding-bottom: 0;" row align-center>
-            <v-flex shrink class = "blue-grey lighten-5" style = "color: inherit; text-decoration: none; border-radius: 2px; padding: 8px; display: inline-block;">
+            <v-flex shrink class = "blue-grey lighten-5" style = "user-select: none; color: inherit; text-decoration: none; border-radius: 2px; padding: 6px 8px; display: inline-block;">
                 <v-icon size="1.3em" color="#00b300">check_box</v-icon>
                 <h3 style = "display: inline;">C o u r s e R o a d</h3>
             </v-flex>
             <v-flex>
-              <router-link to = "/about" style = "font-size: 0.8em; float: right;" >
-                <i>about</i>
+              <router-link to="/about" style="float: right;" >
+                About
               </router-link>
             </v-flex>
           </v-layout>
@@ -119,9 +145,17 @@
             @update-progress = "updateProgress"
           ></audit>
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+            <p>
+              <b>Warning:</b> This is an unofficial tool that may not accurately
+              reflect degree progress. Please view the
+              <a target="_blank" href="https://student.mit.edu/cgi-bin/shrwsdau.sh">official audit</a>,
+              <a target="_blank" href="http://student.mit.edu/catalog/index.cgi">course catalog</a>, and
+              <a target="_blank" href="http://catalog.mit.edu/degree-charts/">degree charts</a>
+              and confirm with your department advisors.
+            </p>
             <p>Problems with the course requirements? Request edits
               <a target="_blank" href="https://fireroad.mit.edu/requirements/">here</a> or
-              send an email to <a href="mailto:courseroad@mit.edu">courseroad@mit.edu</a>.
+              send an email to <a target="_blank" href="mailto:courseroad@mit.edu">courseroad@mit.edu</a>.
             </p>
           </v-flex>
         </v-layout>
@@ -132,21 +166,21 @@
     <v-content app id="center-panel">
       <v-tabs-items v-model = "activeRoad">
         <v-tab-item
-          v-for = "roadid in Object.keys(roads)"
-          :key = "roadid"
-          :value = "roadid"
+          v-for = "roadId in Object.keys(roads)"
+          :key = "roadId"
+          :value = "roadId"
           >
           <road
-            v-bind:selectedSubjects="roads[roadid].contents.selectedSubjects"
+            v-bind:selectedSubjects="roads[roadId].contents.selectedSubjects"
             v-bind:subjects = "subjectsInfo"
-            v-bind:roadID = "roadid"
+            v-bind:roadID = "roadId"
             v-bind:currentSemester = "currentSemester"
-            v-bind:addingFromCard = "addingFromCard && activeRoad===roadid"
+            v-bind:addingFromCard = "addingFromCard && activeRoad===roadId"
             v-bind:itemAdding = "itemAdding"
             v-bind:subjectsIndex = "subjectsIndexDict"
             v-bind:genericCourses = "genericCourses"
             v-bind:genericIndex = "genericIndexDict"
-            v-bind:dragSemesterNum = "(activeRoad===roadid) ? dragSemesterNum : -1"
+            v-bind:dragSemesterNum = "(activeRoad===roadId) ? dragSemesterNum : -1"
             @add-at-placeholder = "addAtPlaceholder"
             @add-class = "addClass"
             @move-class = "moveClass($event.classIndex,$event.semester)"
@@ -236,6 +270,7 @@ import RoadTabs from "./../components/RoadTabs.vue"
 import ConflictDialog from "./../components/ConflictDialog.vue"
 import Auth from "./../components/Auth.vue"
 import $ from 'jquery'
+import UAParser from 'ua-parser-js'
 import Vue from 'vue'
 import ClassInfo from "./../components/ClassInfo.vue"
 import ImportExport from "./../components/ImportExport.vue"
@@ -298,10 +333,21 @@ export default {
           selectedSubjects: [],
           progressOverrides: {},
         }
-      }
+      },
     },
+    showMobile: ['mobile', 'tablet'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
   }},
   computed: {
+    appLink: function () {
+      switch (new UAParser(navigator.userAgent).getOS().name) {
+        case 'Android':
+          return 'http://play.google.com/store/apps/details?id=com.base12innovations.android.fireroad'
+        case 'iOS':
+          return 'https://itunes.apple.com/us/app/fireroad-mit-course-planner/id1330678450?mt=8'
+        default:
+          return null
+      }
+    },
     roadref: function() {
       return "#road" + this.activeRoad
     }
@@ -343,7 +389,7 @@ export default {
     updateFulfillment: function() {
       for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
         var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        axios.post(`https://fireroad-dev.mit.edu/requirements/progress/`+req+`/`,this.roads[this.activeRoad].contents).then(function(response) {
+        axios.post(process.env.FIREROAD_URL + `/requirements/progress/`+req+`/`,this.roads[this.activeRoad].contents).then(function(response) {
           //This is necessary so Vue knows about the new property on reqTrees
           Vue.set(this.data.reqTrees, this.req, response.data);
         }.bind({data: this, req:req}));
@@ -369,11 +415,12 @@ export default {
       window.location.hash = "#/#road" + this.activeRoad;
       return false;
     },
-    addRoad: function(roadName, cos=["girs"], ss=[]) {
+    addRoad: function(roadName, cos=["girs"], ss=[], overrides={}) {
       var tempRoadID = "$" + this.$refs.authcomponent.newRoads.length + "$";
       var newContents = {
           coursesOfStudy: cos,
           selectedSubjects: ss,
+          progressOverrides: overrides,
         }
       var newRoad = {
         downloaded: moment().format(DATE_FORMAT),
@@ -590,7 +637,7 @@ export default {
 
     this.setActiveRoad();
 
-    axios.get(`https://fireroad-dev.mit.edu/requirements/list_reqs/`)
+    axios.get(process.env.FIREROAD_URL + `/requirements/list_reqs/`)
       .then(response => {
         const ordered = {};
         Object.keys(response.data).sort().forEach(function(key) {
@@ -609,7 +656,7 @@ export default {
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
-    axios.get(`https://fireroad-dev.mit.edu/courses/all?full=true`)
+    axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`)
       .then(response => {
         this.subjectsInfo = response.data;
         this.genericCourses = this.makeGenericCourses();
