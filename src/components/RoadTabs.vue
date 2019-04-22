@@ -142,7 +142,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 /*This is to prevent it from monopolizing all the space*/
 .v-tabs__container {
   display: unset;
