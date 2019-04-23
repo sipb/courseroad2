@@ -4,7 +4,6 @@ import MainPage from './pages/MainPage.vue';
 import About from './pages/About.vue';
 import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
-import $ from 'jquery';
 import VueCookies from 'vue-cookies';
 import './assets/css/coursecolors.css';
 import 'vuetify/dist/vuetify.min.css';

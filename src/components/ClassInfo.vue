@@ -110,7 +110,7 @@
                 <td><b>Instructor</b></td>
                 <td>
                   <ul class="comma-separated">
-                    <li v-for="instructor in currentSubject.instructors">
+                    <li v-for="instructor in currentSubject.instructors" :key="instructor">
                       {{ instructor }}
                     </li>
                   </ul>
@@ -256,7 +256,7 @@ export default {
       // remove spaces after commas and slashes
       requirements = requirements.replace(/([,\/])\s+/g, '$1');
       function getParenGroup (str) {
-        if (str[0] == '(') {
+        if (str[0] === '(') {
           var retString = '';
           str = str.substring(1);
           var nextParen;
@@ -264,7 +264,7 @@ export default {
           while (((nextParen = /[\(\)]/.exec(str)) !== null) && numParens > 0) {
             var parenIndex = nextParen.index;
             var parenType = nextParen[0];
-            if (parenType == '(') {
+            if (parenType === '(') {
               numParens++;
             } else {
               numParens--;
@@ -278,7 +278,7 @@ export default {
         }
       }
       function getNextReq (reqString) {
-        if (reqString[0] == '(') {
+        if (reqString[0] === '(') {
           return getParenGroup(reqString);
         } else {
           var nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
@@ -299,8 +299,8 @@ export default {
       function parseReqs (reqString) {
         var parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
         var onereq;
-        var connectionType = undefined;
-        var nextConnectionType = undefined;
+        var connectionType;
+        var nextConnectionType;
         while (reqString.length > 0) {
           [onereq, reqString, nextConnectionType] = getNextReq(reqString);
           if (nextConnectionType !== undefined) {
@@ -316,9 +316,9 @@ export default {
             parsedReq.reqs.push(parseReqs(onereq));
           }
         }
-        if (connectionType == '/') {
+        if (connectionType === '/') {
           parsedReq.connectionType = 'any';
-        } else if (connectionType == ',') {
+        } else if (connectionType === ',') {
           parsedReq.connectionType = 'all';
         }
         function sortOrder (req) {

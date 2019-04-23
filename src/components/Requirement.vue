@@ -43,7 +43,7 @@
             && req.percent_fulfilled !== 'N/A'"
           :style="'float: right; color: '+percentageTextColor"
         >
-          &nbsp{{ req.percent_fulfilled }}%
+          &nbsp;{{ req.percent_fulfilled }}%
           <v-icon
             v-if="'reqs' in req && hoveringOver"
             style="padding-left: 0.2em; padding-right: 0em;"

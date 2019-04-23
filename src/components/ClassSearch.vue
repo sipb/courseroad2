@@ -16,7 +16,7 @@
           :rows-per-page-items="rowsPerPageItems"
           :pagination.sync="pagination"
           :no-data-text="'No results'"
-          :rows-per-page-text="'Results per page: '"
+          :rows-per-page-text="'Results per page:\xa0'"
           :hide-headers="true"
         >
           <template slot="items" slot-scope="props">

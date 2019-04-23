@@ -367,7 +367,7 @@ export default {
     roads: {
       handler: function (newRoads, oldRoads) {
         this.justLoaded = false;
-        if (this.activeRoad != '') {
+        if (this.activeRoad !== '') {
           this.updateFulfillment();
         }
         this.$refs.authcomponent.save();

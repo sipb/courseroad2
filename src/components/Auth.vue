@@ -32,7 +32,7 @@
         {{ saveIcon }}
       </v-icon>
       <div>
-        <p v-for="saveWarning in saveWarnings">
+        <p v-for="saveWarning in saveWarnings" :key="saveWarning">
           {{ saveWarning.name }}: {{ saveWarning.error }}
         </p>
       </div>
@@ -246,7 +246,7 @@ export default {
     },
 
     renumber: function (name, otherNames) {
-      var newName = undefined;
+      var newName;
       var copyIndex = 2;
       while (newName === undefined) {
         var copyName = name + ' (' + copyIndex + ')';
@@ -332,13 +332,14 @@ export default {
                   // this is to fix a problem where the activeroad gets reset to the first one
                   // i suspect this is because the three events required were not happening
                   // in the correct order or something
-                  if (this.oldid != response.data.id) {
+                  if (this.oldid !== response.data.id) {
                     this.data.$emit('reset-id', this.oldid, response.data.id);
                   }
                   return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
                 } else {
                   return Promise.resolve({ oldid: this.oldid, newid: this.oldid, state: 'same' });
                 }
+                // TODO: this is unreachable code. figure out what is going on.
                 this.data.$emit('set-road-prop', newid, 'downloaded', moment().format(DATE_FORMAT));
               }
             }
@@ -492,7 +493,7 @@ export default {
           this.$emit('set-sem', sem);
         }
       }.bind(this)).catch(function (err) {
-        if (err == 'No auth information') {
+        if (err === 'No auth information') {
           this.$emit('set-sem', sem);
         }
       }.bind(this));

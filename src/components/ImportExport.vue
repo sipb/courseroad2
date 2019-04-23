@@ -146,7 +146,7 @@ export default {
         fail = true;
       }
 
-      let expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'id' ];
+      let expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'id'];
 
       if (!fail) {
         try {

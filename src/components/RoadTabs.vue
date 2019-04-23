@@ -106,6 +106,7 @@ import Road from './Road.vue';
 export default {
   name: 'RoadTabs',
   components: {
+    // TODO: This is not used?
     'road': Road
   },
   props: ['activeRoad', 'roads'],
@@ -128,11 +129,7 @@ export default {
   methods: {
     otherRoadHasName: function (roadID, roadName) {
       const otherRoadNames = Object.keys(this.roads).map(function (road) {
-        if (road == roadID) {
-          return undefined;
-        } else {
-          return this.roads[road].name.toLowerCase();
-        }
+        return road === roadID ? undefined : this.roads[road].name.toLowerCase();
       }.bind(this));
       return otherRoadNames.indexOf(roadName.toLowerCase()) >= 0;
     },

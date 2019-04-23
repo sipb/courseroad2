@@ -36,7 +36,7 @@
       open-on-click
       :activatable="false"
     >
-      <template slot="prepend" slot-scope="{ item, leaf, open }">
+      <template slot="prepend" slot-scope="{ item }">
         <v-icon
           v-if="!('reqs' in item)"
           :style="fulfilledIcon(item)"
@@ -168,18 +168,7 @@ export default {
     'genericIndex',
     'progressOverrides'
   ],
-  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex', 'progressOverrides'],
   data: function () {
-    return {
-      tree: [],
-      viewDialog: false,
-      dialogReq: undefined,
-      progressDialog: false,
-      progressReq: undefined,
-      newManualProgress: 0
-    };
-  },
-  data () {
     return {
       tree: [],
       viewDialog: false,
@@ -214,13 +203,13 @@ export default {
       courses.sort(function (c1, c2) {
         const a = c1[sortKey].toLowerCase();
         const b = c2[sortKey].toLowerCase();
-        if (a.includes('major') && b.includes('major') || a.includes('minor') && b.includes('minor')) {
+        if ((a.includes('major') && b.includes('major')) || (a.includes('minor') && b.includes('minor'))) {
           let n1 = a.split(' ')[0].split('-')[0];
           let n2 = b.split(' ')[0].split('-')[0];
           n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;
           n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;
-          if (n1 == n2) return a.localeCompare(b);
-          return !isNaN(n1) && !isNaN(n2) || isNaN(n1) && isNaN(n2)
+          if (n1 === n2) return a.localeCompare(b);
+          return (!isNaN(n1) && !isNaN(n2)) || (isNaN(n1) && isNaN(n2))
             ? n1 - n2
             : (!isNaN(n1) ? -1 : 1);
         } else if (a.includes('major') && b.includes('minor')) return -1;
@@ -252,7 +241,7 @@ export default {
     fulfilledIcon: function (req) {
       if (
         req.fulfilled &&
-        (req.req != undefined || req.sat_courses.length > 0)
+        (req.req !== undefined || req.sat_courses.length > 0)
       ) {
         return 'color: #00b300;';
       } else {
@@ -328,9 +317,7 @@ export default {
       );
       this.progressDialog = true;
       if (this.progressReq['list-id'] in this.progressOverrides) {
-        this.newManualProgress = this.progressOverrides[
-          this.progressReq['list-id']
-        ];
+        this.newManualProgress = this.progressOverrides[this.progressReq['list-id']];
       }
     },
     capitalize: function (word) {

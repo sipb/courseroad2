@@ -23,8 +23,8 @@
           </span>
           Hours: {{ semesterInformation.expectedHours.toFixed(1) }}
         </v-flex>
-        <v-layout row xs6 style="max-width: 50%;">
-          <v-flex v-for="(subject,subjindex) in semesterSubjects" v-if="!isOpen" :key="subject.id+'-'+subjindex+'-'+index" xs3>
+        <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
+          <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.id+'-'+subjindex+'-'+index" xs3>
             <v-card>
               <div v-if="subject!=='placeholder'" :class="courseColor(subject.id)">
                 <v-card-text class="mini-course">
@@ -280,7 +280,7 @@ export default {
       }
       for (var ep = 0; ep < EQUIVALENCE_PAIRS.length; ep++) {
         var eqPair = EQUIVALENCE_PAIRS[ep];
-        if (req == eqPair[0] && id == eqPair[1]) {
+        if (req === eqPair[0] && id === eqPair[1]) {
           return true;
         }
       }
@@ -317,7 +317,7 @@ export default {
             var anyClassSatisfiesAlone = subjects.map((s) => this.classSatisfies(splitReq[i], s.id)).reduce((a, b) => a || b, false);
             var anyClassesSatisfyTogether = false;
             for (var e = 0; e < EQUIVALENCE_SETS.length; e++) {
-              if (EQUIVALENCE_SETS[e][1] == splitReq[i] && EQUIVALENCE_SETS[e][0].reduce((acc, sid) => acc && allIDs.indexOf(sid) >= 0, true)) {
+              if (EQUIVALENCE_SETS[e][1] === splitReq[i] && EQUIVALENCE_SETS[e][0].reduce((acc, sid) => acc && allIDs.indexOf(sid) >= 0, true)) {
                 anyClassesSatisfyTogether = true;
                 break;
               }

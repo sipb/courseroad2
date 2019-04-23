@@ -97,7 +97,7 @@ export default {
           var scrollPoint = $('#' + $.escapeSelector(scrollPointID));
           var topPoint = scrollPoint.offset().top;
           var cardBody = $('#cardBody');
-          cardBody.animate({ scrollTop: scrollPoint.offset().top - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
+          cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
         });
       } else {
         if (subj.id.indexOf('GIR:') >= 0) {
@@ -119,7 +119,7 @@ export default {
       }
       var topPoint = scrollPoint.offset().top;
       var cardBody = $('#cardBody');
-      cardBody.animate({ scrollTop: scrollPoint.offset().top - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
+      cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
     }
   }
 };
