@@ -1,10 +1,12 @@
 <template>
-  <v-layout row align-center>
-    <v-btn v-if="!loggedIn" outline round color="primary" @click="loginUser">
-      Login
+  <v-layout row align-center grow>
+    <v-btn class = "collapse-button" v-if = "!loggedIn" outline round color = "primary" @click="loginUser">
+      <span class = "hidden-sm-and-down">Login</span>
+      <font-awesome-icon class = "hidden-md-and-up" icon = "sign-in-alt"/>
     </v-btn>
-    <v-btn v-if="loggedIn" outline round color="primary" @click="logoutUser">
-      Logout
+    <v-btn class = "collapse-button" v-if = "loggedIn" outline round color = "primary" @click = "logoutUser">
+      <span class = "hidden-sm-and-down">Logout</span>
+      <font-awesome-icon class = "hidden-md-and-up" icon = "sign-out-alt"/>
     </v-btn>
     <v-tooltip bottom :disabled="saveWarnings.length===0">
       <v-icon
@@ -485,4 +487,7 @@ export default {
 </script>
 
 <style scoped>
+.collapse-button {
+  min-width: 0;
+}
 </style>

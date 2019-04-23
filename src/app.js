@@ -9,6 +9,14 @@ import VueCookies from "vue-cookies"
 import "./assets/css/coursecolors.css"
 import 'vuetify/dist/vuetify.min.css'
 
+import { library } from "@fortawesome/fontawesome-svg-core"
+import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+
+library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt)
+
+Vue.component("font-awesome-icon", FontAwesomeIcon)
+
 Vue.use(Vuetify)
 Vue.use(VueCookies)
 Vue.use(VueRouter)
