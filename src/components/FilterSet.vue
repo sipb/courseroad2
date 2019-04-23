@@ -1,18 +1,18 @@
 <template>
   <div class="filter-group">
-    <span class="filter-title">{{label}}</span>
+    <span class="filter-title">{{ label }}</span>
     <v-btn-toggle
       multiple
-      v-on:change="changeFilter"
+      @change="changeFilter"
     >
       <v-btn
-        flat
         v-for="filter in filters"
         :key="filter.filterString"
-        v-bind:value="filter.filterString"
+        flat
+        :value="filter.filterString"
         @click="buttonClicked"
       >
-        {{filter.short}}
+        {{ filter.short }}
       </v-btn>
     </v-btn-toggle>
   </div>
@@ -20,19 +20,19 @@
 
 <script>
 export default {
-  name: "FilterSet",
-  props: ["value", "label", "filters"],
+  name: 'FilterSet',
+  props: ['value', 'label', 'filters'],
   methods: {
-    changeFilter(newValues) {
-      this.$emit("input", newValues);
+    changeFilter (newValues) {
+      this.$emit('input', newValues);
     },
-    buttonClicked(event) {
+    buttonClicked (event) {
       // Focus the search input in case user wants to start typing after
       // selecting a filter
-      document.getElementById("searchInputTF").focus();
+      document.getElementById('searchInputTF').focus();
     }
   }
-}
+};
 </script>
 
 <style scoped>
