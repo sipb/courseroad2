@@ -271,6 +271,7 @@ import RoadTabs from './../components/RoadTabs.vue';
 import ConflictDialog from './../components/ConflictDialog.vue';
 import Auth from './../components/Auth.vue';
 import $ from 'jquery';
+import moment from 'moment';
 import UAParser from 'ua-parser-js';
 import Vue from 'vue';
 import ClassInfo from './../components/ClassInfo.vue';

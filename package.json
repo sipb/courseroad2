@@ -28,6 +28,7 @@
   "dependencies": {
     "@babel/preset-env": "^7.1.0",
     "jquery": "^3.3.1",
+    "moment": "^2.24.0",
     "ua-parser-js": "^0.7.19",
     "vue-context": "^3.4.0",
     "vue-cookies": "^1.5.12",
