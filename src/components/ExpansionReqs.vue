@@ -94,9 +94,9 @@ export default {
         this.open = true;
         this.nextReqs = nextReqs;
         Vue.nextTick(function () {
-          let scrollPoint = $('#' + $.escapeSelector(scrollPointID));
-          let topPoint = scrollPoint.offset().top;
-          let cardBody = $('#cardBody');
+          const scrollPoint = $('#' + $.escapeSelector(scrollPointID));
+          const topPoint = scrollPoint.offset().top;
+          const cardBody = $('#cardBody');
           cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
         });
       } else {
@@ -117,8 +117,8 @@ export default {
       } else {
         scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID));
       }
-      let topPoint = scrollPoint.offset().top;
-      let cardBody = $('#cardBody');
+      const topPoint = scrollPoint.offset().top;
+      const cardBody = $('#cardBody');
       cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
     }
   }

@@ -255,13 +255,13 @@ export default {
       this.dialogReq = req;
     },
     percentage: function (req) {
-      let pfulfilled = req.percent_fulfilled;
-      let pcolor = req.fulfilled
+      const pfulfilled = req.percent_fulfilled;
+      const pcolor = req.fulfilled
         ? '#00b300'
         : req.percent_fulfilled > 15
           ? '#efce15'
           : '#ef8214';
-      let pstring =
+      const pstring =
         '--percent: ' +
         pfulfilled +
         '%; --bar-color: ' +
@@ -270,7 +270,7 @@ export default {
       return pstring;
     },
     deleteReq: function (req) {
-      let reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
+      const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
       this.$emit('remove-req', reqName);
     },
     clickRequirement: function (item) {

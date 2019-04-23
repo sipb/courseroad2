@@ -14,6 +14,7 @@
     "semi": [2, "always", {
       "omitLastInOneLineBlock": true
     }],
-    "no-var": 0
+    "no-var": 0,
+    "prefer-const": 1
   }
 }

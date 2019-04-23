@@ -49,11 +49,11 @@ import UAParser from 'ua-parser-js';
 var DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
 function getQueryObject () {
-  let query = window.location.search.substring(1);
-  let vars = query.split('&');
-  let queryObject = {};
+  const query = window.location.search.substring(1);
+  const vars = query.split('&');
+  const queryObject = {};
   for (let i = 0; i < vars.length; i++) {
-    let keyValuePair = vars[i].split('=');
+    const keyValuePair = vars[i].split('=');
     queryObject[keyValuePair[0]] = keyValuePair[1];
   }
   return queryObject;
@@ -95,7 +95,7 @@ export default {
   },
   mounted () {
     if (this.$cookies.isKey('newRoads')) {
-      let newRoads = this.$cookies.get('newRoads');
+      const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
@@ -122,9 +122,9 @@ export default {
 
     window.onbeforeunload = function () {
       if (this.authCookiesAllowed) {
-        let tabID = sessionStorage.tabID;
-        let tabs = JSON.parse(this.$cookies.get('tabs'));
-        let tabIndex = tabs.indexOf(tabID);
+        const tabID = sessionStorage.tabID;
+        const tabs = JSON.parse(this.$cookies.get('tabs'));
+        const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
         this.$cookies.set('tabs', JSON.stringify(tabs));
       }
@@ -147,7 +147,7 @@ export default {
       window.location.reload();
     },
     verify: function () {
-      let headerList = { headers: {
+      const headerList = { headers: {
         'Authorization': 'Bearer ' + this.accessInfo.access_token
       } };
       return axios.get(process.env.FIREROAD_URL + '/verify/', headerList)
@@ -163,7 +163,7 @@ export default {
     },
     doSecure: function (axiosFunc, link, params) {
       if (this.loggedIn && this.accessInfo !== undefined) {
-        let headerList = { headers: {
+        const headerList = { headers: {
           'Authorization': 'Bearer ' + this.accessInfo.access_token
         } };
         return this.verify()
@@ -197,7 +197,7 @@ export default {
           }
           return response;
         }).then(function (fileKeys) {
-          let fileLinks = fileKeys.map(function (fk) {
+          const fileLinks = fileKeys.map(function (fk) {
             return this.getSecure('/sync/roads/?id=' + fk);
           }.bind(this));
           return Promise.all(fileLinks).then((fl) => [fileKeys, fl]);
@@ -217,7 +217,7 @@ export default {
                 this.$emit('set-road', roadIDs[r], roadData[r].data.file);
               }
               // sanitize subject_id
-              let newss = roadData[r].data.file.contents.selectedSubjects.map((s) => {
+              const newss = roadData[r].data.file.contents.selectedSubjects.map((s) => {
                 if ('subject_id' in s) {
                   s.id = s.subject_id;
                   delete s.subject_id;
@@ -249,7 +249,7 @@ export default {
       let newName;
       let copyIndex = 2;
       while (newName === undefined) {
-        let copyName = name + ' (' + copyIndex + ')';
+        const copyName = name + ' (' + copyIndex + ')';
         if (otherNames.indexOf(copyName) === -1) {
           newName = copyName;
         }
@@ -258,17 +258,17 @@ export default {
       return newName;
     },
     renumberRoads: function (cloudRoads) {
-      let cloudNames = cloudRoads.map(function (cr) {
+      const cloudNames = cloudRoads.map(function (cr) {
         try {
           return cr.data.file.name;
         } catch (err) {
           return undefined;
         }
       });
-      for (let roadID in this.roads) {
-        let localName = this.roads[roadID].name;
+      for (const roadID in this.roads) {
+        const localName = this.roads[roadID].name;
         if (cloudNames.indexOf(localName) >= 0) {
-          let renumberedName = this.renumber(localName, cloudNames);
+          const renumberedName = this.renumber(localName, cloudNames);
           Vue.set(this.roads[roadID], 'name', renumberedName);
         }
       }
@@ -290,9 +290,9 @@ export default {
     },
 
     attemptLogin: function () {
-      let queryObject = getQueryObject();
+      const queryObject = getQueryObject();
       if ('code' in queryObject) {
-        let code = queryObject['code'];
+        const code = queryObject['code'];
         window.history.pushState('CourseRoad Home', 'CourseRoad Home', './#' + this.activeRoad);
         this.getAuthorizationToken(code);
       }
@@ -307,24 +307,24 @@ export default {
     saveRemote: function () {
       this.currentlySaving = true;
       this.saveWarnings = [];
-      let savePromises = [];
-      for (let roadID in this.roads) {
-        let assignKeys = { override: false, agent: this.getAgent() };
+      const savePromises = [];
+      for (const roadID in this.roads) {
+        const assignKeys = { override: false, agent: this.getAgent() };
         if (!roadID.includes('$')) {
           assignKeys.id = roadID;
         }
-        let newRoad = Object.assign(this.roads[roadID], assignKeys);
-        let savePromise = this.postSecure('/sync/sync_road/', newRoad)
+        const newRoad = Object.assign(this.roads[roadID], assignKeys);
+        const savePromise = this.postSecure('/sync/sync_road/', newRoad)
           .then(function (response) {
             if (response.status !== 200) {
               return Promise.reject('Unable to save road ' + this.oldid);
             } else {
-              let newid = (response.data.id !== undefined ? response.data.id : this.oldid);
+              const newid = (response.data.id !== undefined ? response.data.id : this.oldid);
               if (response.data.success === false) {
                 this.data.saveWarnings.push({ id: newid, error: response.data.error_msg, name: this.data.roads[this.oldid].name });
               }
               if (response.data.result === 'conflict') {
-                let conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
+                const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
                 this.data.$emit('conflict', conflictInfo);
               } else {
                 if (response.data.id !== undefined) {
@@ -349,9 +349,9 @@ export default {
       return Promise.all(savePromises)
         .then(function (saveResults) {
           for (let s = 0; s < saveResults.length; s++) {
-            let savedResult = saveResults[s];
+            const savedResult = saveResults[s];
             if (savedResult.state === 'changed') {
-              let oldIdIndex = this.newRoads.indexOf(savedResult.oldid);
+              const oldIdIndex = this.newRoads.indexOf(savedResult.oldid);
               if (oldIdIndex >= 0) {
                 this.newRoads.splice(oldIdIndex, 1);
               }
@@ -372,19 +372,19 @@ export default {
         this.$cookies.set('newRoads', this.getNewRoadData());
       }
       this.currentlySaving = false;
-      for (let roadID in this.roads) {
+      for (const roadID in this.roads) {
         this.$emit('set-road-prop', roadID, 'downloaded', moment().format(DATE_FORMAT));
       }
     },
     getNewRoadData: function () {
-      let newRoadData = {};
+      const newRoadData = {};
       if (this.newRoads.indexOf('$defaultroad$') === -1 && '$defaultroad$' in this.roads) {
         if (this.roads['$defaultroad$'].contents.selectedSubjects.length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
           this.newRoads.push('$defaultroad$');
         }
       }
       for (let r = 0; r < this.newRoads.length; r++) {
-        let roadID = this.newRoads[r];
+        const roadID = this.newRoads[r];
         if (roadID in this.roads) {
           newRoadData[roadID] = this.roads[roadID];
         }
@@ -392,7 +392,7 @@ export default {
       return newRoadData;
     },
     updateRemote: function (roadID) {
-      let newRoad = Object.assign(this.roads[roadID], { id: roadID, override: true, agent: this.getAgent() });
+      const newRoad = Object.assign(this.roads[roadID], { id: roadID, override: true, agent: this.getAgent() });
       this.postSecure('/sync/sync_road/', newRoad)
         .then(function (response) {
           if (!response.data.success) {
@@ -414,7 +414,7 @@ export default {
     deleteRoad: function (roadID) {
       if (this.activeRoad === roadID) {
         var roadIndex = Object.keys(this.roads).indexOf(roadID);
-        let withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex + 1));
+        const withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex + 1));
         if (withoutRoad.length) {
           if (withoutRoad.length > roadIndex) {
             this.$emit('set-active', withoutRoad[roadIndex]);
@@ -447,7 +447,7 @@ export default {
       this.setTabID();
     },
     getAgent: function () {
-      let ua = UAParser(navigator.userAgent);
+      const ua = UAParser(navigator.userAgent);
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
     },
     setTabID: function () {
@@ -466,8 +466,8 @@ export default {
         } else {
           // TODO: look into whether this = sign is acting correctly?
           if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs'))).length) {
-            let maxTab = Math.max(...tabs);
-            let newTab = (maxTab + 1).toString();
+            const maxTab = Math.max(...tabs);
+            const newTab = (maxTab + 1).toString();
             sessionStorage.tabID = newTab;
             this.tabID = newTab;
             tabs.push(newTab);
@@ -481,7 +481,7 @@ export default {
       }
     },
     changeSemester: function (year) {
-      let currentMonth = new Date().getMonth();
+      const currentMonth = new Date().getMonth();
       let sem;
       if (currentMonth >= 4 && currentMonth <= 10) {
         sem = 1 + year * 3;

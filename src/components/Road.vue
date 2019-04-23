@@ -70,8 +70,8 @@ export default {
   },
   props: ['selectedSubjects', 'subjects', 'roadID', 'currentSemester', 'addingFromCard', 'itemAdding', 'dragSemesterNum', 'subjectsIndex', 'genericCourses', 'genericIndex'],
   data: function () {
-    let defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
-    let numSemesters = 16;// this.currentSemester >= 13 ? 16 : 13
+    const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
+    const numSemesters = 16;// this.currentSemester >= 13 ? 16 : 13
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
@@ -81,9 +81,9 @@ export default {
   },
   computed: {
     baseYear: function () {
-      let today = new Date();
-      let currentYear = today.getFullYear();
-      let baseYear = (today.getMonth() >= 4 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const baseYear = (today.getMonth() >= 4 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
       return baseYear - Math.floor((this.currentSemester - 1) / 3);
     }
   },

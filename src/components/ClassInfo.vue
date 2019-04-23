@@ -208,7 +208,7 @@ export default {
   data: function () { return {} },
   computed: {
     currentSubject: function () {
-      let currentID = this.classInfoStack[this.classInfoStack.length - 1];
+      const currentID = this.classInfoStack[this.classInfoStack.length - 1];
       let curSubj;
       if (currentID in this.subjectsIndex) {
         curSubj = this.subjects[this.subjectsIndex[currentID]];
@@ -238,7 +238,7 @@ export default {
   },
   methods: {
     classInfo: function (subjectID) {
-      let subj = this.subjects[this.subjectsIndex[subjectID]];
+      const subj = this.subjects[this.subjectsIndex[subjectID]];
       if (subj !== undefined) {
         return subj;
       } else {
@@ -262,8 +262,8 @@ export default {
           let nextParen;
           let numParens = 1;
           while (((nextParen = /[\(\)]/.exec(str)) !== null) && numParens > 0) {
-            let parenIndex = nextParen.index;
-            let parenType = nextParen[0];
+            const parenIndex = nextParen.index;
+            const parenType = nextParen[0];
             if (parenType === '(') {
               numParens++;
             } else {
@@ -281,11 +281,11 @@ export default {
         if (reqString[0] === '(') {
           return getParenGroup(reqString);
         } else {
-          let nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
+          const nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
           if (nextMatch !== null) {
-            let nextReq = nextMatch[1];
-            let restOfString = nextMatch[3];
-            let delimiter = nextMatch[2];
+            const nextReq = nextMatch[1];
+            const restOfString = nextMatch[3];
+            const delimiter = nextMatch[2];
             return [nextReq, restOfString, delimiter];
           } else {
             return [reqString, '', undefined];
@@ -295,9 +295,9 @@ export default {
       function isBaseReq (req) {
         return /[\/\(\),]/g.exec(req) === null;
       }
-      let getClassInfo = this.classInfo;
+      const getClassInfo = this.classInfo;
       function parseReqs (reqString) {
-        let parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
+        const parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
         let onereq;
         let connectionType;
         let nextConnectionType;
@@ -364,17 +364,17 @@ export default {
             parsedReq.expansionDesc = 'Select all:';
           }
         }
-        let connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
+        const connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
         if (connectionMatch !== null) {
-          let connectionIndex = connectionMatch.index;
-          let firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '');
-          let secondPart = parsedReq.subject_id.substring(connectionIndex);
+          const connectionIndex = connectionMatch.index;
+          const firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '');
+          const secondPart = parsedReq.subject_id.substring(connectionIndex);
           parsedReq.subject_id = firstPart;
           parsedReq.title = secondPart + ' ' + parsedReq.title;
         }
         return parsedReq;
       }
-      let rList = parseReqs(requirements);
+      const rList = parseReqs(requirements);
       rList.topLevel = true;
       return rList;
     },

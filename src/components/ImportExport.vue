@@ -94,15 +94,15 @@ export default {
   },
   mounted () {
     // read uploaded files
-    let onFileChange = (event) => {
-      let reader = new FileReader();
+    const onFileChange = (event) => {
+      const reader = new FileReader();
       reader.onload = (event) => {
         this.inputtext = event.target.result;
       };
 
       if (event.target.files[0]) {
         // would have been undefined if user exited file select dialog
-        let name = event.target.files[0].name;
+        const name = event.target.files[0].name;
         // check for valid type hopefully
         if (name.substr(name.length - 5) === '.road') {
           // update title unless they already input one
@@ -123,12 +123,12 @@ export default {
   },
   methods: {
     exportRoad: function (event) {
-      let filename = this.roads[this.activeRoad].name + '.road';
-      let text = JSON.stringify(this.roads[this.activeRoad].contents);
+      const filename = this.roads[this.activeRoad].name + '.road';
+      const text = JSON.stringify(this.roads[this.activeRoad].contents);
 
       // for some reason this is the way you download files...
       //    create an element, click it, and remove it
-      let element = document.createElement('a');
+      const element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
       element.setAttribute('download', filename);
 
@@ -146,19 +146,19 @@ export default {
         fail = true;
       }
 
-      let expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'id'];
+      const expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'id'];
 
       if (!fail) {
         try {
           // parse text and add to roads
-          let obj = JSON.parse(this.inputtext);
+          const obj = JSON.parse(this.inputtext);
           // sanitize
           // progressOverrides must be defined
           if (obj.progressOverrides === undefined) {
             obj.progressOverrides = {};
           }
           // subject_id issue
-          let newss = obj.selectedSubjects.map((s) => {
+          const newss = obj.selectedSubjects.map((s) => {
             if ('subject_id' in s) {
               s.id = s.subject_id;
               delete s.subject_id;
@@ -166,7 +166,7 @@ export default {
             return s;
           });
           obj.selectedSubjects = newss;
-          let ss = obj.selectedSubjects.map((s) => {
+          const ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
             let subject;
             if (this.subjectsIndex[s.id] !== undefined) {
@@ -211,7 +211,7 @@ export default {
       }
     },
     otherRoadHasName: function (roadName) {
-      let otherRoadNames = Object.keys(this.roads).filter(function (road) {
+      const otherRoadNames = Object.keys(this.roads).filter(function (road) {
         return this.roads[road].name === roadName;
       }.bind(this));
       return otherRoadNames.length > 0;

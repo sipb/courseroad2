@@ -123,8 +123,8 @@ export default {
       return pstring;
     },
     percentage_bar: function () {
-      let showPBar = ('reqs' in this.req || 'threshold' in this.req);
-      let pblock = {
+      const showPBar = ('reqs' in this.req || 'threshold' in this.req);
+      const pblock = {
         'percentage-bar': showPBar,
         'p-bar': showPBar
       };

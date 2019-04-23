@@ -76,7 +76,7 @@ Array.prototype.count = function (elem) {
 Array.prototype.renumberDuplicates = function () {
   return this.map(function (elem, index) {
     if (this.count(elem) > 1) {
-      let appendNumber = this.slice(0, index).count(elem);
+      const appendNumber = this.slice(0, index).count(elem);
       return elem + '-' + appendNumber.toString();
     } else {
       return elem;
@@ -101,8 +101,8 @@ export default {
       this.conflictDialog = false;
     },
     colorSubject: function (subjectIndex, subjectList) {
-      let remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
-      let localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
+      const remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
+      const localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
       let currentSubject;
       if (subjectList === 'remote') {
         currentSubject = remoteSubjects[subjectIndex];
