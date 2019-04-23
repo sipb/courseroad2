@@ -160,6 +160,7 @@ export default {
           'level': getRegexFuncs(this.chosenFilters.levelInput),
           'total_units': getRegexFuncs(this.chosenFilters.unitInput)
         };
+        // TODO: remove?
         // gets all possible values of an attribute
 
         // var allSubjects = this.subjects;

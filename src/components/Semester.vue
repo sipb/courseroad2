@@ -198,10 +198,8 @@ export default {
       const semType = (this.index - 1) % 3;
       if (semType >= 0 && (this.addingFromCard || this.draggingOver)) {
         return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
-      } else if (this.addingFromCard) {
-        return true;
       } else {
-        return false;
+        return this.addingFromCard;
       }
     },
     semesterSubjects: function () {
@@ -240,18 +238,14 @@ export default {
       };
     },
     semesterYear: function () {
-      if (this.index === 0) {
-        return '';
-      } else {
-        return Math.floor((this.index - 2) / 3) + this.baseYear;
-      }
+      return this.index === 0
+        ?  ''
+        : Math.floor((this.index - 2) / 3) + this.baseYear;
     },
     semesterType: function () {
-      if (this.index === 0) {
-        return 'Prior Credit';
-      } else {
-        return ['Fall', 'IAP', 'Spring'][(this.index - 1) % 3];
-      }
+      return this.index === 0
+        ? 'Prior Credit'
+        : ['Fall', 'IAP', 'Spring'][(this.index - 1) % 3];
     }
   },
   methods: {
@@ -267,9 +261,9 @@ export default {
         let inPreviousQuarter = false;
         if (subj2 !== undefined) {
           inPreviousQuarter = s.semester === this.index &&
-                                  subjInQuarter2 &&
-                                  subj2.quarter_information !== undefined &&
-                                  subj2.quarter_information.split(',')[0] === '0';
+            subjInQuarter2 &&
+            subj2.quarter_information !== undefined &&
+            subj2.quarter_information.split(',')[0] === '0';
         }
         return inPreviousSemester || inPreviousQuarter;
       });
@@ -326,11 +320,7 @@ export default {
                 break;
               }
             }
-            if (anyClassSatisfiesAlone || anyClassesSatisfyTogether) {
-              splitReq[i] = 'true';
-            } else {
-              splitReq[i] = 'false';
-            }
+            splitReq[i] = (anyClassSatisfiesAlone || anyClassesSatisfyTogether) ? 'true' : 'false';
           }
         }
       }
