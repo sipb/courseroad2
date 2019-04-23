@@ -1,122 +1,129 @@
 <template>
-  <div :id = "reqID">
-    <v-btn v-if = "!requirement.topLevel" icon small @click = "closeMe"><v-icon>close</v-icon></v-btn>
-    <span v-if = "requirement.expansionDesc.length>0
+  <div :id="reqID">
+    <v-btn v-if="!requirement.topLevel" icon small @click="closeMe">
+      <v-icon>close</v-icon>
+    </v-btn>
+    <span
+      v-if="requirement.expansionDesc.length>0
         && ((!requirement.topLevel && !doubleScroller) || requirement.connectionType === 'any')
-    ">
-      {{requirement.expansionDesc}}
+      "
+    >
+      {{ requirement.expansionDesc }}
     </span>
-    <div v-if = "doubleScroller">
-      <div :id = "'ds0'+reqID">
-        <span v-if = "requirement.reqs[0].expansionDesc.length>0
+    <div v-if="doubleScroller">
+      <div :id="'ds0'+reqID">
+        <span
+          v-if="requirement.reqs[0].expansionDesc.length>0
             && (requirement.reqs[0].connectionType === 'any' || requirement.reqs[1].connectionType === 'any')
-        ">
-          {{requirement.reqs[0].expansionDesc}}
+          "
+        >
+          {{ requirement.reqs[0].expansionDesc }}
         </span>
-        <subject-scroll @click-subject = "clickSubject($event, 0)" v-bind:subjects = "requirement.reqs[0].reqs"></subject-scroll>
+        <subject-scroll :subjects="requirement.reqs[0].reqs" @click-subject="clickSubject($event, 0)" />
       </div>
-      <div :id = "'ds1'+reqID">
-        <span v-if = "requirement.reqs[1].expansionDesc.length>0
+      <div :id="'ds1'+reqID">
+        <span
+          v-if="requirement.reqs[1].expansionDesc.length>0
             && (requirement.reqs[1].connectionType === 'any' || requirement.reqs[0].connectionType === 'any')
-        ">
-          {{requirement.reqs[1].expansionDesc}}
+          "
+        >
+          {{ requirement.reqs[1].expansionDesc }}
         </span>
-        <subject-scroll @click-subject = "clickSubject($event, 1)" v-bind:subjects = "requirement.reqs[1].reqs"></subject-scroll>
+        <subject-scroll :subjects="requirement.reqs[1].reqs" @click-subject="clickSubject($event, 1)" />
       </div>
     </div>
-    <subject-scroll v-else @click-subject = "clickSubject" v-bind:subjects = "requirement.reqs"></subject-scroll>
-    <div v-if = "open && nextReqs !== undefined" class = "expanded-req">
+    <subject-scroll v-else :subjects="requirement.reqs" @click-subject="clickSubject" />
+    <div v-if="open && nextReqs !== undefined" class="expanded-req">
       <ExpansionReqs
-        @close-expansion = "closeMyExpansion"
-        @click-subject = "$emit('click-subject',$event)"
-        v-bind:requirement = "nextReqs"
-        v-bind:reqID = "reqID + (doubleScroller ? '.' + whichScroll : '') + '.' + expansionIndex"
-        >
-      </ExpansionReqs>
+        :requirement="nextReqs"
+        :req-i-d="reqID + (doubleScroller ? '.' + whichScroll : '') + '.' + expansionIndex"
+        @close-expansion="closeMyExpansion"
+        @click-subject="$emit('click-subject',$event)"
+      />
     </div>
   </div>
 </template>
 
-
 <script>
-import SubjectScroll from "../components/SubjectScroll.vue"
-import $ from "jquery"
-import Vue from "vue"
+import SubjectScroll from '../components/SubjectScroll.vue';
+import $ from 'jquery';
+import Vue from 'vue';
 
 export default {
-  name: "ExpansionReqs",
-  props: ["requirement","reqID"],
+  name: 'ExpansionReqs',
   components: {
-    "subject-scroll": SubjectScroll,
+    'subject-scroll': SubjectScroll
   },
-  data: function() {return {
-    open: false,
-    expansionIndex: 0,
-    nextReqs: undefined,
-    whichScroller: 0
-  }},
-  watch: {
-    requirement: function(newReq, oldReq) {
-      this.open = false;
-    }
+  props: ['requirement', 'reqID'],
+  data: function () {
+    return {
+      open: false,
+      expansionIndex: 0,
+      nextReqs: undefined,
+      whichScroller: 0
+    };
   },
   computed: {
-    doubleScroller: function() {
-      if(this.requirement.reqs.length === 2) {
-        return this.requirement.reqs.reduce(function(acc, nxt) {
+    doubleScroller: function () {
+      if (this.requirement.reqs.length === 2) {
+        return this.requirement.reqs.reduce(function (acc, nxt) {
           return acc && nxt.reqs !== undefined;
         }, true);
       }
       return false;
     }
   },
+  watch: {
+    requirement: function (newReq, oldReq) {
+      this.open = false;
+    }
+  },
   methods: {
-    clickSubject: function(subj, scroller) {
+    clickSubject: function (subj, scroller) {
       var scrollPointID;
       var nextReqs;
-      if(scroller !== undefined) {
-        scrollPointID = this.reqID + "." + this.whichScroller + "." + subj.index;
+      if (scroller !== undefined) {
+        scrollPointID = this.reqID + '.' + this.whichScroller + '.' + subj.index;
         nextReqs = this.requirement.reqs[scroller].reqs[subj.index];
       } else {
-        scrollPointID = this.reqID + "." + subj.index;
+        scrollPointID = this.reqID + '.' + subj.index;
         nextReqs = this.requirement.reqs[subj.index];
       }
-      if(nextReqs.reqs !== undefined) {
+      if (nextReqs.reqs !== undefined) {
         this.expansionIndex = subj.index;
         this.open = true;
         this.nextReqs = nextReqs;
-        Vue.nextTick(function() {
-          var scrollPoint = $("#"+$.escapeSelector(scrollPointID));
+        Vue.nextTick(function () {
+          var scrollPoint = $('#' + $.escapeSelector(scrollPointID));
           var topPoint = scrollPoint.offset().top;
-          var cardBody = $("#cardBody");
-          cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},200);
-        }.bind(this))
+          var cardBody = $('#cardBody');
+          cardBody.animate({ scrollTop: scrollPoint.offset().top - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
+        });
       } else {
-        if(subj.id.indexOf("GIR:")>=0) {
+        if (subj.id.indexOf('GIR:') >= 0) {
           subj.id = subj.id.substring(4);
         }
-        this.$emit("click-subject", subj);
+        this.$emit('click-subject', subj);
       }
     },
-    closeMe: function(subj) {
-      this.$emit("close-expansion");
+    closeMe: function (subj) {
+      this.$emit('close-expansion');
     },
-    closeMyExpansion: function(event) {
+    closeMyExpansion: function (event) {
       this.open = false;
       var scrollPoint;
-      if(!this.doubleScroller) {
-        scrollPoint = $("#"+$.escapeSelector(this.reqID));
+      if (!this.doubleScroller) {
+        scrollPoint = $('#' + $.escapeSelector(this.reqID));
       } else {
-        scrollPoint = $("#ds"+this.whichScroller+$.escapeSelector(this.reqID));
+        scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID));
       }
       var topPoint = scrollPoint.offset().top;
-      var cardBody = $("#cardBody");
-      cardBody.animate({scrollTop:scrollPoint.offset().top-cardBody.offset().top+cardBody.scrollTop()-10},350);
+      var cardBody = $('#cardBody');
+      cardBody.animate({ scrollTop: scrollPoint.offset().top - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
     }
   }
-}
+};
 </script>
-
 
 <style scoped>
 .expanded-req {
