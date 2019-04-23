@@ -381,16 +381,16 @@ export default {
     }
   },
   mounted () {
-    var borders = $('.v-navigation-drawer__border');
-    var scrollers = $('.scroller');
-    var scrollWidth = scrollers.width();
+    let borders = $('.v-navigation-drawer__border');
+    let scrollers = $('.scroller');
+    let scrollWidth = scrollers.width();
 
     // moves nav drawer border with scroll
     // if the effect proves too annoying we can remove the borders instead
     // (commented out below)
 
     scrollers.scroll(function () {
-      var scrollPosition = scrollers.scrollLeft();
+      let scrollPosition = scrollers.scrollLeft();
       borders.css({ top: 0, left: scrollWidth - 1 + scrollPosition });
     });
 
@@ -443,7 +443,7 @@ export default {
       Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     removeClass: function (classInfo) {
-      var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      let classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
       this.roads[this.activeRoad].contents.selectedSubjects.splice(classIndex, 1);
       Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
@@ -456,7 +456,7 @@ export default {
       Vue.devare(this.roads, oldid);
     },
     dragStartClass: function (event) {
-      var classInfo = event.classInfo;
+      let classInfo = event.classInfo;
       if (classInfo === undefined) {
         if (event.basicClass.id in this.subjectsIndexDict) {
           classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
@@ -468,8 +468,8 @@ export default {
       this.addingFromCard = false;
     },
     updateFulfillment: function () {
-      for (var r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
-        var req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
+      for (let r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
+        let req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
         axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, this.roads[this.activeRoad].contents).then(function (response) {
           // This is necessary so Vue knows about the new property on reqTrees
           Vue.set(this.data.reqTrees, this.req, response.data);
@@ -481,13 +481,13 @@ export default {
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
     },
     removeReq: function (event) {
-      var reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
+      let reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
       this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
     },
     setActiveRoad: function () {
-      var roadHash = window.location.hash;
+      let roadHash = window.location.hash;
       if (roadHash.length && roadHash.substring(0, 7) === '#/#road') {
-        var roadRequested = roadHash.substring(7);
+        let roadRequested = roadHash.substring(7);
         if (roadRequested in this.roads) {
           this.activeRoad = roadHash.substring(7);
           return true;
@@ -497,13 +497,13 @@ export default {
       return false;
     },
     addRoad: function (roadName, cos = ['girs'], ss = [], overrides = {}) {
-      var tempRoadID = '$' + this.$refs.authcomponent.newRoads.length + '$';
-      var newContents = {
+      let tempRoadID = '$' + this.$refs.authcomponent.newRoads.length + '$';
+      let newContents = {
         coursesOfStudy: cos,
         selectedSubjects: ss,
         progressOverrides: overrides
       };
-      var newRoad = {
+      let newRoad = {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: roadName,
@@ -571,7 +571,7 @@ export default {
       this.itemAdding = undefined;
     },
     addAtPlaceholder: function (index) {
-      var newClass = {
+      let newClass = {
         overrideWarnings: false,
         semester: index,
         title: this.itemAdding.title,
@@ -583,7 +583,7 @@ export default {
       this.itemAdding = undefined;
     },
     getMatchingAttributes: function (gir, hass, ci) {
-      var matchingClasses = this.subjectsInfo.filter(function (subject) {
+      let matchingClasses = this.subjectsInfo.filter(function (subject) {
         if (gir !== undefined && subject.gir_attribute !== gir) {
           return false;
         }
@@ -595,7 +595,7 @@ export default {
         }
         return true;
       });
-      var totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
+      let totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
         return {
           offered_spring: accumObject.offered_spring || nextClass.offered_spring,
           offered_summer: accumObject.offered_summer || nextClass.offered_summer,
@@ -610,22 +610,22 @@ export default {
       return totalObject;
     },
     makeGenericCourses: function () {
-      var girAttributes = { 'PHY1': ['Physics 1 GIR', 'p1'], 'PHY2': ['Physics 2 GIR', 'p2'], 'CHEM': ['Chemistry GIR', 'c'], 'BIOL': ['Biology GIR', 'b'], 'CAL1': ['Calculus I GIR', 'm1'], 'CAL2': ['Calculus II GIR', 'm2'], 'LAB': ['Lab GIR', 'l1'], 'REST': ['REST GIR', 'r'] };
+      let girAttributes = { 'PHY1': ['Physics 1 GIR', 'p1'], 'PHY2': ['Physics 2 GIR', 'p2'], 'CHEM': ['Chemistry GIR', 'c'], 'BIOL': ['Biology GIR', 'b'], 'CAL1': ['Calculus I GIR', 'm1'], 'CAL2': ['Calculus II GIR', 'm2'], 'LAB': ['Lab GIR', 'l1'], 'REST': ['REST GIR', 'r'] };
       // the titles of the hass and ci attributes are currently not used in the description on fireroad
       // I think they might be nice to display with the description, but as of now they are unused
-      var hassAttributes = { 'HASS-A': ['HASS Arts', 'ha'], 'HASS-S': ['HASS Social Sciences', 'hs'], 'HASS-H': ['Hass Humanities', 'hh'] };
-      var ciAttributes = { 'CI-H': ['Communication Intensive', 'hc'], 'CI-HW': ['Communication Intensive with Writing', 'hw'] };
-      var genericCourses = [];
-      var baseGeneric = {
+      let hassAttributes = { 'HASS-A': ['HASS Arts', 'ha'], 'HASS-S': ['HASS Social Sciences', 'hs'], 'HASS-H': ['Hass Humanities', 'hh'] };
+      let ciAttributes = { 'CI-H': ['Communication Intensive', 'hc'], 'CI-HW': ['Communication Intensive with Writing', 'hw'] };
+      let genericCourses = [];
+      let baseGeneric = {
         description: 'Use this generic subject to indicate that you are fulfilling a requirement, but do not yet have a specific subject selected.',
         total_units: 12
       };
       // biol:b, chem: c, lab: l1, partial lab: l2, rest: r, calc1: m1, calc2: m2, phys1: p1, phys2: p2
       // hass-a: ha, hass-h: hh, hass-s: hs, hass elective: ht, hass subject: h%5Bahst%5D
       // commun_int - cih: hc, cihw: hw
-      var baseurl = 'http://student.mit.edu/catalog/search.cgi?search=&style=verbatim&when=*&termleng=4&days_offered=*&start_time=*&duration=*&total_units=*';
-      for (var gir in girAttributes) {
-        var offeredGir = this.getMatchingAttributes(gir, undefined, undefined);
+      let baseurl = 'http://student.mit.edu/catalog/search.cgi?search=&style=verbatim&when=*&termleng=4&days_offered=*&start_time=*&duration=*&total_units=*';
+      for (let gir in girAttributes) {
+        let offeredGir = this.getMatchingAttributes(gir, undefined, undefined);
         genericCourses.push(Object.assign({}, baseGeneric, offeredGir, {
           gir_attribute: gir,
           title: 'Generic ' + girAttributes[gir][0],
@@ -633,15 +633,15 @@ export default {
           url: baseurl + '&cred=' + girAttributes[gir][1] + '&commun_int=*'
         }));
       }
-      for (var hass in hassAttributes) {
-        var offeredHass = this.getMatchingAttributes(undefined, hass, undefined);
+      for (let hass in hassAttributes) {
+        let offeredHass = this.getMatchingAttributes(undefined, hass, undefined);
         genericCourses.push(Object.assign({}, baseGeneric, offeredHass, {
           hass_attribute: hass,
           title: 'Generic ' + hass,
           subject_id: hass,
           url: baseurl + '&cred=' + hassAttributes[hass][1] + '&commun_int=*'
         }));
-        var offeredHassCI = this.getMatchingAttributes(undefined, hass, 'CI-H');
+        let offeredHassCI = this.getMatchingAttributes(undefined, hass, 'CI-H');
         genericCourses.push(Object.assign({}, baseGeneric, offeredHassCI, {
           hass_attribute: hass,
           communication_requirement: 'CI-H',
@@ -650,8 +650,8 @@ export default {
           url: baseurl + '&cred=' + hassAttributes[hass][1] + '&commun_int=' + ciAttributes['CI-H'][1]
         }));
       }
-      for (var ci in ciAttributes) {
-        var offeredCI = this.getMatchingAttributes(undefined, undefined, ci);
+      for (let ci in ciAttributes) {
+        let offeredCI = this.getMatchingAttributes(undefined, undefined, ci);
         genericCourses.push(Object.assign({}, baseGeneric, offeredCI, {
           communication_requirement: ci,
           title: 'Generic ' + ci,
@@ -663,7 +663,7 @@ export default {
       return genericCourses;
     },
     overrideWarnings (override, classInfo) {
-      var classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      let classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
       Vue.set(this.roads[this.activeRoad].contents.selectedSubjects[classIndex], 'overrideWarnings', override);
     },
     updateProgress: function (newProgress) {
