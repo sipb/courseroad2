@@ -64,8 +64,8 @@ Array.prototype.diff = function (a) {
 };
 
 Array.prototype.count = function (elem) {
-  var countElem = 0;
-  for (var i = 0; i < this.length; i++) {
+  let countElem = 0;
+  for (let i = 0; i < this.length; i++) {
     if (this[i] === elem) {
       countElem++;
     }
@@ -76,7 +76,7 @@ Array.prototype.count = function (elem) {
 Array.prototype.renumberDuplicates = function () {
   return this.map(function (elem, index) {
     if (this.count(elem) > 1) {
-      var appendNumber = this.slice(0, index).count(elem);
+      let appendNumber = this.slice(0, index).count(elem);
       return elem + '-' + appendNumber.toString();
     } else {
       return elem;
@@ -101,9 +101,9 @@ export default {
       this.conflictDialog = false;
     },
     colorSubject: function (subjectIndex, subjectList) {
-      var remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
-      var localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
-      var currentSubject;
+      let remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
+      let localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
+      let currentSubject;
       if (subjectList === 'remote') {
         currentSubject = remoteSubjects[subjectIndex];
         if (remoteSubjects.diff(localSubjects).indexOf(currentSubject) >= 0) {

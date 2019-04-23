@@ -13,6 +13,7 @@
     }],
     "semi": [2, "always", {
       "omitLastInOneLineBlock": true
-    }]
+    }],
+    "no-var": 1
   }
 }

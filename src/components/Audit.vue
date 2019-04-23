@@ -255,13 +255,13 @@ export default {
       this.dialogReq = req;
     },
     percentage: function (req) {
-      var pfulfilled = req.percent_fulfilled;
-      var pcolor = req.fulfilled
+      let pfulfilled = req.percent_fulfilled;
+      let pcolor = req.fulfilled
         ? '#00b300'
         : req.percent_fulfilled > 15
           ? '#efce15'
           : '#ef8214';
-      var pstring =
+      let pstring =
         '--percent: ' +
         pfulfilled +
         '%; --bar-color: ' +
@@ -270,13 +270,13 @@ export default {
       return pstring;
     },
     deleteReq: function (req) {
-      var reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
+      let reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
       this.$emit('remove-req', reqName);
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {
         if (!item['plain-string']) {
-          var usedReq = item.req;
+          let usedReq = item.req;
           if (usedReq.indexOf('GIR:') === 0) {
             usedReq = usedReq.substring(4);
           }
@@ -291,7 +291,7 @@ export default {
     // for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
     assignListIDs: function (req, index) {
       if ('reqs' in req && 'list-id' in req) {
-        var currentListID = req['list-id'];
+        let currentListID = req['list-id'];
         if (currentListID.indexOf('.reql') >= 0) {
           // if the requirement is top level, it will have .reql at the end and this needs to be removed
           req['list-id'] = req['list-id'].substring(
@@ -301,7 +301,7 @@ export default {
           currentListID = req['list-id'];
         }
         req.uniqueKey = index + '-' + req['list-id'];
-        for (var r = 0; r < req.reqs.length; r++) {
+        for (let r = 0; r < req.reqs.length; r++) {
           // give each sub-requirement a list id of [parent list id].[index]
           Object.assign(req.reqs[r], { 'list-id': currentListID + '.' + r });
           // assign list ids to each of the children

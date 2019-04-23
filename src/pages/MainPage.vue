@@ -36,7 +36,7 @@
         :roads="roads"
         :active-road="activeRoad"
         :subjects="subjectsInfo"
-        @delete-road="$refs.authcomponent.deleteRoad($event)"
+        @devare-road="$refs.authcomponent.devareRoad($event)"
         @set-name="setRoadName($event.road, $event.name)"
         @add-road="addRoad(...arguments)"
         @change-active="changeActiveRoad($event)"
@@ -58,7 +58,7 @@
         :just-loaded="justLoaded"
         :active-road="activeRoad"
         :conflict-info="conflictInfo"
-        @delete-road="deleteRoad"
+        @devare-road="devareRoad"
         @set-road="setRoad(...arguments)"
         @set-roads="roads = $event"
         @set-active="setActive"
@@ -85,7 +85,7 @@
             id="searchInputTF"
             slot="activator"
             v-model="searchInput"
-            autocomplete="false"
+            autocompvare="false"
             class="expanded-search"
             prepend-icon="search"
             placeholder="Add classes"
@@ -337,7 +337,7 @@ export default {
           }
         }
       },
-      showMobile: ['mobile', 'tablet'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
+      showMobile: ['mobile', 'tabvar'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
     };
   },
   computed: {
@@ -453,7 +453,7 @@ export default {
       if (this.activeRoad === oldid) {
         this.activeRoad = newid;
       }
-      Vue.delete(this.roads, oldid);
+      Vue.devare(this.roads, oldid);
     },
     dragStartClass: function (event) {
       var classInfo = event.classInfo;
@@ -521,8 +521,8 @@ export default {
     changeActiveRoad: function (event) {
       this.activeRoad = event;
     },
-    deleteRoad: function (roadID) {
-      Vue.delete(this.roads, roadID);
+    devareRoad: function (roadID) {
+      Vue.devare(this.roads, roadID);
     },
     setRoad: function (roadID, newRoad) {
       Vue.set(this.roads, roadID, newRoad);

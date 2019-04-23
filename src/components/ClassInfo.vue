@@ -208,8 +208,8 @@ export default {
   data: function () { return {} },
   computed: {
     currentSubject: function () {
-      var currentID = this.classInfoStack[this.classInfoStack.length - 1];
-      var curSubj;
+      let currentID = this.classInfoStack[this.classInfoStack.length - 1];
+      let curSubj;
       if (currentID in this.subjectsIndex) {
         curSubj = this.subjects[this.subjectsIndex[currentID]];
       } else {
@@ -238,7 +238,7 @@ export default {
   },
   methods: {
     classInfo: function (subjectID) {
-      var subj = this.subjects[this.subjectsIndex[subjectID]];
+      let subj = this.subjects[this.subjectsIndex[subjectID]];
       if (subj !== undefined) {
         return subj;
       } else {
@@ -257,13 +257,13 @@ export default {
       requirements = requirements.replace(/([,\/])\s+/g, '$1');
       function getParenGroup (str) {
         if (str[0] === '(') {
-          var retString = '';
+          let retString = '';
           str = str.substring(1);
-          var nextParen;
-          var numParens = 1;
+          let nextParen;
+          let numParens = 1;
           while (((nextParen = /[\(\)]/.exec(str)) !== null) && numParens > 0) {
-            var parenIndex = nextParen.index;
-            var parenType = nextParen[0];
+            let parenIndex = nextParen.index;
+            let parenType = nextParen[0];
             if (parenType === '(') {
               numParens++;
             } else {
@@ -281,11 +281,11 @@ export default {
         if (reqString[0] === '(') {
           return getParenGroup(reqString);
         } else {
-          var nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
+          let nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
           if (nextMatch !== null) {
-            var nextReq = nextMatch[1];
-            var restOfString = nextMatch[3];
-            var delimiter = nextMatch[2];
+            let nextReq = nextMatch[1];
+            let restOfString = nextMatch[3];
+            let delimiter = nextMatch[2];
             return [nextReq, restOfString, delimiter];
           } else {
             return [reqString, '', undefined];
@@ -295,12 +295,12 @@ export default {
       function isBaseReq (req) {
         return /[\/\(\),]/g.exec(req) === null;
       }
-      var getClassInfo = this.classInfo;
+      let getClassInfo = this.classInfo;
       function parseReqs (reqString) {
-        var parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
-        var onereq;
-        var connectionType;
-        var nextConnectionType;
+        let parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
+        let onereq;
+        let connectionType;
+        let nextConnectionType;
         while (reqString.length > 0) {
           [onereq, reqString, nextConnectionType] = getNextReq(reqString);
           if (nextConnectionType !== undefined) {
@@ -364,17 +364,17 @@ export default {
             parsedReq.expansionDesc = 'Select all:';
           }
         }
-        var connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
+        let connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
         if (connectionMatch !== null) {
-          var connectionIndex = connectionMatch.index;
-          var firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '');
-          var secondPart = parsedReq.subject_id.substring(connectionIndex);
+          let connectionIndex = connectionMatch.index;
+          let firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '');
+          let secondPart = parsedReq.subject_id.substring(connectionIndex);
           parsedReq.subject_id = firstPart;
           parsedReq.title = secondPart + ' ' + parsedReq.title;
         }
         return parsedReq;
       }
-      var rList = parseReqs(requirements);
+      let rList = parseReqs(requirements);
       rList.topLevel = true;
       return rList;
     },

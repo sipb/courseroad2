@@ -94,8 +94,8 @@ export default {
   },
   mounted () {
     // read uploaded files
-    var onFileChange = (event) => {
-      var reader = new FileReader();
+    let onFileChange = (event) => {
+      let reader = new FileReader();
       reader.onload = (event) => {
         this.inputtext = event.target.result;
       };
@@ -123,12 +123,12 @@ export default {
   },
   methods: {
     exportRoad: function (event) {
-      var filename = this.roads[this.activeRoad].name + '.road';
-      var text = JSON.stringify(this.roads[this.activeRoad].contents);
+      let filename = this.roads[this.activeRoad].name + '.road';
+      let text = JSON.stringify(this.roads[this.activeRoad].contents);
 
       // for some reason this is the way you download files...
       //    create an element, click it, and remove it
-      var element = document.createElement('a');
+      let element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
       element.setAttribute('download', filename);
 
@@ -151,7 +151,7 @@ export default {
       if (!fail) {
         try {
           // parse text and add to roads
-          var obj = JSON.parse(this.inputtext);
+          let obj = JSON.parse(this.inputtext);
           // sanitize
           // progressOverrides must be defined
           if (obj.progressOverrides === undefined) {
@@ -211,7 +211,7 @@ export default {
       }
     },
     otherRoadHasName: function (roadName) {
-      var otherRoadNames = Object.keys(this.roads).filter(function (road) {
+      let otherRoadNames = Object.keys(this.roads).filter(function (road) {
         return this.roads[road].name === roadName;
       }.bind(this));
       return otherRoadNames.length > 0;

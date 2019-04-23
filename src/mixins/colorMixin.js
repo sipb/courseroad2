@@ -23,7 +23,7 @@ export default {
           return 'course-' + course;
         } else if (girAttrs.length > 0) {
           if (girAttrs.length === 1) {
-            var attr = girAttrs[0];
+            let attr = girAttrs[0];
             if (attr.indexOf('HASS') === 0) {
               return 'generic-' + course;
             } else if (attr.indexOf('CI') === 0) {

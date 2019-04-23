@@ -80,8 +80,8 @@ export default {
   },
   methods: {
     clickSubject: function (subj, scroller) {
-      var scrollPointID;
-      var nextReqs;
+      let scrollPointID;
+      let nextReqs;
       if (scroller !== undefined) {
         scrollPointID = this.reqID + '.' + this.whichScroller + '.' + subj.index;
         nextReqs = this.requirement.reqs[scroller].reqs[subj.index];
@@ -94,9 +94,9 @@ export default {
         this.open = true;
         this.nextReqs = nextReqs;
         Vue.nextTick(function () {
-          var scrollPoint = $('#' + $.escapeSelector(scrollPointID));
-          var topPoint = scrollPoint.offset().top;
-          var cardBody = $('#cardBody');
+          let scrollPoint = $('#' + $.escapeSelector(scrollPointID));
+          let topPoint = scrollPoint.offset().top;
+          let cardBody = $('#cardBody');
           cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
         });
       } else {
@@ -111,14 +111,14 @@ export default {
     },
     closeMyExpansion: function (event) {
       this.open = false;
-      var scrollPoint;
+      let scrollPoint;
       if (!this.doubleScroller) {
         scrollPoint = $('#' + $.escapeSelector(this.reqID));
       } else {
         scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID));
       }
-      var topPoint = scrollPoint.offset().top;
-      var cardBody = $('#cardBody');
+      let topPoint = scrollPoint.offset().top;
+      let cardBody = $('#cardBody');
       cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
     }
   }
