@@ -313,7 +313,6 @@ export default {
     conflictInfo: undefined,
     cookiesAllowed: false,
     searchInput: "",
-    showSearch: false,
     classInfoStack: [],
     currentSemester: 0,
     addingFromCard: false,
@@ -615,12 +614,6 @@ export default {
       },
       deep: true
     },
-    searchInput: function(newSearch, oldSearch) {
-      console.log("search input");
-      if(newSearch.length > 0) {
-        this.showSearch = true;
-      }
-    }
   },
   mounted() {
 
@@ -653,10 +646,6 @@ export default {
       });
 
     this.updateFulfillment();
-
-    document.body.addEventListener("click", function(e) {
-      this.showSearch = false;
-    }.bind(this));
 
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
