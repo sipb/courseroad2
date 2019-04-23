@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import moment from 'moment';
 import Vue from 'vue';
 import UAParser from 'ua-parser-js';

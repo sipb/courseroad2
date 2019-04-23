@@ -270,6 +270,7 @@ import FilterSet from './../components/FilterSet.vue';
 import RoadTabs from './../components/RoadTabs.vue';
 import ConflictDialog from './../components/ConflictDialog.vue';
 import Auth from './../components/Auth.vue';
+import axios from 'axios';
 import $ from 'jquery';
 import moment from 'moment';
 import UAParser from 'ua-parser-js';
