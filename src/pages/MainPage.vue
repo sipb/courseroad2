@@ -71,12 +71,11 @@
       <v-spacer></v-spacer>
 
       <v-menu
-        attach
-        v-model = "showSearch"
         :close-on-content-click="false"
-        :close-on-click = "false"
+        :close-on-click = "true"
         fixed
         offset-y
+        :open-on-click="true"
         input-activator
       >
         <v-text-field
@@ -88,6 +87,7 @@
           placeholder = "Add classes"
           slot = "activator"
           autofocus
+          @click.native = "clickSearch"
         >
         </v-text-field>
         <class-search
@@ -591,6 +591,9 @@ export default {
     updateProgress: function(newProgress) {
       Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
+    },
+    clickSearch: function(event) {
+      console.log("click search");
     }
   },
   watch: {
@@ -613,6 +616,7 @@ export default {
       deep: true
     },
     searchInput: function(newSearch, oldSearch) {
+      console.log("search input");
       if(newSearch.length > 0) {
         this.showSearch = true;
       }
