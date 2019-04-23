@@ -1,7 +1,7 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
 
-  <v-flex style="padding: 0px 18px 0px 18px;">
+  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;">
     <div style="display: flex; align-content: space-between; margin: 12px 0px;">
       <v-icon
         v-slot:prepend
