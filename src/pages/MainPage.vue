@@ -70,7 +70,7 @@
         @set-sem="setSemester"
       />
 
-      <v-layout grow>
+      <v-layout>
         <v-menu
           v-model="showSearch"
           attach
@@ -687,4 +687,9 @@ export default {
   .expanded-search {
     max-width: 22em;
   }
+</style>
+<style>
+.v-menu__activator {
+  justify-content: flex-end;
+}
 </style>
