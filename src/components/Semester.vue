@@ -106,14 +106,22 @@ export default {
           subj = this.allSubjects[this.subjectsIndex[subjID]];
           var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
           var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
+          var prereqsfulfilled = true;
+          var coreqsfulfilled = true;
           if (prereqString !== undefined) {
-            var prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects);
+            prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects);
+          }
+          if (coreqString !== undefined) {
+            coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
+          }
+          if(subj.either_prereq_or_coreq) {
+            if(!(prereqsfulfilled || coreqsfulfilled)) {
+              subjectWarnings.push('<b>Unsatisfied corequisite or prerequisite</b> - You must satisfy either the prerequisites or corequisites for this course.')
+            }
+          } else {
             if (!prereqsfulfilled) {
               subjectWarnings.push('<b>Unsatisfied prerequisite</b> — One or more prerequisites are not yet fulfilled.');
             }
-          }
-          if (coreqString !== undefined) {
-            var coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
             if (!coreqsfulfilled) {
               subjectWarnings.push('<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.');
             }
