@@ -22,3 +22,5 @@ How to push changes to the live site:
 ./deploy.sh [dev or prod] [kerberos]
 ```
 which will deploy the code to the [dev](https://courseroad.mit.edu/dev/) and [main](https://courseroad.mit.edu/) sites respectively.
+
+**Very important:** Always deploy to `dev` and test it before deploying to `prod`!
