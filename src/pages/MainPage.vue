@@ -36,7 +36,7 @@
         :roads="roads"
         :active-road="activeRoad"
         :subjects="subjectsInfo"
-        @devare-road="$refs.authcomponent.devareRoad($event)"
+        @delete-road="$refs.authcomponent.deleteRoad($event)"
         @set-name="setRoadName($event.road, $event.name)"
         @add-road="addRoad(...arguments)"
         @change-active="changeActiveRoad($event)"
@@ -58,7 +58,7 @@
         :just-loaded="justLoaded"
         :active-road="activeRoad"
         :conflict-info="conflictInfo"
-        @devare-road="devareRoad"
+        @delete-road="deleteRoad"
         @set-road="setRoad(...arguments)"
         @set-roads="roads = $event"
         @set-active="setActive"
@@ -85,7 +85,7 @@
             id="searchInputTF"
             slot="activator"
             v-model="searchInput"
-            autocompvare="false"
+            autocomplete="false"
             class="expanded-search"
             prepend-icon="search"
             placeholder="Add classes"
@@ -453,7 +453,7 @@ export default {
       if (this.activeRoad === oldid) {
         this.activeRoad = newid;
       }
-      Vue.devare(this.roads, oldid);
+      Vue.delete(this.roads, oldid);
     },
     dragStartClass: function (event) {
       let classInfo = event.classInfo;
@@ -521,8 +521,8 @@ export default {
     changeActiveRoad: function (event) {
       this.activeRoad = event;
     },
-    devareRoad: function (roadID) {
-      Vue.devare(this.roads, roadID);
+    deleteRoad: function (roadID) {
+      Vue.delete(this.roads, roadID);
     },
     setRoad: function (roadID, newRoad) {
       Vue.set(this.roads, roadID, newRoad);

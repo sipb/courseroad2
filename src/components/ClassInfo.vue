@@ -169,7 +169,9 @@
                 @click-subject="clickRelatedSubject"
               />
             </div>
-            <h4 v-if = "currentSubject.either_prereq_or_coreq">OR</h4>
+            <h4 v-if="currentSubject.either_prereq_or_coreq">
+              OR
+            </h4>
             <div v-if="parsedCoreqs.reqs.length > 0">
               <h3 id="coreq0">
                 Corequisites

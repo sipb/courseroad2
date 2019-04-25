@@ -116,7 +116,7 @@ export default {
           }
           if (subj.either_prereq_or_coreq) {
             if (!(prereqsfulfilled || coreqsfulfilled)) {
-              subjectWarnings.push('<b>Unsatisfied corequisite or prerequisite</b> - You must satisfy either the prerequisites or corequisites for this course.')
+              subjectWarnings.push('<b>Unsatisfied corequisite or prerequisite</b> - You must satisfy either the prerequisites or corequisites for this course.');
             }
           } else {
             if (!prereqsfulfilled) {
