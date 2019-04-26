@@ -225,9 +225,9 @@
       @click.native="$event.stopPropagation()"
     />
 
-    <v-footer v-if="!dismissedOld || (!cookiesAllowed && !dismissedCookies)" fixed class="py-1 px-2" style="height: unset;">
+    <v-footer v-if="!dismissedOld || (!cookiesAllowed && !dismissedCookies)" fixed style="height: unset;">
       <v-layout column>
-        <v-flex v-if="!dismissedOld">
+        <v-flex v-if="!dismissedOld" class = "lime accent-1 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
               Looking for the old courseroad?  Visit the old website <a target="_blank" href="https://courseroad.mit.edu/old">here</a> and export your roads!
@@ -239,8 +239,8 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-divider v-if="!dismissedOld && !cookiesAllowed && !dismissedCookies" class="ma-1" />
-        <v-flex v-if="!cookiesAllowed && !dismissedCookies">
+        <v-divider v-if="!dismissedOld && !cookiesAllowed && !dismissedCookies" />
+        <v-flex v-if="!cookiesAllowed && !dismissedCookies" class = "lime accent-3 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
               This site uses cookies and session storage to store your data and login token.  Click OK to consent to the use of cookies.
