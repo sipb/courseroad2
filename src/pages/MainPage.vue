@@ -234,7 +234,7 @@
               Looking for the old courseroad?  Visit the old website <a target="_blank" href="https://courseroad.mit.edu/old">here</a> and export your roads!
             </v-flex>
             <v-flex shrink>
-              <v-btn small icon flat class="ma-1" @click="dismissedOld = true;">
+              <v-btn small icon flat class="ma-1" @click="dismissOld">
                 <v-icon>close</v-icon>
               </v-btn>
             </v-flex>
@@ -429,6 +429,11 @@ export default {
       this.showSearch = false;
     }.bind(this));
 
+    if(this.$cookies.isKey('dismissedOld')) {
+      this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
+      this.cookiesAllowed = true;
+    }
+
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
@@ -559,6 +564,7 @@ export default {
     allowCookies: function () {
       this.$refs.authcomponent.allowCookies();
       this.cookiesAllowed = true;
+      this.$cookies.set('dismissedOld', this.dismissedOld);
     },
     updateLocal: function (id) {
       this.$refs.authcomponent.updateLocal(id);
@@ -683,7 +689,13 @@ export default {
     },
     updateProgress: function (newProgress) {
       Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
-      Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
+      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    dismissOld: function() {
+      this.dismissedOld = true;
+      if(this.cookiesAllowed) {
+        this.$cookies.set('dismissedOld', true);
+      }
     },
     clickSearch: function(event) {
       this.searchOpen = !this.searchOpen;
