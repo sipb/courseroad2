@@ -83,8 +83,7 @@
           @click.native = "clickSearch"
           @input = "typeSearch"
           style = "width:100%;"
-          >
-        </v-text-field>
+        />
       </v-layout>
 
       <v-menu
@@ -105,8 +104,7 @@
           @add-class="addClass"
           @view-class-info="pushClassStack"
           @drag-start-class="dragStartClass"
-        >
-        </class-search>
+        />
       </v-menu>
 
     </v-toolbar>
