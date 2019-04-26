@@ -1,31 +1,39 @@
-import Vue from 'vue'
-import App from './App.vue'
-import MainPage from './pages/MainPage.vue'
-import About from "./pages/About.vue"
-import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
-import $ from 'jquery'
-import VueCookies from "vue-cookies"
-import "./assets/css/coursecolors.css"
-import 'vuetify/dist/vuetify.min.css'
+import Vue from 'vue';
+import App from './App.vue';
+import MainPage from './pages/MainPage.vue';
+import About from './pages/About.vue';
+import Vuetify from 'vuetify';
+import VueRouter from 'vue-router';
+import $ from 'jquery';
+import VueCookies from 'vue-cookies';
+import './assets/css/coursecolors.css';
+import 'vuetify/dist/vuetify.min.css';
 
-Vue.use(Vuetify)
-Vue.use(VueCookies)
-Vue.use(VueRouter)
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+
+Vue.use(Vuetify);
+Vue.use(VueCookies);
+Vue.use(VueRouter);
 
 var routes = [
   { path: '/', component: MainPage },
   { path: '/about', component: About }
-]
+];
 
 var router = new VueRouter({
   routes
-})
+});
 
 VueCookies.config('3d');
 
 new Vue({
-  el: "#app",
+  el: '#app',
   router: router,
   render: h => h(App)
 });
