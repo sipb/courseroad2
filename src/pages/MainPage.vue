@@ -68,44 +68,45 @@
         @reset-id="resetID(...arguments)"
         @allow-cookies="allowCookies"
         @set-sem="setSemester"
-      />
+      >
+      </auth>
 
-      <v-layout grow>
-        <v-menu
-          v-model="showSearch"
-          attach
-          :close-on-content-click="false"
-          :close-on-click="false"
-          fixed
-          offset-y
-          input-activator
-          style="width: 100%;"
-        >
-          <v-text-field
-            id="searchInputTF"
-            slot="activator"
-            v-model="searchInput"
-            autocomplete="false"
-            class="expanded-search"
-            prepend-icon="search"
-            placeholder="Add classes"
-            autofocus
-          />
-          <class-search
-            id="searchMenu"
-            ref="searchMenu"
-            class="search-menu"
-            :search-input="searchInput"
-            :subjects="subjectsInfo"
-            :generic-courses="genericCourses"
-            :class-info-stack="classInfoStack"
-            :cookies-allowed="cookiesAllowed"
-            @add-class="addClass"
-            @view-class-info="pushClassStack"
-            @drag-start-class="dragStartClass"
-          />
-        </v-menu>
+      <v-layout justify-end>
+        <v-text-field
+          id = "searchInputTF"
+          autocomplete = "false"
+          class = "expanded-search"
+          prepend-icon="search"
+          v-model = "searchInput"
+          placeholder = "Add classes"
+          autofocus
+          @click.native = "clickSearch"
+          @input = "typeSearch"
+          style = "width:100%;"
+        />
       </v-layout>
+
+      <v-menu
+        :close-on-content-click="false"
+        v-model = "searchOpen"
+        :position-x = "searchX"
+        :position-y = "searchY"
+      >
+        <class-search
+          id="searchMenu"
+          ref="searchMenu"
+          class="search-menu"
+          :search-input="searchInput"
+          :subjects="subjectsInfo"
+          :generic-courses="genericCourses"
+          :class-info-stack="classInfoStack"
+          :cookies-allowed="cookiesAllowed"
+          @add-class="addClass"
+          @view-class-info="pushClassStack"
+          @drag-start-class="dragStartClass"
+        />
+      </v-menu>
+
     </v-toolbar>
 
     <v-navigation-drawer
@@ -322,6 +323,9 @@ export default {
       itemAdding: undefined,
       dismissedOld: false,
       dismissedCookies: false,
+      searchOpen: false,
+      searchX: undefined,
+      searchY: undefined,
       // TODO: Really we should grab this from a global datastore
       // now in the same format as FireRoad
 
@@ -412,6 +416,14 @@ export default {
       });
 
     this.updateFulfillment();
+
+    this.searchX = $("#searchInputTF").offset().left;
+    this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+
+    $(window).on("resize", function() {
+      this.searchX = $("#searchInputTF").offset().left;
+      this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+    }.bind(this));
 
     document.body.addEventListener('click', function (e) {
       this.showSearch = false;
@@ -670,7 +682,13 @@ export default {
     },
     updateProgress: function (newProgress) {
       Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
+    },
+    clickSearch: function(event) {
+      this.searchOpen = !this.searchOpen;
+    },
+    typeSearch: function(searchString) {
+      this.searchOpen = searchString.length > 0;
     }
   }
 };
