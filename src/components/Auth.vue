@@ -44,8 +44,11 @@
 </template>
 
 <script>
+import axios from 'axios';
+import moment from 'moment';
 import Vue from 'vue';
 import UAParser from 'ua-parser-js';
+
 var DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
 function getQueryObject () {
