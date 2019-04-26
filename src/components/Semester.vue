@@ -306,6 +306,7 @@ export default {
       const allIDs = subjects.map((s) => s.id);
       reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',');
       const splitReq = reqString.split(/(,|\(|\)|\/)/);
+      let _this = this
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
           splitReq[i] = 'true';
@@ -314,7 +315,7 @@ export default {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
           } else {
-            const anyClassSatisfiesAlone = subjects.map((s) => this.classSatisfies(splitReq[i], s.id)).reduce((a, b) => a || b, false);
+            const anyClassSatisfiesAlone = subjects.map((s) => _this.classSatisfies(splitReq[i], s.id)).reduce((a, b) => a || b, false);
             let anyClassesSatisfyTogether = false;
             for (let e = 0; e < EQUIVALENCE_SETS.length; e++) {
               if (EQUIVALENCE_SETS[e][1] === splitReq[i] && EQUIVALENCE_SETS[e][0].reduce((acc, sid) => acc && allIDs.indexOf(sid) >= 0, true)) {
