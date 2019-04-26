@@ -71,8 +71,7 @@
       >
       </auth>
 
-      <v-spacer></v-spacer>
-      <v-layout grow>
+      <v-layout justify-end>
         <v-text-field
           id = "searchInputTF"
           autocomplete = "false"
