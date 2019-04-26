@@ -415,8 +415,8 @@ export default {
       this.showSearch = false;
     }.bind(this));
 
-    if(this.$cookies.isKey("dismissedOld")) {
-      this.dismissedOld = JSON.parse(this.$cookies.get("dismissedOld"));
+    if(this.$cookies.isKey('dismissedOld')) {
+      this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
       this.cookiesAllowed = true;
     }
 
@@ -549,7 +549,7 @@ export default {
     allowCookies: function () {
       this.$refs.authcomponent.allowCookies();
       this.cookiesAllowed = true;
-      this.$cookies.set("dismissedOld", this.dismissedOld);
+      this.$cookies.set('dismissedOld', this.dismissedOld);
     },
     updateLocal: function (id) {
       this.$refs.authcomponent.updateLocal(id);
@@ -679,7 +679,7 @@ export default {
     dismissOld: function() {
       this.dismissedOld = true;
       if(this.cookiesAllowed) {
-        this.$cookies.set("dismissedOld", true);
+        this.$cookies.set('dismissedOld', true);
       }
     }
   }
