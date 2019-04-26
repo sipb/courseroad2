@@ -290,6 +290,9 @@ export default {
           subj = this.allSubjects[this.subjectsIndex[id]];
         } else if (id in this.genericIndex) {
           subj = this.genericCourses[this.genericIndex[id]];
+        } else {
+          // subj not found in known courses
+          return false;
         }
         if (req.indexOf('GIR:') >= 0) {
           req = req.substring(4);
