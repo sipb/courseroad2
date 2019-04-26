@@ -468,7 +468,7 @@ export default {
       this.addingFromCard = false;
     },
     updateFulfillment: function () {
-      let _this = this;
+      const _this = this;
       for (let r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
         const req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
         axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, _this.roads[_this.activeRoad].contents).then(function (response) {
