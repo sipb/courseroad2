@@ -43,7 +43,7 @@
             && req.percent_fulfilled !== 'N/A'"
           :style="'float: right; color: '+percentageTextColor"
         >
-          &nbsp{{ req.percent_fulfilled }}%
+          &nbsp;{{ req.percent_fulfilled }}%
           <v-icon
             v-if="'reqs' in req && hoveringOver"
             style="padding-left: 0.2em; padding-right: 0em;"
@@ -79,7 +79,7 @@ export default {
         if (this.req.req in this.subjectIndex) {
           return this.subjects[this.subjectIndex[this.req.req]];
         }
-        var attributeReq = this.req.req;
+        let attributeReq = this.req.req;
         if (attributeReq.indexOf('GIR:') === 0) {
           attributeReq = attributeReq.substring(4);
         }
@@ -123,8 +123,8 @@ export default {
       return pstring;
     },
     percentage_bar: function () {
-      var showPBar = ('reqs' in this.req || 'threshold' in this.req);
-      var pblock = {
+      const showPBar = ('reqs' in this.req || 'threshold' in this.req);
+      const pblock = {
         'percentage-bar': showPBar,
         'p-bar': showPBar
       };
@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     dragStart: function (event) {
-      var usedInfo = this.classInfo;
+      let usedInfo = this.classInfo;
       if (usedInfo === undefined) {
         usedInfo = { id: this.req.req };
       }

@@ -54,7 +54,7 @@
           <h3>Warnings for {{ classInfo.id }}</h3>
         </v-card-title>
         <v-card-text>
-          <p v-for="warning in warnings" v-html="warning" />
+          <p v-for="warning in warnings" :key="warning" v-html="warning" />
           <v-switch
             v-model="shouldOverrideWarnings"
             label="Override warnings"

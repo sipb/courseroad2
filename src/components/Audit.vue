@@ -36,7 +36,7 @@
       open-on-click
       :activatable="false"
     >
-      <template slot="prepend" slot-scope="{ item, leaf, open }">
+      <template slot="prepend" slot-scope="{ item }">
         <v-icon
           v-if="!('reqs' in item)"
           :style="fulfilledIcon(item)"
@@ -168,18 +168,7 @@ export default {
     'genericIndex',
     'progressOverrides'
   ],
-  props: ['selectedReqs', 'reqTrees', 'reqList', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex', 'progressOverrides'],
   data: function () {
-    return {
-      tree: [],
-      viewDialog: false,
-      dialogReq: undefined,
-      progressDialog: false,
-      progressReq: undefined,
-      newManualProgress: 0
-    };
-  },
-  data () {
     return {
       tree: [],
       viewDialog: false,
@@ -214,13 +203,13 @@ export default {
       courses.sort(function (c1, c2) {
         const a = c1[sortKey].toLowerCase();
         const b = c2[sortKey].toLowerCase();
-        if (a.includes('major') && b.includes('major') || a.includes('minor') && b.includes('minor')) {
+        if ((a.includes('major') && b.includes('major')) || (a.includes('minor') && b.includes('minor'))) {
           let n1 = a.split(' ')[0].split('-')[0];
           let n2 = b.split(' ')[0].split('-')[0];
           n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;
           n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;
-          if (n1 == n2) return a.localeCompare(b);
-          return !isNaN(n1) && !isNaN(n2) || isNaN(n1) && isNaN(n2)
+          if (n1 === n2) return a.localeCompare(b);
+          return (!isNaN(n1) && !isNaN(n2)) || (isNaN(n1) && isNaN(n2))
             ? n1 - n2
             : (!isNaN(n1) ? -1 : 1);
         } else if (a.includes('major') && b.includes('minor')) return -1;
@@ -252,7 +241,7 @@ export default {
     fulfilledIcon: function (req) {
       if (
         req.fulfilled &&
-        (req.req != undefined || req.sat_courses.length > 0)
+        (req.req !== undefined || req.sat_courses.length > 0)
       ) {
         return 'color: #00b300;';
       } else {
@@ -266,13 +255,13 @@ export default {
       this.dialogReq = req;
     },
     percentage: function (req) {
-      var pfulfilled = req.percent_fulfilled;
-      var pcolor = req.fulfilled
+      const pfulfilled = req.percent_fulfilled;
+      const pcolor = req.fulfilled
         ? '#00b300'
         : req.percent_fulfilled > 15
           ? '#efce15'
           : '#ef8214';
-      var pstring =
+      const pstring =
         '--percent: ' +
         pfulfilled +
         '%; --bar-color: ' +
@@ -281,13 +270,13 @@ export default {
       return pstring;
     },
     deleteReq: function (req) {
-      var reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
+      const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
       this.$emit('remove-req', reqName);
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {
         if (!item['plain-string']) {
-          var usedReq = item.req;
+          let usedReq = item.req;
           if (usedReq.indexOf('GIR:') === 0) {
             usedReq = usedReq.substring(4);
           }
@@ -302,7 +291,7 @@ export default {
     // for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
     assignListIDs: function (req, index) {
       if ('reqs' in req && 'list-id' in req) {
-        var currentListID = req['list-id'];
+        let currentListID = req['list-id'];
         if (currentListID.indexOf('.reql') >= 0) {
           // if the requirement is top level, it will have .reql at the end and this needs to be removed
           req['list-id'] = req['list-id'].substring(
@@ -312,7 +301,7 @@ export default {
           currentListID = req['list-id'];
         }
         req.uniqueKey = index + '-' + req['list-id'];
-        for (var r = 0; r < req.reqs.length; r++) {
+        for (let r = 0; r < req.reqs.length; r++) {
           // give each sub-requirement a list id of [parent list id].[index]
           Object.assign(req.reqs[r], { 'list-id': currentListID + '.' + r });
           // assign list ids to each of the children
@@ -328,9 +317,7 @@ export default {
       );
       this.progressDialog = true;
       if (this.progressReq['list-id'] in this.progressOverrides) {
-        this.newManualProgress = this.progressOverrides[
-          this.progressReq['list-id']
-        ];
+        this.newManualProgress = this.progressOverrides[this.progressReq['list-id']];
       }
     },
     capitalize: function (word) {

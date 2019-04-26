@@ -110,7 +110,7 @@
                 <td><b>Instructor</b></td>
                 <td>
                   <ul class="comma-separated">
-                    <li v-for="instructor in currentSubject.instructors">
+                    <li v-for="instructor in currentSubject.instructors" :key="instructor">
                       {{ instructor }}
                     </li>
                   </ul>
@@ -169,7 +169,9 @@
                 @click-subject="clickRelatedSubject"
               />
             </div>
-            <h4 v-if = "currentSubject.either_prereq_or_coreq">OR</h4>
+            <h4 v-if="currentSubject.either_prereq_or_coreq">
+              OR
+            </h4>
             <div v-if="parsedCoreqs.reqs.length > 0">
               <h3 id="coreq0">
                 Corequisites
@@ -208,8 +210,8 @@ export default {
   data: function () { return {} },
   computed: {
     currentSubject: function () {
-      var currentID = this.classInfoStack[this.classInfoStack.length - 1];
-      var curSubj;
+      const currentID = this.classInfoStack[this.classInfoStack.length - 1];
+      let curSubj;
       if (currentID in this.subjectsIndex) {
         curSubj = this.subjects[this.subjectsIndex[currentID]];
       } else {
@@ -238,7 +240,7 @@ export default {
   },
   methods: {
     classInfo: function (subjectID) {
-      var subj = this.subjects[this.subjectsIndex[subjectID]];
+      const subj = this.subjects[this.subjectsIndex[subjectID]];
       if (subj !== undefined) {
         return subj;
       } else {
@@ -256,15 +258,15 @@ export default {
       // remove spaces after commas and slashes
       requirements = requirements.replace(/([,\/])\s+/g, '$1');
       function getParenGroup (str) {
-        if (str[0] == '(') {
-          var retString = '';
+        if (str[0] === '(') {
+          let retString = '';
           str = str.substring(1);
-          var nextParen;
-          var numParens = 1;
+          let nextParen;
+          let numParens = 1;
           while (((nextParen = /[\(\)]/.exec(str)) !== null) && numParens > 0) {
-            var parenIndex = nextParen.index;
-            var parenType = nextParen[0];
-            if (parenType == '(') {
+            const parenIndex = nextParen.index;
+            const parenType = nextParen[0];
+            if (parenType === '(') {
               numParens++;
             } else {
               numParens--;
@@ -278,14 +280,14 @@ export default {
         }
       }
       function getNextReq (reqString) {
-        if (reqString[0] == '(') {
+        if (reqString[0] === '(') {
           return getParenGroup(reqString);
         } else {
-          var nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
+          const nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
           if (nextMatch !== null) {
-            var nextReq = nextMatch[1];
-            var restOfString = nextMatch[3];
-            var delimiter = nextMatch[2];
+            const nextReq = nextMatch[1];
+            const restOfString = nextMatch[3];
+            const delimiter = nextMatch[2];
             return [nextReq, restOfString, delimiter];
           } else {
             return [reqString, '', undefined];
@@ -295,12 +297,12 @@ export default {
       function isBaseReq (req) {
         return /[\/\(\),]/g.exec(req) === null;
       }
-      var getClassInfo = this.classInfo;
+      const getClassInfo = this.classInfo;
       function parseReqs (reqString) {
-        var parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
-        var onereq;
-        var connectionType = undefined;
-        var nextConnectionType = undefined;
+        const parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
+        let onereq;
+        let connectionType;
+        let nextConnectionType;
         while (reqString.length > 0) {
           [onereq, reqString, nextConnectionType] = getNextReq(reqString);
           if (nextConnectionType !== undefined) {
@@ -316,9 +318,9 @@ export default {
             parsedReq.reqs.push(parseReqs(onereq));
           }
         }
-        if (connectionType == '/') {
+        if (connectionType === '/') {
           parsedReq.connectionType = 'any';
-        } else if (connectionType == ',') {
+        } else if (connectionType === ',') {
           parsedReq.connectionType = 'all';
         }
         function sortOrder (req) {
@@ -364,17 +366,17 @@ export default {
             parsedReq.expansionDesc = 'Select all:';
           }
         }
-        var connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
+        const connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
         if (connectionMatch !== null) {
-          var connectionIndex = connectionMatch.index;
-          var firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '');
-          var secondPart = parsedReq.subject_id.substring(connectionIndex);
+          const connectionIndex = connectionMatch.index;
+          const firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '');
+          const secondPart = parsedReq.subject_id.substring(connectionIndex);
           parsedReq.subject_id = firstPart;
           parsedReq.title = secondPart + ' ' + parsedReq.title;
         }
         return parsedReq;
       }
-      var rList = parseReqs(requirements);
+      const rList = parseReqs(requirements);
       rList.topLevel = true;
       return rList;
     },
