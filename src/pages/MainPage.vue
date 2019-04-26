@@ -70,26 +70,25 @@
 
       <v-spacer></v-spacer>
 
+      <v-text-field
+        id = "searchInputTF"
+        autocomplete = "false"
+        class = "expanded-search"
+        prepend-icon="search"
+        v-model = "searchInput"
+        placeholder = "Add classes"
+        autofocus
+        @click.native = "clickSearch"
+        @input = "typeSearch"
+        >
+      </v-text-field>
+
       <v-menu
         :close-on-content-click="false"
-        :close-on-click = "true"
-        fixed
-        offset-y
-        :open-on-click="true"
-        input-activator
+        v-model = "searchOpen"
+        :position-x = "searchX"
+        :position-y = "searchY"
       >
-        <v-text-field
-          id = "searchInputTF"
-          autocomplete = "false"
-          class = "expanded-search"
-          prepend-icon="search"
-          v-model = "searchInput"
-          placeholder = "Add classes"
-          slot = "activator"
-          autofocus
-          @click.native = "clickSearch"
-        >
-        </v-text-field>
         <class-search
           id = "searchMenu"
           ref = "searchMenu"
@@ -289,7 +288,7 @@ export default {
     'conflict-dialog': ConflictDialog,
     'auth': Auth,
     'class-info': ClassInfo,
-    'import-export': ImportExport,
+    'import-export': ImportExport
   },
   data: function(){ return {
     reqTrees: {},
@@ -319,6 +318,9 @@ export default {
     itemAdding: undefined,
     dismissedOld: false,
     dismissedCookies: false,
+    searchOpen: false,
+    searchX: undefined,
+    searchY: undefined,
     // TODO: Really we should grab this from a global datastore
     // now in the same format as FireRoad
 
@@ -592,7 +594,10 @@ export default {
       Vue.set(this.roads[this.activeRoad], "changed", moment().format(DATE_FORMAT));
     },
     clickSearch: function(event) {
-      console.log("click search");
+      this.searchOpen = !this.searchOpen;
+    },
+    typeSearch: function(searchString) {
+      this.searchOpen = searchString.length > 0;
     }
   },
   watch: {
@@ -646,6 +651,15 @@ export default {
       });
 
     this.updateFulfillment();
+
+    this.searchX = $("#searchInputTF").offset().left;
+    this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+
+    $(window).on("resize", function() {
+      this.searchX = $("#searchInputTF").offset().left;
+      this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+    }.bind(this))
+
 
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
