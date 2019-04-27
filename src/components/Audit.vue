@@ -239,14 +239,9 @@ export default {
   },
   methods: {
     fulfilledIcon: function (req) {
-      if (
-        req.fulfilled &&
-        (req.req !== undefined || req.sat_courses.length > 0)
-      ) {
-        return 'color: #00b300;';
-      } else {
-        return '';
-      }
+      return req.fulfilled && (req.req !== undefined || req.sat_courses.length > 0)
+        ? 'color: #00b300;'
+        : '';
     },
     reqInfo: function (event, req) {
       event.preventDefault();
@@ -261,13 +256,7 @@ export default {
         : req.percent_fulfilled > 15
           ? '#efce15'
           : '#ef8214';
-      const pstring =
-        '--percent: ' +
-        pfulfilled +
-        '%; --bar-color: ' +
-        pcolor +
-        '; --bg-color: #ffffff';
-      return pstring;
+      return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: #fff`;
     },
     deleteReq: function (req) {
       const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));

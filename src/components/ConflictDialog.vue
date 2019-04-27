@@ -101,8 +101,12 @@ export default {
       this.conflictDialog = false;
     },
     colorSubject: function (subjectIndex, subjectList) {
-      const remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
-      const localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
+      const remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map(
+        s => s.id + ' ' + s.semester
+      ).renumberDuplicates();
+      const localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map(
+        s => s.id + ' ' + s.semester
+      ).renumberDuplicates();
       let currentSubject;
       if (subjectList === 'remote') {
         currentSubject = remoteSubjects[subjectIndex];

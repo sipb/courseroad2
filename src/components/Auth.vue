@@ -171,11 +171,9 @@ export default {
         } };
         return this.verify()
           .then(function (verifyResponse) {
-            if (params === false) {
-              return axiosFunc(process.env.FIREROAD_URL + link, headerList);
-            } else {
-              return axiosFunc(process.env.FIREROAD_URL + link, params, headerList);
-            }
+            return !!params
+              ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
+              : axiosFunc(process.env.FIREROAD_URL + link, headerList);
           });
       } else {
         return Promise.reject('No auth information');
@@ -416,7 +414,7 @@ export default {
 
     deleteRoad: function (roadID) {
       if (this.activeRoad === roadID) {
-        var roadIndex = Object.keys(this.roads).indexOf(roadID);
+        const roadIndex = Object.keys(this.roads).indexOf(roadID);
         const withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex + 1));
         if (withoutRoad.length) {
           if (withoutRoad.length > roadIndex) {
@@ -485,12 +483,9 @@ export default {
     },
     changeSemester: function (year) {
       const currentMonth = new Date().getMonth();
-      let sem;
-      if (currentMonth >= 4 && currentMonth <= 10) {
-        sem = 1 + year * 3;
-      } else {
-        sem = 3 + year * 3;
-      }
+      const sem = currentMonth >= 4 && currentMonth <= 10
+        ? 1 + year * 3
+        : 3 + year * 3;
       this.postSecure('/set_semester/', { semester: sem }).then(function (res) {
         if (res.status === 200 && res.data.success) {
           this.$emit('set-sem', sem);

@@ -71,7 +71,7 @@ export default {
   props: ['selectedSubjects', 'subjects', 'roadID', 'currentSemester', 'addingFromCard', 'itemAdding', 'dragSemesterNum', 'subjectsIndex', 'genericCourses', 'genericIndex'],
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
-    const numSemesters = 16;// this.currentSemester >= 13 ? 16 : 13
+    const numSemesters = 16;
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,

@@ -97,15 +97,9 @@ export default {
         ('req' in this.req && (Object.keys(this.subjectIndex).length === 0));
     },
     reqFulfilled: function () {
-      if (this.req.fulfilled) {
-        return {
-          fulfilled: true
-        };
-      } else {
-        return {
-          fulfilled: false
-        };
-      }
+      return {
+        fulfilled: !!this.req.fulfilled
+      };
     },
     percentageTextColor: function () {
       return this.req.fulfilled
@@ -119,16 +113,14 @@ export default {
     },
     percentage: function () {
       const pfulfilled = this.req.percent_fulfilled;
-      const pstring = `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
-      return pstring;
+      return `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
     },
     percentage_bar: function () {
       const showPBar = ('reqs' in this.req || 'threshold' in this.req);
-      const pblock = {
+      return {
         'percentage-bar': showPBar,
         'p-bar': showPBar
       };
-      return pblock;
     }
   },
   methods: {
@@ -149,9 +141,6 @@ export default {
 </script>
 
 <style scoped>
-  .fulfilled {
-    /* background:  radial-gradient(#00b300,white); */
-  }
   .requirement {
     font-size: 0.75em;
   }

@@ -211,50 +211,35 @@ export default {
   computed: {
     currentSubject: function () {
       const currentID = this.classInfoStack[this.classInfoStack.length - 1];
-      let curSubj;
-      if (currentID in this.subjectsIndex) {
-        curSubj = this.subjects[this.subjectsIndex[currentID]];
-      } else {
-        curSubj = this.genericCourses[this.genericIndex[currentID]];
-      }
-      return curSubj;
+      return currentID in this.subjectsIndex
+        ? this.subjects[this.subjectsIndex[currentID]]
+        : this.genericCourses[this.genericIndex[currentID]];
     },
     parsedPrereqs: function () {
-      if (this.currentSubject.prerequisites !== undefined) {
-        return this.parseRequirements(this.currentSubject.prerequisites);
-      } else {
-        return {
-          reqs: []
-        };
-      }
+      return this.currentSubject.prerequisites !== undefined
+        ? this.parseRequirements(this.currentSubject.prerequisites)
+        : { reqs: [] };
     },
     parsedCoreqs: function () {
-      if (this.currentSubject.corequisites !== undefined) {
-        return this.parseRequirements(this.currentSubject.corequisites);
-      } else {
-        return {
-          reqs: []
-        };
-      }
+      return this.currentSubject.corequisites !== undefined
+        ? this.parseRequirements(this.currentSubject.corequisites)
+        : { reqs: [] };
     }
   },
   methods: {
     classInfo: function (subjectID) {
       const subj = this.subjects[this.subjectsIndex[subjectID]];
-      if (subj !== undefined) {
-        return subj;
-      } else {
-        return {
-          subject_id: subjectID,
-          title: ''
-        };
-      }
+      return subj || {
+        subject_id: subjectID,
+        title: ''
+      };
     },
     clickRelatedSubject: function (subject) {
       this.$emit('push-stack', subject.id);
       $('#cardBody').animate({ scrollTop: 0 });
     },
     parseRequirements: function (requirements) {
+      // TODO: a way to make this more ETU?
       // remove spaces after commas and slashes
       requirements = requirements.replace(/([,\/])\s+/g, '$1');
       function getParenGroup (str) {
