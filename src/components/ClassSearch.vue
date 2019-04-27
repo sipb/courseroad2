@@ -160,18 +160,6 @@ export default {
           'level': getRegexFuncs(this.chosenFilters.levelInput),
           'total_units': getRegexFuncs(this.chosenFilters.unitInput)
         };
-        // TODO: remove?
-        // gets all possible values of an attribute
-
-        // var allSubjects = this.subjects;
-        // function unique(arr) {
-        //   return [... new Set(arr)]
-        // }
-        // function allAttr(attr) {
-        //   return unique(allSubjects.map(s=>s[attr]));
-        // }
-        // console.log(allAttr("hass_attribute"));
-
         // and or or function based on filter mode
         const filterAction = this.filterGroupModes[this.filterGroupMode];
         const filteredSubjects = this.allSubjects.filter(function (subject) {
