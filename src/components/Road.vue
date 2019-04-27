@@ -86,11 +86,6 @@ export default {
       const baseYear = (today.getMonth() >= 4 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
       return baseYear - Math.floor((this.currentSemester - 1) / 3);
     }
-  },
-  watch: {
-    currentSemester: function (newSem, oldSem) {
-      this.numSems = newSem >= 13 ? 16 : 13;
-    }
   }
 };
 </script>

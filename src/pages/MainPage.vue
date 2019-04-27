@@ -320,7 +320,7 @@ export default {
       searchInput: '',
       showSearch: false,
       classInfoStack: [],
-      currentSemester: 0,
+      currentSemester: 1,
       addingFromCard: false,
       itemAdding: undefined,
       dismissedOld: false,
