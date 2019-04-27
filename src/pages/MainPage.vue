@@ -225,7 +225,7 @@
       @click.native="$event.stopPropagation()"
     />
 
-    <v-footer v-if="!dismissedOld || (!cookiesAllowed && !dismissedCookies)" fixed style="height: unset;">
+    <v-footer v-if="!dismissedOld || !dismissedCookies" fixed style="height: unset;">
       <v-layout column>
         <v-flex v-if="!dismissedOld" class = "lime accent-1 py-1 px-2">
           <v-layout row align-center>
@@ -239,20 +239,22 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-divider v-if="!dismissedOld && !cookiesAllowed && !dismissedCookies" />
-        <v-flex v-if="!cookiesAllowed && !dismissedCookies" class = "lime accent-3 py-1 px-2">
+        <v-divider v-if="!dismissedOld && !dismissedCookies" />
+        <v-flex v-if="!dismissedCookies" class = "lime accent-3 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
-              This site uses cookies and session storage to store your data and login token.  Click OK to consent to the use of cookies.
+              This website uses cookies and session storage to store your data and login token, and important features like saving roads will not work without them.
+              <span v-if = "cookiesAllowed === undefined">By continuing to use this website or clicking "I accept", you consent to the use of cookies.</span>
+              <span v-if = "cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
               <v-btn small depressed color="primary" class="ma-1" @click="allowCookies">
-                OK
+                I accept
               </v-btn>
             </v-flex>
             <v-flex shrink>
-              <v-btn small icon flat class="ma-1" @click="dismissedCookies = true;">
-                <v-icon>close</v-icon>
+              <v-btn small depressed class = "ma-1" @click="disallowCookies">
+                Opt out
               </v-btn>
             </v-flex>
           </v-layout>
@@ -311,7 +313,7 @@ export default {
       saveWarnings: [],
       conflictDialog: false,
       conflictInfo: undefined,
-      cookiesAllowed: false,
+      cookiesAllowed: undefined,
       searchInput: '',
       showSearch: false,
       classInfoStack: [],
@@ -367,6 +369,7 @@ export default {
     roads: {
       handler: function (newRoads, oldRoads) {
         this.justLoaded = false;
+        this.cookiesAllowed = true;
         if (this.activeRoad != '') {
           this.updateFulfillment();
         }
@@ -544,6 +547,15 @@ export default {
     allowCookies: function () {
       this.$refs.authcomponent.allowCookies();
       this.cookiesAllowed = true;
+      this.dismissedCookies = true;
+    },
+    disallowCookies: function() {
+      this.cookiesAllowed = false;
+      this.dismissedCookies = true;
+      var cookieKeys = this.$cookies.keys();
+      for(var k = 0; k < cookieKeys.length; k++) {
+      	this.$cookies.remove(cookieKeys[k]);
+      }
     },
     updateLocal: function (id) {
       this.$refs.authcomponent.updateLocal(id);
