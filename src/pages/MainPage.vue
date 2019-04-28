@@ -240,6 +240,7 @@
           </v-layout>
         </v-flex>
         <v-divider v-if="!dismissedOld && !dismissedCookies" />
+        {{dismissedCookies}}
         <v-flex v-if="!dismissedCookies" class = "lime accent-3 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
@@ -370,6 +371,7 @@ export default {
       handler: function (newRoads, oldRoads) {
         this.justLoaded = false;
         this.cookiesAllowed = true;
+        this.$refs.authcomponent.allowCookies();
         if (this.activeRoad != '') {
           this.updateFulfillment();
         }
@@ -545,6 +547,7 @@ export default {
       Vue.set(this.roads[roadID], roadProp, propValue);
     },
     allowCookies: function () {
+      console.log("allowing cookeis");
       this.$refs.authcomponent.allowCookies();
       this.cookiesAllowed = true;
       this.dismissedCookies = true;
