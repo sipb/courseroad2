@@ -169,12 +169,9 @@ export default {
         const headerList = { headers: {
           'Authorization': 'Bearer ' + this.accessInfo.access_token
         } };
-        return this.verify()
-          .then(function (verifyResponse) {
-            return !!params
-              ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
-              : axiosFunc(process.env.FIREROAD_URL + link, headerList);
-          });
+        return !!params
+          ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
+          : axiosFunc(process.env.FIREROAD_URL + link, headerList);
       } else {
         return Promise.reject('No auth information');
       }
