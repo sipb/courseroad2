@@ -53,10 +53,6 @@
         <requirement
           :req="item"
           :leaf="leaf"
-          :subjects="subjects"
-          :subject-index="subjectIndex"
-          :generic-courses="genericCourses"
-          :generic-index="genericIndex"
           @drag-start-class="$emit('drag-start-class',$event)"
           @click.native="clickRequirement(item)"
           @click-info="reqInfo($event, item)"
@@ -162,10 +158,6 @@ export default {
     'selectedReqs',
     'reqTrees',
     'reqList',
-    'subjects',
-    'genericCourses',
-    'subjectIndex',
-    'genericIndex',
     'progressOverrides'
   ],
   data: function () {

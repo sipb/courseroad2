@@ -129,7 +129,7 @@
                 </td>
               </tr>
               <tr v-if="currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined">
-                <td><b>{{ currentSubject.subject_id in genericIndex ? "Average* hours" : "Hours" }}</b></td>
+                <td><b>{{ currentSubject.subject_id in $store.state.genericIndex ? "Average* hours" : "Hours" }}</b></td>
                 <td>
                   <table cellspacing="0">
                     <tr v-if="currentSubject.in_class_hours !== undefined">
@@ -142,7 +142,7 @@
                 </td>
               </tr>
             </table>
-            <p v-if="currentSubject.subject_id in genericIndex">
+            <p v-if="currentSubject.subject_id in $store.state.genericIndex">
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
@@ -150,7 +150,7 @@
             <p v-if="currentSubject.url !== undefined">
               <a target="_blank" :href="currentSubject.url">View in course catalog</a>
             </p>
-            <p v-if="currentSubject.subject_id in subjectsIndex">
+            <p v-if="currentSubject.subject_id in $store.state.subjectsIndex">
               <a target="_blank" :href="'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
                 View Course Evaluations
               </a>
@@ -206,14 +206,14 @@ export default {
     'expansion-reqs': ExpansionReqs
   },
   mixins: [colorMixin],
-  props: ['subjects', 'classInfoStack', 'subjectsIndex', 'genericCourses', 'genericIndex', 'addingFromCard'],
+  props: ['classInfoStack', 'addingFromCard'],
   data: function () { return {} },
   computed: {
     currentSubject: function () {
       const currentID = this.classInfoStack[this.classInfoStack.length - 1];
-      return currentID in this.subjectsIndex
-        ? this.subjects[this.subjectsIndex[currentID]]
-        : this.genericCourses[this.genericIndex[currentID]];
+      return currentID in this.$store.state.subjectsIndex
+        ? this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[currentID]]
+        : this.$store.state.genericCourses[this.$store.state.genericIndex[currentID]];
     },
     parsedPrereqs: function () {
       return this.currentSubject.prerequisites !== undefined
@@ -228,7 +228,7 @@ export default {
   },
   methods: {
     classInfo: function (subjectID) {
-      const subj = this.subjects[this.subjectsIndex[subjectID]];
+      const subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjectID]];
       return subj || {
         subject_id: subjectID,
         title: ''

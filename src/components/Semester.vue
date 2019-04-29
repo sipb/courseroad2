@@ -84,7 +84,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin],
-  props: ['selectedSubjects', 'index', 'allSubjects', 'roadID', 'isOpen', 'baseYear', 'subjectsIndex', 'genericCourses', 'genericIndex', 'addingFromCard', 'itemAdding', 'currentSemester'],
+  props: ['selectedSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'addingFromCard', 'itemAdding', 'currentSemester'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -94,7 +94,7 @@ export default {
   },
   computed: {
     subjectsLoaded: function () {
-      return Object.keys(this.subjectsIndex).length > 0;
+      return Object.keys(this.$store.state.subjectsIndex).length > 0;
     },
     warnings: function () {
       const allWarnings = Array(this.semesterSubjects.length).fill([]);
@@ -102,10 +102,10 @@ export default {
         const subjectWarnings = [];
         const subjID = this.semesterSubjects[i].id;
         let subj;
-        if (subjID in this.subjectsIndex) {
-          subj = this.allSubjects[this.subjectsIndex[subjID]];
-          var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
-          var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
+        if (subjID in this.$store.state.subjectsIndex) {
+          subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]];
+          var prereqString = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]].prerequisites;
+          var coreqString = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]].corequisites;
           var prereqsfulfilled = true;
           var coreqsfulfilled = true;
           if (prereqString !== undefined) {
@@ -126,8 +126,8 @@ export default {
               subjectWarnings.push('<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.');
             }
           }
-        } else if (subjID in this.genericIndex) {
-          subj = this.genericCourses[this.genericIndex[subjID]];
+        } else if (subjID in this.$store.state.genericIndex) {
+          subj = this.$store.state.genericCourses[this.$store.state.genericIndex[subjID]];
         }
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
@@ -215,10 +215,10 @@ export default {
     },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
-        if (subj.id in this.subjectsIndex) {
-          return this.allSubjects[this.subjectsIndex[subj.id]];
-        } else if (subj.id in this.genericIndex) {
-          return this.genericCourses[this.genericIndex[subj.id]];
+        if (subj.id in this.$store.state.subjectsIndex) {
+          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.id]];
+        } else if (subj.id in this.$store.state.genericIndex) {
+          return this.$store.state.genericCourses[this.$store.state.genericIndex[subj.id]];
         } else {
           return undefined;
         }
@@ -266,7 +266,7 @@ export default {
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
       return this.selectedSubjects.filter(s => {
-        const subj2 = this.allSubjects[this.subjectsIndex[s.id]];
+        const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
         const inPreviousSemester = s.semester < this.index;
         let inPreviousQuarter = false;
         if (subj2 !== undefined) {
@@ -290,10 +290,10 @@ export default {
       }
       if (req.indexOf('.') === -1) {
         let subj;
-        if (id in this.subjectsIndex) {
-          subj = this.allSubjects[this.subjectsIndex[id]];
-        } else if (id in this.genericIndex) {
-          subj = this.genericCourses[this.genericIndex[id]];
+        if (id in this.$store.state.subjectsIndex) {
+          subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[id]];
+        } else if (id in this.$store.state.genericIndex) {
+          subj = this.$store.state.genericCourses[this.$store.state.genericIndex[id]];
         } else {
           // subj not found in known courses
           return false;

@@ -12,7 +12,6 @@
       :key="index-1"
       :index="index-1"
       :selected-subjects="selectedSubjects"
-      :all-subjects="subjects"
       :road-i-d="roadID"
       :is-open="visibleList[index-1]"
       :base-year="baseYear"
@@ -20,9 +19,6 @@
       :item-adding="itemAdding"
       :current-semester="currentSemester"
       :dragging-over="dragSemesterNum===index-1"
-      :subjects-index="subjectsIndex"
-      :generic-courses="genericCourses"
-      :generic-index="genericIndex"
       @add-at-placeholder="$emit('add-at-placeholder',$event)"
       @add-class="$emit('add-class', $event)"
       @move-class="$emit('move-class', $event)"
@@ -68,7 +64,7 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'subjects', 'roadID', 'currentSemester', 'addingFromCard', 'itemAdding', 'dragSemesterNum', 'subjectsIndex', 'genericCourses', 'genericIndex'],
+  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'itemAdding', 'dragSemesterNum'],
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;

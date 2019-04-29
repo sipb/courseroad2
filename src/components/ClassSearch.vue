@@ -53,7 +53,7 @@ export default {
   components: {
     'filter-set': FilterSet
   },
-  props: ['subjects', 'searchInput', 'classInfoStack', 'cookiesAllowed', 'genericCourses'],
+  props: ['searchInput', 'classInfoStack', 'cookiesAllowed'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -121,7 +121,7 @@ export default {
   },
   computed: {
     allSubjects: function () {
-      return this.genericCourses.concat(this.subjects);
+      return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
       // only display subjects if you are filtering by something

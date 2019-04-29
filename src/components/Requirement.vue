@@ -66,7 +66,7 @@
 <script>
 export default {
   name: 'Requirement',
-  props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
+  props: ['req', 'leaf'],
   data: function () {
     return {
       open: [],
@@ -77,15 +77,15 @@ export default {
   computed: {
     classInfo: function () {
       if ('req' in this.req) {
-        if (this.req.req in this.subjectIndex) {
-          return this.subjects[this.subjectIndex[this.req.req]];
+        if (this.req.req in this.$store.state.subjectsIndex) {
+          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[this.req.req]];
         }
         let attributeReq = this.req.req;
         if (attributeReq.indexOf('GIR:') === 0) {
           attributeReq = attributeReq.substring(4);
         }
-        if (attributeReq in this.genericIndex) {
-          return this.genericCourses[this.genericIndex[attributeReq]];
+        if (attributeReq in this.$store.state.genericIndex) {
+          return this.$store.state.genericCourses[this.$store.state.genericIndex[attributeReq]];
         }
       }
       return undefined;
@@ -95,7 +95,7 @@ export default {
     },
     canDrag: function () {
       return this.classInfo !== undefined ||
-        ('req' in this.req && (Object.keys(this.subjectIndex).length === 0));
+        ('req' in this.req && (Object.keys(this.$store.state.subjectsIndex).length === 0));
     },
     reqFulfilled: function () {
       return {
