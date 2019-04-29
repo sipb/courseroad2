@@ -7,6 +7,7 @@ module.exports = (env) => {
   return {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     entry: [
+      '@babel/polyfill',
       './src/app.js'
     ],
     devServer: {
@@ -47,6 +48,7 @@ module.exports = (env) => {
           ]
         },
         {
+          exclude: /node_modules/,
           test: /\.js$/,
           use: 'babel-loader'
         }
