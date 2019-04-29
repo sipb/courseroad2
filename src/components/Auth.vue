@@ -333,7 +333,7 @@ export default {
                   // this is to fix a problem where the activeroad gets reset to the first one
                   // i suspect this is because the three events required were not happening
                   // in the correct order or something
-                  if (this.oldid !== response.data.id) {
+                  if (this.oldid !== response.data.id.toString()) {
                     this.data.$emit('reset-id', this.oldid, response.data.id);
                   }
                   return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
