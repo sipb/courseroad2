@@ -12,6 +12,7 @@
           <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
             {{ req["title-no-degree"] }}
           </span>
+          <span v-else-if = "'medium-title' in req && req['medium-title'] != ''">{{ req['medium-title']}}</span>
           <span v-else-if="'short-title' in req && req['short-title'] != ''">
             {{ req['short-title'] }}
           </span>
