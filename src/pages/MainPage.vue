@@ -375,8 +375,10 @@ export default {
     roads: {
       handler: function (newRoads, oldRoads) {
         this.justLoaded = false;
-        this.cookiesAllowed = true;
-        this.$refs.authcomponent.allowCookies();
+        if(this.cookiesAllowed === undefined) {
+          this.cookiesAllowed = true;
+          this.$refs.authcomponent.allowCookies();
+        }
         if (this.activeRoad !== '') {
           this.updateFulfillment();
         }
@@ -581,6 +583,7 @@ export default {
       for(var k = 0; k < cookieKeys.length; k++) {
       	this.$cookies.remove(cookieKeys[k]);
       }
+      this.$refs.authcomponent.disallowCookies();
     },
     updateLocal: function (id) {
       this.$refs.authcomponent.updateLocal(id);
