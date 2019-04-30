@@ -75,7 +75,6 @@ export default {
       gettingUserData: false,
       currentlySaving: false,
       authCookiesAllowed: false,
-      settingAuthCookies: false,
       tabID: Math.floor(Math.random() * 16 ** 10).toString(16)
     };
   },
@@ -92,7 +91,7 @@ export default {
   },
   watch: {
     authCookiesAllowed: function (newCA, oldCA) {
-      if (newCA && !this.settingAuthCookies) {
+      if (newCA) {
         this.$emit('allow-cookies');
       }
     }
@@ -442,9 +441,7 @@ export default {
     },
     allowCookies: function () {
       this.$cookies.set('newRoads', this.getNewRoadData());
-      this.settingAuthCookies = true;
       this.authCookiesAllowed = true;
-      this.settingAuthCookies = false;
       if (this.loggedIn) {
         this.$cookies.set('accessInfo', this.accessInfo);
       }
