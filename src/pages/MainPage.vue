@@ -377,7 +377,7 @@ export default {
         this.justLoaded = false;
         this.cookiesAllowed = true;
         this.$refs.authcomponent.allowCookies();
-        if (this.activeRoad != '') {
+        if (this.activeRoad !== '') {
           this.updateFulfillment();
         }
         this.$refs.authcomponent.save();
