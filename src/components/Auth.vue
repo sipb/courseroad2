@@ -447,6 +447,9 @@ export default {
       }
       this.setTabID();
     },
+    disallowCookies() {
+      this.authCookiesAllowed = false;
+    },
     getAgent: function () {
       const ua = UAParser(navigator.userAgent);
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
