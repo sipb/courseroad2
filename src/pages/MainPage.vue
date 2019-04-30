@@ -376,6 +376,7 @@ export default {
       handler: function (newRoads, oldRoads) {
         this.justLoaded = false;
         this.cookiesAllowed = true;
+        this.$refs.authcomponent.allowCookies();
         if (this.activeRoad != '') {
           this.updateFulfillment();
         }
