@@ -18,15 +18,15 @@ export default {
         if (course.indexOf('GIR:') >= 0) {
           course = course.substring(0, course.indexOf('GIR:')) + course.substring(course.indexOf('GIR:') + 4);
         }
-        let girAttrs = course.split(' ').filter((c) => (this.validGeneric.indexOf(c) >= 0));
+        const girAttrs = course.split(' ').filter((c) => (this.validGeneric.indexOf(c) >= 0));
         if (this.validCourses.indexOf(course) !== -1) {
           return 'course-' + course;
         } else if (girAttrs.length > 0) {
-          if (girAttrs.length == 1) {
-            var attr = girAttrs[0];
-            if (attr.indexOf('HASS') == 0) {
+          if (girAttrs.length === 1) {
+            const attr = girAttrs[0];
+            if (attr.indexOf('HASS') === 0) {
               return 'generic-' + course;
-            } else if (attr.indexOf('CI') == 0) {
+            } else if (attr.indexOf('CI') === 0) {
               return 'generic-' + course;
             }
           }

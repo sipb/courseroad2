@@ -4,11 +4,8 @@ import MainPage from './pages/MainPage.vue';
 import About from './pages/About.vue';
 import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
-import $ from 'jquery';
 import VueCookies from 'vue-cookies';
-import './assets/css/coursecolors.css';
-import 'vuetify/dist/vuetify.min.css';
-import VueTimers from 'vue-timers';
+import './css/app.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +18,6 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(Vuetify);
 Vue.use(VueCookies);
 Vue.use(VueRouter);
-Vue.use(VueTimers);
 
 var routes = [
   { path: '/', component: MainPage },

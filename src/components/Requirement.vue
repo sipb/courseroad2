@@ -12,6 +12,7 @@
           <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
             {{ req["title-no-degree"] }}
           </span>
+          <span v-else-if = "'medium-title' in req && req['medium-title'] != ''">{{ req['medium-title']}}</span>
           <span v-else-if="'short-title' in req && req['short-title'] != ''">
             {{ req['short-title'] }}
           </span>
@@ -43,7 +44,7 @@
             && req.percent_fulfilled !== 'N/A'"
           :style="'float: right; color: '+percentageTextColor"
         >
-          &nbsp{{ req.percent_fulfilled }}%
+          &nbsp;{{ req.percent_fulfilled }}%
           <v-icon
             v-if="'reqs' in req && hoveringOver"
             style="padding-left: 0.2em; padding-right: 0em;"
@@ -79,7 +80,7 @@ export default {
         if (this.req.req in this.subjectIndex) {
           return this.subjects[this.subjectIndex[this.req.req]];
         }
-        var attributeReq = this.req.req;
+        let attributeReq = this.req.req;
         if (attributeReq.indexOf('GIR:') === 0) {
           attributeReq = attributeReq.substring(4);
         }
@@ -97,15 +98,9 @@ export default {
         ('req' in this.req && (Object.keys(this.subjectIndex).length === 0));
     },
     reqFulfilled: function () {
-      if (this.req.fulfilled) {
-        return {
-          fulfilled: true
-        };
-      } else {
-        return {
-          fulfilled: false
-        };
-      }
+      return {
+        fulfilled: !!this.req.fulfilled
+      };
     },
     percentageTextColor: function () {
       return this.req.fulfilled
@@ -119,21 +114,19 @@ export default {
     },
     percentage: function () {
       const pfulfilled = this.req.percent_fulfilled;
-      const pstring = `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
-      return pstring;
+      return `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
     },
     percentage_bar: function () {
-      var showPBar = ('reqs' in this.req || 'threshold' in this.req);
-      var pblock = {
+      const showPBar = ('reqs' in this.req || 'threshold' in this.req);
+      return {
         'percentage-bar': showPBar,
         'p-bar': showPBar
       };
-      return pblock;
     }
   },
   methods: {
     dragStart: function (event) {
-      var usedInfo = this.classInfo;
+      let usedInfo = this.classInfo;
       if (usedInfo === undefined) {
         usedInfo = { id: this.req.req };
       }
@@ -149,9 +142,6 @@ export default {
 </script>
 
 <style scoped>
-  .fulfilled {
-    /* background:  radial-gradient(#00b300,white); */
-  }
   .requirement {
     font-size: 0.75em;
   }

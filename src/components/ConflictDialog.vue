@@ -6,6 +6,7 @@
       </v-btn>
       <v-card-title>Save Conflict</v-card-title>
       <v-layout row>
+        <!-- TODO: remove duplicate code? -->
         <v-flex xs6 style="padding: 2em">
           <b>Cloud</b>
           <v-list>
@@ -20,8 +21,8 @@
             </v-card>
             <v-card style="padding: 1em">
               <b><p>Contents:</p></b>
-              <p>Courses of Study: <span v-for="req in conflictInfo.other_contents.coursesOfStudy"> {{ req }} </span></p>
-              <p>Selected Subjects: <span v-for="(course, index) in conflictInfo.other_contents.selectedSubjects" :class="colorSubject(index, 'remote')"> {{ course.id }} </span></p>
+              <p>Courses of Study: <span v-for="req in conflictInfo.other_contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
+              <p>Selected Subjects: <span v-for="(course, index) in conflictInfo.other_contents.selectedSubjects" :key="course" :class="colorSubject(index, 'remote')"> {{ course.id }} </span></p>
             </v-card>
           </v-list>
           <v-btn color="primary" @click="$emit('update-local', conflictInfo.id) ">
@@ -42,8 +43,8 @@
             </v-card>
             <v-card style="padding: 1em">
               <b><p>Contents:</p></b>
-              <p>Courses of Study: <span v-for="req in roads[conflictInfo.id].contents.coursesOfStudy"> {{ req }} </span></p>
-              <p>Selected Subjects: <span v-for="(course, index) in roads[conflictInfo.id].contents.selectedSubjects" :class="colorSubject(index, 'local')"> {{ course.id }} </span></p>
+              <p>Courses of Study: <span v-for="req in roads[conflictInfo.id].contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
+              <p>Selected Subjects: <span v-for="(course, index) in roads[conflictInfo.id].contents.selectedSubjects" :key="course" :class="colorSubject(index, 'local')"> {{ course.id }} </span></p>
             </v-card>
           </v-list>
           <v-btn color="primary" @click="$emit('update-remote', conflictInfo.id)">
@@ -63,9 +64,9 @@ Array.prototype.diff = function (a) {
 };
 
 Array.prototype.count = function (elem) {
-  var countElem = 0;
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] == elem) {
+  let countElem = 0;
+  for (let i = 0; i < this.length; i++) {
+    if (this[i] === elem) {
       countElem++;
     }
   }
@@ -75,7 +76,7 @@ Array.prototype.count = function (elem) {
 Array.prototype.renumberDuplicates = function () {
   return this.map(function (elem, index) {
     if (this.count(elem) > 1) {
-      var appendNumber = this.slice(0, index).count(elem);
+      const appendNumber = this.slice(0, index).count(elem);
       return elem + '-' + appendNumber.toString();
     } else {
       return elem;
@@ -100,9 +101,13 @@ export default {
       this.conflictDialog = false;
     },
     colorSubject: function (subjectIndex, subjectList) {
-      var remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
-      var localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map((s) => s.id + ' ' + s.semester).renumberDuplicates();
-      var currentSubject;
+      const remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map(
+        s => s.id + ' ' + s.semester
+      ).renumberDuplicates();
+      const localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map(
+        s => s.id + ' ' + s.semester
+      ).renumberDuplicates();
+      let currentSubject;
       if (subjectList === 'remote') {
         currentSubject = remoteSubjects[subjectIndex];
         if (remoteSubjects.diff(localSubjects).indexOf(currentSubject) >= 0) {
