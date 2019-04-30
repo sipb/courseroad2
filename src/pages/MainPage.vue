@@ -240,7 +240,6 @@
           </v-layout>
         </v-flex>
         <v-divider v-if="!dismissedOld && !dismissedCookies" />
-        {{dismissedCookies}}
         <v-flex v-if="!dismissedCookies" class = "lime accent-3 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
@@ -249,7 +248,7 @@
               <span v-if = "cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color="primary" class="ma-1" @click="allowCookies">
+              <v-btn small depressed color="primary" class="ma-1" @click="allowCookies();  dismissedCookies = true;">
                 I accept
               </v-btn>
             </v-flex>
@@ -547,10 +546,8 @@ export default {
       Vue.set(this.roads[roadID], roadProp, propValue);
     },
     allowCookies: function () {
-      console.log("allowing cookeis");
       this.$refs.authcomponent.allowCookies();
       this.cookiesAllowed = true;
-      this.dismissedCookies = true;
     },
     disallowCookies: function() {
       this.cookiesAllowed = false;
