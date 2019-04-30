@@ -74,13 +74,15 @@ export default {
       saveWarnings: [],
       gettingUserData: false,
       currentlySaving: false,
-      authCookiesAllowed: false,
       tabID: Math.floor(Math.random() * 16 ** 10).toString(16)
     };
   },
   computed: {
+    cookiesAllowed () {
+      return this.$store.state.cookiesAllowed;
+    },
     saveColor: function () {
-      if (!this.authCookiesAllowed && !this.loggedIn) {
+      if (!this.cookiesAllowed && !this.loggedIn) {
         return 'gray';
       }
       return this.saveWarnings.length ? 'warning' : 'primary';
@@ -90,9 +92,13 @@ export default {
     }
   },
   watch: {
-    authCookiesAllowed: function (newCA, oldCA) {
+    cookiesAllowed (newCA) {
       if (newCA) {
-        this.$emit('allow-cookies');
+        this.$cookies.set('newRoads', this.getNewRoadData());
+        if (this.loggedIn) {
+          this.$cookies.set('accessInfo', this.accessInfo);
+        }
+        this.setTabID();
       }
     }
   },
@@ -110,7 +116,7 @@ export default {
         }
         this.newRoads = Object.keys(newRoads);
       }
-      this.allowCookies();
+      this.$store.commit('allowCookies');
     }
 
     window.cookies = this.$cookies;
@@ -118,12 +124,12 @@ export default {
       this.loggedIn = true;
       this.accessInfo = this.$cookies.get('accessInfo');
       this.verify();
-      this.allowCookies();
+      this.$store.commit('allowCookies');
       this.getUserData();
     }
 
     window.onbeforeunload = function () {
-      if (this.authCookiesAllowed) {
+      if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
         const tabs = JSON.parse(this.$cookies.get('tabs'));
         const tabIndex = tabs.indexOf(tabID);
@@ -279,7 +285,7 @@ export default {
       axios.get(process.env.FIREROAD_URL + '/fetch_token/?code=' + code)
         .then(function (response) {
           if (response.data.success) {
-            if (this.data.authCookiesAllowed) {
+            if (this.data.cookiesAllowed) {
               this.data.$cookies.set('accessInfo', response.data.access_info);
             }
             this.data.accessInfo = response.data.access_info;
@@ -369,7 +375,7 @@ export default {
     },
     saveLocal: function () {
       this.currentlySaving = true;
-      if (this.authCookiesAllowed) {
+      if (this.cookiesAllowed) {
         this.$cookies.set('newRoads', this.getNewRoadData());
       }
       this.currentlySaving = false;
@@ -439,23 +445,12 @@ export default {
         }
       }
     },
-    allowCookies: function () {
-      this.$cookies.set('newRoads', this.getNewRoadData());
-      this.authCookiesAllowed = true;
-      if (this.loggedIn) {
-        this.$cookies.set('accessInfo', this.accessInfo);
-      }
-      this.setTabID();
-    },
-    disallowCookies() {
-      this.authCookiesAllowed = false;
-    },
     getAgent: function () {
       const ua = UAParser(navigator.userAgent);
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
     },
     setTabID: function () {
-      if (this.authCookiesAllowed) {
+      if (this.cookiesAllowed) {
         if (sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
           if (this.$cookies.isKey('tabs')) {

@@ -6,12 +6,19 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
+    cookiesAllowed: undefined,
     genericCourses: [],
     genericIndex: {},
     subjectsIndex: {},
     subjectsInfo: []
   },
   mutations: {
+    allowCookies (state) {
+      state.cookiesAllowed = true;
+    },
+    disallowCookies (state) {
+      state.cookiesAllowed = false;
+    },
     parseGenericCourses (state) {
       const girAttributes = {
         'PHY1': ['Physics 1 GIR', 'p1'],

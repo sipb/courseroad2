@@ -61,7 +61,6 @@
         @resolve-conflict="resolveConflict"
         @set-road-prop="setRoadProp(...arguments)"
         @reset-id="resetID(...arguments)"
-        @allow-cookies="allowCookies"
         @set-sem="setSemester"
       >
       </auth>
@@ -93,7 +92,6 @@
           class="search-menu"
           :search-input="searchInput"
           :class-info-stack="classInfoStack"
-          :cookies-allowed="cookiesAllowed"
           @add-class="addClass"
           @view-class-info="pushClassStack"
           @drag-start-class="dragStartClass"
@@ -230,7 +228,7 @@
               <span v-if = "cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color="primary" class="ma-1" @click="allowCookies();  dismissCookies();">
+              <v-btn small depressed color="primary" class="ma-1" @click="$store.commit('allowCookies');  dismissCookies();">
                 I accept
               </v-btn>
             </v-flex>
@@ -292,7 +290,6 @@ export default {
       saveWarnings: [],
       conflictDialog: false,
       conflictInfo: undefined,
-      cookiesAllowed: undefined,
       searchInput: '',
       showSearch: false,
       classInfoStack: [],
@@ -332,6 +329,9 @@ export default {
           return null;
       }
     },
+    cookiesAllowed () {
+      return this.$store.state.cookiesAllowed;
+    },
     roadref: function () {
       return '#road' + this.activeRoad;
     }
@@ -345,12 +345,16 @@ export default {
         this.updateFulfillment();
       }
     },
+    cookiesAllowed: function (newCA) {
+      if (newCA) {
+        this.$cookies.set('dismissedOld', this.dismissedOld);
+      }
+    },
     roads: {
       handler: function (newRoads, oldRoads) {
         this.justLoaded = false;
         if(this.cookiesAllowed === undefined) {
-          this.cookiesAllowed = true;
-          this.$refs.authcomponent.allowCookies();
+          this.$store.commit('allowCookies');
         }
         if (this.activeRoad !== '') {
           this.updateFulfillment();
@@ -410,11 +414,11 @@ export default {
 
     if(this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
-      this.cookiesAllowed = true;
+      this.$store.commit('allowCookies');
     }
     if(this.$cookies.isKey('dismissedCookies')) {
       this.dismissedCookies = JSON.parse(this.$cookies.get('dismissedCookies'));
-      this.cookiesAllowed = true;
+      this.$store.commit('allowCookies');
     }
 
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
@@ -538,19 +542,13 @@ export default {
     setRoadProp: function (roadID, roadProp, propValue) {
       Vue.set(this.roads[roadID], roadProp, propValue);
     },
-    allowCookies: function () {
-      this.$refs.authcomponent.allowCookies();
-      this.cookiesAllowed = true;
-      this.$cookies.set('dismissedOld', this.dismissedOld);
-    },
     disallowCookies: function() {
-      this.cookiesAllowed = false;
+      this.$store.commit('disallowCookies');
       this.dismissCookies();
       var cookieKeys = this.$cookies.keys();
       for(var k = 0; k < cookieKeys.length; k++) {
       	this.$cookies.remove(cookieKeys[k]);
       }
-      this.$refs.authcomponent.disallowCookies();
     },
     updateLocal: function (id) {
       this.$refs.authcomponent.updateLocal(id);

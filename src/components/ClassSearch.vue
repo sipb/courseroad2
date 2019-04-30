@@ -53,7 +53,7 @@ export default {
   components: {
     'filter-set': FilterSet
   },
-  props: ['searchInput', 'classInfoStack', 'cookiesAllowed'],
+  props: ['searchInput', 'classInfoStack'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -218,6 +218,9 @@ export default {
     },
     classStackExists: function () {
       return this.classInfoStack.length > 0;
+    },
+    cookiesAllowed () {
+      return this.$store.state.cookiesAllowed;
     }
   },
   watch: {
@@ -234,8 +237,8 @@ export default {
         this.$cookies.set('paginationRows', newRows);
       }
     },
-    cookiesAllowed: function (newCookies, oldCookies) {
-      if (newCookies) {
+    cookiesAllowed: function (newCA) {
+      if (newCA) {
         this.$cookies.set('paginationRows', this.pagination.rowsPerPage);
       }
     }
