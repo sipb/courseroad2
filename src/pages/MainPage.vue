@@ -249,7 +249,7 @@
               <span v-if = "cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color="primary" class="ma-1" @click="allowCookies();  dismissedCookies = true;">
+              <v-btn small depressed color="primary" class="ma-1" @click="allowCookies();  dismissCookies();">
                 I accept
               </v-btn>
             </v-flex>
@@ -376,7 +376,6 @@ export default {
       handler: function (newRoads, oldRoads) {
         this.justLoaded = false;
         this.cookiesAllowed = true;
-        this.$refs.authcomponent.allowCookies();
         if (this.activeRoad != '') {
           this.updateFulfillment();
         }
@@ -435,6 +434,10 @@ export default {
 
     if(this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
+      this.cookiesAllowed = true;
+    }
+    if(this.$cookies.isKey('dismissedCookies')) {
+      this.dismissedCookies = JSON.parse(this.$cookies.get('dismissedCookies'));
       this.cookiesAllowed = true;
     }
 
@@ -572,7 +575,7 @@ export default {
     },
     disallowCookies: function() {
       this.cookiesAllowed = false;
-      this.dismissedCookies = true;
+      this.dismissCookies();
       var cookieKeys = this.$cookies.keys();
       for(var k = 0; k < cookieKeys.length; k++) {
       	this.$cookies.remove(cookieKeys[k]);
@@ -707,6 +710,12 @@ export default {
       this.dismissedOld = true;
       if(this.cookiesAllowed) {
         this.$cookies.set('dismissedOld', true);
+      }
+    },
+    dismissCookies: function() {
+      this.dismissedCookies = true;
+      if(this.cookiesAllowed) {
+        this.$cookies.set('dismissedCookies', true);
       }
     },
     clickSearch: function(event) {
