@@ -232,8 +232,9 @@ export default {
     subjectsWithPrereq: function() {
       const currentID = this.currentSubject.subject_id;
       const currentDept = currentID.substring(0,currentID.indexOf("."));
+      var IDMatcher = new RegExp('(?<!\\d)'+currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
       return this.subjects.filter(function(s) {
-        return s.prerequisites !== undefined && s.prerequisites.indexOf(currentID) >= 0;
+        return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
       }).sort(function(s1, s2) {
         //show subjects in same department first
         var dept1 = s1.subject_id.substring(0, s1.subject_id.indexOf("."));
