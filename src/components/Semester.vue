@@ -239,7 +239,7 @@ export default {
     },
     semesterYear: function () {
       return this.index === 0
-        ?  ''
+        ? ''
         : Math.floor((this.index - 2) / 3) + this.baseYear;
     },
     semesterType: function () {
@@ -303,7 +303,7 @@ export default {
       const allIDs = subjects.map((s) => s.id);
       reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',');
       const splitReq = reqString.split(/(,|\(|\)|\/)/);
-      const _this = this
+      const _this = this;
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
           splitReq[i] = 'true';

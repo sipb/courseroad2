@@ -194,7 +194,6 @@
 </template>
 
 <script>
-import $ from 'jquery';
 import SubjectScroll from '../components/SubjectScroll.vue';
 import ExpansionReqs from '../components/ExpansionReqs.vue';
 import colorMixin from './../mixins/colorMixin.js';
@@ -236,7 +235,7 @@ export default {
     },
     clickRelatedSubject: function (subject) {
       this.$emit('push-stack', subject.id);
-      $('#cardBody').animate({ scrollTop: 0 });
+      document.getElementById('cardBody').scrollTop = 0;
     },
     parseRequirements: function (requirements) {
       // TODO: a way to make this more ETU?
@@ -425,4 +424,7 @@ table td:first-child {
   padding-right: 1em;
 }
 
+#cardBody {
+  scroll-behavior: smooth;
+}
 </style>

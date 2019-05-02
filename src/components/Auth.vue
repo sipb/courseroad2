@@ -171,7 +171,7 @@ export default {
         } };
         return this.verify()
           .then(function (verifyResponse) {
-            return !!params
+            return params
               ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
               : axiosFunc(process.env.FIREROAD_URL + link, headerList);
           });

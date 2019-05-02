@@ -30,10 +30,14 @@
                 @click="viewClassInfo(props)"
               >
                 <td style="padding: 0px; white-space: nowrap; width: 30%;">
-                  <v-icon style="vertical-align: middle;">drag_indicator</v-icon>
-                  <span style="vertical-align: middle;"> {{props.item.subject_id}}</span>
+                  <v-icon style="vertical-align: middle;">
+                    drag_indicator
+                  </v-icon>
+                  <span style="vertical-align: middle;"> {{ props.item.subject_id }}</span>
                 </td>
-                <td style="padding: 2px 4px 2px 0px; width: 60%;">{{props.item.title}}</td>
+                <td style="padding: 2px 4px 2px 0px; width: 60%;">
+                  {{ props.item.title }}
+                </td>
               </tr>
             </v-hover>
           </template>
@@ -45,7 +49,6 @@
 
 <script>
 import FilterSet from './FilterSet.vue';
-import $ from 'jquery';
 import Vue from 'vue';
 
 export default {
@@ -244,9 +247,7 @@ export default {
     this.updateMenuStyle();
 
     window.cookies = this.$cookies;
-    $(window).resize(function () {
-      this.updateMenuStyle();
-    }.bind(this));
+    window.addEventListener('resize', this.updateMenuStyle.bind(this));
 
     if (this.$cookies.isKey('paginationRows')) {
       this.pagination.rowsPerPage = parseInt(this.$cookies.get('paginationRows'));
@@ -261,19 +262,17 @@ export default {
         isNew: true
       });
     },
+    // Change search menu size based on existence of class info card
     updateMenuStyle: function () {
       const searchInputElem = document.getElementById('searchInputTF');
       const searchInputRect = searchInputElem.getBoundingClientRect();
       const searchMenuTop = searchInputRect.top + searchInputRect.height;
-      const searchInput = $('#searchInputTF');
-      const menuWidth = searchInput.outerWidth();
-      const classInfoCard = $('#classInfoCard');
-      let menuBottom;
-      if (classInfoCard.length) {
-        menuBottom = classInfoCard.position().top;
-      } else {
-        menuBottom = $(window).innerHeight();
-      }
+      const searchInput = document.getElementById('searchInputTF');
+      const menuWidth = searchInput.offsetWidth;
+      const classInfoCard = document.getElementById('classInfoCard');
+      const menuBottom = classInfoCard
+        ? classInfoCard.getBoundingClientRect().top
+        : window.innerHeight;
       const maxHeight = menuBottom - searchMenuTop - this.menuMargin;
       this.searchHeight = 'max-height: ' + maxHeight + 'px;width: ' + menuWidth + 'px;';
     },

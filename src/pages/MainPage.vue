@@ -68,29 +68,28 @@
         @reset-id="resetID(...arguments)"
         @allow-cookies="allowCookies"
         @set-sem="setSemester"
-      >
-      </auth>
+      />
 
       <v-layout justify-end>
         <v-text-field
-          id = "searchInputTF"
-          autocomplete = "false"
-          class = "expanded-search"
+          id="searchInputTF"
+          v-model="searchInput"
+          autocomplete="false"
+          class="expanded-search"
           prepend-icon="search"
-          v-model = "searchInput"
-          placeholder = "Add classes"
+          placeholder="Add classes"
           autofocus
-          @click.native = "clickSearch"
-          @input = "typeSearch"
-          style = "width:100%;"
+          style="width:100%;"
+          @click.native="clickSearch"
+          @input="typeSearch"
         />
       </v-layout>
 
       <v-menu
+        v-model="searchOpen"
         :close-on-content-click="false"
-        v-model = "searchOpen"
-        :position-x = "searchX"
-        :position-y = "searchY"
+        :position-x="searchX"
+        :position-y="searchY"
       >
         <class-search
           id="searchMenu"
@@ -106,7 +105,6 @@
           @drag-start-class="dragStartClass"
         />
       </v-menu>
-
     </v-toolbar>
 
     <v-navigation-drawer
@@ -274,7 +272,6 @@ import RoadTabs from './../components/RoadTabs.vue';
 import ConflictDialog from './../components/ConflictDialog.vue';
 import Auth from './../components/Auth.vue';
 import axios from 'axios';
-import $ from 'jquery';
 import moment from 'moment';
 import UAParser from 'ua-parser-js';
 import Vue from 'vue';
@@ -393,23 +390,6 @@ export default {
     }
   },
   mounted () {
-    const borders = $('.v-navigation-drawer__border');
-    const scrollers = $('.scroller');
-    const scrollWidth = scrollers.width();
-
-    // moves nav drawer border with scroll
-    // if the effect proves too annoying we can remove the borders instead
-    // (commented out below)
-
-    scrollers.scroll(function () {
-      const scrollPosition = scrollers.scrollLeft();
-      borders.css({ top: 0, left: scrollWidth - 1 + scrollPosition });
-    });
-
-    $(window).on('hashchange', function () {
-      this.setActiveRoad();
-    }.bind(this));
-
     this.setActiveRoad();
 
     axios.get(process.env.FIREROAD_URL + `/requirements/list_reqs/`)
@@ -423,19 +403,23 @@ export default {
 
     this.updateFulfillment();
 
-    this.searchX = $("#searchInputTF").offset().left;
-    this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+    const searchInput = document.getElementById('searchInputTF');
+    const rect = searchInput.getBoundingClientRect();
+    this.searchX = rect.left + document.body.scrollLeft;
+    this.searchY = rect.top + document.body.scrollTop + searchInput.offsetHeight;
 
-    $(window).on("resize", function() {
-      this.searchX = $("#searchInputTF").offset().left;
-      this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+    window.addEventListener('resize', function () {
+      const searchInput = document.getElementById('searchInputTF');
+      const rect = searchInput.getBoundingClientRect();
+      this.searchX = rect.left + document.body.scrollLeft;
+      this.searchY = rect.top + document.body.scrollTop + searchInput.offsetHeight;
     }.bind(this));
 
     document.body.addEventListener('click', function (e) {
       this.showSearch = false;
     }.bind(this));
 
-    if(this.$cookies.isKey('dismissedOld')) {
+    if (this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
       this.cookiesAllowed = true;
     }
@@ -710,22 +694,22 @@ export default {
       Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
       Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
-    dismissOld: function() {
+    dismissOld: function () {
       this.dismissedOld = true;
-      if(this.cookiesAllowed) {
+      if (this.cookiesAllowed) {
         this.$cookies.set('dismissedOld', true);
       }
     },
     dismissCookies: function() {
       this.dismissedCookies = true;
-      if(this.cookiesAllowed) {
+      if (this.cookiesAllowed) {
         this.$cookies.set('dismissedCookies', true);
       }
     },
     clickSearch: function(event) {
       this.searchOpen = !this.searchOpen;
     },
-    typeSearch: function(searchString) {
+    typeSearch: function (searchString) {
       this.searchOpen = searchString.length > 0;
     }
   }

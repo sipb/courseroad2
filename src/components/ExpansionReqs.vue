@@ -46,7 +46,6 @@
 
 <script>
 import SubjectScroll from '../components/SubjectScroll.vue';
-import $ from 'jquery';
 import Vue from 'vue';
 
 export default {
@@ -93,12 +92,12 @@ export default {
         this.expansionIndex = subj.index;
         this.open = true;
         this.nextReqs = nextReqs;
-        Vue.nextTick(function () {
-          const scrollPoint = $('#' + $.escapeSelector(scrollPointID));
-          const topPoint = scrollPoint.offset().top;
-          const cardBody = $('#cardBody');
-          cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
-        });
+        // Vue.nextTick(function () {
+          // const scrollPoint = $('#' + $.escapeSelector(scrollPointID));
+          // const topPoint = scrollPoint.offset().top;
+          // const cardBody = $('#cardBody');
+          // cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
+        // });
       } else {
         if (subj.id.indexOf('GIR:') >= 0) {
           subj.id = subj.id.substring(4);
@@ -111,15 +110,15 @@ export default {
     },
     closeMyExpansion: function (event) {
       this.open = false;
-      let scrollPoint;
-      if (!this.doubleScroller) {
-        scrollPoint = $('#' + $.escapeSelector(this.reqID));
-      } else {
-        scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID));
-      }
-      const topPoint = scrollPoint.offset().top;
-      const cardBody = $('#cardBody');
-      cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
+      // let scrollPoint;
+      // if (!this.doubleScroller) {
+        // scrollPoint = $('#' + $.escapeSelector(this.reqID));
+      // } else {
+        // scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID));
+      // }
+      // const topPoint = scrollPoint.offset().top;
+      // const cardBody = $('#cardBody');
+      // cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
     }
   }
 };
