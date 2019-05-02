@@ -14,8 +14,13 @@
         so you can download the FireRoad app to plan your degree on the go!
       </p>
       <p class="px-3">
-        The source code is open source and located on
+        This is always a work in progress! If you have feature requests or
+        want to contribute, the source code is open source and located on
         <a target="_blank" href="https://github.com/npfoss/courseroad2">Github</a>.
+      </p>
+      <p class="px-3">
+        We would like to thank the Office of the First Year and the
+        Student Information Processing Board for all their support with this project.
       </p>
       <h2>Known Issues</h2>
       <p class="px-3">
@@ -30,8 +35,8 @@
           <li>
             <h3>Open search on click</h3>
             <p>
-              The search bar sometimes fails to open when you click on it. This seems to be
-              computer/browser-dependent, and we are investigating. It should always open
+              The search bar sometimes fails to open when clicked on. This seems to be
+              computer/browser-dependent, and we are investigating. It should open
               when you start typing to search for a class.
             </p>
           </li>
@@ -44,25 +49,10 @@
           </li>
         </ul>
       </p>
-      <h2>Maintainers</h2>
+      <h2>Old CourseRoad</h2>
       <p class="px-3">
-        <ul style="display: inline-block;">
-          <li>Nate Foss</li>
-          <li>Georgia Shay</li>
-          <li>Michael Nguyen</li>
-          <li>Sophie Mori</li>
-        </ul>
-      </p>
-      <h3 class="px-3">
-        Past
-      </h3>
-      <p class="px-3">
-        <ul style="display: inline-block;">
-          <li>Danny Ben-David</li>
-        </ul>
-      </p>
-      <p class="px-3">
-        If you have questions or comments, please <a target="_blank" href="mailto:courseroad@mit.edu">email</a> us.
+        The old CourseRoad has been moved to <a target="_blank" href="https://courseroad.mit.edu/old">courseroad.mit.edu/old</a>.
+        You can export your roads from the old CourseRoad and import them here to transfer your data.
       </p>
       <h2>FireRoad</h2>
       <p class="px-3">
@@ -87,13 +77,26 @@
         Download the app for <a target="_blank" href="https://itunes.apple.com/us/app/fireroad-mit-course-planner/id1330678450">iOS</a>
         or <a target="_blank" href="https://play.google.com/store/apps/details?id=com.base12innovations.android.fireroad&hl=en_US">Android</a>.
       </p>
-      <h2>Old CourseRoad</h2>
+
+      <h2>Maintainers</h2>
       <p class="px-3">
-        The old CourseRoad has been moved to <a target="_blank" href="https://courseroad.mit.edu/old">courseroad.mit.edu/old</a>.
+        <ul style="display: inline-block;">
+          <li>Nate Foss (npfoss)</li>
+          <li>Georgia Shay (gshay)</li>
+          <li>Michael Nguyen (mwnguyen)</li>
+          <li>Sophie Mori (ksmori)</li>
+        </ul>
+      </p>
+      <h3 class="px-3">
+        Past
+      </h3>
+      <p class="px-3">
+        <ul style="display: inline-block;">
+          <li>Danny Ben-David</li>
+        </ul>
       </p>
       <p class="px-3">
-        You can export your roads from the old CourseRoad and
-        import them here to transfer your data.
+        If you have questions or comments, please <a target="_blank" href="mailto:courseroad@mit.edu">email</a> us.
       </p>
     </div>
   </v-container>
