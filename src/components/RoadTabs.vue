@@ -66,7 +66,14 @@
           </v-btn>
           <v-card-title>Create Road</v-card-title>
           <v-card-text>
-            <v-text-field v-if="addDialog" v-model="newRoadName" autofocus placeholder="New road name" />
+            <v-text-field
+              v-if="addDialog"
+              v-model="newRoadName"
+              autofocus
+              placeholder="New road name"
+              @keyup.enter="
+                if (!(otherRoadHasName('', newRoadName) || newRoadName === '')) createRoad()"
+            />
             <v-layout row>
               <v-flex xs6>
                 <v-switch v-model="duplicateRoad" label="Duplicate existing" />
@@ -93,7 +100,7 @@
       </v-dialog>
     </v-tabs>
     <v-flex>
-      <v-btn icon flat color="primary" @click="addDialog = true">
+      <v-btn type="submit" icon flat color="primary" @click="addDialog = true">
         <v-icon>add</v-icon>
       </v-btn>
     </v-flex>
