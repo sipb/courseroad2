@@ -78,6 +78,19 @@ export default {
     }
   },
   methods: {
+    fcssecape: function (ch, asCodePoint) {
+      if (asCodePoint) {
+          if (ch === "\0") {
+              return "\uFFFD";
+          }
+          return ch.slice(0, -1) + "\\" + ch.charCodeAt(ch.length - 1).toString(16) + " ";
+      }
+      return "\\" + ch;
+    },
+    escape: function (sel) {
+      return (sel + "").replace(/([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g
+        , fcssescape);
+    },
     clickSubject: function (subj, scroller) {
       let scrollPointID;
       let nextReqs;
@@ -92,12 +105,13 @@ export default {
         this.expansionIndex = subj.index;
         this.open = true;
         this.nextReqs = nextReqs;
-        // Vue.nextTick(function () {
-          // const scrollPoint = $('#' + $.escapeSelector(scrollPointID));
-          // const topPoint = scrollPoint.offset().top;
-          // const cardBody = $('#cardBody');
-          // cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
-        // });
+        Vue.nextTick(function () {
+          const scrollPoint = document.getElementById(escape(scrollPointID));
+          const topPoint = scrollPoint.getBoundingClientRect().top;
+          const cardBody = document.getElementById("cardBody");
+          const cardTopPoint = cardBody.getBoundingClientRect().top;
+          cardBody.scrollTop = topPoint - cardTopPoint + cardBody.scrollTop - 10;
+        });
       } else {
         if (subj.id.indexOf('GIR:') >= 0) {
           subj.id = subj.id.substring(4);
@@ -110,15 +124,16 @@ export default {
     },
     closeMyExpansion: function (event) {
       this.open = false;
-      // let scrollPoint;
-      // if (!this.doubleScroller) {
-        // scrollPoint = $('#' + $.escapeSelector(this.reqID));
-      // } else {
-        // scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID));
-      // }
-      // const topPoint = scrollPoint.offset().top;
-      // const cardBody = $('#cardBody');
-      // cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
+      let scrollPoint;
+      if (!this.doubleScroller) {
+        scrollPoint = document.getElementById(escape(this.reqID));
+      } else {
+        scrollPoint = document.getElementById('ds' + this.whichScroller + escape(this.reqID));
+      }
+      const topPoint = scrollPoint.getBoundingClientRect().top;
+      const cardBody = document.getElementById("cardBody");
+      const cardTopPoint = cardBody.getBoundingClientRect().top;
+      cardBody.scrollTop = topPoint - cardTopPoint + cardBody.scrollTop - 10;
     }
   }
 };
