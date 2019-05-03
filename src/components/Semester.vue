@@ -5,7 +5,7 @@
     dropzone="copy"
     @dragover.native.prevent
   >
-    <v-container slot="header" grid-list-xs style="padding: 0;">
+    <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;">
       <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
           <span style="width: 6em; display: inline-block;">
