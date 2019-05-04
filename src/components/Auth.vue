@@ -486,7 +486,7 @@ export default {
     },
     changeSemester: function (year) {
       const currentMonth = new Date().getMonth();
-      const sem = currentMonth >= 4 && currentMonth <= 10
+      const sem = currentMonth >= 5 && currentMonth <= 10
         ? 1 + year * 3
         : 3 + year * 3;
       this.postSecure('/set_semester/', { semester: sem }).then(function (res) {
