@@ -146,7 +146,7 @@
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
-            <p>{{ currentSubject.description }}</p>
+            <p v-html = "currentSubject.description"></p>
             <p v-if="currentSubject.url !== undefined">
               <a target="_blank" :href="currentSubject.url">View in course catalog</a>
             </p>
