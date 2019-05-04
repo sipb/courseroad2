@@ -72,7 +72,7 @@
               autofocus
               placeholder="New road name"
               @keyup.enter="
-                if (!(otherRoadHasName('', newRoadName) || newRoadName === '')) createRoad()"
+                if (validRoadName) createRoad()"
             />
             <v-layout row>
               <v-flex xs6>
@@ -92,7 +92,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn :disabled="otherRoadHasName('', newRoadName) || newRoadName === ''" color="primary" @click="createRoad">
+            <v-btn :disabled="!validRoadName" color="primary" @click="createRoad">
               Create
             </v-btn>
           </v-card-actions>
@@ -127,6 +127,11 @@ export default {
       newRoadName: '',
       tabRoad: this.activeRoad
     };
+  },
+  computed: {
+    validRoadName: function() {
+      return !(this.otherRoadHasName('', this.newRoadName) || this.newRoadName === '');
+    }
   },
   watch: {
     activeRoad: function (newRoad, oldRoad) {
