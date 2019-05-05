@@ -627,7 +627,7 @@ export default {
         if (gir !== undefined && subject.gir_attribute !== gir) {
           return false;
         }
-        if (hass !== undefined && subject.hass_attribute !== hass) {
+        if (hass !== undefined && (subject.hass_attribute === undefined || subject.hass_attribute.split(',').indexOf(hass) === -1)) {
           return false;
         }
         if (ci !== undefined && subject.communication_requirement !== ci) {
