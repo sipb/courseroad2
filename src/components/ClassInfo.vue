@@ -57,6 +57,10 @@
                 <v-icon>block</v-icon>
               </v-btn>
             </v-layout>
+            <h4 v-if = "currentSubject.is_historical">
+              <v-icon>warning</v-icon>
+              This subject is no longer offered (last offered {{currentSubject.source_semester.split("-").join(" ")}})
+            </h4>
             <table cellspacing="4">
               <tr v-if="currentSubject.total_units!==undefined">
                 <td><b>Units</b></td>
