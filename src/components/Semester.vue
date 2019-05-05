@@ -131,12 +131,25 @@ export default {
         }
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
-          if (semType >= 0) {
+          let notOfferedWarning = false;
+          if(subj.is_historical) {
+            let lastSemester = subj.source_semester.split("-");
+            let sourceSemester = ["fall", "IAP", "spring"].indexOf(lastSemester[0]);
+            //which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
+            let sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
+            let lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
+            if(this.index > lastSemesterNumber) {
+              subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ')');
+              notOfferedWarning = true;
+            }
+          }
+          if (semType >= 0 && !notOfferedWarning) {
             const isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
             if (!isUsuallyOffered) {
               subjectWarnings.push('<b>Not offered</b> — According to the course catalog, ' + subjID + ' is not usually offered in ' + this.semesterType + '.');
             }
           }
+
         }
         allWarnings[i] = subjectWarnings;
       }
