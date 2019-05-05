@@ -149,7 +149,6 @@ export default {
               subjectWarnings.push('<b>Not offered</b> — According to the course catalog, ' + subjID + ' is not usually offered in ' + this.semesterType + '.');
             }
           }
-
         }
         allWarnings[i] = subjectWarnings;
       }
