@@ -451,6 +451,13 @@ export default {
     axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`)
       .then(response => {
         this.subjectsInfo = response.data;
+        function unique(arr) {
+          return [... new Set(arr)]
+        }
+        function allAttr(attr) {
+          return unique(response.data.map(s=>s[attr]));
+        }
+        console.log(allAttr("quarter_information"));
         this.genericCourses = this.makeGenericCourses();
         this.subjectsIndexDict = this.subjectsInfo.reduce(function (obj, item, index) {
           obj[item.subject_id] = index;
