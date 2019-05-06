@@ -239,8 +239,8 @@ export default {
       const isInQuarter = function(subj, quarter) {
         return subj.quarter_information === undefined || parseInt(subj.quarter_information.split(",")[0]) === quarter;
       }
-      const expectedHoursQuarter1 = classesInfo.filter((s)=>isInQuarter(s,0)).reduce(totalExpectedHours, 0);
-      const expectedHoursQuarter2 = classesInfo.filter((s)=>isInQuarter(s,1)).reduce(totalExpectedHours, 0);
+      const expectedHoursQuarter1 = classesInfo.filter((s) => isInQuarter(s,0)).reduce(totalExpectedHours, 0);
+      const expectedHoursQuarter2 = classesInfo.filter((s) => isInQuarter(s,1)).reduce(totalExpectedHours, 0);
       const expectedHours = Math.max(expectedHoursQuarter1, expectedHoursQuarter2);
       return {
         totalUnits: totalUnits,
