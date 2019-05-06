@@ -328,9 +328,6 @@ export default {
       searchOpen: false,
       searchX: undefined,
       searchY: undefined,
-      // TODO: Really we should grab this from a global datastore
-      // now in the same format as FireRoad
-
       // note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
       roads: {
         '$defaultroad$': {
