@@ -10,9 +10,9 @@
         <v-flex xs6>
           <span style="width: 6em; display: inline-block;">
             <b>
-              {{ semesterType }}
               <v-hover>
                 <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="changeYear">
+                  {{ semesterType }}
                   {{ semesterYear }}
                 </span>
               </v-hover>
