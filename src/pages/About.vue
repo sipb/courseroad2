@@ -47,16 +47,17 @@
             </p>
           </li>
           <li>
-            <h3>UI quirks</h3>
+            <h3>Search box</h3>
             <p>
-              For example, the search box scrolling with the page, etc.
+              Scrolls with the page.
+              We don't like this either.
             </p>
           </li>
           <li>
             <h3>Scrolling while dragging</h3>
             <p>
               The semester view does not scroll adaptively when you are dragging
-              classes into it. We are working to fix this.
+              classes into it.
             </p>
           </li>
           <li>
