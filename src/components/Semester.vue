@@ -225,13 +225,23 @@ export default {
       }.bind(this)).filter(function (subj) {
         return subj !== undefined;
       });
-      const addNums = function (a, b) {
-        a = isNaN(a) ? 0 : a;
-        b = isNaN(b) ? 0 : b;
-        return a + b;
-      };
-      const totalUnits = classesInfo.map((s) => s.total_units).reduce(addNums, 0);
-      const expectedHours = classesInfo.map((s) => s.in_class_hours + s.out_of_class_hours).reduce(addNums, 0);
+      const totalUnits = classesInfo.reduce(function(units, subj) {
+        let tu = subj.total_units;
+        tu = isNaN(tu) ? 0 : tu;
+        return units + tu;
+      }, 0);
+      const totalExpectedHours = function(hours, subj) {
+        let eh = subj.in_class_hours + subj.out_of_class_hours;
+        eh = isNaN(eh) ? subj.total_units : eh;
+        eh = isNaN(eh) ? 0 : eh;
+        return hours + eh;
+      }
+      const isInQuarter = function(subj, quarter) {
+        return subj.quarter_information === undefined || parseInt(subj.quarter_information.split(",")[0]) === quarter;
+      }
+      const expectedHoursQuarter1 = classesInfo.filter((s) => isInQuarter(s,0)).reduce(totalExpectedHours, 0);
+      const expectedHoursQuarter2 = classesInfo.filter((s) => isInQuarter(s,1)).reduce(totalExpectedHours, 0);
+      const expectedHours = Math.max(expectedHoursQuarter1, expectedHoursQuarter2);
       return {
         totalUnits: totalUnits,
         expectedHours: expectedHours
