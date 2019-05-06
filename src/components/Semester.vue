@@ -302,7 +302,7 @@ export default {
           req = req.substring(4);
           return subj.gir_attribute === req;
         } else if (req.indexOf('HASS') >= 0) {
-          return subj.hass_attribute === req;
+          return subj.hass_attribute.split(',').indexOf(req) >= 0;
         } else if (req.indexOf('CI') >= 0) {
           return subj.communication_requirement === req;
         }
