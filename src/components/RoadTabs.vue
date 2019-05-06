@@ -151,9 +151,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 /*This is to prevent it from monopolizing all the space*/
-.v-tabs__container {
+div.v-tabs__container {
   display: unset;
   white-space: unset;
 }
