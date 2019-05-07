@@ -26,11 +26,11 @@
           :id="'class'+classInfo.id.replace('.','')+semesterIndex"
           draggable
           @dragstart="dragStart"
-          @click="$emit('click-class', classInfo)"
+          @click="$store.commit('pushClassStack', classInfo.id)"
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
-            <v-icon style="margin: 4px" small @click="$emit('remove-class',classInfo); $event.stopPropagation();">
+            <v-icon style="margin: 4px" small @click="$store.commit('removeClass', classInfo); $event.stopPropagation();">
               cancel
             </v-icon>
             <v-card-text class="card-text">
@@ -96,7 +96,7 @@ export default {
     },
     clickClass: function (classInfo) {
       if (classInfo !== 'placeholder') {
-        this.$emit('click-class', classInfo);
+        this.$store.commit('pushClassStack', classInfo.id);
       }
     },
     cardClass: function (classInfo) {

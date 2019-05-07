@@ -56,8 +56,6 @@
           :class-info="subject"
           :semester-index="index"
           :warnings="warnings[subjindex]"
-          @remove-class="$emit('remove-class', $event)"
-          @click-class="$emit('click-class',$event)"
           @add-at-placeholder="$emit('add-at-placeholder', $event)"
           @drag-start-class="$emit('drag-start-class', $event)"
         />

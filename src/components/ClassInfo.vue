@@ -12,7 +12,7 @@
         <v-card-title :class="['card-header',courseColor(currentSubject.subject_id)]">
           <v-flex style="display: flex; flex-direction: row; align-items: center;">
             <div style="padding: 0; margin: 0; display: block;">
-              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$emit('pop-stack')">
+              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$store.commit('popClassStack')">
                 <v-icon>navigate_before</v-icon>
               </v-btn>
             </div>
@@ -20,7 +20,7 @@
               <h3>{{ currentSubject.subject_id }}</h3>
             </div>
             <div style="margin-left:auto">
-              <v-btn icon style="margin: 0;" @click="$emit('close-classinfo')">
+              <v-btn icon style="margin: 0;" @click="$store.commit('clearClassInfoStack')">
                 <v-icon style="margin:0; padding: 0; color:white;">
                   close
                 </v-icon>
@@ -206,9 +206,12 @@ export default {
     'expansion-reqs': ExpansionReqs
   },
   mixins: [colorMixin],
-  props: ['classInfoStack', 'addingFromCard'],
+  props: ['addingFromCard'],
   data: function () { return {} },
   computed: {
+    classInfoStack () {
+      return this.$store.state.classInfoStack;
+    },
     currentSubject: function () {
       const currentID = this.classInfoStack[this.classInfoStack.length - 1];
       return currentID in this.$store.state.subjectsIndex
@@ -235,7 +238,7 @@ export default {
       };
     },
     clickRelatedSubject: function (subject) {
-      this.$emit('push-stack', subject.id);
+      this.$store.commit('pushClassStack', subject.id);
       $('#cardBody').animate({ scrollTop: 0 });
     },
     parseRequirements: function (requirements) {

@@ -252,7 +252,7 @@ export default {
     },
     deleteReq: function (req) {
       const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
-      this.store.commit('removeReq', reqName);
+      this.$store.commit('removeReq', reqName);
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {
@@ -261,7 +261,7 @@ export default {
           if (usedReq.indexOf('GIR:') === 0) {
             usedReq = usedReq.substring(4);
           }
-          this.$emit('push-stack', usedReq);
+          this.$store.commit('pushClassStack', usedReq);
         } else {
           this.startProgressDialog(item);
         }

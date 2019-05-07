@@ -11,6 +11,7 @@ const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     activeRoad: '$defaultroad$',
+    classInfoStack: [],
     cookiesAllowed: undefined,
     genericCourses: [],
     genericIndex: {},
@@ -43,6 +44,9 @@ const store = new Vuex.Store({
     },
     allowCookies (state) {
       state.cookiesAllowed = true;
+    },
+    clearClassInfoStack (state) {
+      state.classInfoStack = [];
     },
     disallowCookies (state) {
       state.cookiesAllowed = false;
@@ -135,6 +139,14 @@ const store = new Vuex.Store({
         obj[item.subject_id] = index;
         return obj;
       }, {});
+    },
+    popClassStack (state) {
+      state.classInfoStack.pop();
+    },
+    pushClassStack (state, id) {
+      if (id in state.subjectsIndex || id in state.genericIndex) {
+        state.classInfoStack.push(id);
+      }
     },
     removeClass (state, classInfo) {
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(classInfo);

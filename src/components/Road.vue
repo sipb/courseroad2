@@ -20,8 +20,6 @@
       :current-semester="currentSemester"
       :dragging-over="dragSemesterNum===index-1"
       @add-at-placeholder="$emit('add-at-placeholder',$event)"
-      @remove-class="$emit('remove-class', $event)"
-      @click-class="$emit('click-class',$event)"
       @change-year="changeYearDialog = true"
       @drag-start-class="$emit('drag-start-class',$event)"
     />

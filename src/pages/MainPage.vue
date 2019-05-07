@@ -77,8 +77,6 @@
           ref="searchMenu"
           class="search-menu"
           :search-input="searchInput"
-          :class-info-stack="classInfoStack"
-          @view-class-info="pushClassStack"
           @drag-start-class="dragStartClass"
         />
       </v-menu>
@@ -117,7 +115,6 @@
             :req-list="reqList"
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
             @drag-start-class="dragStartClass"
-            @push-stack="pushClassStack"
           />
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>
@@ -154,7 +151,6 @@
             :item-adding="itemAdding"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
             @add-at-placeholder="addAtPlaceholder"
-            @click-class="pushClassStack($event.id)"
             @change-year="$refs.authcomponent.changeSemester($event)"
             @drag-start-class="dragStartClass"
           />
@@ -171,14 +167,10 @@
     </v-content>
 
     <class-info
-      v-if="classInfoStack.length"
-      :class-info-stack="classInfoStack"
+      v-if="$store.state.classInfoStack.length"
       :adding-from-card="addingFromCard"
-      @pop-stack="popClassStack"
-      @push-stack="pushClassStack"
       @add-class="addFromCard"
       @cancel-add-class="cancelAddFromCard"
-      @close-classinfo="classInfoStack = []"
       @click.native="$event.stopPropagation()"
     />
 
@@ -268,7 +260,6 @@ export default {
       conflictInfo: undefined,
       searchInput: '',
       showSearch: false,
-      classInfoStack: [],
       currentSemester: 1,
       addingFromCard: false,
       itemAdding: undefined,
@@ -486,14 +477,6 @@ export default {
     },
     setSemester: function (sem) {
       this.currentSemester = Math.max(1, sem);
-    },
-    pushClassStack: function (id) {
-      if (id in this.$store.state.subjectsIndex || id in this.$store.state.genericIndex) {
-        this.classInfoStack.push(id);
-      }
-    },
-    popClassStack: function () {
-      this.classInfoStack.pop();
     },
     addFromCard: function (classItem) {
       this.addingFromCard = true;

@@ -53,7 +53,7 @@ export default {
   components: {
     'filter-set': FilterSet
   },
-  props: ['searchInput', 'classInfoStack'],
+  props: ['searchInput'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -216,6 +216,9 @@ export default {
         return [];
       }
     },
+    classInfoStack () {
+      return this.$store.state.classInfoStack;
+    },
     classStackExists: function () {
       return this.classInfoStack.length > 0;
     },
@@ -281,7 +284,7 @@ export default {
       this.searchHeight = 'max-height: ' + maxHeight + 'px;width: ' + menuWidth + 'px;';
     },
     viewClassInfo: function (item) {
-      this.$emit('view-class-info', item.item.subject_id);
+      this.$store.commit('pushClassStack', item.item.subject_id);
     }
   }
 };
