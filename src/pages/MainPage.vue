@@ -33,34 +33,20 @@
     <v-toolbar fixed app dense class="elevation-2">
       <road-tabs
         slot="extension"
-        :roads="roads"
-        :active-road="activeRoad"
         @delete-road="$refs.authcomponent.deleteRoad($event)"
-        @set-name="setRoadName($event.road, $event.name)"
         @add-road="addRoad(...arguments)"
-        @change-active="changeActiveRoad($event)"
       />
 
       <import-export
-        :roads="roads"
-        :active-road="activeRoad"
         @add-road="addRoad(...arguments)"
       />
 
       <auth
         ref="authcomponent"
-        :roads="roads"
         :just-loaded="justLoaded"
-        :active-road="activeRoad"
         :conflict-info="conflictInfo"
-        @delete-road="deleteRoad"
-        @set-road="setRoad(...arguments)"
-        @set-roads="roads = $event"
-        @set-active="setActive"
         @conflict="conflict"
         @resolve-conflict="resolveConflict"
-        @set-road-prop="setRoadProp(...arguments)"
-        @reset-id="resetID(...arguments)"
         @set-sem="setSemester"
       >
       </auth>
@@ -92,7 +78,6 @@
           class="search-menu"
           :search-input="searchInput"
           :class-info-stack="classInfoStack"
-          @add-class="addClass"
           @view-class-info="pushClassStack"
           @drag-start-class="dragStartClass"
         />
@@ -132,10 +117,7 @@
             :req-list="reqList"
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
             @drag-start-class="dragStartClass"
-            @add-req="addReq"
-            @remove-req="removeReq"
             @push-stack="pushClassStack"
-            @update-progress="updateProgress"
           />
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>
@@ -172,12 +154,8 @@
             :item-adding="itemAdding"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
             @add-at-placeholder="addAtPlaceholder"
-            @add-class="addClass"
-            @move-class="moveClass($event.classIndex,$event.semester)"
-            @remove-class="removeClass"
             @click-class="pushClassStack($event.id)"
             @change-year="$refs.authcomponent.changeSemester($event)"
-            @override-warnings="overrideWarnings($event.override,$event.classInfo)"
             @drag-start-class="dragStartClass"
           />
         </v-tab-item>
@@ -187,7 +165,6 @@
         ref="conflictdialog"
         :conflict-info="conflictInfo"
         :conflict-dialog="conflictDialog"
-        :roads="roads"
         @update-local="updateLocal"
         @update-remote="updateRemote"
       />
@@ -283,7 +260,6 @@ export default {
       cookieName: 'Default Cookie',
       accessInfo: undefined,
       rightDrawer: true,
-      activeRoad: '$defaultroad$',
       newRoadName: '',
       justLoaded: true,
       currentlySaving: false,
@@ -301,24 +277,20 @@ export default {
       searchOpen: false,
       searchX: undefined,
       searchY: undefined,
-      // note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
-      roads: {
-        '$defaultroad$': {
-          downloaded: moment().format(DATE_FORMAT),
-          changed: moment().format(DATE_FORMAT),
-          name: 'My First Road',
-          agent: '',
-          contents: {
-            coursesOfStudy: ['girs'],
-            selectedSubjects: [],
-            progressOverrides: {}
-          }
-        }
-      },
+      // TODO: Really we should grab this from a global datastore
+      // now in the same format as FireRoad
       showMobile: ['mobile', 'tabvar'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
     };
   },
   computed: {
+    activeRoad: {
+      get () {
+        return this.$store.state.activeRoad;
+      },
+      set (value) {
+        this.$store.commit('setActiveRoad', value);
+      }
+    },
     appLink: function () {
       switch (new UAParser(navigator.userAgent).getOS().name) {
         case 'Android':
@@ -332,13 +304,16 @@ export default {
     cookiesAllowed () {
       return this.$store.state.cookiesAllowed;
     },
+    roads () {
+      return this.$store.state.roads;
+    },
     roadref: function () {
       return '#road' + this.activeRoad;
     }
   },
   watch: {
     // call fireroad to check fulfillment if you change active roads or change something about a road
-    activeRoad: function (newRoad, oldRoad) {
+    activeRoad: function (newRoad) {
       this.justLoaded = false;
       if (newRoad !== '') {
         window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
@@ -351,7 +326,7 @@ export default {
       }
     },
     roads: {
-      handler: function (newRoads, oldRoads) {
+      handler: function () {
         this.justLoaded = false;
         if(this.cookiesAllowed === undefined) {
           this.$store.commit('allowCookies');
@@ -363,7 +338,7 @@ export default {
       },
       deep: true
     },
-    searchInput: function (newSearch, oldSearch) {
+    searchInput: function (newSearch) {
       if (newSearch.length > 0) {
         this.showSearch = true;
       }
@@ -432,27 +407,6 @@ export default {
     });
   },
   methods: {
-    addClass: function (newClass) {
-      this.roads[this.activeRoad].contents.selectedSubjects.push(newClass);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
-    moveClass: function (classIndex, newSem) {
-      this.roads[this.activeRoad].contents.selectedSubjects[classIndex].semester = newSem;
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
-    removeClass: function (classInfo) {
-      const classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
-      this.roads[this.activeRoad].contents.selectedSubjects.splice(classIndex, 1);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
-    resetID: function (oldid, newid) {
-      newid = newid.toString();
-      Vue.set(this.roads, newid, this.roads[oldid]);
-      if (this.activeRoad === oldid) {
-        this.activeRoad = newid;
-      }
-      Vue.delete(this.roads, oldid);
-    },
     dragStartClass: function (event) {
       let classInfo = event.classInfo;
       if (classInfo === undefined) {
@@ -475,22 +429,12 @@ export default {
         }.bind({ data: this, req: req }));
       }
     },
-    addReq: function (event) {
-      this.roads[this.activeRoad].contents.coursesOfStudy.push(event);
-      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
-      Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
-    },
-    removeReq: function (event) {
-      const reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
-      this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
     setActiveRoad: function () {
       const roadHash = window.location.hash;
       if (roadHash.length && roadHash.substring(0, 7) === '#/#road') {
         const roadRequested = roadHash.substring(7);
         if (roadRequested in this.roads) {
-          this.activeRoad = roadHash.substring(7);
+          this.$store.commit('setActiveRoad', roadHash.substring(7));
           return true;
         }
       }
@@ -511,25 +455,12 @@ export default {
         agent: '',
         contents: newContents
       };
-      Vue.set(this.roads, tempRoadID, newRoad);
+      this.$store.commit('setRoad', {
+        id: tempRoadID,
+        road: newRoad
+      });
       this.$refs.authcomponent.newRoads.push(tempRoadID);
-      this.activeRoad = tempRoadID;
-    },
-
-    setRoadName: function (roadID, roadName) {
-      Vue.set(this.roads[roadID], 'name', roadName);
-    },
-    changeActiveRoad: function (event) {
-      this.activeRoad = event;
-    },
-    deleteRoad: function (roadID) {
-      Vue.delete(this.roads, roadID);
-    },
-    setRoad: function (roadID, newRoad) {
-      Vue.set(this.roads, roadID, newRoad);
-    },
-    setActive: function (roadID) {
-      this.activeRoad = roadID;
+      this.$store.commit('setActiveRoad', tempRoadID);
     },
     conflict: function (conflictInfo) {
       this.$refs.conflictdialog.startConflict();
@@ -538,9 +469,6 @@ export default {
     resolveConflict: function () {
       this.$refs.conflictdialog.resolveConflict();
       this.conflictInfo = undefined;
-    },
-    setRoadProp: function (roadID, roadProp, propValue) {
-      Vue.set(this.roads[roadID], roadProp, propValue);
     },
     disallowCookies: function() {
       this.$store.commit('disallowCookies');
@@ -583,17 +511,9 @@ export default {
         id: this.itemAdding.subject_id,
         units: this.itemAdding.total_units
       };
-      this.addClass(newClass);
+      this.$store.commit('addClass', newClass);
       this.addingFromCard = false;
       this.itemAdding = undefined;
-    },
-    overrideWarnings (override, classInfo) {
-      const classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
-      Vue.set(this.roads[this.activeRoad].contents.selectedSubjects[classIndex], 'overrideWarnings', override);
-    },
-    updateProgress: function (newProgress) {
-      Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     dismissOld: function() {
       this.dismissedOld = true;

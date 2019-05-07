@@ -20,12 +20,9 @@
       :current-semester="currentSemester"
       :dragging-over="dragSemesterNum===index-1"
       @add-at-placeholder="$emit('add-at-placeholder',$event)"
-      @add-class="$emit('add-class', $event)"
-      @move-class="$emit('move-class', $event)"
       @remove-class="$emit('remove-class', $event)"
       @click-class="$emit('click-class',$event)"
       @change-year="changeYearDialog = true"
-      @override-warnings="$emit('override-warnings',$event)"
       @drag-start-class="$emit('drag-start-class',$event)"
     />
     <v-dialog v-model="changeYearDialog" max-width="600">

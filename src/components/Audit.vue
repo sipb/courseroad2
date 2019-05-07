@@ -180,10 +180,10 @@ export default {
         const currentReqs = this.selectedReqs;
         if (currentReqs.length > newReqs.length) {
           const diff = currentReqs.find(x => !newReqs.includes(x));
-          this.$emit('remove-req', diff);
+          this.$store.commit('removeReq', diff);
         } else {
           const newReq = newReqs[newReqs.length - 1];
-          this.$emit('add-req', newReq);
+          this.$store.commit('addReq', newReq);
         }
       }
     },
@@ -252,7 +252,7 @@ export default {
     },
     deleteReq: function (req) {
       const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
-      this.$emit('remove-req', reqName);
+      this.store.commit('removeReq', reqName);
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {
@@ -306,7 +306,7 @@ export default {
     },
     updateManualProgress: function () {
       if (this.progressReq['list-id'] !== undefined) {
-        this.$emit('update-progress', {
+        this.$store.commit('updateProgress', {
           listID: this.progressReq['list-id'],
           progress: this.newManualProgress
         });

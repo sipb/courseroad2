@@ -9,7 +9,7 @@
         v-for="roadId in Object.keys(roads)"
         :key="roadId"
         :href="`#${roadId}`"
-        @click="$emit('change-active', roadId)"
+        @click="$store.commit('setActiveRoad', roadId)"
       >
         {{ roads[roadId].name }}
         <v-btn v-show="roadId == tabRoad" icon flat @click="newRoadName = roads[roadId].name; editDialog = true;">
@@ -34,7 +34,7 @@
             <v-btn
               color="primary"
               :disabled="otherRoadHasName(tabRoad, newRoadName)"
-              @click="$emit('set-name', {road: tabRoad,name: newRoadName}); editDialog = false; newRoadName = ''"
+              @click="$store.commit('setRoadName', {id: tabRoad, name: newRoadName}); editDialog = false; newRoadName = ''"
             >
               Submit
             </v-btn>
@@ -116,7 +116,14 @@ export default {
     // TODO: This is not used?
     'road': Road
   },
-  props: ['activeRoad', 'roads'],
+  computed: {
+    activeRoad () {
+      return this.$store.state.activeRoad;
+    },
+    roads () {
+      return this.$store.state.roads;
+    }
+  },
   data: function () {
     return {
       addDialog: false,

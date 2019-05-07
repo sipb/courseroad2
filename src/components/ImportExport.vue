@@ -83,7 +83,6 @@
 export default {
   name: 'ImportExport',
   components: {},
-  props: ['roads', 'activeRoad'],
   data: function () {
     return {
       dialog: false,
@@ -91,6 +90,14 @@ export default {
       roadtitle: '',
       badinput: false
     };
+  },
+  computed: {
+    activeRoad () {
+      return this.$store.state.activeRoad;
+    },
+    roads () {
+      return this.$store.state.roads;
+    }
   },
   mounted () {
     // read uploaded files

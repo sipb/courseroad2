@@ -60,7 +60,6 @@
           @click-class="$emit('click-class',$event)"
           @add-at-placeholder="$emit('add-at-placeholder', $event)"
           @drag-start-class="$emit('drag-start-class', $event)"
-          @override-warnings="$emit('override-warnings',$event)"
         />
       </v-layout>
     </v-container>
@@ -359,9 +358,9 @@ export default {
             id: this.itemAdding.subject_id,
             units: this.itemAdding.total_units
           };
-          this.$emit('add-class', newClass);
+          this.$store.commit('addClass', newClass);
         } else {
-          this.$emit('move-class', { classIndex: eventData.classInfo.index, semester: this.index });
+          this.$store.commit('moveClass', { classIndex: eventData.classInfo.index, semester: this.index });
         }
       }
       this.draggingOver = false;

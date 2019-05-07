@@ -65,7 +65,7 @@ function getQueryObject () {
 export default {
   name: 'Auth',
   components: {},
-  props: ['roads', 'justLoaded', 'activeRoad', 'conflictInfo'],
+  props: ['justLoaded', 'conflictInfo'],
   data: function () {
     return {
       accessInfo: undefined,
@@ -78,8 +78,14 @@ export default {
     };
   },
   computed: {
+    activeRoad () {
+      return this.$store.state.activeRoad;
+    },
     cookiesAllowed () {
       return this.$store.state.cookiesAllowed;
+    },
+    roads () {
+      return this.$store.state.roads;
     },
     saveColor: function () {
       if (!this.cookiesAllowed && !this.loggedIn) {
@@ -108,11 +114,11 @@ export default {
       if (Object.keys(newRoads).length) {
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
-            this.$emit('set-active', Object.keys(newRoads)[0]);
+            this.$store.commit('setActiveRoad', Object.keys(newRoads)[0]);
           }
-          this.$emit('set-roads', newRoads);
+          this.$store.commit('setRoads', newRoads);
         } else {
-          this.$emit('set-roads', Object.assign(newRoads, this.roads));
+          this.$store.commit('setRoads', Object.assign(newRoads, this.roads));
         }
         this.newRoads = Object.keys(newRoads);
       }
@@ -212,7 +218,7 @@ export default {
           if (roadData !== undefined) {
             this.renumberRoads(roadData);
             if (this.justLoaded) {
-              Vue.delete(this.roads, '$defaultroad$');
+              this.$store.commit('deleteRoad', '$defaultroad$');
             }
             for (let r = 0; r < roadIDs.length; r++) {
               if (roadData[r].status === 200 && roadData[r].data.success) {
@@ -221,7 +227,6 @@ export default {
                 if (roadData[r].data.file.contents.progressOverrides === undefined) {
                   roadData[r].data.file.contents.progressOverrides = {};
                 }
-                this.$emit('set-road', roadIDs[r], roadData[r].data.file);
               }
               // sanitize subject_id
               const newss = roadData[r].data.file.contents.selectedSubjects.map((s) => {
@@ -236,10 +241,12 @@ export default {
               if (roadData[r].data.file.contents.progressOverrides === undefined) {
                 roadData[r].data.file.contents.progressOverrides = {};
               }
-
-              this.$emit('set-road', roadIDs[r], roadData[r].data.file);
+              this.$store.commit('setRoad', {
+                id: roadIDs[r],
+                road: roadData[r].data.file
+              });
             }
-            this.$emit('set-active', Object.keys(this.roads)[0]);
+            this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
           }
           this.gettingUserData = false;
         }.bind(this)).catch(function (err) {
@@ -276,7 +283,10 @@ export default {
         const localName = this.roads[roadID].name;
         if (cloudNames.indexOf(localName) >= 0) {
           const renumberedName = this.renumber(localName, cloudNames);
-          Vue.set(this.roads[roadID], 'name', renumberedName);
+          this.$store.commit('setRoadName', {
+            id: roadID,
+            name: renumberedName
+          });
         }
       }
     },
@@ -320,8 +330,8 @@ export default {
         if (!roadID.includes('$')) {
           assignKeys.id = roadID;
         }
-        const newRoad = Object.assign(this.roads[roadID], assignKeys);
-        const savePromise = this.postSecure('/sync/sync_road/', newRoad)
+        this.$store.commit('updateRoad', roadID, assignKeys);
+        const savePromise = this.postSecure('/sync/sync_road/', this.roads[roadID])
           .then(function (response) {
             if (response.status !== 200) {
               return Promise.reject('Unable to save road ' + this.oldid);
@@ -340,14 +350,18 @@ export default {
                   // i suspect this is because the three events required were not happening
                   // in the correct order or something
                   if (this.oldid !== response.data.id.toString()) {
-                    this.data.$emit('reset-id', this.oldid, response.data.id);
+                    this.$store.commit('resetID', this.oldid, response.data.id);
                   }
                   return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
                 } else {
                   return Promise.resolve({ oldid: this.oldid, newid: this.oldid, state: 'same' });
                 }
                 // TODO: this is unreachable code. figure out what is going on.
-                this.data.$emit('set-road-prop', newid, 'downloaded', moment().format(DATE_FORMAT));
+                this.$store.commit('setRoadProp', {
+                  id: newid,
+                  prop: 'downloaded',
+                  value: moment().format(DATE_FORMAT)
+                });
               }
             }
           }.bind({ oldid: roadID, data: this }));
@@ -380,7 +394,11 @@ export default {
       }
       this.currentlySaving = false;
       for (const roadID in this.roads) {
-        this.$emit('set-road-prop', roadID, 'downloaded', moment().format(DATE_FORMAT));
+        this.$store.commit('setRoadProp', {
+          id: roadID,
+          prop: 'downloaded',
+          value: moment().format(DATE_FORMAT)
+        });
       }
     },
     getNewRoadData: function () {
@@ -399,8 +417,8 @@ export default {
       return newRoadData;
     },
     updateRemote: function (roadID) {
-      const newRoad = Object.assign(this.roads[roadID], { id: roadID, override: true, agent: this.getAgent() });
-      this.postSecure('/sync/sync_road/', newRoad)
+      this.$store.commit('updateRoad', roadID, { id: roadID, override: true, agent: this.getAgent() });
+      this.postSecure('/sync/sync_road/', this.roads[roadID])
         .then(function (response) {
           if (!response.data.success) {
             this.saveWarnings.push({ error: response.data.error_msg, id: roadID, name: this.roads[roadID] });
@@ -424,15 +442,15 @@ export default {
         const withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex + 1));
         if (withoutRoad.length) {
           if (withoutRoad.length > roadIndex) {
-            this.$emit('set-active', withoutRoad[roadIndex]);
+            this.$store.commit('setActiveRoad', withoutRoad[roadIndex]);
           } else {
-            this.$emit('set-active', withoutRoad[roadIndex - 1]);
+            this.$store.commit('setActiveRoad', withoutRoad[roadIndex - 1]);
           }
         } else {
-          this.$emit('set-active', '');
+          this.$store.commit('setActiveRoad', '');
         }
       }
-      this.$emit('delete-road', roadID);
+      this.$store.commit('deleteRoad', roadID);
 
       if (roadID in this.newRoads) {
         roadIndex = this.newRoads.indexOf(roadID);

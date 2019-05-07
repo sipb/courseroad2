@@ -1,23 +1,62 @@
 import axios from 'axios';
+import moment from 'moment';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
+const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
+
 const store = new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
   state: {
+    activeRoad: '$defaultroad$',
     cookiesAllowed: undefined,
     genericCourses: [],
     genericIndex: {},
+    // note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
+    roads: {
+      '$defaultroad$': {
+        downloaded: moment().format(DATE_FORMAT),
+        changed: moment().format(DATE_FORMAT),
+        name: 'My First Road',
+        agent: '',
+        contents: {
+          coursesOfStudy: ['girs'],
+          selectedSubjects: [],
+          progressOverrides: {}
+        }
+      }
+    },
     subjectsIndex: {},
     subjectsInfo: []
   },
   mutations: {
+    addClass (state, newClass) {
+      state.roads[state.activeRoad].contents.selectedSubjects.push(newClass);
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    addReq (state, event) {
+      state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
+      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
+      Vue.set(state.roads, state.activeRoad, state.roads[state.activeRoad]);
+    },
     allowCookies (state) {
       state.cookiesAllowed = true;
     },
     disallowCookies (state) {
       state.cookiesAllowed = false;
+    },
+    deleteRoad (state, id) {
+      Vue.delete(state.roads, id);
+    },
+    moveClass (state, { classIndex, semester }) {
+      state.roads[state.activeRoad].contents.selectedSubjects[classIndex].semester = semester;
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    overrideWarnings (state, payload) {
+      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(payload.classInfo);
+      Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[classIndex], 'overrideWarnings', payload.override);
     },
     parseGenericCourses (state) {
       const girAttributes = {
@@ -97,8 +136,48 @@ const store = new Vuex.Store({
         return obj;
       }, {});
     },
+    removeClass (state, classInfo) {
+      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      state.roads[state.activeRoad].contents.selectedSubjects.splice(classIndex, 1);
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    removeReq (state, event) {
+      const reqIndex = state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
+      state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
+      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    resetID (state, { oldid, newid }) {
+      newid = newid.toString();
+      Vue.set(state.roads, newid, state.roads[oldid]);
+      if (state.activeRoad === oldid) {
+        state.activeRoad = newid;
+      }
+      Vue.delete(state.roads, oldid);
+    },
+    setActiveRoad (state, activeRoad) {
+      state.activeRoad = activeRoad;
+    },
+    setRoadProp (state, { id, prop, value }) {
+      Vue.set(state.roads[id], prop, value);
+    },
+    setRoad (state, { id, road }) {
+      Vue.set(state.roads, id, road);
+    },
+    setRoads (state, roads) {
+      state.roads = roads;
+    },
+    setRoadName (state, { id, name }) {
+      Vue.set(state.roads[id], 'name', name);
+    },
     setSubjectsInfo (state, data) {
       state.subjectsInfo = data;
+    },
+    updateProgress (state, progress) {
+      Vue.set(state.roads[state.activeRoad].contents.progressOverrides, progress.listID, progress.progress);
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    updateRoad (state, id, road) {
+      Object.assign(state.roads[id], road);
     }
   },
   actions: {
