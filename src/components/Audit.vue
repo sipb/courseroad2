@@ -347,13 +347,7 @@ export default {
 }
 </style>
 <style>
-div.v-treeview-node.v-treeview-node--click {
+div.v-treeview-node.v-treeview-node--leaf {
   margin-left: 26px;
-}
-div.v-treeview {
-  margin-left: -26px;
-}
-div.v-treeview > div.v-treeview-node--click.v-treeview-node--leaf {
-  margin-left: 52px;
 }
 </style>
