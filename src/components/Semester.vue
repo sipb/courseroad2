@@ -179,7 +179,7 @@ export default {
             message: 'Add class here',
             textColor: 'DarkGreen'
           };
-        } else if (this.isSameYear) {
+        } else if (this.isSameYear && !this.noLongerOffered) {
           return {
             bgColor: 'red',
             message: 'Subject not available this semester',
@@ -203,10 +203,25 @@ export default {
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
     },
+    noLongerOffered: function() {
+      if(this.itemAdding.is_historical) {
+        let lastSemester = this.itemAdding.source_semester.split("-");
+        let sourceSemester = ["fall", "IAP", "spring"].indexOf(lastSemester[0]);
+        //which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
+        let sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
+        let lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
+        if(this.index > lastSemesterNumber) {
+          return true;
+        }
+      }
+      return false;
+    },
     offeredNow: function () {
-      if (!this.subjectsLoaded || this.itemAdding === undefined) {
+
+      if (!this.subjectsLoaded || this.itemAdding === undefined || this.noLongerOffered) {
         return false;
       }
+
       const semType = (this.index - 1) % 3;
       if (semType >= 0 && (this.addingFromCard || this.draggingOver)) {
         return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
