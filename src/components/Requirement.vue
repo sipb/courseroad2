@@ -131,7 +131,7 @@ export default {
         usedInfo = { id: this.req.req };
       }
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: true, classIndex: -1 }));
-      this.$emit('drag-start-class', {
+      this.$store.commit('dragStartClass', {
         dragstart: event,
         classInfo: usedInfo,
         isNew: true

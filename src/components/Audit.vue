@@ -53,7 +53,6 @@
         <requirement
           :req="item"
           :leaf="leaf"
-          @drag-start-class="$emit('drag-start-class',$event)"
           @click.native="clickRequirement(item)"
           @click-info="reqInfo($event, item)"
         />

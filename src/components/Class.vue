@@ -13,7 +13,7 @@
               <v-btn
                 large
                 icon
-                @click="$emit('add-at-placeholder',semesterIndex)"
+                @click="$store.commit('addAtPlaceholder',semesterIndex)"
               >
                 <v-icon>add</v-icon>
               </v-btn>
@@ -87,7 +87,7 @@ export default {
   methods: {
     dragStart: function (event) {
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo }));
-      this.$emit('drag-start-class', {
+      this.$store.commit('dragStartClass', {
         dragstart: event,
         basicClass: this.classInfo,
         isNew: false,

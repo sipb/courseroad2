@@ -77,7 +77,6 @@
           ref="searchMenu"
           class="search-menu"
           :search-input="searchInput"
-          @drag-start-class="dragStartClass"
         />
       </v-menu>
 
@@ -114,7 +113,6 @@
             :selected-subjects="roads[activeRoad].contents.selectedSubjects"
             :req-list="reqList"
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
-            @drag-start-class="dragStartClass"
           />
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>
@@ -148,11 +146,8 @@
             :road-i-d="roadId"
             :current-semester="currentSemester"
             :adding-from-card="addingFromCard && activeRoad===roadId"
-            :item-adding="itemAdding"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
-            @add-at-placeholder="addAtPlaceholder"
             @change-year="$refs.authcomponent.changeSemester($event)"
-            @drag-start-class="dragStartClass"
           />
         </v-tab-item>
       </v-tabs-items>
@@ -168,9 +163,6 @@
 
     <class-info
       v-if="$store.state.classInfoStack.length"
-      :adding-from-card="addingFromCard"
-      @add-class="addFromCard"
-      @cancel-add-class="cancelAddFromCard"
       @click.native="$event.stopPropagation()"
     />
 
@@ -261,8 +253,6 @@ export default {
       searchInput: '',
       showSearch: false,
       currentSemester: 1,
-      addingFromCard: false,
-      itemAdding: undefined,
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
@@ -281,6 +271,9 @@ export default {
       set (value) {
         this.$store.commit('setActiveRoad', value);
       }
+    },
+    addingFromCard () {
+      return this.$store.state.addingFromCard;
     },
     appLink: function () {
       switch (new UAParser(navigator.userAgent).getOS().name) {
@@ -398,18 +391,6 @@ export default {
     });
   },
   methods: {
-    dragStartClass: function (event) {
-      let classInfo = event.classInfo;
-      if (classInfo === undefined) {
-        if (event.basicClass.id in this.$store.state.subjectsIndex) {
-          classInfo = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[event.basicClass.id]];
-        } else if (event.basicClass.id in this.$store.state.genericIndex) {
-          classInfo = this.$store.state.genericCourses[this.$store.state.genericIndex[event.basicClass.id]];
-        }
-      }
-      this.itemAdding = classInfo;
-      this.addingFromCard = false;
-    },
     updateFulfillment: function () {
       const _this = this;
       for (let r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
@@ -478,27 +459,7 @@ export default {
     setSemester: function (sem) {
       this.currentSemester = Math.max(1, sem);
     },
-    addFromCard: function (classItem) {
-      this.addingFromCard = true;
-      this.itemAdding = classItem;
-    },
-    cancelAddFromCard: function () {
-      this.addingFromCard = false;
-      this.itemAdding = undefined;
-    },
-    addAtPlaceholder: function (index) {
-      const newClass = {
-        overrideWarnings: false,
-        semester: index,
-        title: this.itemAdding.title,
-        id: this.itemAdding.subject_id,
-        units: this.itemAdding.total_units
-      };
-      this.$store.commit('addClass', newClass);
-      this.addingFromCard = false;
-      this.itemAdding = undefined;
-    },
-    dismissOld: function() {
+    dismissOld: function () {
       this.dismissedOld = true;
       if(this.cookiesAllowed) {
         this.$cookies.set('dismissedOld', true);

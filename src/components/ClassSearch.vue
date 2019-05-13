@@ -261,7 +261,7 @@ export default {
   methods: {
     dragStart: function (event, classItem) {
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: true, classIndex: -1 }));
-      this.$emit('drag-start-class', {
+      this.$store.commit('dragStartClass', {
         dragstart: event,
         classInfo: classItem.item,
         isNew: true

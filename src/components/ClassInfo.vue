@@ -52,7 +52,7 @@
                 small
                 style="margin-left:auto;"
                 class="secondary"
-                @click="cancelAddClass"
+                @click="$store.commit('cancelAddFromCard')"
               >
                 <v-icon>block</v-icon>
               </v-btn>
@@ -206,9 +206,11 @@ export default {
     'expansion-reqs': ExpansionReqs
   },
   mixins: [colorMixin],
-  props: ['addingFromCard'],
   data: function () { return {} },
   computed: {
+    addingFromCard () {
+      return this.$store.state.addingFromCard;
+    },
     classInfoStack () {
       return this.$store.state.classInfoStack;
     },
@@ -369,10 +371,7 @@ export default {
       return rList;
     },
     addClass: function () {
-      this.$emit('add-class', this.currentSubject);
-    },
-    cancelAddClass: function () {
-      this.$emit('cancel-add-class');
+      this.$store.commit('addFromCard', this.currentSubject);
     }
   }
 };

@@ -56,8 +56,6 @@
           :class-info="subject"
           :semester-index="index"
           :warnings="warnings[subjindex]"
-          @add-at-placeholder="$emit('add-at-placeholder', $event)"
-          @drag-start-class="$emit('drag-start-class', $event)"
         />
       </v-layout>
     </v-container>
@@ -81,7 +79,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin],
-  props: ['selectedSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'addingFromCard', 'itemAdding', 'currentSemester'],
+  props: ['selectedSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'addingFromCard', 'currentSemester'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -90,6 +88,9 @@ export default {
     };
   },
   computed: {
+    itemAdding () {
+      return this.$store.state.itemAdding;
+    },
     subjectsLoaded: function () {
       return Object.keys(this.$store.state.subjectsIndex).length > 0;
     },

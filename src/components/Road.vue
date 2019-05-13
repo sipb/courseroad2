@@ -16,12 +16,9 @@
       :is-open="visibleList[index-1]"
       :base-year="baseYear"
       :adding-from-card="addingFromCard"
-      :item-adding="itemAdding"
       :current-semester="currentSemester"
       :dragging-over="dragSemesterNum===index-1"
-      @add-at-placeholder="$emit('add-at-placeholder',$event)"
       @change-year="changeYearDialog = true"
-      @drag-start-class="$emit('drag-start-class',$event)"
     />
     <v-dialog v-model="changeYearDialog" max-width="600">
       <v-card>
@@ -59,7 +56,7 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'itemAdding', 'dragSemesterNum'],
+  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;

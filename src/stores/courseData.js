@@ -11,10 +11,12 @@ const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     activeRoad: '$defaultroad$',
+    addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
     genericCourses: [],
     genericIndex: {},
+    itemAdding: undefined,
     // note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
     roads: {
       '$defaultroad$': {
@@ -33,9 +35,25 @@ const store = new Vuex.Store({
     subjectsInfo: []
   },
   mutations: {
+    addAtPlaceholder (state, index) {
+      const newClass = {
+        overrideWarnings: false,
+        semester: index,
+        title: state.itemAdding.title,
+        id: state.itemAdding.subject_id,
+        units: state.itemAdding.total_units
+      };
+      state.$store.commit('addClass', newClass);
+      state.addingFromCard = false;
+      state.itemAdding = undefined;
+    },
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects.push(newClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    addFromCard (state, classItem) {
+      state.addingFromCard = true;
+      state.itemAdding = classItem;
     },
     addReq (state, event) {
       state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
@@ -45,6 +63,10 @@ const store = new Vuex.Store({
     allowCookies (state) {
       state.cookiesAllowed = true;
     },
+    cancelAddFromCard () {
+      this.addingFromCard = false;
+      this.itemAdding = undefined;
+    },
     clearClassInfoStack (state) {
       state.classInfoStack = [];
     },
@@ -53,6 +75,18 @@ const store = new Vuex.Store({
     },
     deleteRoad (state, id) {
       Vue.delete(state.roads, id);
+    },
+    dragStartClass (state, event) {
+      let classInfo = event.classInfo;
+      if (classInfo === undefined) {
+        if (event.basicClass.id in state.subjectsIndex) {
+          classInfo = state.subjectsInfo[state.subjectsIndex[event.basicClass.id]];
+        } else if (event.basicClass.id in state.genericIndex) {
+          classInfo = state.genericCourses[state.genericIndex[event.basicClass.id]];
+        }
+      }
+      state.itemAdding = classInfo;
+      state.addingFromCard = false;
     },
     moveClass (state, { classIndex, semester }) {
       state.roads[state.activeRoad].contents.selectedSubjects[classIndex].semester = semester;
