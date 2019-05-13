@@ -117,7 +117,6 @@ export default {
     if (this.$cookies.isKey('accessInfo')) {
       this.loggedIn = true;
       this.accessInfo = this.$cookies.get('accessInfo');
-      this.$emit('set-sem', this.accessInfo.current_semester);
       this.verify();
       this.allowCookies();
       this.getUserData();
@@ -153,10 +152,11 @@ export default {
       const headerList = { headers: {
         'Authorization': 'Bearer ' + this.accessInfo.access_token
       } };
+      const currentMonth = new Date().getMonth();
       return axios.get(process.env.FIREROAD_URL + '/verify/', headerList)
         .then(function (verifyResponse) {
           if (verifyResponse.data.success) {
-            this.$emit('set-sem', verifyResponse.data.current_semester);
+            this.$emit('set-sem', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
             return verifyResponse.data;
           } else {
             this.logoutUser();
@@ -486,10 +486,10 @@ export default {
     },
     changeSemester: function (year) {
       const currentMonth = new Date().getMonth();
-      const sem = currentMonth >= 4 && currentMonth <= 10
+      const sem = currentMonth >= 5 && currentMonth <= 10
         ? 1 + year * 3
         : 3 + year * 3;
-      this.postSecure('/set_semester/', { semester: sem }).then(function (res) {
+      this.postSecure('/set_semester/', { semester: sem + (currentMonth === 4 ? 1 : 0) }).then(function (res) {
         if (res.status === 200 && res.data.success) {
           this.$emit('set-sem', sem);
         }
