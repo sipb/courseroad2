@@ -505,11 +505,13 @@ export default {
     },
     addReq: function (event) {
       this.roads[this.activeRoad].contents.coursesOfStudy.push(event);
+      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
       Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
     },
     removeReq: function (event) {
       const reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
       this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
+      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setActiveRoad: function () {
       const roadHash = window.location.hash;
