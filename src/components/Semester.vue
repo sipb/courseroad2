@@ -366,7 +366,7 @@ export default {
       }
     },
     ondrop: function (event) {
-      if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || !this.isSameYear || this.index === 0)) {
+      if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || this.noLongerOffered || !this.isSameYear || this.index === 0)) {
         const eventData = JSON.parse(event.dataTransfer.getData('classData'));
         if (eventData.isNew) {
           const newClass = {
