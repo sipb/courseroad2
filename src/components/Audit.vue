@@ -346,3 +346,9 @@ export default {
   cursor: default;
 }
 </style>
+<style>
+/* Makes the leaf margin consistent with the margin of expandable reqs */
+div.v-treeview-node.v-treeview-node--leaf {
+  margin-left: 26px;
+}
+</style>
