@@ -117,7 +117,6 @@ export default {
     if (this.$cookies.isKey('accessInfo')) {
       this.loggedIn = true;
       this.accessInfo = this.$cookies.get('accessInfo');
-      this.$emit('set-sem', this.accessInfo.current_semester);
       this.verify();
       this.allowCookies();
       this.getUserData();

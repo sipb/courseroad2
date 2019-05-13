@@ -589,7 +589,7 @@ export default {
       this.$refs.authcomponent.updateRemote(id);
     },
     setSemester: function (sem) {
-      this.currentSemester = sem;
+      this.currentSemester = Math.max(1, sem);
     },
     pushClassStack: function (id) {
       if (id in this.subjectsIndexDict || id in this.genericIndexDict) {
