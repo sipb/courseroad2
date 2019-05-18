@@ -311,14 +311,18 @@ export default {
     },
     roads: {
       handler: function () {
-        this.justLoaded = false;
-        if(this.cookiesAllowed === undefined) {
-          this.$store.commit('allowCookies');
+        if(!this.$store.state.ignoreRoadChanges) {
+          this.justLoaded = false;
+          if (this.cookiesAllowed === undefined) {
+            this.$store.commit('allowCookies');
+          }
+          if (this.activeRoad !== '') {
+            this.updateFulfillment();
+          }
+          this.$refs.authcomponent.save();
+        } else {
+          this.$store.commit("watchRoadChanges");
         }
-        if (this.activeRoad !== '') {
-          this.updateFulfillment();
-        }
-        this.$refs.authcomponent.save();
       },
       deep: true
     },

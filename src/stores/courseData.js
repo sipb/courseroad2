@@ -32,7 +32,8 @@ const store = new Vuex.Store({
       }
     },
     subjectsIndex: {},
-    subjectsInfo: []
+    subjectsInfo: [],
+    ignoreRoadChanges: false
   },
   mutations: {
     addAtPlaceholder (state, index) {
@@ -203,7 +204,10 @@ const store = new Vuex.Store({
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;
     },
-    setRoadProp (state, { id, prop, value }) {
+    setRoadProp (state, { id, prop, value, ignoreSet }) {
+      if(ignoreSet) {
+        state.ignoreRoadChanges = true;
+      }
       Vue.set(state.roads[id], prop, value);
     },
     setRoad (state, { id, road }) {
@@ -224,6 +228,9 @@ const store = new Vuex.Store({
     },
     updateRoad (state, id, road) {
       Object.assign(state.roads[id], road);
+    },
+    watchRoadChanges (state) {
+      state.ignoreRoadChanges = false;
     }
   },
   actions: {

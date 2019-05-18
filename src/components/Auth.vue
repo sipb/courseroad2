@@ -344,6 +344,14 @@ export default {
                 const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
                 this.data.$emit('conflict', conflictInfo);
               } else {
+
+                this.$store.commit('setRoadProp', {
+                  id: newid,
+                  prop: 'downloaded',
+                  value: moment().format(DATE_FORMAT),
+                  ignoreSet: true
+                });
+
                 if (response.data.id !== undefined) {
                   // note: code moved to app.vue for reset id
                   // this is to fix a problem where the activeroad gets reset to the first one
@@ -356,12 +364,7 @@ export default {
                 } else {
                   return Promise.resolve({ oldid: this.oldid, newid: this.oldid, state: 'same' });
                 }
-                // TODO: this is unreachable code. figure out what is going on.
-                this.$store.commit('setRoadProp', {
-                  id: newid,
-                  prop: 'downloaded',
-                  value: moment().format(DATE_FORMAT)
-                });
+
               }
             }
           }.bind({ oldid: roadID, data: this }));
@@ -397,7 +400,8 @@ export default {
         this.$store.commit('setRoadProp', {
           id: roadID,
           prop: 'downloaded',
-          value: moment().format(DATE_FORMAT)
+          value: moment().format(DATE_FORMAT),
+          ignoreSet: true
         });
       }
     },
