@@ -185,12 +185,18 @@ export default {
             message: 'Subject not available this semester',
             textColor: 'DarkRed'
           };
-        } else {
+        } else if (!this.noLongerOffered) {
           return {
             bgColor: 'yellow',
             message: 'Subject may not be available this semester',
             textColor: 'DarkGoldenRod'
           };
+        } else if (this.noLongerOffered) {
+          return {
+            bgColor: 'yellow',
+            message: 'Subject no longer offered',
+            textColor: 'DarkGoldenRod'
+          }
         }
       } else {
         return {
