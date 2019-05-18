@@ -74,7 +74,7 @@
       <v-layout justify-end>
         <v-text-field
           id = "searchInputTF"
-          autocomplete = "false"
+          autocomplete = "off"
           class = "expanded-search"
           prepend-icon="search"
           v-model = "searchInput"
