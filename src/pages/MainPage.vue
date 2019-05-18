@@ -324,8 +324,6 @@ export default {
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
-      searchX: undefined,
-      searchY: undefined,
       // note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
       roads: {
         '$defaultroad$': {
