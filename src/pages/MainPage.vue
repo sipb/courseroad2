@@ -192,7 +192,7 @@
     <v-card
       v-if = "searchOpen"
       id = "searchMenuCard"
-      style = "position: fixed; top: 36px; right: 24px; z-index: 100; overflow: hidden;"
+      class = "elevation-8"
       >
       <class-search
         id="searchMenu"
@@ -419,13 +419,15 @@ export default {
 
     this.updateFulfillment();
 
-    this.searchX = $("#searchInputTF").offset().left;
-    this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+    var updateMenuPosition = function() {
+      var searchInputEl = $("#searchInputTF");
+      var searchMenuTop = parseInt(searchInputEl.offset().top + searchInputEl.outerHeight()) + 1;
+      var searchMenuRight = parseInt($(window).width() - searchInputEl.offset().left - searchInputEl.width());
+      var searchMenuEl = $("#searchMenuCard");
+      searchMenuEl.css({right: searchMenuRight, top:searchMenuTop});
+    }
 
-    $(window).on("resize", function() {
-      this.searchX = $("#searchInputTF").offset().left;
-      this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
-    }.bind(this));
+    $(window).on('resize', updateMenuPosition);
 
     document.body.addEventListener('click', function (e) {
       this.showSearch = false;
@@ -731,6 +733,13 @@ export default {
 </script>
 
 <style scoped>
+  #searchMenuCard {
+    position: fixed;
+    top: 37px;
+    right: 24px;
+    z-index: 100;
+    overflow: hidden;
+  }
   .scroller {
     overflow-x: auto;
   }
