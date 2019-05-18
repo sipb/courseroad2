@@ -413,13 +413,13 @@ export default {
 
     this.updateFulfillment();
 
-    var updateMenuPosition = function() {
-      var searchInputEl = document.getElementById("searchInputTF");
-      var searchMenuTop = parseInt(searchInputEl.style.top + searchInputEl.height - window.scrollTop) + 1;
-      var searchMenuRight = parseInt(window.width - searchInputEl.style.left - searchInputEl.width);
-      var searchMenuEl = document.getElementById("searchMenuCard");
-      searchMenuEl.setAttribute("right", searchMenuRight);
-      searchMenuEl.setAttribute("top", searchMenuTop);
+    const updateMenuPosition = function() {
+      const searchInputEl = document.getElementById('searchInputTF');
+      const searchMenuTop = parseInt(searchInputEl.style.top + searchInputEl.height - window.scrollTop) + 1;
+      const searchMenuRight = parseInt(window.width - searchInputEl.style.left - searchInputEl.width);
+      const searchMenuEl = document.getElementById('searchMenuCard');
+      searchMenuEl.setAttribute('right', searchMenuRight);
+      searchMenuEl.setAttribute('top', searchMenuTop);
     }
 
     window.onresize = updateMenuPosition;
