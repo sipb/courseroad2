@@ -86,27 +86,6 @@
         />
       </v-layout>
 
-      <v-menu
-        :close-on-content-click="false"
-        v-model = "searchOpen"
-        :position-x = "searchX"
-        :position-y = "searchY"
-      >
-        <class-search
-          id="searchMenu"
-          ref="searchMenu"
-          class="search-menu"
-          :search-input="searchInput"
-          :subjects="subjectsInfo"
-          :generic-courses="genericCourses"
-          :class-info-stack="classInfoStack"
-          :cookies-allowed="cookiesAllowed"
-          @add-class="addClass"
-          @view-class-info="pushClassStack"
-          @drag-start-class="dragStartClass"
-        />
-      </v-menu>
-
     </v-toolbar>
 
     <v-navigation-drawer
@@ -209,6 +188,26 @@
         @update-remote="updateRemote"
       />
     </v-content>
+
+    <v-card
+      v-if = "searchOpen"
+      id = "searchMenuCard"
+      style = "position: fixed; top: 36px; right: 24px; z-index: 100; overflow: hidden;"
+      >
+      <class-search
+        id="searchMenu"
+        ref="searchMenu"
+        class="search-menu"
+        :search-input="searchInput"
+        :subjects="subjectsInfo"
+        :generic-courses="genericCourses"
+        :class-info-stack="classInfoStack"
+        :cookies-allowed="cookiesAllowed"
+        @add-class="addClass"
+        @view-class-info="pushClassStack"
+        @drag-start-class="dragStartClass"
+      />
+    </v-card>
 
     <class-info
       v-if="classInfoStack.length"
