@@ -415,7 +415,7 @@ export default {
 
     var updateMenuPosition = function() {
       var searchInputEl = $("#searchInputTF");
-      var searchMenuTop = parseInt(searchInputEl.offset().top + searchInputEl.outerHeight()) + 1;
+      var searchMenuTop = parseInt(searchInputEl.offset().top + searchInputEl.outerHeight() - $(window).scrollTop()) + 1;
       var searchMenuRight = parseInt($(window).width() - searchInputEl.offset().left - searchInputEl.width());
       var searchMenuEl = $("#searchMenuCard");
       searchMenuEl.css({right: searchMenuRight, top:searchMenuTop});
