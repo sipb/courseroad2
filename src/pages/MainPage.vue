@@ -422,7 +422,7 @@ export default {
       searchMenuEl.setAttribute("top", searchMenuTop);
     }
 
-    $(window).on('resize', updateMenuPosition);
+    window.onresize = updateMenuPosition;
 
     if(this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
