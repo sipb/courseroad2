@@ -413,16 +413,16 @@ export default {
 
     this.updateFulfillment();
 
-    const updateMenuPosition = function() {
-      const searchInputEl = document.getElementById('searchInputTF');
-      const searchMenuTop = parseInt(searchInputEl.style.top + searchInputEl.height - window.scrollTop) + 1;
-      const searchMenuRight = parseInt(window.width - searchInputEl.style.left - searchInputEl.width);
-      const searchMenuEl = document.getElementById('searchMenuCard');
-      searchMenuEl.setAttribute('right', searchMenuRight);
-      searchMenuEl.setAttribute('top', searchMenuTop);
-    }
-
-    window.onresize = updateMenuPosition;
+    // const updateMenuPosition = function() {
+    //   const searchInputEl = document.getElementById('searchInputTF');
+    //   const searchMenuTop = parseInt(searchInputEl.style.top + searchInputEl.height - window.scrollTop) + 1;
+    //   const searchMenuRight = parseInt(window.width - searchInputEl.style.left - searchInputEl.width);
+    //   const searchMenuEl = document.getElementById('searchMenuCard');
+    //   searchMenuEl.setAttribute('right', searchMenuRight);
+    //   searchMenuEl.setAttribute('top', searchMenuTop);
+    // }
+    //
+    // window.onresize = updateMenuPosition;
 
     if(this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
@@ -730,6 +730,12 @@ export default {
     right: 24px;
     z-index: 100;
     overflow: hidden;
+  }
+
+  @media only screen and (max-width:959px) {
+    #searchMenuCard {
+      right: 16px;
+    }
   }
   .scroller {
     overflow-x: auto;
