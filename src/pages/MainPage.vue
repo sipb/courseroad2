@@ -317,7 +317,6 @@ export default {
       conflictInfo: undefined,
       cookiesAllowed: undefined,
       searchInput: '',
-      showSearch: false,
       classInfoStack: [],
       currentSemester: 1,
       addingFromCard: false,
@@ -381,11 +380,6 @@ export default {
         this.$refs.authcomponent.save();
       },
       deep: true
-    },
-    searchInput: function (newSearch, oldSearch) {
-      if (newSearch.length > 0) {
-        this.showSearch = true;
-      }
     }
   },
   mounted () {
@@ -428,10 +422,6 @@ export default {
     }
 
     $(window).on('resize', updateMenuPosition);
-
-    document.body.addEventListener('click', function (e) {
-      this.showSearch = false;
-    }.bind(this));
 
     if(this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
