@@ -57,6 +57,10 @@
                 <v-icon>block</v-icon>
               </v-btn>
             </v-layout>
+            <h4 v-if = "lateSchedule">
+              <v-icon>warning</v-icon>
+              This subject does not have a schedule yet, so it may not be offered next semester.
+            </h4>
             <table cellspacing="4">
               <tr v-if="currentSubject.total_units!==undefined">
                 <td><b>Units</b></td>
@@ -224,6 +228,20 @@ export default {
       return this.currentSubject.corequisites !== undefined
         ? this.parseRequirements(this.currentSubject.corequisites)
         : { reqs: [] };
+    },
+    lateSchedule: function() {
+      if (this.currentSubject.schedule === undefined && !(this.currentSubject.subject_id in this.genericIndex)) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        const fallCutoff = new Date(year, 4, 15);
+        const springCutoff = month === 11 ? new Date(year, 11, 15) : new Date(year-1, 11, 15);
+        const scheduleForFall = month >= 4 && month <= 10;
+        const lateForFall = scheduleForFall && today > fallCutoff;
+        const lateForSpring = !scheduleForFall && today > springCutoff;
+        return lateForFall || lateForSpring;
+      }
+      return false;
     }
   },
   methods: {
