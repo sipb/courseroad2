@@ -83,6 +83,7 @@
           @click.native = "clickSearch($event); $event.stopPropagation();"
           @input = "typeSearch"
           style = "width:100%;"
+          @keydown.esc = "searchOpen = false"
         />
       </v-layout>
 
