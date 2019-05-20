@@ -202,7 +202,7 @@ import $ from 'jquery';
 import SubjectScroll from '../components/SubjectScroll.vue';
 import ExpansionReqs from '../components/ExpansionReqs.vue';
 import colorMixin from './../mixins/colorMixin.js';
-import lateSchedule from './../mixins/lateSchedule.js'
+import schedule from './../mixins/schedule.js'
 
 export default {
   name: 'ClassInfo',
@@ -210,7 +210,7 @@ export default {
     'subject-scroll': SubjectScroll,
     'expansion-reqs': ExpansionReqs
   },
-  mixins: [colorMixin, lateSchedule],
+  mixins: [colorMixin, schedule],
   props: ['subjects', 'classInfoStack', 'subjectsIndex', 'genericCourses', 'genericIndex', 'addingFromCard'],
   data: function () { return {} },
   computed: {
