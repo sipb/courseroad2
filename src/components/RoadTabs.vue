@@ -116,14 +116,6 @@ export default {
     // TODO: This is not used?
     'road': Road
   },
-  computed: {
-    activeRoad () {
-      return this.$store.state.activeRoad;
-    },
-    roads () {
-      return this.$store.state.roads;
-    }
-  },
   data: function () {
     return {
       addDialog: false,
@@ -136,7 +128,13 @@ export default {
     };
   },
   computed: {
-    validRoadName: function() {
+    activeRoad () {
+      return this.$store.state.activeRoad;
+    },
+    roads () {
+      return this.$store.state.roads;
+    },
+    validRoadName: function () {
       return !(this.otherRoadHasName('', this.newRoadName) || this.newRoadName === '');
     }
   },

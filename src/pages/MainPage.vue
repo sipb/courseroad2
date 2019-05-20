@@ -48,29 +48,28 @@
         @conflict="conflict"
         @resolve-conflict="resolveConflict"
         @set-sem="setSemester"
-      >
-      </auth>
+      />
 
       <v-layout justify-end>
         <v-text-field
-          id = "searchInputTF"
-          autocomplete = "false"
-          class = "expanded-search"
+          id="searchInputTF"
+          v-model="searchInput"
+          autocomplete="false"
+          class="expanded-search"
           prepend-icon="search"
-          v-model = "searchInput"
-          placeholder = "Add classes"
+          placeholder="Add classes"
           autofocus
-          @click.native = "clickSearch"
-          @input = "typeSearch"
-          style = "width:100%;"
+          style="width:100%;"
+          @click.native="clickSearch"
+          @input="typeSearch"
         />
       </v-layout>
 
       <v-menu
+        v-model="searchOpen"
         :close-on-content-click="false"
-        v-model = "searchOpen"
-        :position-x = "searchX"
-        :position-y = "searchY"
+        :position-x="searchX"
+        :position-y="searchY"
       >
         <class-search
           id="searchMenu"
@@ -79,7 +78,6 @@
           :search-input="searchInput"
         />
       </v-menu>
-
     </v-toolbar>
 
     <v-navigation-drawer
@@ -168,7 +166,7 @@
 
     <v-footer v-if="!dismissedOld || !dismissedCookies" fixed style="height: unset;">
       <v-layout column>
-        <v-flex v-if="!dismissedOld" class = "lime accent-1 py-1 px-2">
+        <v-flex v-if="!dismissedOld" class="lime accent-1 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
               Looking for the old courseroad?  Visit the old website <a target="_blank" href="https://courseroad.mit.edu/old">here</a> and export your roads!
@@ -181,20 +179,20 @@
           </v-layout>
         </v-flex>
         <v-divider v-if="!dismissedOld && !dismissedCookies" />
-        <v-flex v-if="!dismissedCookies" class = "lime accent-3 py-1 px-2">
+        <v-flex v-if="!dismissedCookies" class="lime accent-3 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
               This website uses cookies and session storage to store your data and login token, and important features like saving roads will not work without them.
-              <span v-if = "cookiesAllowed === undefined">By continuing to use this website or clicking "I accept", you consent to the use of cookies.</span>
-              <span v-if = "cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
+              <span v-if="cookiesAllowed === undefined">By continuing to use this website or clicking "I accept", you consent to the use of cookies.</span>
+              <span v-if="cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color="primary" class="ma-1" @click="$store.commit('allowCookies');  dismissCookies();">
+              <v-btn small depressed color="primary" class="ma-1" @click="$store.commit('allowCookies'); dismissCookies();">
                 I accept
               </v-btn>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed class = "ma-1" @click="disallowCookies">
+              <v-btn small depressed class="ma-1" @click="disallowCookies">
                 Opt out
               </v-btn>
             </v-flex>
@@ -311,7 +309,7 @@ export default {
     },
     roads: {
       handler: function () {
-        if(!this.$store.state.ignoreRoadChanges) {
+        if (!this.$store.state.ignoreRoadChanges) {
           this.justLoaded = false;
           if (this.cookiesAllowed === undefined) {
             this.$store.commit('allowCookies');
@@ -321,7 +319,7 @@ export default {
           }
           this.$refs.authcomponent.save();
         } else {
-          this.$store.commit("watchRoadChanges");
+          this.$store.commit('watchRoadChanges');
         }
       },
       deep: true
@@ -363,23 +361,23 @@ export default {
 
     this.updateFulfillment();
 
-    this.searchX = $("#searchInputTF").offset().left;
-    this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+    this.searchX = $('#searchInputTF').offset().left;
+    this.searchY = $('#searchInputTF').offset().top + $('#searchInputTF').outerHeight();
 
-    $(window).on("resize", function() {
-      this.searchX = $("#searchInputTF").offset().left;
-      this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
+    $(window).on('resize', function () {
+      this.searchX = $('#searchInputTF').offset().left;
+      this.searchY = $('#searchInputTF').offset().top + $('#searchInputTF').outerHeight();
     }.bind(this));
 
     document.body.addEventListener('click', function (e) {
       this.showSearch = false;
     }.bind(this));
 
-    if(this.$cookies.isKey('dismissedOld')) {
+    if (this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
       this.$store.commit('allowCookies');
     }
-    if(this.$cookies.isKey('dismissedCookies')) {
+    if (this.$cookies.isKey('dismissedCookies')) {
       this.dismissedCookies = JSON.parse(this.$cookies.get('dismissedCookies'));
       this.$store.commit('allowCookies');
     }
@@ -446,12 +444,12 @@ export default {
       this.$refs.conflictdialog.resolveConflict();
       this.conflictInfo = undefined;
     },
-    disallowCookies: function() {
+    disallowCookies: function () {
       this.$store.commit('disallowCookies');
       this.dismissCookies();
       var cookieKeys = this.$cookies.keys();
-      for(var k = 0; k < cookieKeys.length; k++) {
-      	this.$cookies.remove(cookieKeys[k]);
+      for (var k = 0; k < cookieKeys.length; k++) {
+        this.$cookies.remove(cookieKeys[k]);
       }
     },
     updateLocal: function (id) {
@@ -465,20 +463,20 @@ export default {
     },
     dismissOld: function () {
       this.dismissedOld = true;
-      if(this.cookiesAllowed) {
+      if (this.cookiesAllowed) {
         this.$cookies.set('dismissedOld', true);
       }
     },
-    dismissCookies: function() {
+    dismissCookies: function () {
       this.dismissedCookies = true;
-      if(this.cookiesAllowed) {
+      if (this.cookiesAllowed) {
         this.$cookies.set('dismissedCookies', true);
       }
     },
-    clickSearch: function(event) {
+    clickSearch: function (event) {
       this.searchOpen = !this.searchOpen;
     },
-    typeSearch: function(searchString) {
+    typeSearch: function (searchString) {
       this.searchOpen = searchString.length > 0;
     }
   }

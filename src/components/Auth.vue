@@ -183,7 +183,7 @@ export default {
         } };
         return this.verify()
           .then(function (verifyResponse) {
-            return !!params
+            return params
               ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
               : axiosFunc(process.env.FIREROAD_URL + link, headerList);
           });
@@ -344,7 +344,6 @@ export default {
                 const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
                 this.data.$emit('conflict', conflictInfo);
               } else {
-
                 this.$store.commit('setRoadProp', {
                   id: newid,
                   prop: 'downloaded',
@@ -364,7 +363,6 @@ export default {
                 } else {
                   return Promise.resolve({ oldid: this.oldid, newid: this.oldid, state: 'same' });
                 }
-
               }
             }
           }.bind({ oldid: roadID, data: this }));

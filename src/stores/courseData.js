@@ -205,7 +205,7 @@ const store = new Vuex.Store({
       state.activeRoad = activeRoad;
     },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
-      if(ignoreSet) {
+      if (ignoreSet) {
         state.ignoreRoadChanges = true;
       }
       Vue.set(state.roads[id], prop, value);
