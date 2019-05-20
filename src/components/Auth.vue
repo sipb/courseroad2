@@ -330,8 +330,8 @@ export default {
         if (!roadID.includes('$')) {
           assignKeys.id = roadID;
         }
-        this.$store.commit('updateRoad', roadID, assignKeys);
-        const savePromise = this.postSecure('/sync/sync_road/', this.roads[roadID])
+        Object.assign(assignKeys, this.roads[roadID]);
+        const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
           .then(function (response) {
             if (response.status !== 200) {
               return Promise.reject('Unable to save road ' + this.oldid);
@@ -421,8 +421,9 @@ export default {
       return newRoadData;
     },
     updateRemote: function (roadID) {
-      this.$store.commit('updateRoad', roadID, { id: roadID, override: true, agent: this.getAgent() });
-      this.postSecure('/sync/sync_road/', this.roads[roadID])
+      const newRoad = { id: roadID, override: true, agent: this.getAgent() };
+      Object.assign(newRoad, this.roads[roadID]);
+      this.postSecure('/sync/sync_road/', newRoad)
         .then(function (response) {
           if (!response.data.success) {
             this.saveWarnings.push({ error: response.data.error_msg, id: roadID, name: this.roads[roadID] });
