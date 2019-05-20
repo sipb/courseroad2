@@ -84,7 +84,6 @@ export default {
       const today = new Date();
       const currentYear = today.getFullYear();
       const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
-      console.log("currentSemester: " + this.currentSemester + ", baseYear: " + (baseYear - Math.floor((this.currentSemester - 1) / 3)));
       return baseYear - Math.floor((this.currentSemester - 1) / 3);
     }
   }

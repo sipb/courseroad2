@@ -200,8 +200,6 @@ export default {
       const today = new Date();
       const month = today.getMonth();
       const scheduledSemester = (month === 4) ? this.currentSemester + 1 : this.currentSemester;
-      console.log('scheduledSemester: ' + scheduledSemester);
-      console.log(this.index + ": " + (this.index === scheduledSemester));
       return this.index === scheduledSemester;
     },
     offeredNow: function () {
