@@ -57,7 +57,7 @@
                 <v-icon>block</v-icon>
               </v-btn>
             </v-layout>
-            <h4 v-if = "lateSchedule">
+            <h4 v-if = "lateSchedule(currentSubject, genericIndex)">
               <v-icon>warning</v-icon>
               This subject does not have a schedule yet, so it may not be offered next semester.
             </h4>
@@ -202,6 +202,7 @@ import $ from 'jquery';
 import SubjectScroll from '../components/SubjectScroll.vue';
 import ExpansionReqs from '../components/ExpansionReqs.vue';
 import colorMixin from './../mixins/colorMixin.js';
+import lateSchedule from './../mixins/lateSchedule.js'
 
 export default {
   name: 'ClassInfo',
@@ -209,7 +210,7 @@ export default {
     'subject-scroll': SubjectScroll,
     'expansion-reqs': ExpansionReqs
   },
-  mixins: [colorMixin],
+  mixins: [colorMixin, lateSchedule],
   props: ['subjects', 'classInfoStack', 'subjectsIndex', 'genericCourses', 'genericIndex', 'addingFromCard'],
   data: function () { return {} },
   computed: {
@@ -228,20 +229,6 @@ export default {
       return this.currentSubject.corequisites !== undefined
         ? this.parseRequirements(this.currentSubject.corequisites)
         : { reqs: [] };
-    },
-    lateSchedule: function() {
-      if (this.currentSubject.schedule === undefined && !(this.currentSubject.subject_id in this.genericIndex)) {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth();
-        const fallCutoff = new Date(year, 4, 15);
-        const springCutoff = month === 11 ? new Date(year, 11, 15) : new Date(year-1, 11, 15);
-        const scheduleForFall = month >= 4 && month <= 10;
-        const lateForFall = scheduleForFall && today > fallCutoff;
-        const lateForSpring = !scheduleForFall && today > springCutoff;
-        return lateForFall || lateForSpring;
-      }
-      return false;
     }
   },
   methods: {
