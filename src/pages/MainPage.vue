@@ -413,7 +413,6 @@ export default {
     this.updateFulfillment();
 
     document.body.addEventListener('click', function (e) {
-      console.log(e);
       this.searchOpen = false;
     }.bind(this));
 
