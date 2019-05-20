@@ -80,7 +80,7 @@
           v-model = "searchInput"
           placeholder = "Add classes"
           autofocus
-          @click.native = "clickSearch"
+          @click.native = "clickSearch($event); $event.stopPropagation();"
           @input = "typeSearch"
           style = "width:100%;"
         />
@@ -193,6 +193,7 @@
       v-if = "searchOpen"
       id = "searchMenuCard"
       class = "elevation-8"
+      @click.native = "$event.stopPropagation();"
       >
       <class-search
         id="searchMenu"
@@ -410,6 +411,11 @@ export default {
       });
 
     this.updateFulfillment();
+
+    document.body.addEventListener('click', function (e) {
+      console.log(e);
+      this.searchOpen = false;
+    }.bind(this));
 
     if(this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
