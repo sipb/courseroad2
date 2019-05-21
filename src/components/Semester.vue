@@ -205,7 +205,7 @@ export default {
     },
     semesterSubjects: function () {
       const semSubjs = this.selectedSubjects.map(function (subj, ind) {
-        return Object.assign(subj, { index: ind });
+        return Object.assign({ index: ind }, subj);
       }).filter(subj => {
         return this.index === subj.semester;
       });
