@@ -74,38 +74,18 @@
       <v-layout justify-end>
         <v-text-field
           id = "searchInputTF"
-          autocomplete = "false"
+          autocomplete = "off"
           class = "expanded-search"
           prepend-icon="search"
           v-model = "searchInput"
           placeholder = "Add classes"
           autofocus
-          @click.native = "clickSearch"
+          @click.native = "clickSearch($event); $event.stopPropagation();"
           @input = "typeSearch"
           style = "width:100%;"
+          @keydown.esc = "searchOpen = false"
         />
       </v-layout>
-
-      <v-menu
-        :close-on-content-click="false"
-        v-model = "searchOpen"
-        :position-x = "searchX"
-        :position-y = "searchY"
-      >
-        <class-search
-          id="searchMenu"
-          ref="searchMenu"
-          class="search-menu"
-          :search-input="searchInput"
-          :subjects="subjectsInfo"
-          :generic-courses="genericCourses"
-          :class-info-stack="classInfoStack"
-          :cookies-allowed="cookiesAllowed"
-          @add-class="addClass"
-          @view-class-info="pushClassStack"
-          @drag-start-class="dragStartClass"
-        />
-      </v-menu>
 
     </v-toolbar>
 
@@ -209,6 +189,27 @@
         @update-remote="updateRemote"
       />
     </v-content>
+
+    <v-card
+      v-if = "searchOpen"
+      id = "searchMenuCard"
+      class = "elevation-8"
+      @click.native = "$event.stopPropagation();"
+      >
+      <class-search
+        id="searchMenu"
+        ref="searchMenu"
+        class="search-menu"
+        :search-input="searchInput"
+        :subjects="subjectsInfo"
+        :generic-courses="genericCourses"
+        :class-info-stack="classInfoStack"
+        :cookies-allowed="cookiesAllowed"
+        @add-class="addClass"
+        @view-class-info="pushClassStack"
+        @drag-start-class="dragStartClass"
+      />
+    </v-card>
 
     <class-info
       v-if="classInfoStack.length"
@@ -318,7 +319,6 @@ export default {
       conflictInfo: undefined,
       cookiesAllowed: undefined,
       searchInput: '',
-      showSearch: false,
       classInfoStack: [],
       currentSemester: 1,
       addingFromCard: false,
@@ -326,8 +326,6 @@ export default {
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
-      searchX: undefined,
-      searchY: undefined,
       // note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
       roads: {
         '$defaultroad$': {
@@ -382,11 +380,6 @@ export default {
         this.$refs.authcomponent.save();
       },
       deep: true
-    },
-    searchInput: function (newSearch, oldSearch) {
-      if (newSearch.length > 0) {
-        this.showSearch = true;
-      }
     }
   },
   mounted () {
@@ -420,16 +413,8 @@ export default {
 
     this.updateFulfillment();
 
-    this.searchX = $("#searchInputTF").offset().left;
-    this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
-
-    $(window).on("resize", function() {
-      this.searchX = $("#searchInputTF").offset().left;
-      this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
-    }.bind(this));
-
     document.body.addEventListener('click', function (e) {
-      this.showSearch = false;
+      this.searchOpen = false;
     }.bind(this));
 
     if(this.$cookies.isKey('dismissedOld')) {
@@ -732,6 +717,19 @@ export default {
 </script>
 
 <style scoped>
+  #searchMenuCard {
+    position: fixed;
+    top: 37px;
+    right: 24px;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  @media only screen and (max-width:959px) {
+    #searchMenuCard {
+      right: 16px;
+    }
+  }
   .scroller {
     overflow-x: auto;
   }
