@@ -431,11 +431,11 @@ export default {
     },
 
     updateLocal: function (roadID) {
-      Vue.set(this.roads[roadID], 'name', this.conflictInfo.other_name);
-      Vue.set(this.roads[roadID], 'agent', this.conflictInfo.other_agent);
-      Vue.set(this.roads[roadID], 'changed_date', this.conflictInfo.other_date);
-      Vue.set(this.roads[roadID], 'contents', this.conflictInfo.other_contents);
-      Vue.set(this.roads[roadID], 'downloaded', moment().format(DATE_FORMAT));
+      this.$store.commit('setRoadProp', {id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false});
+      this.$store.commit('setRoadProp', {id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false});
+      this.$store.commit('setRoadProp', {id: roadID, prop: 'changed_date', value: this.conflictInfo.other_date, ignoreSet: false});
+      this.$store.commit('setRoadProp', {id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false});
+      this.$store.commit('setRoadProp', {id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false});
       this.$emit('resolve-conflict');
     },
 
