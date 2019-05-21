@@ -32,7 +32,7 @@
         {{ saveIcon }}
       </v-icon>
       <div>
-        <p v-for="saveWarning in saveWarnings" :key="saveWarning">
+        <p v-for="saveWarning in saveWarnings" :key="saveWarning.name + saveWarning.error">
           {{ saveWarning.name }}: {{ saveWarning.error }}
         </p>
       </div>
