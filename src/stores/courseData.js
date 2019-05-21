@@ -36,18 +36,6 @@ const store = new Vuex.Store({
     ignoreRoadChanges: false
   },
   mutations: {
-    addAtPlaceholder (state, index) {
-      const newClass = {
-        overrideWarnings: false,
-        semester: index,
-        title: state.itemAdding.title,
-        id: state.itemAdding.subject_id,
-        units: state.itemAdding.total_units
-      };
-      state.$store.commit('addClass', newClass);
-      state.addingFromCard = false;
-      state.itemAdding = undefined;
-    },
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects.push(newClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
@@ -58,15 +46,15 @@ const store = new Vuex.Store({
     },
     addReq (state, event) {
       state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
-      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       Vue.set(state.roads, state.activeRoad, state.roads[state.activeRoad]);
     },
     allowCookies (state) {
       state.cookiesAllowed = true;
     },
-    cancelAddFromCard () {
-      this.addingFromCard = false;
-      this.itemAdding = undefined;
+    cancelAddFromCard (state) {
+      state.addingFromCard = false;
+      state.itemAdding = undefined;
     },
     clearClassInfoStack (state) {
       state.classInfoStack = [];
@@ -191,7 +179,7 @@ const store = new Vuex.Store({
     removeReq (state, event) {
       const reqIndex = state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
       state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     resetID (state, { oldid, newid }) {
       newid = newid.toString();
@@ -240,6 +228,17 @@ const store = new Vuex.Store({
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
+    },
+    addAtPlaceholder ({commit, state}, index) {
+      const newClass = {
+        overrideWarnings: false,
+        semester: index,
+        title: state.itemAdding.title,
+        id: state.itemAdding.subject_id,
+        units: state.itemAdding.total_units
+      };
+      commit('addClass', newClass);
+      commit('cancelAddFromCard');
     }
   }
 });

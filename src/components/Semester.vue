@@ -79,7 +79,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin],
-  props: ['selectedSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'addingFromCard', 'currentSemester'],
+  props: ['selectedSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -90,6 +90,9 @@ export default {
   computed: {
     itemAdding () {
       return this.$store.state.itemAdding;
+    },
+    addingFromCard () {
+      return this.$store.state.addingFromCard;
     },
     subjectsLoaded: function () {
       return Object.keys(this.$store.state.subjectsIndex).length > 0;

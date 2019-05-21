@@ -13,7 +13,7 @@
               <v-btn
                 large
                 icon
-                @click="$store.commit('addAtPlaceholder',semesterIndex)"
+                @click="$store.dispatch('addAtPlaceholder',semesterIndex)"
               >
                 <v-icon>add</v-icon>
               </v-btn>
