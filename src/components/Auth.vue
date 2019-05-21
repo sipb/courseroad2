@@ -345,7 +345,7 @@ export default {
                 this.data.$emit('conflict', conflictInfo);
               } else {
                 this.data.$store.commit('setRoadProp', {
-                  id: newid,
+                  id: this.oldid,
                   prop: 'downloaded',
                   value: moment().format(DATE_FORMAT),
                   ignoreSet: true
@@ -357,7 +357,7 @@ export default {
                   // i suspect this is because the three events required were not happening
                   // in the correct order or something
                   if (this.oldid !== response.data.id.toString()) {
-                    this.data.$store.commit('resetID', this.oldid, response.data.id);
+                    this.data.$store.commit('resetID', {oldid:  this.oldid, newid: response.data.id});
                   }
                   return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
                 } else {
