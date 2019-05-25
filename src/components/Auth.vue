@@ -433,7 +433,7 @@ export default {
     updateLocal: function (roadID) {
       this.$store.commit('setRoadProp', {id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false});
       this.$store.commit('setRoadProp', {id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'changed_date', value: this.conflictInfo.other_date, ignoreSet: false});
+      this.$store.commit('setRoadProp', {id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false});
       this.$store.commit('setRoadProp', {id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false});
       this.$store.commit('setRoadProp', {id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false});
       this.$emit('resolve-conflict');
