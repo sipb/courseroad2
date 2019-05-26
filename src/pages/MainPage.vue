@@ -52,32 +52,20 @@
 
       <v-layout justify-end>
         <v-text-field
-          id="searchInputTF"
-          v-model="searchInput"
-          autocomplete="false"
-          class="expanded-search"
+          id = "searchInputTF"
+          autocomplete = "off"
+          class = "expanded-search"
+          v-model = "searchInput"
           prepend-icon="search"
           placeholder="Add classes"
           autofocus
-          style="width:100%;"
-          @click.native="clickSearch"
-          @input="typeSearch"
+          @click.native = "clickSearch($event); $event.stopPropagation();"
+          @input = "typeSearch"
+          style = "width:100%;"
+          @keydown.esc = "searchOpen = false"
         />
       </v-layout>
 
-      <v-menu
-        v-model="searchOpen"
-        :close-on-content-click="false"
-        :position-x="searchX"
-        :position-y="searchY"
-      >
-        <class-search
-          id="searchMenu"
-          ref="searchMenu"
-          class="search-menu"
-          :search-input="searchInput"
-        />
-      </v-menu>
     </v-toolbar>
 
     <v-navigation-drawer
@@ -158,6 +146,20 @@
         @update-remote="updateRemote"
       />
     </v-content>
+
+    <v-card
+      v-if = "searchOpen"
+      id = "searchMenuCard"
+      class = "elevation-8"
+      @click.native = "$event.stopPropagation();"
+      >
+      <class-search
+        id="searchMenu"
+        ref="searchMenu"
+        class="search-menu"
+        :search-input="searchInput"
+      />
+    </v-card>
 
     <class-info
       v-if="$store.state.classInfoStack.length"
@@ -249,13 +251,10 @@ export default {
       conflictDialog: false,
       conflictInfo: undefined,
       searchInput: '',
-      showSearch: false,
       currentSemester: 1,
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
-      searchX: undefined,
-      searchY: undefined,
       // TODO: Really we should grab this from a global datastore
       // now in the same format as FireRoad
       showMobile: ['mobile', 'tabvar'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
@@ -323,11 +322,6 @@ export default {
         }
       },
       deep: true
-    },
-    searchInput: function (newSearch) {
-      if (newSearch.length > 0) {
-        this.showSearch = true;
-      }
     }
   },
   mounted () {
@@ -361,16 +355,8 @@ export default {
 
     this.updateFulfillment();
 
-    this.searchX = $('#searchInputTF').offset().left;
-    this.searchY = $('#searchInputTF').offset().top + $('#searchInputTF').outerHeight();
-
-    $(window).on('resize', function () {
-      this.searchX = $('#searchInputTF').offset().left;
-      this.searchY = $('#searchInputTF').offset().top + $('#searchInputTF').outerHeight();
-    }.bind(this));
-
     document.body.addEventListener('click', function (e) {
-      this.showSearch = false;
+      this.searchOpen = false;
     }.bind(this));
 
     if (this.$cookies.isKey('dismissedOld')) {
@@ -484,6 +470,19 @@ export default {
 </script>
 
 <style scoped>
+  #searchMenuCard {
+    position: fixed;
+    top: 37px;
+    right: 24px;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  @media only screen and (max-width:959px) {
+    #searchMenuCard {
+      right: 16px;
+    }
+  }
   .scroller {
     overflow-x: auto;
   }

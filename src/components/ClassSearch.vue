@@ -128,6 +128,7 @@ export default {
       return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
+      this.chosenFilters.nameInput = this.searchInput;
       // only display subjects if you are filtering by something
       let returnAny = false;
       for (const filterName in this.chosenFilters) {
@@ -231,9 +232,6 @@ export default {
     }
   },
   watch: {
-    searchInput: function (newSearch, oldSearch) {
-      this.chosenFilters.nameInput = newSearch;
-    },
     classStackExists: function (oldExists, newExists) {
       Vue.nextTick(function () {
         this.updateMenuStyle();
