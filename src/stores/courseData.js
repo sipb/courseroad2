@@ -61,7 +61,10 @@ const store = new Vuex.Store({
     disallowCookies (state) {
       state.cookiesAllowed = false;
     },
-    deleteRoad (state, id) {
+    deleteRoad (state, { id, ignoreSet }) {
+      if (ignoreSet) {
+        state.ignoreRoadChanges = true;
+      }
       Vue.delete(state.roads, id);
     },
     dragStartClass (state, event) {
@@ -197,7 +200,10 @@ const store = new Vuex.Store({
       }
       Vue.set(state.roads[id], prop, value);
     },
-    setRoad (state, { id, road }) {
+    setRoad (state, { id, road, ignoreSet }) {
+      if (ignoreSet) {
+        state.ignoreRoadChanges = true;
+      }
       Vue.set(state.roads, id, road);
     },
     setRoads (state, roads) {

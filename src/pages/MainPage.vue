@@ -422,7 +422,8 @@ export default {
       };
       this.$store.commit('setRoad', {
         id: tempRoadID,
-        road: newRoad
+        road: newRoad,
+        ignoreSet: false
       });
       this.$refs.authcomponent.newRoads.push(tempRoadID);
       this.$store.commit('setActiveRoad', tempRoadID);
