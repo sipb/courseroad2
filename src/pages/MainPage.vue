@@ -255,6 +255,7 @@ export default {
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
+      updatingFulfillment: false,
       showMobile: ['mobile', 'tabvar'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
     };
   },
@@ -378,13 +379,19 @@ export default {
   },
   methods: {
     updateFulfillment: function () {
-      const _this = this;
-      for (let r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
-        const req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, _this.roads[_this.activeRoad].contents).then(function (response) {
-          // This is necessary so Vue knows about the new property on reqTrees
-          Vue.set(this.data.reqTrees, this.req, response.data);
-        }.bind({ data: this, req: req }));
+      if(!this.updatingFulfillment) {
+        this.updatingFulfillment = true;
+        const _this = this;
+        for (let r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
+          const req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
+          axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, _this.roads[_this.activeRoad].contents).then(function (response) {
+            // This is necessary so Vue knows about the new property on reqTrees
+            Vue.set(this.data.reqTrees, this.req, response.data);
+          }.bind({ data: this, req: req }));
+        }
+        Vue.nextTick(function() {
+          this.updatingFulfillment = false;
+        }.bind(this))
       }
     },
     setActiveRoad: function () {
