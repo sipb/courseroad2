@@ -319,7 +319,15 @@ export default {
       const _this = this
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
-          splitReq[i] = 'true';
+          //don't include things like 'permission of instructor'
+          splitReq[i] = '';
+          //remove operator before & parentheses if directly before and after
+          if(splitReq[i] !== '(') {
+            splitReq[i-1] = '';
+          } else if(splitReq[i+1] === ')') {
+            splitReq[i-1] = '';
+            splitReq[i+1] = '';
+          }
         } else if ('()/, '.indexOf(splitReq[i]) < 0) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
