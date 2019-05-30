@@ -329,81 +329,73 @@ export default {
         this.getAuthorizationToken(code);
       }
     },
-    save: function () {
+    save: function (roadID) {
       if (this.loggedIn) {
-        this.saveRemote();
+        this.saveRemote(roadID);
       } else {
         this.saveLocal();
       }
     },
-    saveRemote: function () {
+    saveRemote: function (roadID) {
       this.currentlySaving = true;
       this.saveWarnings = [];
-      const savePromises = [];
-      for (const roadID in this.roads) {
-        const assignKeys = { override: false, agent: this.getAgent() };
-        if (!roadID.includes('$')) {
-          assignKeys.id = roadID;
-        }
-        const roadSubjects = [].concat.apply([], this.roads[roadID].contents.selectedSubjects);
-        const formattedRoadContents = Object.assign({coursesOfStudy: ['girs'], progressOverrides: []}, this.roads[roadID].contents, {selectedSubjects: roadSubjects});
-        Object.assign(assignKeys, this.roads[roadID], {contents: formattedRoadContents});
-        const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
-          .then(function (response) {
-            if (response.status !== 200) {
-              return Promise.reject('Unable to save road ' + this.oldid);
-            } else {
-              const newid = (response.data.id !== undefined ? response.data.id : this.oldid);
-              if (response.data.success === false) {
-                this.data.saveWarnings.push({ id: newid, error: response.data.error_msg || response.data.error, name: this.data.roads[this.oldid].name });
-              }
-              if (response.data.result === 'conflict') {
-                const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
-                this.data.$emit('conflict', conflictInfo);
-              } else {
-                this.data.$store.commit('setRoadProp', {
-                  id: this.oldid,
-                  prop: 'downloaded',
-                  value: moment().format(DATE_FORMAT),
-                  ignoreSet: true
-                });
-
-                if (response.data.id !== undefined) {
-                  // note: code moved to app.vue for reset id
-                  // this is to fix a problem where the activeroad gets reset to the first one
-                  // i suspect this is because the three events required were not happening
-                  // in the correct order or something
-                  if (this.oldid !== response.data.id.toString()) {
-                    this.data.$store.commit('resetID', {oldid:  this.oldid, newid: response.data.id});
-                  }
-                  return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
-                } else {
-                  return Promise.resolve({ oldid: this.oldid, newid: this.oldid, state: 'same' });
-                }
-              }
-            }
-          }.bind({ oldid: roadID, data: this }));
-        savePromises.push(savePromise);
+      const assignKeys = { override: false, agent: this.getAgent() };
+      if (!roadID.includes('$')) {
+        assignKeys.id = roadID;
       }
-      return Promise.all(savePromises)
-        .then(function (saveResults) {
-          for (let s = 0; s < saveResults.length; s++) {
-            const savedResult = saveResults[s];
-            if (savedResult.state === 'changed') {
-              const oldIdIndex = this.newRoads.indexOf(savedResult.oldid);
-              if (oldIdIndex >= 0) {
-                this.newRoads.splice(oldIdIndex, 1);
+      const roadSubjects = [].concat.apply([], this.roads[roadID].contents.selectedSubjects);
+      const formattedRoadContents = Object.assign({coursesOfStudy: ['girs'], progressOverrides: []}, this.roads[roadID].contents, {selectedSubjects: roadSubjects});
+      Object.assign(assignKeys, this.roads[roadID], {contents: formattedRoadContents});
+      const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
+        .then(function (response) {
+          if (response.status !== 200) {
+            return Promise.reject('Unable to save road ' + this.oldid);
+          } else {
+            const newid = (response.data.id !== undefined ? response.data.id : this.oldid);
+            if (response.data.success === false) {
+              this.data.saveWarnings.push({ id: newid, error: response.data.error_msg, name: this.data.roads[this.oldid].name });
+            }
+            if (response.data.result === 'conflict') {
+              const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
+              this.data.$emit('conflict', conflictInfo);
+            } else {
+              this.data.$store.commit('setRoadProp', {
+                id: this.oldid,
+                prop: 'downloaded',
+                value: moment().format(DATE_FORMAT),
+                ignoreSet: true
+              });
+
+              if (response.data.id !== undefined) {
+                // note: code moved to app.vue for reset id
+                // this is to fix a problem where the activeroad gets reset to the first one
+                // i suspect this is because the three events required were not happening
+                // in the correct order or something
+                if (this.oldid !== response.data.id.toString()) {
+                  this.data.$store.commit('resetID', {oldid:  this.oldid, newid: response.data.id});
+                }
+                return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
+              } else {
+                return Promise.resolve({ oldid: this.oldid, newid: this.oldid, state: 'same' });
               }
             }
           }
-          if (this.$cookies.isKey('newRoads')) {
-            this.$cookies.set('newRoads', {});
+        }.bind({ oldid: roadID, data: this }));
+      savePromise.then(function (saveResult) {
+        if (saveResult.state === 'changed') {
+          const oldIdIndex = this.newRoads.indexOf(saveResult.oldid);
+          if (oldIdIndex >= 0) {
+            this.newRoads.splice(oldIdIndex, 1);
           }
-          this.currentlySaving = false;
-        }.bind(this)).catch(function (err) {
-          console.log(err);
-          this.currentlySaving = false;
-        }.bind(this));
+        }
+        if (this.$cookies.isKey('newRoads')) {
+          this.$cookies.set('newRoads', {});
+        }
+        this.currentlySaving = false;
+      }.bind(this)).catch(function (err) {
+        console.log(err);
+        this.currentlySaving = false;
+      }.bind(this));
     },
     saveLocal: function () {
       this.currentlySaving = true;
