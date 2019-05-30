@@ -386,7 +386,9 @@ export default {
         const fulfillments = fulfillmentNeeded === 'all' ? this.roads[this.activeRoad].contents.coursesOfStudy : [fulfillmentNeeded];
         for (let r = 0; r < fulfillments.length; r++) {
           const req = fulfillments[r];
-          axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, _this.roads[_this.activeRoad].contents).then(function (response) {
+          const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
+          alteredRoadContents.selectedSubjects = [].concat.apply([],alteredRoadContents.selectedSubjects);
+          axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);
           }.bind({ data: this, req: req }));

@@ -218,7 +218,7 @@ export default {
           if (roadData !== undefined) {
             this.renumberRoads(roadData);
             if (this.justLoaded) {
-              this.$store.commit('deleteRoad', { id: '$defaultroad$', ignoreSet: true });
+              this.$store.commit('deleteRoad', '$defaultroad$');
             }
             for (let r = 0; r < roadIDs.length; r++) {
               if (roadData[r].status === 200 && roadData[r].data.success) {
@@ -465,7 +465,7 @@ export default {
           this.$store.commit('setActiveRoad', '');
         }
       }
-      this.$store.commit('deleteRoad', { id: roadID, ignoreSet: false });
+      this.$store.commit('deleteRoad', roadID);
 
       if (roadID in this.newRoads) {
         roadIndex = this.newRoads.indexOf(roadID);

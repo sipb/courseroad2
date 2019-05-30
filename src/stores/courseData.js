@@ -63,10 +63,8 @@ const store = new Vuex.Store({
     disallowCookies (state) {
       state.cookiesAllowed = false;
     },
-    deleteRoad (state, { id, ignoreSet }) {
-      if (ignoreSet) {
-        state.ignoreRoadChanges = true;
-      }
+    deleteRoad (state, id) {
+      state.ignoreRoadChanges = true;
       Vue.delete(state.roads, id);
     },
     dragStartClass (state, event) {
