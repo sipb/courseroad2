@@ -312,9 +312,10 @@ export default {
           if (this.cookiesAllowed === undefined) {
             this.$store.commit('allowCookies');
           }
-          if (this.activeRoad !== '') {
+          if (this.activeRoad !== '' && this.$store.state.fulfillmentNeeded !== "none") {
             this.updateFulfillment();
           }
+          this.$store.commit('resetFulfillmentNeeded');
           this.$refs.authcomponent.save(this.activeRoad);
         } else {
           this.$store.commit('watchRoadChanges');
@@ -382,8 +383,9 @@ export default {
       if(!this.updatingFulfillment) {
         this.updatingFulfillment = true;
         const _this = this;
-        for (let r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
-          const req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
+        const fulfillments = this.$store.state.fulfillmentNeeded === "all" ? this.roads[this.activeRoad].contents.coursesOfStudy : [this.$store.state.fulfillmentNeeded];
+        for (let r = 0; r < fulfillments.length; r++) {
+          const req = fulfillments[r];
           axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, _this.roads[_this.activeRoad].contents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);

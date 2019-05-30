@@ -32,7 +32,8 @@ const store = new Vuex.Store({
     },
     subjectsIndex: {},
     subjectsInfo: [],
-    ignoreRoadChanges: false
+    ignoreRoadChanges: false,
+    fulfillmentNeeded: "all"
   },
   mutations: {
     addClass (state, newClass) {
@@ -47,6 +48,7 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       Vue.set(state.roads, state.activeRoad, state.roads[state.activeRoad]);
+      state.fulfillmentNeeded = event;
     },
     allowCookies (state) {
       state.cookiesAllowed = true;
@@ -184,6 +186,7 @@ const store = new Vuex.Store({
       const reqIndex = state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
       state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.fulfillmentNeeded = "none";
     },
     resetID (state, { oldid, newid }) {
       newid = newid.toString();
@@ -227,6 +230,9 @@ const store = new Vuex.Store({
     },
     watchRoadChanges (state) {
       state.ignoreRoadChanges = false;
+    },
+    resetFulfillmentNeeded (state) {
+      state.fulfillmentNeeded = "all";
     }
   },
   actions: {
