@@ -319,7 +319,7 @@ export default {
       const _this = this
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
-          splitReq[i] = 'false';
+          splitReq[i] = 'true';
         } else if ('()/, '.indexOf(splitReq[i]) < 0) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
