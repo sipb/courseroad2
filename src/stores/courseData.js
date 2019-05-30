@@ -195,6 +195,8 @@ const store = new Vuex.Store({
         state.activeRoad = newid;
       }
       Vue.delete(state.roads, oldid);
+      state.ignoreRoadChanges = true;
+      state.fulfillmentNeeded = 'none';
     },
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;

@@ -297,7 +297,7 @@ export default {
       this.justLoaded = false;
       if (newRoad !== '') {
         window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
-        this.updateFulfillment('all');
+        this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
     },
     cookiesAllowed: function (newCA) {
@@ -307,12 +307,12 @@ export default {
     },
     roads: {
       handler: function () {
+        this.justLoaded = false;
+        if (this.cookiesAllowed === undefined) {
+          this.$store.commit('allowCookies');
+        }
         if (!this.$store.state.ignoreRoadChanges) {
-          this.justLoaded = false;
-          if (this.cookiesAllowed === undefined) {
-            this.$store.commit('allowCookies');
-          }
-          if (this.activeRoad !== '' && this.$store.state.fulfillmentNeeded !== 'none') {
+          if (this.activeRoad !== '') {
              this.updateFulfillment(this.$store.state.fulfillmentNeeded);
           }
           this.$store.commit('resetFulfillmentNeeded');
@@ -380,7 +380,7 @@ export default {
   },
   methods: {
     updateFulfillment: function (fulfillmentNeeded) {
-      if(!this.updatingFulfillment) {
+      if(!this.updatingFulfillment && fulfillmentNeeded !== 'none') {
         this.updatingFulfillment = true;
         const _this = this;
         const fulfillments = fulfillmentNeeded === 'all' ? this.roads[this.activeRoad].contents.coursesOfStudy : [fulfillmentNeeded];
