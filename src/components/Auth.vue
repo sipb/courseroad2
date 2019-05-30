@@ -198,6 +198,9 @@ export default {
 
     getUserData: function () {
       this.gettingUserData = true;
+      for (var i = 0; i < this.newRoads.length; i++) {
+        this.saveRemote(this.newRoads[i]);
+      }
       this.getSecure('/sync/roads/')
         .then(function (response) {
           if (response.status === 200 && response.data.success) {
@@ -389,7 +392,7 @@ export default {
           }
         }
         if (this.$cookies.isKey('newRoads')) {
-          this.$cookies.set('newRoads', {});
+          this.$cookies.set('newRoads', this.getNewRoadData());
         }
         this.currentlySaving = false;
       }.bind(this)).catch(function (err) {
