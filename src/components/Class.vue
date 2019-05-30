@@ -77,7 +77,7 @@ import colorMixin from './../mixins/colorMixin.js';
 export default {
   name: 'Class',
   mixins: [colorMixin],
-  props: ['classInfo', 'semesterIndex', 'warnings'],
+  props: ['classIndex', 'classInfo', 'semesterIndex', 'warnings'],
   data () {
     return {
       warningDialog: false,
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     dragStart: function (event) {
-      event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo }));
+      event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo, classIndex: this.classIndex }));
       this.$store.commit('dragStartClass', {
         dragstart: event,
         basicClass: this.classInfo,

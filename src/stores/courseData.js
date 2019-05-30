@@ -79,9 +79,8 @@ const store = new Vuex.Store({
       state.itemAdding = classInfo;
       state.addingFromCard = false;
     },
-    moveClass (state, { currentClass, semester }) {
-      const currentIndex = state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].indexOf(currentClass);
-      state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(currentIndex, 1);
+    moveClass (state, { currentClass, classIndex, semester }) {
+      state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(classIndex, 1);
       currentClass.semester = semester;
       state.roads[state.activeRoad].contents.selectedSubjects[semester].push(currentClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));

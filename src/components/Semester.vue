@@ -56,6 +56,7 @@
           :class-info="subject"
           :semester-index="index"
           :warnings="warnings[subjindex]"
+          :class-index="subjindex"
         />
       </v-layout>
     </v-container>
@@ -376,7 +377,7 @@ export default {
           };
           this.$store.commit('addClass', newClass);
         } else {
-          this.$store.commit('moveClass', { currentClass: eventData.classInfo, semester: this.index });
+          this.$store.commit('moveClass', { currentClass: eventData.classInfo, classIndex: eventData.classIndex, semester: this.index });
         }
       }
       this.draggingOver = false;
