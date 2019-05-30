@@ -297,7 +297,7 @@ export default {
       this.justLoaded = false;
       if (newRoad !== '') {
         window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
-        this.updateFulfillment();
+        this.updateFulfillment('all');
       }
     },
     cookiesAllowed: function (newCA) {
@@ -312,8 +312,8 @@ export default {
           if (this.cookiesAllowed === undefined) {
             this.$store.commit('allowCookies');
           }
-          if (this.activeRoad !== '' && this.$store.state.fulfillmentNeeded !== "none") {
-            this.updateFulfillment();
+          if (this.activeRoad !== '' && this.$store.state.fulfillmentNeeded !== 'none') {
+             this.updateFulfillment(this.$store.state.fulfillmentNeeded);
           }
           this.$store.commit('resetFulfillmentNeeded');
           this.$refs.authcomponent.save(this.activeRoad);
@@ -353,7 +353,7 @@ export default {
         this.reqList = ordered;
       });
 
-    this.updateFulfillment();
+    this.updateFulfillment('all');
 
     document.body.addEventListener('click', function (e) {
       this.searchOpen = false;
@@ -379,11 +379,11 @@ export default {
     });
   },
   methods: {
-    updateFulfillment: function () {
+    updateFulfillment: function (fulfillmentNeeded) {
       if(!this.updatingFulfillment) {
         this.updatingFulfillment = true;
         const _this = this;
-        const fulfillments = this.$store.state.fulfillmentNeeded === "all" ? this.roads[this.activeRoad].contents.coursesOfStudy : [this.$store.state.fulfillmentNeeded];
+        const fulfillments = fulfillmentNeeded === 'all' ? this.roads[this.activeRoad].contents.coursesOfStudy : [fulfillmentNeeded];
         for (let r = 0; r < fulfillments.length; r++) {
           const req = fulfillments[r];
           axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, _this.roads[_this.activeRoad].contents).then(function (response) {
