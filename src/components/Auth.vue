@@ -234,6 +234,23 @@ export default {
                 return s;
               });
               roadData[r].data.file.contents.selectedSubjects = newss;
+
+              if(roadData[r].data.file.contents.selectedSubjects.length === 16) {
+                roadData[r].data.file.contents.selectedSubjects = roadData[r].data.file.contents.selectedSubjects[0];
+              }
+              // console.log(roadData[r].data.file.contents.selectedSubjects);
+              //convert selected subjects to more convenient format
+              const simpless = Array.from(Array(16), () => new Array());
+              for (let i = 0; i < roadData[r].data.file.contents.selectedSubjects.length; i++) {
+                const s = roadData[r].data.file.contents.selectedSubjects[i];
+                if(s.semester === undefined || s.semester < 0) {
+                  s.semester = 0;
+                }
+                simpless[s.semester].push(s);
+              }
+              roadData[r].data.file.contents.selectedSubjects = simpless;
+
+              // console.log(roadData[r].data.file.contents.selectedSubjects);
               // sanitize progressOverrides
               if (roadData[r].data.file.contents.progressOverrides === undefined) {
                 roadData[r].data.file.contents.progressOverrides = {};
@@ -328,7 +345,9 @@ export default {
         if (!roadID.includes('$')) {
           assignKeys.id = roadID;
         }
-        Object.assign(assignKeys, this.roads[roadID]);
+        const roadSubjects = [].concat.apply([], this.roads[roadID].contents.selectedSubjects);
+        const formattedRoadContents = Object.assign({coursesOfStudy: ['girs'], progressOverrides: []}, this.roads[roadID].contents, {selectedSubjects: roadSubjects});
+        Object.assign(assignKeys, this.roads[roadID], {contents: formattedRoadContents});
         const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
           .then(function (response) {
             if (response.status !== 200) {
@@ -391,7 +410,6 @@ export default {
       if (this.cookiesAllowed) {
         this.$cookies.set('newRoads', this.getNewRoadData());
       }
-      this.currentlySaving = false;
       for (const roadID in this.roads) {
         this.$store.commit('setRoadProp', {
           id: roadID,
@@ -400,11 +418,12 @@ export default {
           ignoreSet: true
         });
       }
+      this.currentlySaving = false;
     },
     getNewRoadData: function () {
       const newRoadData = {};
       if (this.newRoads.indexOf('$defaultroad$') === -1 && '$defaultroad$' in this.roads) {
-        if (this.roads['$defaultroad$'].contents.selectedSubjects.length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
+        if ([].concat.apply([],this.roads['$defaultroad$'].contents.selectedSubjects).length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
           this.newRoads.push('$defaultroad$');
         }
       }

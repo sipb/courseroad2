@@ -12,6 +12,7 @@
       :key="index-1"
       :index="index-1"
       :selected-subjects="selectedSubjects"
+      :semester-subjects="selectedSubjects[index-1]"
       :road-i-d="roadID"
       :is-open="visibleList[index-1]"
       :base-year="baseYear"

@@ -25,7 +25,7 @@ const store = new Vuex.Store({
         agent: '',
         contents: {
           coursesOfStudy: ['girs'],
-          selectedSubjects: [],
+          selectedSubjects: Array.from(Array(16), () => new Array()),
           progressOverrides: {}
         }
       }
@@ -36,7 +36,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     addClass (state, newClass) {
-      state.roads[state.activeRoad].contents.selectedSubjects.push(newClass);
+      state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     addFromCard (state, classItem) {
@@ -79,13 +79,16 @@ const store = new Vuex.Store({
       state.itemAdding = classInfo;
       state.addingFromCard = false;
     },
-    moveClass (state, { classIndex, semester }) {
-      state.roads[state.activeRoad].contents.selectedSubjects[classIndex].semester = semester;
+    moveClass (state, { currentClass, semester }) {
+      const currentIndex = state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].indexOf(currentClass);
+      state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(currentIndex, 1);
+      currentClass.semester = semester;
+      state.roads[state.activeRoad].contents.selectedSubjects[semester].push(currentClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     overrideWarnings (state, payload) {
-      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(payload.classInfo);
-      Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[classIndex], 'overrideWarnings', payload.override);
+      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
+      Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
     },
     parseGenericCourses (state) {
       const girAttributes = {
@@ -174,8 +177,8 @@ const store = new Vuex.Store({
       }
     },
     removeClass (state, classInfo) {
-      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(classInfo);
-      state.roads[state.activeRoad].contents.selectedSubjects.splice(classIndex, 1);
+      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[classInfo.semester].indexOf(classInfo);
+      state.roads[state.activeRoad].contents.selectedSubjects[classInfo.semester].splice(classIndex, 1);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     removeReq (state, event) {

@@ -131,7 +131,11 @@ export default {
   methods: {
     exportRoad: function (event) {
       const filename = this.roads[this.activeRoad].name + '.road';
-      const text = JSON.stringify(this.roads[this.activeRoad].contents);
+
+      const roadSubjects = [].concat.apply([], this.roads[this.activeRoad].contents.selectedSubjects);
+      const formattedRoadContents = Object.assign({coursesOfStudy: ['girs'], progressOverrides: []}, this.roads[this.activeRoad].contents, {selectedSubjects: roadSubjects});
+
+      const text = JSON.stringify(formattedRoadContents);
 
       // for some reason this is the way you download files...
       //    create an element, click it, and remove it
@@ -173,6 +177,7 @@ export default {
             return s;
           });
           obj.selectedSubjects = newss;
+
           const ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
             let subject;
@@ -200,7 +205,18 @@ export default {
           }).filter((s) => {
             return s !== undefined;
           });
-          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, ss, obj.progressOverrides);
+
+          //convert selected subjects to more convenient format
+          const simpless = Array.from(Array(16), () => new Array());
+          for (let i = 0; i < ss.length; i++) {
+            const s = ss[i];
+            if(s.semester === undefined || s.semester < 0) {
+              s.semester = 0;
+            }
+            simpless[s.semester].push(s);
+          }
+
+          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, simpless, obj.progressOverrides);
         } catch (error) {
           fail = true;
           console.log('import failed with error:');

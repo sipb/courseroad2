@@ -406,7 +406,7 @@ export default {
       window.location.hash = '#/#road' + this.activeRoad;
       return false;
     },
-    addRoad: function (roadName, cos = ['girs'], ss = [], overrides = {}) {
+    addRoad: function (roadName, cos = ['girs'], ss = Array.from(Array(16), () => new Array()), overrides = {}) {
       const tempRoadID = '$' + this.$refs.authcomponent.newRoads.length + '$';
       const newContents = {
         coursesOfStudy: cos,
