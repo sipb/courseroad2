@@ -299,6 +299,12 @@ export default {
         window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
         this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
+      if (this.$store.state.unretrieved.indexOf(newRoad) >= 0) {
+        const _this = this;
+        this.$refs.authcomponent.retrieveRoad(newRoad).then(function() {
+          _this.$store.commit('setRetrieved', newRoad);
+        })
+      }
     },
     cookiesAllowed: function (newCA) {
       if (newCA) {
@@ -311,11 +317,12 @@ export default {
         if (this.cookiesAllowed === undefined) {
           this.$store.commit('allowCookies');
         }
+        if (this.activeRoad !== '') {
+           this.updateFulfillment(this.$store.state.fulfillmentNeeded);
+        }
+        this.$store.commit('resetFulfillmentNeeded');
+
         if (!this.$store.state.ignoreRoadChanges) {
-          if (this.activeRoad !== '') {
-             this.updateFulfillment(this.$store.state.fulfillmentNeeded);
-          }
-          this.$store.commit('resetFulfillmentNeeded');
           this.$refs.authcomponent.save(this.activeRoad);
         } else {
           this.$store.commit('watchRoadChanges');

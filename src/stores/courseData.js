@@ -33,7 +33,8 @@ const store = new Vuex.Store({
     subjectsIndex: {},
     subjectsInfo: [],
     ignoreRoadChanges: false,
-    fulfillmentNeeded: 'all'
+    fulfillmentNeeded: 'all',
+    unretrieved: []
   },
   mutations: {
     addClass (state, newClass) {
@@ -88,6 +89,13 @@ const store = new Vuex.Store({
     overrideWarnings (state, payload) {
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
       Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
+    },
+    setUnretrieved (state, roadIDs) {
+      state.unretrieved = roadIDs;
+    },
+    setRetrieved (state, roadID) {
+      let roadIDIndex = state.unretrieved.indexOf(roadID);
+      state.unretrieved.splice(roadIDIndex, 1);
     },
     parseGenericCourses (state) {
       const girAttributes = {

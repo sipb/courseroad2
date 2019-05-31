@@ -195,7 +195,51 @@ export default {
     postSecure: function (link, params) {
       return this.doSecure(axios.post, link, params);
     },
+    retrieveRoad: function (roadID) {
+      const _this = this;
+      return this.getSecure('/sync/roads/?id='+roadID).then(function(roadData) {
+        if (roadData.status === 200 && roadData.data.success) {
+          roadData.data.file.downloaded = moment().format(DATE_FORMAT);
+          roadData.data.file.changed = moment().format(DATE_FORMAT);
+          if (roadData.data.file.contents.progressOverrides === undefined) {
+            roadData.data.file.contents.progressOverrides = {};
+          }
+        }
 
+        // sanitize subject_id
+        const newss = roadData.data.file.contents.selectedSubjects.map((s) => {
+          if ('subject_id' in s) {
+            s.id = s.subject_id;
+            delete s.subject_id;
+          }
+          return s;
+        });
+        roadData.data.file.contents.selectedSubjects = newss;
+        // console.log(roadData[r].data.file.contents.selectedSubjects);
+        //convert selected subjects to more convenient format
+        const simpless = Array.from(Array(16), () => new Array());
+        for (let i = 0; i < roadData.data.file.contents.selectedSubjects.length; i++) {
+          const s = roadData.data.file.contents.selectedSubjects[i];
+          if(s.semester === undefined || s.semester < 0) {
+            s.semester = 0;
+          }
+          simpless[s.semester].push(s);
+        }
+        roadData.data.file.contents.selectedSubjects = simpless;
+        // console.log(roadData[r].data.file.contents.selectedSubjects);
+        // sanitize progressOverrides
+        if (roadData.data.file.contents.progressOverrides === undefined) {
+          roadData.data.file.contents.progressOverrides = {};
+        }
+        _this.$store.commit('setRoad', {
+          id: roadID,
+          road: roadData.data.file,
+          ignoreSet: true
+        });
+
+        return roadData;
+      })
+    },
     getUserData: function () {
       this.gettingUserData = true;
       for (var i = 0; i < this.newRoads.length; i++) {
@@ -204,68 +248,40 @@ export default {
       this.getSecure('/sync/roads/')
         .then(function (response) {
           if (response.status === 200 && response.data.success) {
-            return Object.keys(response.data.files);
+            return response.data.files;
           } else {
             return Promise.reject();
           }
           return response;
-        }).then(function (fileKeys) {
-          const fileLinks = fileKeys.map(function (fk) {
-            return this.getSecure('/sync/roads/?id=' + fk);
-          }.bind(this));
-          return Promise.all(fileLinks).then((fl) => [fileKeys, fl]);
-        }.bind(this)).then(function ([roadIDs, roadData]) {
-          if (roadData !== undefined) {
-            this.renumberRoads(roadData);
-            if (this.justLoaded) {
-              this.$store.commit('deleteRoad', '$defaultroad$');
+        }).then(function (files) {
+          this.renumberRoads(files);
+          const fileKeys = Object.keys(files);
+          const firstRoadID = fileKeys[0];
+          for (var i = 1; i < fileKeys.length; i++) {
+            const blankRoad = {
+              downloaded: moment().format(DATE_FORMAT),
+              changed: files[fileKeys[i]].changed,
+              name: files[fileKeys[i]].name,
+              agent: files[fileKeys[i]].agent,
+              contents: {
+                coursesOfStudy: ['girs'],
+                selectedSubjects: Array.from(Array(16), () => new Array()),
+                progressOverrides: {}
+              }
             }
-            for (let r = 0; r < roadIDs.length; r++) {
-              if (roadData[r].status === 200 && roadData[r].data.success) {
-                roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
-                roadData[r].data.file.changed = moment().format(DATE_FORMAT);
-                if (roadData[r].data.file.contents.progressOverrides === undefined) {
-                  roadData[r].data.file.contents.progressOverrides = {};
-                }
-              }
-              // sanitize subject_id
-              const newss = roadData[r].data.file.contents.selectedSubjects.map((s) => {
-                if ('subject_id' in s) {
-                  s.id = s.subject_id;
-                  delete s.subject_id;
-                }
-                return s;
-              });
-              roadData[r].data.file.contents.selectedSubjects = newss;
-
-              if(roadData[r].data.file.contents.selectedSubjects.length === 16) {
-                roadData[r].data.file.contents.selectedSubjects = roadData[r].data.file.contents.selectedSubjects[0];
-              }
-              // console.log(roadData[r].data.file.contents.selectedSubjects);
-              //convert selected subjects to more convenient format
-              const simpless = Array.from(Array(16), () => new Array());
-              for (let i = 0; i < roadData[r].data.file.contents.selectedSubjects.length; i++) {
-                const s = roadData[r].data.file.contents.selectedSubjects[i];
-                if(s.semester === undefined || s.semester < 0) {
-                  s.semester = 0;
-                }
-                simpless[s.semester].push(s);
-              }
-              roadData[r].data.file.contents.selectedSubjects = simpless;
-
-              // console.log(roadData[r].data.file.contents.selectedSubjects);
-              // sanitize progressOverrides
-              if (roadData[r].data.file.contents.progressOverrides === undefined) {
-                roadData[r].data.file.contents.progressOverrides = {};
-              }
-              this.$store.commit('setRoad', {
-                id: roadIDs[r],
-                road: roadData[r].data.file,
-                ignoreSet: true
-              });
-            }
-            this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
+            this.$store.commit('setRoad', {
+              id: fileKeys[i],
+              road: blankRoad,
+              ignoreSet: true
+            });
           }
+          this.$store.commit('setUnretrieved', fileKeys.slice(1));
+          return this.retrieveRoad(firstRoadID);
+        }.bind(this)).then(function() {
+          if (this.justLoaded) {
+            this.$store.commit('deleteRoad', '$defaultroad$');
+          }
+          this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
           this.gettingUserData = false;
         }.bind(this)).catch(function (err) {
           alert(err);
@@ -289,10 +305,11 @@ export default {
       }
       return newName;
     },
-    renumberRoads: function (cloudRoads) {
+    renumberRoads: function (cloudFiles) {
+      const cloudRoads = Object.keys(cloudFiles).map((id)=>cloudFiles[id]);
       const cloudNames = cloudRoads.map(function (cr) {
         try {
-          return cr.data.file.name;
+          return cr.name;
         } catch (err) {
           return undefined;
         }
