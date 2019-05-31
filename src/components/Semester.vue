@@ -58,6 +58,14 @@
           :warnings="warnings[subjindex]"
           :class-index="subjindex"
         />
+        <class
+          v-if = "addingFromCard && (offeredNow || !isSameYear)"
+          key = "placeholder"
+          class-info = "placeholder"
+          :semester-index = "index"
+          :warnings = "[]"
+          :class-index = "semesterSubjects.length"
+        />
       </v-layout>
     </v-container>
   </v-expansion-panel-content>
@@ -146,9 +154,6 @@ export default {
     },
     concurrentSubjects: function () {
       return [].concat.apply([],this.selectedSubjects.slice(0,this.index+1));
-      // return this.selectedSubjects.filter(subj => {
-      //   return subj.semester <= this.index;
-      // });
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -205,17 +210,6 @@ export default {
         return this.addingFromCard;
       }
     },
-    // semesterSubjects: function () {
-    //   const semSubjs = this.selectedSubjects.map(function (subj, ind) {
-    //     return Object.assign({ index: ind }, subj);
-    //   }).filter(subj => {
-    //     return this.index === subj.semester;
-    //   });
-    //   if (this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
-    //     semSubjs.push('placeholder');
-    //   }
-    //   return semSubjs;
-    // },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
         if (subj.id in this.$store.state.subjectsIndex) {
