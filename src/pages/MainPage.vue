@@ -433,13 +433,13 @@ export default {
         agent: '',
         contents: newContents
       };
+      this.$store.commit('setActiveRoad', tempRoadID);
       this.$store.commit('setRoad', {
         id: tempRoadID,
         road: newRoad,
         ignoreSet: false
       });
       this.$refs.authcomponent.newRoads.push(tempRoadID);
-      this.$store.commit('setActiveRoad', tempRoadID);
     },
     conflict: function (conflictInfo) {
       this.$refs.conflictdialog.startConflict();
