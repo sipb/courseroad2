@@ -59,7 +59,7 @@
           :class-index="subjindex"
         />
         <class
-          v-if = "($store.state.activeRoad === roadID) && addingFromCard && (offeredNow || !isSameYear)"
+          v-if = "isActiveRoad && addingFromCard && (offeredNow || !isSameYear)"
           key = "placeholder"
           class-info = "placeholder"
           :semester-index = "index"
@@ -97,6 +97,9 @@ export default {
     };
   },
   computed: {
+    isActiveRoad () {
+      return this.$store.state.activeRoad === this.roadID;
+    },
     itemAdding () {
       return this.$store.state.itemAdding;
     },
