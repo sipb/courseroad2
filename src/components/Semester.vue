@@ -59,7 +59,7 @@
           :class-index="subjindex"
         />
         <class
-          v-if = "addingFromCard && (offeredNow || !isSameYear)"
+          v-if = "($store.state.activeRoad === roadID) && addingFromCard && (offeredNow || !isSameYear)"
           key = "placeholder"
           class-info = "placeholder"
           :semester-index = "index"
