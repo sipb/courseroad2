@@ -197,6 +197,7 @@ export default {
     },
     retrieveRoad: function (roadID) {
       const _this = this;
+      this.gettingUserData = true;
       return this.getSecure('/sync/roads/?id='+roadID).then(function(roadData) {
         if (roadData.status === 200 && roadData.data.success) {
           roadData.data.file.downloaded = moment().format(DATE_FORMAT);
@@ -236,7 +237,7 @@ export default {
           road: roadData.data.file,
           ignoreSet: true
         });
-
+        _this.gettingUserData = false;
         return roadData;
       })
     },
