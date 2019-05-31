@@ -210,7 +210,8 @@ const store = new Vuex.Store({
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
         state.ignoreRoadChanges = true;
-      } else if (prop !== 'contents') {
+      }
+      if (prop !== 'contents') {
         state.fulfillmentNeeded = 'none';
       }
       Vue.set(state.roads[id], prop, value);
@@ -218,6 +219,9 @@ const store = new Vuex.Store({
     setRoad (state, { id, road, ignoreSet }) {
       if (ignoreSet) {
         state.ignoreRoadChanges = true;
+      }
+      if (state.activeRoad !== id) {
+        state.fulfillmentNeeded = 'none';
       }
       Vue.set(state.roads, id, road);
     },

@@ -295,16 +295,18 @@ export default {
     // call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function (newRoad) {
       this.justLoaded = false;
-      if (newRoad !== '') {
-        window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
-        this.updateFulfillment(this.$store.state.fulfillmentNeeded);
-      }
       if (this.$store.state.unretrieved.indexOf(newRoad) >= 0) {
         const _this = this;
         this.$refs.authcomponent.retrieveRoad(newRoad).then(function() {
           _this.$store.commit('setRetrieved', newRoad);
         })
+      } else if (newRoad !== '') {
+        this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
+      if (newRoad !== '') {
+        window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
+      }
+
     },
     cookiesAllowed: function (newCA) {
       if (newCA) {
