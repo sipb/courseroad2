@@ -112,12 +112,15 @@ export default {
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
+        console.log("have some new roads");
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
             this.$store.commit('setActiveRoad', Object.keys(newRoads)[0]);
           }
+          console.log("setting one");
           this.$store.commit('setRoads', newRoads);
         } else {
+          console.log("setting combo");
           this.$store.commit('setRoads', Object.assign(newRoads, this.roads));
         }
         this.newRoads = Object.keys(newRoads);
@@ -258,7 +261,7 @@ export default {
           this.renumberRoads(files);
           const fileKeys = Object.keys(files);
           const firstRoadID = fileKeys[0];
-          for (var i = 1; i < fileKeys.length; i++) {
+          for (var i = 0; i < fileKeys.length; i++) {
             const blankRoad = {
               downloaded: moment().format(DATE_FORMAT),
               changed: files[fileKeys[i]].changed,
@@ -276,13 +279,13 @@ export default {
               ignoreSet: true
             });
           }
-          this.$store.commit('setUnretrieved', fileKeys.slice(1));
-          return this.retrieveRoad(firstRoadID);
-        }.bind(this)).then(function() {
           if (this.justLoaded) {
             this.$store.commit('deleteRoad', '$defaultroad$');
           }
           this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
+          this.$store.commit('setUnretrieved', fileKeys.slice(1));
+          return this.retrieveRoad(firstRoadID);
+        }.bind(this)).then(function() {
           this.gettingUserData = false;
         }.bind(this)).catch(function (err) {
           alert(err);
