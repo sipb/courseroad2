@@ -255,8 +255,6 @@ export default {
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
-      // TODO: Really we should grab this from a global datastore
-      // now in the same format as FireRoad
       showMobile: ['mobile', 'tabvar'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
     };
   },

@@ -17,7 +17,6 @@ const store = new Vuex.Store({
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
-    // note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
     roads: {
       '$defaultroad$': {
         downloaded: moment().format(DATE_FORMAT),
