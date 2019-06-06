@@ -206,6 +206,7 @@ const store = new Vuex.Store({
     },
     setRoadName (state, { id, name }) {
       Vue.set(state.roads[id], 'name', name);
+      Vue.set(state.roads[id], 'changed', moment().format(DATE_FORMAT));
     },
     setSubjectsInfo (state, data) {
       state.subjectsInfo = data;

@@ -338,7 +338,7 @@ export default {
             } else {
               const newid = (response.data.id !== undefined ? response.data.id : this.oldid);
               if (response.data.success === false) {
-                this.data.saveWarnings.push({ id: newid, error: response.data.error_msg, name: this.data.roads[this.oldid].name });
+                this.data.saveWarnings.push({ id: newid, error: response.data.error_msg || response.data.error, name: this.data.roads[this.oldid].name });
               }
               if (response.data.result === 'conflict') {
                 const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
@@ -424,7 +424,7 @@ export default {
       this.postSecure('/sync/sync_road/', newRoad)
         .then(function (response) {
           if (!response.data.success) {
-            this.saveWarnings.push({ error: response.data.error_msg, id: roadID, name: this.roads[roadID] });
+            this.saveWarnings.push({ error: response.data.error_msg || response.data.error, id: roadID, name: this.roads[roadID] });
           }
         });
       this.$emit('resolve-conflict');
