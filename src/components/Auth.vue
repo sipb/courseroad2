@@ -112,15 +112,15 @@ export default {
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
-        console.log("have some new roads");
+        console.log('have some new roads');
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
             this.$store.commit('setActiveRoad', Object.keys(newRoads)[0]);
           }
-          console.log("setting one");
+          console.log('setting one');
           this.$store.commit('setRoads', newRoads);
         } else {
-          console.log("setting combo");
+          console.log('setting combo');
           this.$store.commit('setRoads', Object.assign(newRoads, this.roads));
         }
         this.newRoads = Object.keys(newRoads);
@@ -201,7 +201,7 @@ export default {
     retrieveRoad: function (roadID) {
       const _this = this;
       this.gettingUserData = true;
-      return this.getSecure('/sync/roads/?id='+roadID).then(function(roadData) {
+      return this.getSecure('/sync/roads/?id=' + roadID).then(function (roadData) {
         if (roadData.status === 200 && roadData.data.success) {
           roadData.data.file.downloaded = moment().format(DATE_FORMAT);
           roadData.data.file.changed = moment().format(DATE_FORMAT);
@@ -220,11 +220,11 @@ export default {
         });
         roadData.data.file.contents.selectedSubjects = newss;
         // console.log(roadData[r].data.file.contents.selectedSubjects);
-        //convert selected subjects to more convenient format
+        // convert selected subjects to more convenient format
         const simpless = Array.from(Array(16), () => new Array());
         for (let i = 0; i < roadData.data.file.contents.selectedSubjects.length; i++) {
           const s = roadData.data.file.contents.selectedSubjects[i];
-          if(s.semester === undefined || s.semester < 0) {
+          if (s.semester === undefined || s.semester < 0) {
             s.semester = 0;
           }
           simpless[s.semester].push(s);
@@ -242,7 +242,7 @@ export default {
         });
         _this.gettingUserData = false;
         return roadData;
-      })
+      });
     },
     getUserData: function () {
       this.gettingUserData = true;
@@ -272,7 +272,7 @@ export default {
                 selectedSubjects: Array.from(Array(16), () => new Array()),
                 progressOverrides: {}
               }
-            }
+            };
             this.$store.commit('setRoad', {
               id: fileKeys[i],
               road: blankRoad,
@@ -285,7 +285,7 @@ export default {
           this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
           this.$store.commit('setUnretrieved', fileKeys.slice(1));
           return this.retrieveRoad(firstRoadID);
-        }.bind(this)).then(function() {
+        }.bind(this)).then(function () {
           this.gettingUserData = false;
         }.bind(this)).catch(function (err) {
           alert(err);
@@ -310,7 +310,7 @@ export default {
       return newName;
     },
     renumberRoads: function (cloudFiles) {
-      const cloudRoads = Object.keys(cloudFiles).map((id)=>cloudFiles[id]);
+      const cloudRoads = Object.keys(cloudFiles).map((id) => cloudFiles[id]);
       const cloudNames = cloudRoads.map(function (cr) {
         try {
           return cr.name;
@@ -368,8 +368,8 @@ export default {
         assignKeys.id = roadID;
       }
       const roadSubjects = [].concat.apply([], this.roads[roadID].contents.selectedSubjects);
-      const formattedRoadContents = Object.assign({coursesOfStudy: ['girs'], progressOverrides: []}, this.roads[roadID].contents, {selectedSubjects: roadSubjects});
-      Object.assign(assignKeys, this.roads[roadID], {contents: formattedRoadContents});
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
+      Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
       const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
         .then(function (response) {
           if (response.status !== 200) {
@@ -396,7 +396,7 @@ export default {
                 // i suspect this is because the three events required were not happening
                 // in the correct order or something
                 if (this.oldid !== response.data.id.toString()) {
-                  this.data.$store.commit('resetID', {oldid:  this.oldid, newid: response.data.id});
+                  this.data.$store.commit('resetID', { oldid: this.oldid, newid: response.data.id });
                 }
                 return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
               } else {
@@ -439,7 +439,7 @@ export default {
     getNewRoadData: function () {
       const newRoadData = {};
       if (this.newRoads.indexOf('$defaultroad$') === -1 && '$defaultroad$' in this.roads) {
-        if ([].concat.apply([],this.roads['$defaultroad$'].contents.selectedSubjects).length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
+        if ([].concat.apply([], this.roads['$defaultroad$'].contents.selectedSubjects).length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
           this.newRoads.push('$defaultroad$');
         }
       }
@@ -464,11 +464,11 @@ export default {
     },
 
     updateLocal: function (roadID) {
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false});
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false });
       this.$emit('resolve-conflict');
     },
 

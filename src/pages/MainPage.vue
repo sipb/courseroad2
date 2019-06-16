@@ -52,20 +52,19 @@
 
       <v-layout justify-end>
         <v-text-field
-          id = "searchInputTF"
-          autocomplete = "off"
-          class = "expanded-search"
-          v-model = "searchInput"
+          id="searchInputTF"
+          v-model="searchInput"
+          autocomplete="off"
+          class="expanded-search"
           prepend-icon="search"
           placeholder="Add classes"
           autofocus
-          @click.native = "clickSearch($event); $event.stopPropagation();"
-          @input = "typeSearch"
-          style = "width:100%;"
-          @keydown.esc = "searchOpen = false"
+          style="width:100%;"
+          @click.native="clickSearch($event); $event.stopPropagation();"
+          @input="typeSearch"
+          @keydown.esc="searchOpen = false"
         />
       </v-layout>
-
     </v-toolbar>
 
     <v-navigation-drawer
@@ -148,11 +147,11 @@
     </v-content>
 
     <v-card
-      v-if = "searchOpen"
-      id = "searchMenuCard"
-      class = "elevation-8"
-      @click.native = "$event.stopPropagation();"
-      >
+      v-if="searchOpen"
+      id="searchMenuCard"
+      class="elevation-8"
+      @click.native="$event.stopPropagation();"
+    >
       <class-search
         id="searchMenu"
         ref="searchMenu"
@@ -297,16 +296,15 @@ export default {
       this.justLoaded = false;
       if (this.$store.state.unretrieved.indexOf(newRoad) >= 0) {
         const _this = this;
-        this.$refs.authcomponent.retrieveRoad(newRoad).then(function() {
+        this.$refs.authcomponent.retrieveRoad(newRoad).then(function () {
           _this.$store.commit('setRetrieved', newRoad);
-        })
+        });
       } else if (newRoad !== '') {
         this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
       if (newRoad !== '') {
         window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
       }
-
     },
     cookiesAllowed: function (newCA) {
       if (newCA) {
@@ -320,7 +318,7 @@ export default {
           this.$store.commit('allowCookies');
         }
         if (this.activeRoad !== '') {
-           this.updateFulfillment(this.$store.state.fulfillmentNeeded);
+          this.updateFulfillment(this.$store.state.fulfillmentNeeded);
         }
         this.$store.commit('resetFulfillmentNeeded');
 
@@ -389,22 +387,22 @@ export default {
   },
   methods: {
     updateFulfillment: function (fulfillmentNeeded) {
-      if(!this.updatingFulfillment && fulfillmentNeeded !== 'none') {
+      if (!this.updatingFulfillment && fulfillmentNeeded !== 'none') {
         this.updatingFulfillment = true;
         const _this = this;
         const fulfillments = fulfillmentNeeded === 'all' ? this.roads[this.activeRoad].contents.coursesOfStudy : [fulfillmentNeeded];
         for (let r = 0; r < fulfillments.length; r++) {
           const req = fulfillments[r];
           const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
-          alteredRoadContents.selectedSubjects = [].concat.apply([],alteredRoadContents.selectedSubjects);
+          alteredRoadContents.selectedSubjects = [].concat.apply([], alteredRoadContents.selectedSubjects);
           axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);
           }.bind({ data: this, req: req }));
         }
-        Vue.nextTick(function() {
+        Vue.nextTick(function () {
           this.updatingFulfillment = false;
-        }.bind(this))
+        }.bind(this));
       }
     },
     setActiveRoad: function () {

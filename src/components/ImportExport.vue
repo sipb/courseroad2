@@ -133,7 +133,7 @@ export default {
       const filename = this.roads[this.activeRoad].name + '.road';
 
       const roadSubjects = [].concat.apply([], this.roads[this.activeRoad].contents.selectedSubjects);
-      const formattedRoadContents = Object.assign({coursesOfStudy: ['girs'], progressOverrides: []}, this.roads[this.activeRoad].contents, {selectedSubjects: roadSubjects});
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[this.activeRoad].contents, { selectedSubjects: roadSubjects });
 
       const text = JSON.stringify(formattedRoadContents);
 
@@ -206,11 +206,11 @@ export default {
             return s !== undefined;
           });
 
-          //convert selected subjects to more convenient format
+          // convert selected subjects to more convenient format
           const simpless = Array.from(Array(16), () => new Array());
           for (let i = 0; i < ss.length; i++) {
             const s = ss[i];
-            if(s.semester === undefined || s.semester < 0) {
+            if (s.semester === undefined || s.semester < 0) {
               s.semester = 0;
             }
             simpless[s.semester].push(s);

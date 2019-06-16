@@ -59,12 +59,12 @@
           :class-index="subjindex"
         />
         <class
-          v-if = "isActiveRoad && addingFromCard && (offeredNow || !isSameYear)"
-          key = "placeholder"
-          class-info = "placeholder"
-          :semester-index = "index"
-          :warnings = "[]"
-          :class-index = "semesterSubjects.length"
+          v-if="isActiveRoad && addingFromCard && (offeredNow || !isSameYear)"
+          key="placeholder"
+          class-info="placeholder"
+          :semester-index="index"
+          :warnings="[]"
+          :class-index="semesterSubjects.length"
         />
       </v-layout>
     </v-container>
@@ -156,7 +156,7 @@ export default {
       return allWarnings;
     },
     concurrentSubjects: function () {
-      return [].concat.apply([],this.selectedSubjects.slice(0,this.index+1));
+      return [].concat.apply([], this.selectedSubjects.slice(0, this.index + 1));
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -267,7 +267,7 @@ export default {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
       const beforeThisSemester = this.selectedSubjects.slice(0, this.index);
       const previousQuarter = this.selectedSubjects[this.index].filter(s => {
-        let subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
+        const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
         let inPreviousQuarter = false;
         if (subj2 !== undefined) {
           inPreviousQuarter = s.semester === this.index &&
@@ -276,7 +276,7 @@ export default {
             subj2.quarter_information.split(',')[0] === '0';
         }
         return inPreviousQuarter;
-      })
+      });
       return beforeThisSemester.concat(previousQuarter);
       // return this.selectedSubjects.filter(s => {
       //   const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];

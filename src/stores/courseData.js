@@ -94,7 +94,7 @@ const store = new Vuex.Store({
       state.unretrieved = roadIDs;
     },
     setRetrieved (state, roadID) {
-      let roadIDIndex = state.unretrieved.indexOf(roadID);
+      const roadIDIndex = state.unretrieved.indexOf(roadID);
       state.unretrieved.splice(roadIDIndex, 1);
     },
     parseGenericCourses (state) {
@@ -257,7 +257,7 @@ const store = new Vuex.Store({
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
     },
-    addAtPlaceholder ({commit, state}, index) {
+    addAtPlaceholder ({ commit, state }, index) {
       const newClass = {
         overrideWarnings: false,
         semester: index,
