@@ -186,9 +186,9 @@
               <h3>Related subjects</h3>
               <subject-scroll :subjects="currentSubject.related_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
             </div>
-            <div v-if = "subjectsWithPrereq.length > 0">
-              <h3>Subjects with {{currentSubject.subject_id}} as Prerequisite</h3>
-              <subject-scroll :subjects="subjectsWithPrereq" @click-subject = "clickRelatedSubject"></subject-scroll>
+            <div v-if="subjectsWithPrereq.length > 0">
+              <h3>Subjects with {{ currentSubject.subject_id }} as Prerequisite</h3>
+              <subject-scroll :subjects="subjectsWithPrereq" @click-subject="clickRelatedSubject" />
             </div>
           </div>
         </v-card-text>
@@ -234,22 +234,22 @@ export default {
         ? this.parseRequirements(this.currentSubject.corequisites)
         : { reqs: [] };
     },
-    subjectsWithPrereq: function() {
+    subjectsWithPrereq: function () {
       const currentID = this.currentSubject.subject_id;
-      const currentDept = currentID.substring(0,currentID.indexOf("."));
-      var IDMatcher = new RegExp('(?<!\\d)'+currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
-      return this.subjects.filter(function(s) {
+      const currentDept = currentID.substring(0, currentID.indexOf('.'));
+      var IDMatcher = new RegExp('(?<!\\d)' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+      return this.subjects.filter(function (s) {
         return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
-      }).sort(function(s1, s2) {
-        //show subjects in same department first
-        var dept1 = s1.subject_id.substring(0, s1.subject_id.indexOf("."));
-        var dept2 = s2.subject_id.substring(0, s2.subject_id.indexOf("."));
-        if(dept1 === currentDept && dept2 !== currentDept) {
+      }).sort(function (s1, s2) {
+        // show subjects in same department first
+        var dept1 = s1.subject_id.substring(0, s1.subject_id.indexOf('.'));
+        var dept2 = s2.subject_id.substring(0, s2.subject_id.indexOf('.'));
+        if (dept1 === currentDept && dept2 !== currentDept) {
           return -1;
         } else {
           return 0;
         }
-      })
+      });
     }
   },
   methods: {
