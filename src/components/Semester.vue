@@ -103,7 +103,7 @@ export default {
         const subjectWarnings = [];
         const subjID = this.semesterSubjects[i].id;
         let subj;
-        if (subjID in this.$store.state.subjectsIndex) {
+        if (this.$store.state.subjectsIndex !== undefined && subjID in this.$store.state.subjectsIndex) {
           subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]];
           var prereqString = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]].prerequisites;
           var coreqString = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]].corequisites;
@@ -127,7 +127,7 @@ export default {
               subjectWarnings.push('<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.');
             }
           }
-        } else if (subjID in this.$store.state.genericIndex) {
+        } else if (this.$store.state.genericIndex !== undefined && subjID in this.$store.state.genericIndex) {
           subj = this.$store.state.genericCourses[this.$store.state.genericIndex[subjID]];
         }
         if (subj !== undefined) {
@@ -216,9 +216,9 @@ export default {
     },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
-        if (subj.id in this.$store.state.subjectsIndex) {
+        if (this.$store.state.subjectsIndex !== undefined && subj.id in this.$store.state.subjectsIndex) {
           return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.id]];
-        } else if (subj.id in this.$store.state.genericIndex) {
+        } else if (this.$store.state.genericIndex !== undefined && subj.id in this.$store.state.genericIndex) {
           return this.$store.state.genericCourses[this.$store.state.genericIndex[subj.id]];
         } else {
           return undefined;
@@ -291,9 +291,9 @@ export default {
       }
       if (req.indexOf('.') === -1) {
         let subj;
-        if (id in this.$store.state.subjectsIndex) {
+        if (this.$store.state.subjectsIndex !== undefined && id in this.$store.state.subjectsIndex) {
           subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[id]];
-        } else if (id in this.$store.state.genericIndex) {
+        } else if (this.$store.state.genericIndex !== undefined && id in this.$store.state.genericIndex) {
           subj = this.$store.state.genericCourses[this.$store.state.genericIndex[id]];
         } else {
           // subj not found in known courses
