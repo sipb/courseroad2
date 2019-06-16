@@ -357,7 +357,7 @@ export default {
                   // i suspect this is because the three events required were not happening
                   // in the correct order or something
                   if (this.oldid !== response.data.id.toString()) {
-                    this.data.$store.commit('resetID', {oldid:  this.oldid, newid: response.data.id});
+                    this.data.$store.commit('resetID', { oldid: this.oldid, newid: response.data.id });
                   }
                   return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
                 } else {
@@ -431,11 +431,11 @@ export default {
     },
 
     updateLocal: function (roadID) {
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false});
-      this.$store.commit('setRoadProp', {id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false});
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false });
       this.$emit('resolve-conflict');
     },
 

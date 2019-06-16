@@ -229,7 +229,7 @@ const store = new Vuex.Store({
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
     },
-    addAtPlaceholder ({commit, state}, index) {
+    addAtPlaceholder ({ commit, state }, index) {
       const newClass = {
         overrideWarnings: false,
         semester: index,

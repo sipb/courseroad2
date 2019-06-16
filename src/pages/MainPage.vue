@@ -52,20 +52,19 @@
 
       <v-layout justify-end>
         <v-text-field
-          id = "searchInputTF"
-          autocomplete = "off"
-          class = "expanded-search"
-          v-model = "searchInput"
+          id="searchInputTF"
+          v-model="searchInput"
+          autocomplete="off"
+          class="expanded-search"
           prepend-icon="search"
           placeholder="Add classes"
           autofocus
-          @click.native = "clickSearch($event); $event.stopPropagation();"
-          @input = "typeSearch"
-          style = "width:100%;"
-          @keydown.esc = "searchOpen = false"
+          style="width:100%;"
+          @click.native="clickSearch($event); $event.stopPropagation();"
+          @input="typeSearch"
+          @keydown.esc="searchOpen = false"
         />
       </v-layout>
-
     </v-toolbar>
 
     <v-navigation-drawer
@@ -148,11 +147,11 @@
     </v-content>
 
     <v-card
-      v-if = "searchOpen"
-      id = "searchMenuCard"
-      class = "elevation-8"
-      @click.native = "$event.stopPropagation();"
-      >
+      v-if="searchOpen"
+      id="searchMenuCard"
+      class="elevation-8"
+      @click.native="$event.stopPropagation();"
+    >
       <class-search
         id="searchMenu"
         ref="searchMenu"
