@@ -12,7 +12,7 @@
         <v-card-title :class="['card-header',courseColor(currentSubject.subject_id)]">
           <v-flex style="display: flex; flex-direction: row; align-items: center;">
             <div style="padding: 0; margin: 0; display: block;">
-              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$emit('pop-stack')">
+              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$store.commit('popClassStack')">
                 <v-icon>navigate_before</v-icon>
               </v-btn>
             </div>
@@ -20,7 +20,7 @@
               <h3>{{ currentSubject.subject_id }}</h3>
             </div>
             <div style="margin-left:auto">
-              <v-btn icon style="margin: 0;" @click="$emit('close-classinfo')">
+              <v-btn icon style="margin: 0;" @click="$store.commit('clearClassInfoStack')">
                 <v-icon style="margin:0; padding: 0; color:white;">
                   close
                 </v-icon>
@@ -52,7 +52,7 @@
                 small
                 style="margin-left:auto;"
                 class="secondary"
-                @click="cancelAddClass"
+                @click="$store.commit('cancelAddFromCard')"
               >
                 <v-icon>block</v-icon>
               </v-btn>
@@ -129,7 +129,7 @@
                 </td>
               </tr>
               <tr v-if="currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined">
-                <td><b>{{ currentSubject.subject_id in genericIndex ? "Average* hours" : "Hours" }}</b></td>
+                <td><b>{{ currentSubject.subject_id in $store.state.genericIndex ? "Average* hours" : "Hours" }}</b></td>
                 <td>
                   <table cellspacing="0">
                     <tr v-if="currentSubject.in_class_hours !== undefined">
@@ -142,15 +142,15 @@
                 </td>
               </tr>
             </table>
-            <p v-if="currentSubject.subject_id in genericIndex">
+            <p v-if="currentSubject.subject_id in $store.state.genericIndex">
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
-            <p v-html = "currentSubject.description"></p>
+            <p v-html="currentSubject.description" />
             <p v-if="currentSubject.url !== undefined">
               <a target="_blank" :href="currentSubject.url">View in course catalog</a>
             </p>
-            <p v-if="currentSubject.subject_id in subjectsIndex">
+            <p v-if="currentSubject.subject_id in $store.state.subjectsIndex">
               <a target="_blank" :href="'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
                 View Course Evaluations
               </a>
@@ -206,14 +206,19 @@ export default {
     'expansion-reqs': ExpansionReqs
   },
   mixins: [colorMixin],
-  props: ['subjects', 'classInfoStack', 'subjectsIndex', 'genericCourses', 'genericIndex', 'addingFromCard'],
   data: function () { return {} },
   computed: {
+    addingFromCard () {
+      return this.$store.state.addingFromCard;
+    },
+    classInfoStack () {
+      return this.$store.state.classInfoStack;
+    },
     currentSubject: function () {
       const currentID = this.classInfoStack[this.classInfoStack.length - 1];
-      return currentID in this.subjectsIndex
-        ? this.subjects[this.subjectsIndex[currentID]]
-        : this.genericCourses[this.genericIndex[currentID]];
+      return currentID in this.$store.state.subjectsIndex
+        ? this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[currentID]]
+        : this.$store.state.genericCourses[this.$store.state.genericIndex[currentID]];
     },
     parsedPrereqs: function () {
       return this.currentSubject.prerequisites !== undefined
@@ -228,14 +233,14 @@ export default {
   },
   methods: {
     classInfo: function (subjectID) {
-      const subj = this.subjects[this.subjectsIndex[subjectID]];
+      const subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjectID]];
       return subj || {
         subject_id: subjectID,
         title: ''
       };
     },
     clickRelatedSubject: function (subject) {
-      this.$emit('push-stack', subject.id);
+      this.$store.commit('pushClassStack', subject.id);
       $('#cardBody').animate({ scrollTop: 0 });
     },
     parseRequirements: function (requirements) {
@@ -366,10 +371,7 @@ export default {
       return rList;
     },
     addClass: function () {
-      this.$emit('add-class', this.currentSubject);
-    },
-    cancelAddClass: function () {
-      this.$emit('cancel-add-class');
+      this.$store.commit('addFromCard', this.currentSubject);
     }
   }
 };
