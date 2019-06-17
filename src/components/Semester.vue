@@ -33,7 +33,9 @@
               </div>
             </v-card>
           </v-flex>
-          <v-flex v-if="isOpen" xs10 :style="{ 'color': semData.textColor }">
+        </v-layout>
+        <v-layout v-else>
+          <v-flex xs10 :style="{ 'color': semData.textColor }">
             {{ semData.message }}
           </v-flex>
         </v-layout>
