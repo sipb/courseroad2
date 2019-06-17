@@ -168,7 +168,7 @@ export default {
 };
 </script>
 
-<style>
+<style> /* CAREFUL! this is not scoped */
 /*This is to prevent it from monopolizing all the space*/
 div.v-tabs__container {
   display: unset;
