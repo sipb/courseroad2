@@ -112,15 +112,12 @@ export default {
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
-        console.log('have some new roads');
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
             this.$store.commit('setActiveRoad', Object.keys(newRoads)[0]);
           }
-          console.log('setting one');
           this.$store.commit('setRoads', newRoads);
         } else {
-          console.log('setting combo');
           this.$store.commit('setRoads', Object.assign(newRoads, this.roads));
         }
         this.newRoads = Object.keys(newRoads);
@@ -219,7 +216,6 @@ export default {
           return s;
         });
         roadData.data.file.contents.selectedSubjects = newss;
-        // console.log(roadData[r].data.file.contents.selectedSubjects);
         // convert selected subjects to more convenient format
         const simpless = Array.from(Array(16), () => new Array());
         for (let i = 0; i < roadData.data.file.contents.selectedSubjects.length; i++) {
@@ -230,7 +226,6 @@ export default {
           simpless[s.semester].push(s);
         }
         roadData.data.file.contents.selectedSubjects = simpless;
-        // console.log(roadData[r].data.file.contents.selectedSubjects);
         // sanitize progressOverrides
         if (roadData.data.file.contents.progressOverrides === undefined) {
           roadData.data.file.contents.progressOverrides = {};
