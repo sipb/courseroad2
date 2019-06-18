@@ -112,6 +112,19 @@ export default {
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
+        for (var roadID in newRoads) {
+          if (!Array.isArray(newRoads[roadID].contents.selectedSubjects)) {
+            const simpless = Array.from(Array(16), () => new Array());
+            for (let i = 0; i < newRoads[roadID].contents.selectedSubjects.length; i++) {
+              const s = newRoads[roadID].contents.selectedSubjects[i];
+              if (s.semester === undefined || s.semester < 0) {
+                s.semester = 0;
+              }
+              simpless[s.semester].push(s);
+            }
+            newRoads[roadID].contents.selectedSubjects = simpless;
+          }
+        }
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
             this.$store.commit('setActiveRoad', Object.keys(newRoads)[0]);
