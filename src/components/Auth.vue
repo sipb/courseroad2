@@ -113,6 +113,7 @@ export default {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
         for (var roadID in newRoads) {
+          console.log(newRoads[roadID]);
           if (!Array.isArray(newRoads[roadID].contents.selectedSubjects)) {
             const simpless = Array.from(Array(16), () => new Array());
             for (let i = 0; i < newRoads[roadID].contents.selectedSubjects.length; i++) {
