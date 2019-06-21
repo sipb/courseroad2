@@ -311,6 +311,11 @@ export default {
         this.$cookies.set('dismissedOld', this.dismissedOld);
       }
     },
+    cookiesAllowed: function (newCA) {
+      if (newCA) {
+        this.$cookies.set('dismissedOld', this.dismissedOld);
+      }
+    },
     roads: {
       handler: function () {
         this.justLoaded = false;
