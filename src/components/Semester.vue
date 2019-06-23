@@ -295,7 +295,7 @@ export default {
 
       //ex: 6.0001 and 6.0002 together satisfy the 6.00 requirement
       if (subj.parent !== undefined && req === subj.parent) {
-        let parentCourse = this.allSubjects[this.subjectsIndex[subj.parent]];
+        let parentCourse = this.allSubjects[this.$store.state.subjectsIndex[subj.parent]];
         if (parentCourse !== undefined) {
           if (parentCourse.children.reduce((acc, sid) => acc && allSubjects.indexOf(sid) >= 0, true)) {
             return true;

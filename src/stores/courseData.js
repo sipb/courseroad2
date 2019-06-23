@@ -171,7 +171,10 @@ const store = new Vuex.Store({
       }
     },
     removeClass (state, classInfo) {
+      console.log(classInfo);
+      console.log(state.roads[state.activeRoad].contents.selectedSubjects);
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(classInfo);
+      console.log(classIndex);
       state.roads[state.activeRoad].contents.selectedSubjects.splice(classIndex, 1);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
