@@ -57,7 +57,7 @@
                 <v-icon>block</v-icon>
               </v-btn>
             </v-layout>
-            <h4 v-if = "lateSchedule(currentSubject, genericIndex)">
+            <h4 v-if = "lateSchedule(currentSubject, $store.state.genericIndex)">
               <v-icon>warning</v-icon>
               This subject does not have a schedule yet, so it may not be offered next semester.
             </h4>
