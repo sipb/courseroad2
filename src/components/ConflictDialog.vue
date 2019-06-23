@@ -87,11 +87,16 @@ window.Array = Array;
 
 export default {
   name: 'ConflictDialog',
-  props: ['conflictInfo', 'roads'],
+  props: ['conflictInfo'],
   data: function () {
     return {
       conflictDialog: false
     };
+  },
+  computed: {
+    roads () {
+      return this.$store.state.roads;
+    }
   },
   methods: {
     startConflict: function () {

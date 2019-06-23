@@ -30,10 +30,14 @@
                 @click="viewClassInfo(props)"
               >
                 <td style="padding: 0px; white-space: nowrap; width: 30%;">
-                  <v-icon style="vertical-align: middle;">drag_indicator</v-icon>
-                  <span style="vertical-align: middle;"> {{props.item.subject_id}}</span>
+                  <v-icon style="vertical-align: middle;">
+                    drag_indicator
+                  </v-icon>
+                  <span style="vertical-align: middle;"> {{ props.item.subject_id }}</span>
                 </td>
-                <td style="padding: 2px 4px 2px 0px; width: 60%;">{{props.item.title}}</td>
+                <td style="padding: 2px 4px 2px 0px; width: 60%;">
+                  {{ props.item.title }}
+                </td>
               </tr>
             </v-hover>
           </template>
@@ -53,7 +57,7 @@ export default {
   components: {
     'filter-set': FilterSet
   },
-  props: ['subjects', 'searchInput', 'classInfoStack', 'cookiesAllowed', 'genericCourses'],
+  props: ['searchInput'],
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -121,7 +125,7 @@ export default {
   },
   computed: {
     allSubjects: function () {
-      return this.genericCourses.concat(this.subjects);
+      return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
       this.chosenFilters.nameInput = this.searchInput;
@@ -217,8 +221,14 @@ export default {
         return [];
       }
     },
+    classInfoStack () {
+      return this.$store.state.classInfoStack;
+    },
     classStackExists: function () {
       return this.classInfoStack.length > 0;
+    },
+    cookiesAllowed () {
+      return this.$store.state.cookiesAllowed;
     }
   },
   watch: {
@@ -232,8 +242,8 @@ export default {
         this.$cookies.set('paginationRows', newRows);
       }
     },
-    cookiesAllowed: function (newCookies, oldCookies) {
-      if (newCookies) {
+    cookiesAllowed: function (newCA) {
+      if (newCA) {
         this.$cookies.set('paginationRows', this.pagination.rowsPerPage);
       }
     }
@@ -253,7 +263,7 @@ export default {
   methods: {
     dragStart: function (event, classItem) {
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: true, classIndex: -1 }));
-      this.$emit('drag-start-class', {
+      this.$store.commit('dragStartClass', {
         dragstart: event,
         classInfo: classItem.item,
         isNew: true
@@ -276,7 +286,7 @@ export default {
       this.searchHeight = 'max-height: ' + maxHeight + 'px;width: ' + menuWidth + 'px;';
     },
     viewClassInfo: function (item) {
-      this.$emit('view-class-info', item.item.subject_id);
+      this.$store.commit('pushClassStack', item.item.subject_id);
     }
   }
 };
