@@ -53,11 +53,6 @@
         <requirement
           :req="item"
           :leaf="leaf"
-          :subjects="subjects"
-          :subject-index="subjectIndex"
-          :generic-courses="genericCourses"
-          :generic-index="genericIndex"
-          @drag-start-class="$emit('drag-start-class',$event)"
           @click.native="clickRequirement(item)"
           @click-info="reqInfo($event, item)"
         />
@@ -162,10 +157,6 @@ export default {
     'selectedReqs',
     'reqTrees',
     'reqList',
-    'subjects',
-    'genericCourses',
-    'subjectIndex',
-    'genericIndex',
     'progressOverrides'
   ],
   data: function () {
@@ -188,10 +179,10 @@ export default {
         const currentReqs = this.selectedReqs;
         if (currentReqs.length > newReqs.length) {
           const diff = currentReqs.find(x => !newReqs.includes(x));
-          this.$emit('remove-req', diff);
+          this.$store.commit('removeReq', diff);
         } else {
           const newReq = newReqs[newReqs.length - 1];
-          this.$emit('add-req', newReq);
+          this.$store.commit('addReq', newReq);
         }
       }
     },
@@ -260,7 +251,7 @@ export default {
     },
     deleteReq: function (req) {
       const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
-      this.$emit('remove-req', reqName);
+      this.$store.commit('removeReq', reqName);
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {
@@ -269,7 +260,7 @@ export default {
           if (usedReq.indexOf('GIR:') === 0) {
             usedReq = usedReq.substring(4);
           }
-          this.$emit('push-stack', usedReq);
+          this.$store.commit('pushClassStack', usedReq);
         } else {
           this.startProgressDialog(item);
         }
@@ -314,7 +305,7 @@ export default {
     },
     updateManualProgress: function () {
       if (this.progressReq['list-id'] !== undefined) {
-        this.$emit('update-progress', {
+        this.$store.commit('updateProgress', {
           listID: this.progressReq['list-id'],
           progress: this.newManualProgress
         });

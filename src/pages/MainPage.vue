@@ -33,80 +33,38 @@
     <v-toolbar fixed app dense class="elevation-2">
       <road-tabs
         slot="extension"
-        :roads="roads"
-        :active-road="activeRoad"
-        :subjects="subjectsInfo"
         @delete-road="$refs.authcomponent.deleteRoad($event)"
-        @set-name="setRoadName($event.road, $event.name)"
         @add-road="addRoad(...arguments)"
-        @change-active="changeActiveRoad($event)"
       />
 
       <import-export
-        :roads="roads"
-        :active-road="activeRoad"
-        :subjects="subjectsInfo"
-        :subjects-index="subjectsIndexDict"
-        :generic-courses="genericCourses"
-        :generic-index="genericIndexDict"
         @add-road="addRoad(...arguments)"
       />
 
       <auth
         ref="authcomponent"
-        :roads="roads"
         :just-loaded="justLoaded"
-        :active-road="activeRoad"
         :conflict-info="conflictInfo"
-        @delete-road="deleteRoad"
-        @set-road="setRoad(...arguments)"
-        @set-roads="roads = $event"
-        @set-active="setActive"
         @conflict="conflict"
         @resolve-conflict="resolveConflict"
-        @set-road-prop="setRoadProp(...arguments)"
-        @reset-id="resetID(...arguments)"
-        @allow-cookies="allowCookies"
         @set-sem="setSemester"
-      >
-      </auth>
+      />
 
       <v-layout justify-end>
         <v-text-field
-          id = "searchInputTF"
-          autocomplete = "false"
-          class = "expanded-search"
+          id="searchInputTF"
+          v-model="searchInput"
+          autocomplete="off"
+          class="expanded-search"
           prepend-icon="search"
-          v-model = "searchInput"
-          placeholder = "Add classes"
+          placeholder="Add classes"
           autofocus
-          @click.native = "clickSearch"
-          @input = "typeSearch"
-          style = "width:100%;"
+          style="width:100%;"
+          @click.native="clickSearch($event); $event.stopPropagation();"
+          @input="typeSearch"
+          @keydown.esc="searchOpen = false"
         />
       </v-layout>
-
-      <v-menu
-        :close-on-content-click="false"
-        v-model = "searchOpen"
-        :position-x = "searchX"
-        :position-y = "searchY"
-      >
-        <class-search
-          id="searchMenu"
-          ref="searchMenu"
-          class="search-menu"
-          :search-input="searchInput"
-          :subjects="subjectsInfo"
-          :generic-courses="genericCourses"
-          :class-info-stack="classInfoStack"
-          :cookies-allowed="cookiesAllowed"
-          @add-class="addClass"
-          @view-class-info="pushClassStack"
-          @drag-start-class="dragStartClass"
-        />
-      </v-menu>
-
     </v-toolbar>
 
     <v-navigation-drawer
@@ -139,16 +97,7 @@
             :selected-reqs="roads[activeRoad].contents.coursesOfStudy"
             :selected-subjects="roads[activeRoad].contents.selectedSubjects"
             :req-list="reqList"
-            :subjects="subjectsInfo"
-            :subject-index="subjectsIndexDict"
-            :generic-courses="genericCourses"
-            :generic-index="genericIndexDict"
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
-            @drag-start-class="dragStartClass"
-            @add-req="addReq"
-            @remove-req="removeReq"
-            @push-stack="pushClassStack"
-            @update-progress="updateProgress"
           />
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>
@@ -179,23 +128,11 @@
         >
           <road
             :selected-subjects="roads[roadId].contents.selectedSubjects"
-            :subjects="subjectsInfo"
             :road-i-d="roadId"
             :current-semester="currentSemester"
             :adding-from-card="addingFromCard && activeRoad===roadId"
-            :item-adding="itemAdding"
-            :subjects-index="subjectsIndexDict"
-            :generic-courses="genericCourses"
-            :generic-index="genericIndexDict"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
-            @add-at-placeholder="addAtPlaceholder"
-            @add-class="addClass"
-            @move-class="moveClass($event.classIndex,$event.semester)"
-            @remove-class="removeClass"
-            @click-class="pushClassStack($event.id)"
             @change-year="$refs.authcomponent.changeSemester($event)"
-            @override-warnings="overrideWarnings($event.override,$event.classInfo)"
-            @drag-start-class="dragStartClass"
           />
         </v-tab-item>
       </v-tabs-items>
@@ -204,31 +141,33 @@
         ref="conflictdialog"
         :conflict-info="conflictInfo"
         :conflict-dialog="conflictDialog"
-        :roads="roads"
         @update-local="updateLocal"
         @update-remote="updateRemote"
       />
     </v-content>
 
+    <v-card
+      v-if="searchOpen"
+      id="searchMenuCard"
+      class="elevation-8"
+      @click.native="$event.stopPropagation();"
+    >
+      <class-search
+        id="searchMenu"
+        ref="searchMenu"
+        class="search-menu"
+        :search-input="searchInput"
+      />
+    </v-card>
+
     <class-info
-      v-if="classInfoStack.length"
-      :class-info-stack="classInfoStack"
-      :subjects="subjectsInfo"
-      :subjects-index="subjectsIndexDict"
-      :adding-from-card="addingFromCard"
-      :generic-courses="genericCourses"
-      :generic-index="genericIndexDict"
-      @pop-stack="popClassStack"
-      @push-stack="pushClassStack"
-      @add-class="addFromCard"
-      @cancel-add-class="cancelAddFromCard"
-      @close-classinfo="classInfoStack = []"
+      v-if="$store.state.classInfoStack.length"
       @click.native="$event.stopPropagation()"
     />
 
     <v-footer v-if="!dismissedOld || !dismissedCookies" fixed style="height: unset;">
       <v-layout column>
-        <v-flex v-if="!dismissedOld" class = "lime accent-1 py-1 px-2">
+        <v-flex v-if="!dismissedOld" class="lime accent-1 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
               Looking for the old courseroad?  Visit the old website <a target="_blank" href="https://courseroad.mit.edu/old">here</a> and export your roads!
@@ -241,20 +180,20 @@
           </v-layout>
         </v-flex>
         <v-divider v-if="!dismissedOld && !dismissedCookies" />
-        <v-flex v-if="!dismissedCookies" class = "lime accent-3 py-1 px-2">
+        <v-flex v-if="!dismissedCookies" class="lime accent-3 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
               This website uses cookies and session storage to store your data and login token, and important features like saving roads will not work without them.
-              <span v-if = "cookiesAllowed === undefined">By continuing to use this website or clicking "I accept", you consent to the use of cookies.</span>
-              <span v-if = "cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
+              <span v-if="cookiesAllowed === undefined">By continuing to use this website or clicking "I accept", you consent to the use of cookies.</span>
+              <span v-if="cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color="primary" class="ma-1" @click="allowCookies();  dismissCookies();">
+              <v-btn small depressed color="primary" class="ma-1" @click="$store.commit('allowCookies'); dismissCookies();">
                 I accept
               </v-btn>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed class = "ma-1" @click="disallowCookies">
+              <v-btn small depressed class="ma-1" @click="disallowCookies">
                 Opt out
               </v-btn>
             </v-flex>
@@ -303,49 +242,33 @@ export default {
       gettingUserData: false,
       cookieName: 'Default Cookie',
       accessInfo: undefined,
-      // A list of dictionaries containing info on current mit subjects. (actually filled in correctly below)
-      subjectsInfo: [],
-      subjectsIndexDict: {},
-      genericCourses: [],
-      genericIndexDict: {},
       rightDrawer: true,
-      activeRoad: '$defaultroad$',
       newRoadName: '',
       justLoaded: true,
       currentlySaving: false,
       saveWarnings: [],
       conflictDialog: false,
       conflictInfo: undefined,
-      cookiesAllowed: undefined,
       searchInput: '',
-      showSearch: false,
-      classInfoStack: [],
       currentSemester: 1,
-      addingFromCard: false,
-      itemAdding: undefined,
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
-      searchX: undefined,
-      searchY: undefined,
-      // note for later: will need to use Vue.set on roads for reactivity once they come from fireroad
-      roads: {
-        '$defaultroad$': {
-          downloaded: moment().format(DATE_FORMAT),
-          changed: moment().format(DATE_FORMAT),
-          name: 'My First Road',
-          agent: '',
-          contents: {
-            coursesOfStudy: ['girs'],
-            selectedSubjects: [],
-            progressOverrides: {}
-          }
-        }
-      },
       showMobile: ['mobile', 'tabvar'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
     };
   },
   computed: {
+    activeRoad: {
+      get () {
+        return this.$store.state.activeRoad;
+      },
+      set (value) {
+        this.$store.commit('setActiveRoad', value);
+      }
+    },
+    addingFromCard () {
+      return this.$store.state.addingFromCard;
+    },
     appLink: function () {
       switch (new UAParser(navigator.userAgent).getOS().name) {
         case 'Android':
@@ -356,37 +279,46 @@ export default {
           return null;
       }
     },
+    cookiesAllowed () {
+      return this.$store.state.cookiesAllowed;
+    },
+    roads () {
+      return this.$store.state.roads;
+    },
     roadref: function () {
       return '#road' + this.activeRoad;
     }
   },
   watch: {
     // call fireroad to check fulfillment if you change active roads or change something about a road
-    activeRoad: function (newRoad, oldRoad) {
+    activeRoad: function (newRoad) {
       this.justLoaded = false;
       if (newRoad !== '') {
         window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
         this.updateFulfillment();
       }
     },
+    cookiesAllowed: function (newCA) {
+      if (newCA) {
+        this.$cookies.set('dismissedOld', this.dismissedOld);
+      }
+    },
     roads: {
-      handler: function (newRoads, oldRoads) {
-        this.justLoaded = false;
-        if(this.cookiesAllowed === undefined) {
-          this.cookiesAllowed = true;
-          this.$refs.authcomponent.allowCookies();
+      handler: function () {
+        if (!this.$store.state.ignoreRoadChanges) {
+          this.justLoaded = false;
+          if (this.cookiesAllowed === undefined) {
+            this.$store.commit('allowCookies');
+          }
+          if (this.activeRoad !== '') {
+            this.updateFulfillment();
+          }
+          this.$refs.authcomponent.save();
+        } else {
+          this.$store.commit('watchRoadChanges');
         }
-        if (this.activeRoad !== '') {
-          this.updateFulfillment();
-        }
-        this.$refs.authcomponent.save();
       },
       deep: true
-    },
-    searchInput: function (newSearch, oldSearch) {
-      if (newSearch.length > 0) {
-        this.showSearch = true;
-      }
     }
   },
   mounted () {
@@ -423,80 +355,30 @@ export default {
 
     this.updateFulfillment();
 
-    this.searchX = $("#searchInputTF").offset().left;
-    this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
-
-    $(window).on("resize", function() {
-      this.searchX = $("#searchInputTF").offset().left;
-      this.searchY = $("#searchInputTF").offset().top + $("#searchInputTF").outerHeight();
-    }.bind(this));
-
     document.body.addEventListener('click', function (e) {
-      this.showSearch = false;
+      this.searchOpen = false;
     }.bind(this));
 
-    if(this.$cookies.isKey('dismissedOld')) {
+    if (this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
-      this.cookiesAllowed = true;
+      this.$store.commit('allowCookies');
     }
-    if(this.$cookies.isKey('dismissedCookies')) {
+    if (this.$cookies.isKey('dismissedCookies')) {
       this.dismissedCookies = JSON.parse(this.$cookies.get('dismissedCookies'));
-      this.cookiesAllowed = true;
+      this.$store.commit('allowCookies');
     }
 
     // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
     // axios.get('https://mit-course-catalog-v2.cloudhub.io/coursecatalog/v2/terms/2018FA/subjects', {headers:{client_id:'01fce9ed7f9d4d26939a68a4126add9b', client_secret:'D4ce51aA6A32421DA9AddF4188b93255'}})
     // , 'Accept': 'application/json'} ?
     // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
-    axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`)
-      .then(response => {
-        this.subjectsInfo = response.data;
-        console.log(this.subjectsInfo);
-        this.genericCourses = this.makeGenericCourses();
-        this.subjectsIndexDict = this.subjectsInfo.reduce(function (obj, item, index) {
-          obj[item.subject_id] = index;
-          return obj;
-        }, {});
-        this.genericIndexDict = this.genericCourses.reduce(function (obj, item, index) {
-          obj[item.subject_id] = index;
-          return obj;
-        }, {});
-      });
+    this.$store.dispatch('loadAllSubjects').then(() => {
+      console.log('Subjects were loaded successfully!');
+    }).catch((e) => {
+      console.log('There was an error loading subjects: \n' + e);
+    });
   },
   methods: {
-    addClass: function (newClass) {
-      this.roads[this.activeRoad].contents.selectedSubjects.push(newClass);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
-    moveClass: function (classIndex, newSem) {
-      this.roads[this.activeRoad].contents.selectedSubjects[classIndex].semester = newSem;
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
-    removeClass: function (classInfo) {
-      const classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
-      this.roads[this.activeRoad].contents.selectedSubjects.splice(classIndex, 1);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
-    resetID: function (oldid, newid) {
-      newid = newid.toString();
-      Vue.set(this.roads, newid, this.roads[oldid]);
-      if (this.activeRoad === oldid) {
-        this.activeRoad = newid;
-      }
-      Vue.delete(this.roads, oldid);
-    },
-    dragStartClass: function (event) {
-      let classInfo = event.classInfo;
-      if (classInfo === undefined) {
-        if (event.basicClass.id in this.subjectsIndexDict) {
-          classInfo = this.subjectsInfo[this.subjectsIndexDict[event.basicClass.id]];
-        } else if (event.basicClass.id in this.genericIndexDict) {
-          classInfo = this.genericCourses[this.genericIndexDict[event.basicClass.id]];
-        }
-      }
-      this.itemAdding = classInfo;
-      this.addingFromCard = false;
-    },
     updateFulfillment: function () {
       const _this = this;
       for (let r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
@@ -507,22 +389,12 @@ export default {
         }.bind({ data: this, req: req }));
       }
     },
-    addReq: function (event) {
-      this.roads[this.activeRoad].contents.coursesOfStudy.push(event);
-      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
-      Vue.set(this.roads, this.activeRoad, this.roads[this.activeRoad]);
-    },
-    removeReq: function (event) {
-      const reqIndex = this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
-      this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
     setActiveRoad: function () {
       const roadHash = window.location.hash;
       if (roadHash.length && roadHash.substring(0, 7) === '#/#road') {
         const roadRequested = roadHash.substring(7);
         if (roadRequested in this.roads) {
-          this.activeRoad = roadHash.substring(7);
+          this.$store.commit('setActiveRoad', roadHash.substring(7));
           return true;
         }
       }
@@ -543,25 +415,12 @@ export default {
         agent: '',
         contents: newContents
       };
-      Vue.set(this.roads, tempRoadID, newRoad);
+      this.$store.commit('setRoad', {
+        id: tempRoadID,
+        road: newRoad
+      });
       this.$refs.authcomponent.newRoads.push(tempRoadID);
-      this.activeRoad = tempRoadID;
-    },
-
-    setRoadName: function (roadID, roadName) {
-      Vue.set(this.roads[roadID], 'name', roadName);
-    },
-    changeActiveRoad: function (event) {
-      this.activeRoad = event;
-    },
-    deleteRoad: function (roadID) {
-      Vue.delete(this.roads, roadID);
-    },
-    setRoad: function (roadID, newRoad) {
-      Vue.set(this.roads, roadID, newRoad);
-    },
-    setActive: function (roadID) {
-      this.activeRoad = roadID;
+      this.$store.commit('setActiveRoad', tempRoadID);
     },
     conflict: function (conflictInfo) {
       this.$refs.conflictdialog.startConflict();
@@ -571,22 +430,13 @@ export default {
       this.$refs.conflictdialog.resolveConflict();
       this.conflictInfo = undefined;
     },
-    setRoadProp: function (roadID, roadProp, propValue) {
-      Vue.set(this.roads[roadID], roadProp, propValue);
-    },
-    allowCookies: function () {
-      this.$refs.authcomponent.allowCookies();
-      this.cookiesAllowed = true;
-      this.$cookies.set('dismissedOld', this.dismissedOld);
-    },
-    disallowCookies: function() {
-      this.cookiesAllowed = false;
+    disallowCookies: function () {
+      this.$store.commit('disallowCookies');
       this.dismissCookies();
       var cookieKeys = this.$cookies.keys();
-      for(var k = 0; k < cookieKeys.length; k++) {
-      	this.$cookies.remove(cookieKeys[k]);
+      for (var k = 0; k < cookieKeys.length; k++) {
+        this.$cookies.remove(cookieKeys[k]);
       }
-      this.$refs.authcomponent.disallowCookies();
     },
     updateLocal: function (id) {
       this.$refs.authcomponent.updateLocal(id);
@@ -597,138 +447,22 @@ export default {
     setSemester: function (sem) {
       this.currentSemester = Math.max(1, sem);
     },
-    pushClassStack: function (id) {
-      if (id in this.subjectsIndexDict || id in this.genericIndexDict) {
-        this.classInfoStack.push(id);
-      }
-    },
-    popClassStack: function () {
-      this.classInfoStack.pop();
-    },
-    addFromCard: function (classItem) {
-      this.addingFromCard = true;
-      this.itemAdding = classItem;
-    },
-    cancelAddFromCard: function () {
-      this.addingFromCard = false;
-      this.itemAdding = undefined;
-    },
-    addAtPlaceholder: function (index) {
-      const newClass = {
-        overrideWarnings: false,
-        semester: index,
-        title: this.itemAdding.title,
-        id: this.itemAdding.subject_id,
-        units: this.itemAdding.total_units
-      };
-      this.addClass(newClass);
-      this.addingFromCard = false;
-      this.itemAdding = undefined;
-    },
-    getMatchingAttributes: function (gir, hass, ci) {
-      const matchingClasses = this.subjectsInfo.filter(function (subject) {
-        if (gir !== undefined && subject.gir_attribute !== gir) {
-          return false;
-        }
-        if (hass !== undefined && (subject.hass_attribute === undefined || subject.hass_attribute.split(',').indexOf(hass) === -1)) {
-          return false;
-        }
-        if (ci !== undefined && subject.communication_requirement !== ci) {
-          return false;
-        }
-        return true;
-      });
-      const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
-        return {
-          offered_spring: accumObject.offered_spring || nextClass.offered_spring,
-          offered_summer: accumObject.offered_summer || nextClass.offered_summer,
-          offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
-          offered_fall: accumObject.offered_fall || nextClass.offered_fall,
-          in_class_hours: accumObject.in_class_hours + (nextClass.in_class_hours !== undefined ? nextClass.in_class_hours : 0),
-          out_of_class_hours: accumObject.out_of_class_hours + (nextClass.out_of_class_hours !== undefined ? nextClass.out_of_class_hours : 0)
-        };
-      }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0 });
-      totalObject.in_class_hours /= matchingClasses.length;
-      totalObject.out_of_class_hours /= matchingClasses.length;
-      return totalObject;
-    },
-    makeGenericCourses: function () {
-      const girAttributes = { 'PHY1': ['Physics 1 GIR', 'p1'], 'PHY2': ['Physics 2 GIR', 'p2'], 'CHEM': ['Chemistry GIR', 'c'], 'BIOL': ['Biology GIR', 'b'], 'CAL1': ['Calculus I GIR', 'm1'], 'CAL2': ['Calculus II GIR', 'm2'], 'LAB': ['Lab GIR', 'l1'], 'REST': ['REST GIR', 'r'] };
-      // the titles of the hass and ci attributes are currently not used in the description on fireroad
-      // I think they might be nice to display with the description, but as of now they are unused
-      const hassAttributes = { 'HASS-A': ['HASS Arts', 'ha'], 'HASS-S': ['HASS Social Sciences', 'hs'], 'HASS-H': ['Hass Humanities', 'hh'] };
-      const ciAttributes = { 'CI-H': ['Communication Intensive', 'hc'], 'CI-HW': ['Communication Intensive with Writing', 'hw'] };
-      const genericCourses = [];
-      const baseGeneric = {
-        description: 'Use this generic subject to indicate that you are fulfilling a requirement, but do not yet have a specific subject selected.',
-        total_units: 12
-      };
-      // biol:b, chem: c, lab: l1, partial lab: l2, rest: r, calc1: m1, calc2: m2, phys1: p1, phys2: p2
-      // hass-a: ha, hass-h: hh, hass-s: hs, hass elective: ht, hass subject: h%5Bahst%5D
-      // commun_int - cih: hc, cihw: hw
-      const baseurl = 'http://student.mit.edu/catalog/search.cgi?search=&style=verbatim&when=*&termleng=4&days_offered=*&start_time=*&duration=*&total_units=*';
-      for (const gir in girAttributes) {
-        const offeredGir = this.getMatchingAttributes(gir, undefined, undefined);
-        genericCourses.push(Object.assign({}, baseGeneric, offeredGir, {
-          gir_attribute: gir,
-          title: 'Generic ' + girAttributes[gir][0],
-          subject_id: gir,
-          url: baseurl + '&cred=' + girAttributes[gir][1] + '&commun_int=*'
-        }));
-      }
-      for (const hass in hassAttributes) {
-        const offeredHass = this.getMatchingAttributes(undefined, hass, undefined);
-        genericCourses.push(Object.assign({}, baseGeneric, offeredHass, {
-          hass_attribute: hass,
-          title: 'Generic ' + hass,
-          subject_id: hass,
-          url: baseurl + '&cred=' + hassAttributes[hass][1] + '&commun_int=*'
-        }));
-        const offeredHassCI = this.getMatchingAttributes(undefined, hass, 'CI-H');
-        genericCourses.push(Object.assign({}, baseGeneric, offeredHassCI, {
-          hass_attribute: hass,
-          communication_requirement: 'CI-H',
-          title: 'Generic CI-H ' + hass,
-          subject_id: 'CI-H ' + hass,
-          url: baseurl + '&cred=' + hassAttributes[hass][1] + '&commun_int=' + ciAttributes['CI-H'][1]
-        }));
-      }
-      for (const ci in ciAttributes) {
-        const offeredCI = this.getMatchingAttributes(undefined, undefined, ci);
-        genericCourses.push(Object.assign({}, baseGeneric, offeredCI, {
-          communication_requirement: ci,
-          title: 'Generic ' + ci,
-          hass_attribute: 'HASS',
-          subject_id: ci,
-          url: baseurl + '&cred=*&commun_int=' + ciAttributes[ci][1]
-        }));
-      }
-      return genericCourses;
-    },
-    overrideWarnings (override, classInfo) {
-      const classIndex = this.roads[this.activeRoad].contents.selectedSubjects.indexOf(classInfo);
-      Vue.set(this.roads[this.activeRoad].contents.selectedSubjects[classIndex], 'overrideWarnings', override);
-    },
-    updateProgress: function (newProgress) {
-      Vue.set(this.roads[this.activeRoad].contents.progressOverrides, newProgress.listID, newProgress.progress);
-      Vue.set(this.roads[this.activeRoad], 'changed', moment().format(DATE_FORMAT));
-    },
-    dismissOld: function() {
+    dismissOld: function () {
       this.dismissedOld = true;
-      if(this.cookiesAllowed) {
+      if (this.cookiesAllowed) {
         this.$cookies.set('dismissedOld', true);
       }
     },
-    dismissCookies: function() {
+    dismissCookies: function () {
       this.dismissedCookies = true;
-      if(this.cookiesAllowed) {
+      if (this.cookiesAllowed) {
         this.$cookies.set('dismissedCookies', true);
       }
     },
-    clickSearch: function(event) {
+    clickSearch: function (event) {
       this.searchOpen = !this.searchOpen;
     },
-    typeSearch: function(searchString) {
+    typeSearch: function (searchString) {
       this.searchOpen = searchString.length > 0;
     }
   }
@@ -736,6 +470,19 @@ export default {
 </script>
 
 <style scoped>
+  #searchMenuCard {
+    position: fixed;
+    top: 37px;
+    right: 24px;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  @media only screen and (max-width:959px) {
+    #searchMenuCard {
+      right: 16px;
+    }
+  }
   .scroller {
     overflow-x: auto;
   }

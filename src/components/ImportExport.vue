@@ -83,7 +83,6 @@
 export default {
   name: 'ImportExport',
   components: {},
-  props: ['roads', 'activeRoad', 'subjects', 'subjectsIndex', 'genericCourses', 'genericIndex'],
   data: function () {
     return {
       dialog: false,
@@ -91,6 +90,14 @@ export default {
       roadtitle: '',
       badinput: false
     };
+  },
+  computed: {
+    activeRoad () {
+      return this.$store.state.activeRoad;
+    },
+    roads () {
+      return this.$store.state.roads;
+    }
   },
   mounted () {
     // read uploaded files
@@ -169,10 +176,10 @@ export default {
           const ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
             let subject;
-            if (this.subjectsIndex[s.id] !== undefined) {
-              subject = this.subjects[this.subjectsIndex[s.id]];
-            } else if (this.genericIndex[s.id] !== undefined) {
-              subject = this.genericCourses[this.genericIndex[s.id]];
+            if (this.$store.state.subjectsIndex[s.id] !== undefined) {
+              subject = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
+            } else if (this.$store.state.genericIndex[s.id] !== undefined) {
+              subject = this.$store.state.genericCourses[this.$store.state.genericIndex[s.id]];
             }
 
             if (subject !== undefined) {

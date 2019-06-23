@@ -66,7 +66,8 @@ module.exports = (env) => {
         filename: 'css/app.css'
       }),
       new webpack.DefinePlugin({ 'process.env.APP_URL': JSON.stringify(env.APP_URL) }),
-      new webpack.DefinePlugin({ 'process.env.FIREROAD_URL': JSON.stringify(env.FIREROAD_URL) })
+      new webpack.DefinePlugin({ 'process.env.FIREROAD_URL': JSON.stringify(env.FIREROAD_URL) }),
+      new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) })
     ]
   }
 }
