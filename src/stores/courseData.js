@@ -183,8 +183,7 @@ const store = new Vuex.Store({
         state.classInfoStack.push(id);
       }
     },
-    removeClass (state, classInfo) {
-      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[classInfo.semester].indexOf(classInfo);
+    removeClass (state, { classInfo, classIndex }) {
       state.roads[state.activeRoad].contents.selectedSubjects[classInfo.semester].splice(classIndex, 1);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },

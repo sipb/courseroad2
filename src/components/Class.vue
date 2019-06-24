@@ -30,7 +30,7 @@
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
-            <v-icon style="margin: 4px" small @click="$store.commit('removeClass', classInfo); $event.stopPropagation();">
+            <v-icon style="margin: 4px" small @click="$store.commit('removeClass', {classInfo: classInfo, classIndex: classIndex}); $event.stopPropagation();">
               cancel
             </v-icon>
             <v-card-text class="card-text">
