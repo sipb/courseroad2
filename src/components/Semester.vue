@@ -135,13 +135,13 @@ export default {
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
           let notOfferedWarning = false;
-          if(subj.is_historical) {
-            let lastSemester = subj.source_semester.split("-");
-            let sourceSemester = ["fall", "IAP", "spring"].indexOf(lastSemester[0]);
-            //which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
-            let sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
-            let lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
-            if(this.index > lastSemesterNumber) {
+          if (subj.is_historical) {
+            const lastSemester = subj.source_semester.split('-');
+            const sourceSemester = ['fall', 'IAP', 'spring'].indexOf(lastSemester[0]);
+            // which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
+            const sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
+            const lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
+            if (this.index > lastSemesterNumber) {
               subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ')');
               notOfferedWarning = true;
             }
@@ -199,7 +199,7 @@ export default {
             bgColor: 'yellow',
             message: 'Subject no longer offered',
             textColor: 'DarkGoldenRod'
-          }
+          };
         }
       } else {
         return {
@@ -212,21 +212,20 @@ export default {
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
     },
-    noLongerOffered: function() {
-      if(this.itemAdding.is_historical) {
-        let lastSemester = this.itemAdding.source_semester.split("-");
-        let sourceSemester = ["fall", "IAP", "spring"].indexOf(lastSemester[0]);
-        //which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
-        let sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
-        let lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
-        if(this.index > lastSemesterNumber) {
+    noLongerOffered: function () {
+      if (this.itemAdding.is_historical) {
+        const lastSemester = this.itemAdding.source_semester.split('-');
+        const sourceSemester = ['fall', 'IAP', 'spring'].indexOf(lastSemester[0]);
+        // which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
+        const sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
+        const lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
+        if (this.index > lastSemesterNumber) {
           return true;
         }
       }
       return false;
     },
     offeredNow: function () {
-
       if (!this.subjectsLoaded || this.itemAdding === undefined || this.noLongerOffered) {
         return false;
       }
