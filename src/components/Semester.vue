@@ -10,9 +10,9 @@
         <v-flex xs6>
           <span style="width: 6em; display: inline-block;">
             <b>
-              {{ semesterType }}
               <v-hover>
                 <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="changeYear">
+                  {{ semesterType }}
                   {{ semesterYear }}
                 </span>
               </v-hover>
@@ -33,7 +33,9 @@
               </div>
             </v-card>
           </v-flex>
-          <v-flex v-if="isOpen" xs10 :style="{ 'color': semData.textColor }">
+        </v-layout>
+        <v-layout v-else>
+          <v-flex xs10 :style="{ 'color': semData.textColor }">
             {{ semData.message }}
           </v-flex>
         </v-layout>
@@ -56,11 +58,6 @@
           :class-info="subject"
           :semester-index="index"
           :warnings="warnings[subjindex]"
-          @remove-class="$emit('remove-class', $event)"
-          @click-class="$emit('click-class',$event)"
-          @add-at-placeholder="$emit('add-at-placeholder', $event)"
-          @drag-start-class="$emit('drag-start-class', $event)"
-          @override-warnings="$emit('override-warnings',$event)"
         />
       </v-layout>
     </v-container>
@@ -84,7 +81,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin],
-  props: ['selectedSubjects', 'index', 'allSubjects', 'roadID', 'isOpen', 'baseYear', 'subjectsIndex', 'genericCourses', 'genericIndex', 'addingFromCard', 'itemAdding', 'currentSemester'],
+  props: ['selectedSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -93,8 +90,14 @@ export default {
     };
   },
   computed: {
+    itemAdding () {
+      return this.$store.state.itemAdding;
+    },
+    addingFromCard () {
+      return this.$store.state.addingFromCard;
+    },
     subjectsLoaded: function () {
-      return Object.keys(this.subjectsIndex).length > 0;
+      return Object.keys(this.$store.state.subjectsIndex).length > 0;
     },
     warnings: function () {
       const allWarnings = Array(this.semesterSubjects.length).fill([]);
@@ -102,10 +105,10 @@ export default {
         const subjectWarnings = [];
         const subjID = this.semesterSubjects[i].id;
         let subj;
-        if (subjID in this.subjectsIndex) {
-          subj = this.allSubjects[this.subjectsIndex[subjID]];
-          var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
-          var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
+        if (subjID in this.$store.state.subjectsIndex) {
+          subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]];
+          var prereqString = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]].prerequisites;
+          var coreqString = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]].corequisites;
           var prereqsfulfilled = true;
           var coreqsfulfilled = true;
           if (prereqString !== undefined) {
@@ -126,8 +129,8 @@ export default {
               subjectWarnings.push('<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.');
             }
           }
-        } else if (subjID in this.genericIndex) {
-          subj = this.genericCourses[this.genericIndex[subjID]];
+        } else if (subjID in this.$store.state.genericIndex) {
+          subj = this.$store.state.genericCourses[this.$store.state.genericIndex[subjID]];
         }
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
@@ -237,7 +240,7 @@ export default {
     },
     semesterSubjects: function () {
       const semSubjs = this.selectedSubjects.map(function (subj, ind) {
-        return Object.assign(subj, { index: ind });
+        return Object.assign({ index: ind }, subj);
       }).filter(subj => {
         return this.index === subj.semester;
       });
@@ -248,23 +251,33 @@ export default {
     },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
-        if (subj.id in this.subjectsIndex) {
-          return this.allSubjects[this.subjectsIndex[subj.id]];
-        } else if (subj.id in this.genericIndex) {
-          return this.genericCourses[this.genericIndex[subj.id]];
+        if (subj.id in this.$store.state.subjectsIndex) {
+          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.id]];
+        } else if (subj.id in this.$store.state.genericIndex) {
+          return this.$store.state.genericCourses[this.$store.state.genericIndex[subj.id]];
         } else {
           return undefined;
         }
       }.bind(this)).filter(function (subj) {
         return subj !== undefined;
       });
-      const addNums = function (a, b) {
-        a = isNaN(a) ? 0 : a;
-        b = isNaN(b) ? 0 : b;
-        return a + b;
+      const totalUnits = classesInfo.reduce(function (units, subj) {
+        let tu = subj.total_units;
+        tu = isNaN(tu) ? 0 : tu;
+        return units + tu;
+      }, 0);
+      const totalExpectedHours = function (hours, subj) {
+        let eh = subj.in_class_hours + subj.out_of_class_hours;
+        eh = isNaN(eh) ? subj.total_units : eh;
+        eh = isNaN(eh) ? 0 : eh;
+        return hours + eh;
       };
-      const totalUnits = classesInfo.map((s) => s.total_units).reduce(addNums, 0);
-      const expectedHours = classesInfo.map((s) => s.in_class_hours + s.out_of_class_hours).reduce(addNums, 0);
+      const isInQuarter = function (subj, quarter) {
+        return subj.quarter_information === undefined || parseInt(subj.quarter_information.split(',')[0]) === quarter;
+      };
+      const expectedHoursQuarter1 = classesInfo.filter((s) => isInQuarter(s, 0)).reduce(totalExpectedHours, 0);
+      const expectedHoursQuarter2 = classesInfo.filter((s) => isInQuarter(s, 1)).reduce(totalExpectedHours, 0);
+      const expectedHours = Math.max(expectedHoursQuarter1, expectedHoursQuarter2);
       return {
         totalUnits: totalUnits,
         expectedHours: expectedHours
@@ -272,7 +285,7 @@ export default {
     },
     semesterYear: function () {
       return this.index === 0
-        ?  ''
+        ? ''
         : Math.floor((this.index - 2) / 3) + this.baseYear;
     },
     semesterType: function () {
@@ -289,7 +302,7 @@ export default {
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
       return this.selectedSubjects.filter(s => {
-        const subj2 = this.allSubjects[this.subjectsIndex[s.id]];
+        const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
         const inPreviousSemester = s.semester < this.index;
         let inPreviousQuarter = false;
         if (subj2 !== undefined) {
@@ -313,10 +326,10 @@ export default {
       }
       if (req.indexOf('.') === -1) {
         let subj;
-        if (id in this.subjectsIndex) {
-          subj = this.allSubjects[this.subjectsIndex[id]];
-        } else if (id in this.genericIndex) {
-          subj = this.genericCourses[this.genericIndex[id]];
+        if (id in this.$store.state.subjectsIndex) {
+          subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[id]];
+        } else if (id in this.$store.state.genericIndex) {
+          subj = this.$store.state.genericCourses[this.$store.state.genericIndex[id]];
         } else {
           // subj not found in known courses
           return false;
@@ -325,7 +338,7 @@ export default {
           req = req.substring(4);
           return subj.gir_attribute === req;
         } else if (req.indexOf('HASS') >= 0) {
-          return subj.hass_attribute === req;
+          return subj.hass_attribute.split(',').indexOf(req) >= 0;
         } else if (req.indexOf('CI') >= 0) {
           return subj.communication_requirement === req;
         }
@@ -336,7 +349,7 @@ export default {
       const allIDs = subjects.map((s) => s.id);
       reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',');
       const splitReq = reqString.split(/(,|\(|\)|\/)/);
-      const _this = this
+      const _this = this;
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
           splitReq[i] = 'true';
@@ -382,9 +395,9 @@ export default {
             id: this.itemAdding.subject_id,
             units: this.itemAdding.total_units
           };
-          this.$emit('add-class', newClass);
+          this.$store.commit('addClass', newClass);
         } else {
-          this.$emit('move-class', { classIndex: eventData.classInfo.index, semester: this.index });
+          this.$store.commit('moveClass', { classIndex: eventData.classInfo.index, semester: this.index });
         }
       }
       this.draggingOver = false;

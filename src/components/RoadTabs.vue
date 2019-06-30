@@ -9,7 +9,7 @@
         v-for="roadId in Object.keys(roads)"
         :key="roadId"
         :href="`#${roadId}`"
-        @click="$emit('change-active', roadId)"
+        @click="$store.commit('setActiveRoad', roadId)"
       >
         {{ roads[roadId].name }}
         <v-btn v-show="roadId == tabRoad" icon flat @click="newRoadName = roads[roadId].name; editDialog = true;">
@@ -34,7 +34,7 @@
             <v-btn
               color="primary"
               :disabled="otherRoadHasName(tabRoad, newRoadName)"
-              @click="$emit('set-name', {road: tabRoad,name: newRoadName}); editDialog = false; newRoadName = ''"
+              @click="$store.commit('setRoadName', {id: tabRoad, name: newRoadName}); editDialog = false; newRoadName = ''"
             >
               Submit
             </v-btn>
@@ -66,7 +66,14 @@
           </v-btn>
           <v-card-title>Create Road</v-card-title>
           <v-card-text>
-            <v-text-field v-if="addDialog" v-model="newRoadName" autofocus placeholder="New road name" />
+            <v-text-field
+              v-if="addDialog"
+              v-model="newRoadName"
+              autofocus
+              placeholder="New road name"
+              @keyup.enter="
+                if (validRoadName) createRoad()"
+            />
             <v-layout row>
               <v-flex xs6>
                 <v-switch v-model="duplicateRoad" label="Duplicate existing" />
@@ -85,7 +92,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn :disabled="otherRoadHasName('', newRoadName) || newRoadName === ''" color="primary" @click="createRoad">
+            <v-btn :disabled="!validRoadName" color="primary" @click="createRoad">
               Create
             </v-btn>
           </v-card-actions>
@@ -93,7 +100,7 @@
       </v-dialog>
     </v-tabs>
     <v-flex>
-      <v-btn icon flat color="primary" @click="addDialog = true">
+      <v-btn type="submit" icon flat color="primary" @click="addDialog = true">
         <v-icon>add</v-icon>
       </v-btn>
     </v-flex>
@@ -109,7 +116,6 @@ export default {
     // TODO: This is not used?
     'road': Road
   },
-  props: ['activeRoad', 'roads'],
   data: function () {
     return {
       addDialog: false,
@@ -120,6 +126,17 @@ export default {
       newRoadName: '',
       tabRoad: this.activeRoad
     };
+  },
+  computed: {
+    activeRoad () {
+      return this.$store.state.activeRoad;
+    },
+    roads () {
+      return this.$store.state.roads;
+    },
+    validRoadName: function () {
+      return !(this.otherRoadHasName('', this.newRoadName) || this.newRoadName === '');
+    }
   },
   watch: {
     activeRoad: function (newRoad, oldRoad) {
@@ -151,9 +168,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style> /* CAREFUL! this is not scoped */
 /*This is to prevent it from monopolizing all the space*/
-.v-tabs__container {
+div.v-tabs__container {
   display: unset;
   white-space: unset;
 }

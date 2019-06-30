@@ -13,7 +13,7 @@
               <v-btn
                 large
                 icon
-                @click="$emit('add-at-placeholder',semesterIndex)"
+                @click="$store.dispatch('addAtPlaceholder',semesterIndex)"
               >
                 <v-icon>add</v-icon>
               </v-btn>
@@ -26,11 +26,11 @@
           :id="'class'+classInfo.id.replace('.','')+semesterIndex"
           draggable
           @dragstart="dragStart"
-          @click="$emit('click-class', classInfo)"
+          @click="$store.commit('pushClassStack', classInfo.id)"
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
-            <v-icon style="margin: 4px" small @click="$emit('remove-class',classInfo); $event.stopPropagation();">
+            <v-icon style="margin: 4px" small @click="$store.commit('removeClass', classInfo); $event.stopPropagation();">
               cancel
             </v-icon>
             <v-card-text class="card-text">
@@ -62,7 +62,7 @@
           />
         </v-card-text>
         <v-card-actions style="justify-content: flex-end;">
-          <v-btn flat @click="warningDialog = false; $emit('override-warnings',{override:shouldOverrideWarnings,classInfo:classInfo})">
+          <v-btn flat @click="warningDialog = false; $store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})">
             Close
           </v-btn>
         </v-card-actions>
@@ -87,7 +87,7 @@ export default {
   methods: {
     dragStart: function (event) {
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo }));
-      this.$emit('drag-start-class', {
+      this.$store.commit('dragStartClass', {
         dragstart: event,
         basicClass: this.classInfo,
         isNew: false,
@@ -96,7 +96,7 @@ export default {
     },
     clickClass: function (classInfo) {
       if (classInfo !== 'placeholder') {
-        this.$emit('click-class', classInfo);
+        this.$store.commit('pushClassStack', classInfo.id);
       }
     },
     cardClass: function (classInfo) {

@@ -11,6 +11,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+import store from './stores/courseData';
+
 library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
@@ -33,5 +35,6 @@ VueCookies.config('3d');
 new Vue({
   el: '#app',
   router: router,
-  render: h => h(App)
+  render: h => h(App),
+  store
 });
