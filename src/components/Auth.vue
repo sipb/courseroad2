@@ -48,6 +48,8 @@ import axios from 'axios';
 import moment from 'moment';
 import Vue from 'vue';
 import UAParser from 'ua-parser-js';
+import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';
+
 
 var DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
@@ -66,6 +68,7 @@ export default {
   name: 'Auth',
   components: {},
   props: ['justLoaded', 'conflictInfo'],
+  mixins: [simpleSSMixin],
   data: function () {
     return {
       accessInfo: undefined,
@@ -114,15 +117,7 @@ export default {
       if (Object.keys(newRoads).length) {
         for (var roadID in newRoads) {
           if (!Array.isArray(newRoads[roadID].contents.selectedSubjects[0])) {
-            const simpless = Array.from(Array(16), () => new Array());
-            for (let i = 0; i < newRoads[roadID].contents.selectedSubjects.length; i++) {
-              const s = newRoads[roadID].contents.selectedSubjects[i];
-              if (s.semester === undefined || s.semester < 0) {
-                s.semester = 0;
-              }
-              simpless[s.semester].push(s);
-            }
-            newRoads[roadID].contents.selectedSubjects = simpless;
+            newRoads[roadID].contents.selectedSubjects = this.getSimpleSelectedSubjects(newRoads[roadID].contents.selectedSubjects);
           }
         }
         if (this.justLoaded) {
@@ -229,16 +224,9 @@ export default {
           return s;
         });
         roadData.data.file.contents.selectedSubjects = newss;
+
         // convert selected subjects to more convenient format
-        const simpless = Array.from(Array(16), () => new Array());
-        for (let i = 0; i < roadData.data.file.contents.selectedSubjects.length; i++) {
-          const s = roadData.data.file.contents.selectedSubjects[i];
-          if (s.semester === undefined || s.semester < 0) {
-            s.semester = 0;
-          }
-          simpless[s.semester].push(s);
-        }
-        roadData.data.file.contents.selectedSubjects = simpless;
+        roadData.data.file.contents.selectedSubjects = _this.getSimpleSelectedSubjects(roadData.data.file.contents.selectedSubjects);
         // sanitize progressOverrides
         if (roadData.data.file.contents.progressOverrides === undefined) {
           roadData.data.file.contents.progressOverrides = {};

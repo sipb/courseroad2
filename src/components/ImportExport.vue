@@ -80,9 +80,12 @@
 </template>
 
 <script>
+import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';
+
 export default {
   name: 'ImportExport',
   components: {},
+  mixins: [simpleSSMixin],
   data: function () {
     return {
       dialog: false,
@@ -207,14 +210,7 @@ export default {
           });
 
           // convert selected subjects to more convenient format
-          const simpless = Array.from(Array(16), () => new Array());
-          for (let i = 0; i < ss.length; i++) {
-            const s = ss[i];
-            if (s.semester === undefined || s.semester < 0) {
-              s.semester = 0;
-            }
-            simpless[s.semester].push(s);
-          }
+          const simpless = this.getSimpleSelectedSubjects(ss);
 
           this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, simpless, obj.progressOverrides);
         } catch (error) {
