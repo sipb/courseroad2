@@ -34,6 +34,7 @@ const store = new Vuex.Store({
     subjectsInfo: [],
     ignoreRoadChanges: false,
     fulfillmentNeeded: 'all',
+    //list of road IDs that have not been retrieved from the server yet
     unretrieved: []
   },
   mutations: {
@@ -94,6 +95,7 @@ const store = new Vuex.Store({
       state.unretrieved = roadIDs;
     },
     setRetrieved (state, roadID) {
+      //Remove from unretrieved list when a road is retrieved
       const roadIDIndex = state.unretrieved.indexOf(roadID);
       state.unretrieved.splice(roadIDIndex, 1);
     },
