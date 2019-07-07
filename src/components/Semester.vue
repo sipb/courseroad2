@@ -280,18 +280,6 @@ export default {
         return inPreviousQuarter;
       });
       return beforeThisSemester.concat(previousQuarter);
-      // return this.selectedSubjects.filter(s => {
-      //   const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
-      //   const inPreviousSemester = s.semester < this.index;
-      //   let inPreviousQuarter = false;
-      //   if (subj2 !== undefined) {
-      //     inPreviousQuarter = s.semester === this.index &&
-      //       subjInQuarter2 &&
-      //       subj2.quarter_information !== undefined &&
-      //       subj2.quarter_information.split(',')[0] === '0';
-      //   }
-      //   return inPreviousSemester || inPreviousQuarter;
-      // });
     },
     classSatisfies: function (req, id) {
       if (req === id) {
