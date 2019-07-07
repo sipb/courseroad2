@@ -158,7 +158,7 @@ export default {
       return allWarnings;
     },
     concurrentSubjects: function () {
-      return [].concat.apply([], this.selectedSubjects.slice(0, this.index + 1));
+      return this.selectedSubjects.slice(0, this.index + 1).flat();
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -267,7 +267,7 @@ export default {
     },
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
-      const beforeThisSemester = this.selectedSubjects.slice(0, this.index);
+      const beforeThisSemester = this.selectedSubjects.slice(0, this.index).flat();
       const previousQuarter = this.selectedSubjects[this.index].filter(s => {
         const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
         let inPreviousQuarter = false;
