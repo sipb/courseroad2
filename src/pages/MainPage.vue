@@ -360,6 +360,7 @@ export default {
         this.reqList = ordered;
       });
 
+    //Update fulfillment for all majors on load
     this.updateFulfillment('all');
 
     document.body.addEventListener('click', function (e) {
@@ -390,6 +391,7 @@ export default {
       if (!this.updatingFulfillment && fulfillmentNeeded !== 'none') {
         this.updatingFulfillment = true;
         const _this = this;
+        //list of majors to get audit fulfillment for depending on fulfillmentNeeded
         const fulfillments = fulfillmentNeeded === 'all' ? this.roads[this.activeRoad].contents.coursesOfStudy : [fulfillmentNeeded];
         for (let r = 0; r < fulfillments.length; r++) {
           const req = fulfillments[r];
