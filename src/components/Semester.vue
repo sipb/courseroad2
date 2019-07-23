@@ -289,7 +289,7 @@ export default {
         return false;
       }
 
-      if(subj.equivalent_subjects.indexOf(req) >= 0) {
+      if(subj.equivalent_subjects !== undefined && subj.equivalent_subjects.indexOf(req) >= 0) {
         return true;
       }
 
