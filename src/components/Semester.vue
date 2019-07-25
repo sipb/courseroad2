@@ -206,7 +206,7 @@ export default {
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
     },
-    itemAddingNoLongerOffered: function() {
+    itemAddingNoLongerOffered: function () {
       return this.noLongerOffered(this.itemAdding);
     },
     offeredNow: function () {
