@@ -210,9 +210,6 @@ export default {
         if (roadData.status === 200 && roadData.data.success) {
           roadData.data.file.downloaded = moment().format(DATE_FORMAT);
           roadData.data.file.changed = moment().format(DATE_FORMAT);
-          if (roadData.data.file.contents.progressOverrides === undefined) {
-            roadData.data.file.contents.progressOverrides = {};
-          }
         }
 
         // sanitize subject_id
@@ -256,7 +253,6 @@ export default {
         }).then(function (files) {
           this.renumberRoads(files);
           const fileKeys = Object.keys(files);
-          const firstRoadID = fileKeys[0];
           for (var i = 0; i < fileKeys.length; i++) {
             const blankRoad = {
               downloaded: moment().format(DATE_FORMAT),
@@ -281,7 +277,7 @@ export default {
           this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
           //Set list of unretrieved roads to all but first road ID
           this.$store.commit('setUnretrieved', fileKeys.slice(1));
-          return this.retrieveRoad(firstRoadID);
+          return this.retrieveRoad(fileKeys[0]);
         }.bind(this)).then(function () {
           this.gettingUserData = false;
         }.bind(this)).catch(function (err) {
