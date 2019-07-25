@@ -364,7 +364,7 @@ export default {
       if (!roadID.includes('$')) {
         assignKeys.id = roadID;
       }
-      const roadSubjects = [].concat.apply([], this.roads[roadID].contents.selectedSubjects);
+      const roadSubjects = this.roads[roadID].contents.selectedSubjects.flat();
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
       Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
       const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
@@ -436,7 +436,7 @@ export default {
     getNewRoadData: function () {
       const newRoadData = {};
       if (this.newRoads.indexOf('$defaultroad$') === -1 && '$defaultroad$' in this.roads) {
-        if ([].concat.apply([], this.roads['$defaultroad$'].contents.selectedSubjects).length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
+        if (this.roads['$defaultroad$'].contents.selectedSubjects.flat().length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
           this.newRoads.push('$defaultroad$');
         }
       }

@@ -396,7 +396,7 @@ export default {
         for (let r = 0; r < fulfillments.length; r++) {
           const req = fulfillments[r];
           const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
-          alteredRoadContents.selectedSubjects = [].concat.apply([], alteredRoadContents.selectedSubjects);
+          alteredRoadContents.selectedSubjects = alteredRoadContents.selectedSubjects.flat();
           axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);
