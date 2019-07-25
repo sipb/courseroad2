@@ -146,7 +146,13 @@ export default {
         }
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
-          if (semType >= 0) {
+
+          if (this.noLongerOffered(subj)) {
+            const lastSemester = subj.source_semester.split('-');
+            subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ')');
+          }
+
+          if (semType >= 0 && !this.noLongerOffered(subj)) {
             const isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
             if (!isUsuallyOffered) {
               subjectWarnings.push('<b>Not offered</b> — According to the course catalog, ' + subjID + ' is not usually offered in ' + this.semesterType + '.');
@@ -180,16 +186,22 @@ export default {
             message: 'Add class here',
             textColor: 'DarkGreen'
           };
-        } else if (this.isSameYear) {
+        } else if (this.isSameYear && !this.itemAddingNoLongerOffered) {
           return {
             bgColor: 'red',
             message: 'Subject not available this semester',
             textColor: 'DarkRed'
           };
-        } else {
+        } else if (!this.itemAddingNoLongerOffered) {
           return {
             bgColor: 'yellow',
             message: 'Subject may not be available this semester',
+            textColor: 'DarkGoldenRod'
+          };
+        } else if (this.itemAddingNoLongerOffered) {
+          return {
+            bgColor: 'yellow',
+            message: 'Subject no longer offered',
             textColor: 'DarkGoldenRod'
           };
         }
@@ -204,10 +216,14 @@ export default {
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
     },
+    itemAddingNoLongerOffered: function () {
+      return this.noLongerOffered(this.itemAdding);
+    },
     offeredNow: function () {
-      if (!this.subjectsLoaded || this.itemAdding === undefined) {
+      if (!this.subjectsLoaded || this.itemAdding === undefined || this.itemAddingNoLongerOffered) {
         return false;
       }
+
       const semType = (this.index - 1) % 3;
       if (semType >= 0 && (this.addingFromCard || this.draggingOver)) {
         return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
@@ -264,6 +280,19 @@ export default {
     changeYear: function (event) {
       event.stopPropagation();
       this.$emit('change-year');
+    },
+    noLongerOffered: function (course) {
+      if (course.is_historical) {
+        const lastSemester = course.source_semester.split('-');
+        const sourceSemester = ['fall', 'IAP', 'spring'].indexOf(lastSemester[0]);
+        // which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
+        const sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
+        const lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
+        if (this.index > lastSemesterNumber) {
+          return true;
+        }
+      }
+      return false;
     },
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
@@ -352,7 +381,7 @@ export default {
       }
     },
     ondrop: function (event) {
-      if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || !this.isSameYear || this.index === 0)) {
+      if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || this.itemAddingNoLongerOffered || !this.isSameYear || this.index === 0)) {
         const eventData = JSON.parse(event.dataTransfer.getData('classData'));
         if (eventData.isNew) {
           const newClass = {
