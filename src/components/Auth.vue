@@ -50,7 +50,6 @@ import Vue from 'vue';
 import UAParser from 'ua-parser-js';
 import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';
 
-
 var DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
 function getQueryObject () {
@@ -67,8 +66,8 @@ function getQueryObject () {
 export default {
   name: 'Auth',
   components: {},
-  props: ['justLoaded', 'conflictInfo'],
   mixins: [simpleSSMixin],
+  props: ['justLoaded', 'conflictInfo'],
   data: function () {
     return {
       accessInfo: undefined,
@@ -275,7 +274,7 @@ export default {
             this.$store.commit('deleteRoad', '$defaultroad$');
           }
           this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
-          //Set list of unretrieved roads to all but first road ID
+          // Set list of unretrieved roads to all but first road ID
           this.$store.commit('setUnretrieved', fileKeys.slice(1));
           return this.retrieveRoad(fileKeys[0]);
         }.bind(this)).then(function () {

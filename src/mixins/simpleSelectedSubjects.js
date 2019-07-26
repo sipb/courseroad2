@@ -1,6 +1,6 @@
 export default {
   methods: {
-    getSimpleSelectedSubjects(selectedSubjects) {
+    getSimpleSelectedSubjects (selectedSubjects) {
       const simpless = Array.from(Array(16), () => new Array());
       for (let i = 0; i < selectedSubjects.length; i++) {
         const s = selectedSubjects[i];
@@ -12,4 +12,4 @@ export default {
       return simpless;
     }
   }
-}
+};

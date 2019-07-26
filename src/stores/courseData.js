@@ -33,12 +33,12 @@ const store = new Vuex.Store({
     subjectsIndex: {},
     subjectsInfo: [],
     ignoreRoadChanges: false,
-    //When changes are made to roads, different levels of fulfillment need to be update in the audit
-    //all: update audit for all majors (for changes like adding a class)
-    //{specific major}: update audit for a specific major (for changes like adding a major)
-    //none: no update to audit is needed (for changes like road name)
+    // When changes are made to roads, different levels of fulfillment need to be update in the audit
+    // all: update audit for all majors (for changes like adding a class)
+    // {specific major}: update audit for a specific major (for changes like adding a major)
+    // none: no update to audit is needed (for changes like road name)
     fulfillmentNeeded: 'all',
-    //list of road IDs that have not been retrieved from the server yet
+    // list of road IDs that have not been retrieved from the server yet
     unretrieved: []
   },
   mutations: {
@@ -99,7 +99,7 @@ const store = new Vuex.Store({
       state.unretrieved = roadIDs;
     },
     setRetrieved (state, roadID) {
-      //Remove from unretrieved list when a road is retrieved
+      // Remove from unretrieved list when a road is retrieved
       const roadIDIndex = state.unretrieved.indexOf(roadID);
       state.unretrieved.splice(roadIDIndex, 1);
     },
@@ -250,7 +250,7 @@ const store = new Vuex.Store({
     watchRoadChanges (state) {
       state.ignoreRoadChanges = false;
     },
-    //Reset fulfillment needed to default of all
+    // Reset fulfillment needed to default of all
     resetFulfillmentNeeded (state) {
       state.fulfillmentNeeded = 'all';
     }
