@@ -241,7 +241,7 @@ export default {
     subjectsWithPrereq: function () {
       const currentID = this.currentSubject.subject_id;
       const currentDept = currentID.substring(0, currentID.indexOf('.'));
-      var IDMatcher = new RegExp('(^|[^\\da-zA-Z])'+currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+      var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
       return this.$store.state.subjectsInfo.filter(function (s) {
         return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
       }).sort(function (s1, s2) {

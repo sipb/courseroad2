@@ -58,6 +58,15 @@
           :class-info="subject"
           :semester-index="index"
           :warnings="warnings[subjindex]"
+          :class-index="subjindex"
+        />
+        <class
+          v-if="isActiveRoad && addingFromCard && (offeredNow || !isSameYear)"
+          key="placeholder"
+          class-info="placeholder"
+          :semester-index="index"
+          :warnings="[]"
+          :class-index="semesterSubjects.length"
         />
       </v-layout>
     </v-container>
@@ -81,7 +90,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin],
-  props: ['selectedSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
+  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -90,6 +99,9 @@ export default {
     };
   },
   computed: {
+    isActiveRoad () {
+      return this.$store.state.activeRoad === this.roadID;
+    },
     itemAdding () {
       return this.$store.state.itemAdding;
     },
@@ -152,9 +164,7 @@ export default {
       return allWarnings;
     },
     concurrentSubjects: function () {
-      return this.selectedSubjects.filter(subj => {
-        return subj.semester <= this.index;
-      });
+      return this.selectedSubjects.slice(0, this.index + 1).flat();
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -221,17 +231,6 @@ export default {
         return this.addingFromCard;
       }
     },
-    semesterSubjects: function () {
-      const semSubjs = this.selectedSubjects.map(function (subj, ind) {
-        return Object.assign({ index: ind }, subj);
-      }).filter(subj => {
-        return this.index === subj.semester;
-      });
-      if (this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
-        semSubjs.push('placeholder');
-      }
-      return semSubjs;
-    },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
         if (subj.id in this.$store.state.subjectsIndex) {
@@ -297,9 +296,9 @@ export default {
     },
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
-      return this.selectedSubjects.filter(s => {
+      const beforeThisSemester = this.selectedSubjects.slice(0, this.index).flat();
+      const previousQuarter = this.selectedSubjects[this.index].filter(s => {
         const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
-        const inPreviousSemester = s.semester < this.index;
         let inPreviousQuarter = false;
         if (subj2 !== undefined) {
           inPreviousQuarter = s.semester === this.index &&
@@ -307,8 +306,9 @@ export default {
             subj2.quarter_information !== undefined &&
             subj2.quarter_information.split(',')[0] === '0';
         }
-        return inPreviousSemester || inPreviousQuarter;
+        return inPreviousQuarter;
       });
+      return beforeThisSemester.concat(previousQuarter);
     },
     classSatisfies: function (req, id) {
       if (req === id) {
@@ -393,7 +393,7 @@ export default {
           };
           this.$store.commit('addClass', newClass);
         } else {
-          this.$store.commit('moveClass', { classIndex: eventData.classInfo.index, semester: this.index });
+          this.$store.commit('moveClass', { currentClass: eventData.classInfo, classIndex: eventData.classIndex, semester: this.index });
         }
       }
       this.draggingOver = false;

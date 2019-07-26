@@ -80,9 +80,12 @@
 </template>
 
 <script>
+import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';
+
 export default {
   name: 'ImportExport',
   components: {},
+  mixins: [simpleSSMixin],
   data: function () {
     return {
       dialog: false,
@@ -131,7 +134,11 @@ export default {
   methods: {
     exportRoad: function (event) {
       const filename = this.roads[this.activeRoad].name + '.road';
-      const text = JSON.stringify(this.roads[this.activeRoad].contents);
+
+      const roadSubjects = this.roads[this.activeRoad].contents.selectedSubjects.flat();
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[this.activeRoad].contents, { selectedSubjects: roadSubjects });
+
+      const text = JSON.stringify(formattedRoadContents);
 
       // for some reason this is the way you download files...
       //    create an element, click it, and remove it
@@ -173,6 +180,7 @@ export default {
             return s;
           });
           obj.selectedSubjects = newss;
+
           const ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
             let subject;
@@ -200,7 +208,11 @@ export default {
           }).filter((s) => {
             return s !== undefined;
           });
-          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, ss, obj.progressOverrides);
+
+          // convert selected subjects to more convenient format
+          const simpless = this.getSimpleSelectedSubjects(ss);
+
+          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, simpless, obj.progressOverrides);
         } catch (error) {
           fail = true;
           console.log('import failed with error:');
