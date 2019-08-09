@@ -280,14 +280,14 @@ export default {
     parseRequirements: function (requirements) {
       // TODO: a way to make this more ETU?
       // remove spaces after commas and slashes
-      requirements = requirements.replace(/([,\/])\s+/g, '$1');
+      requirements = requirements.replace(/([,/])\s+/g, '$1');
       function getParenGroup (str) {
         if (str[0] === '(') {
           let retString = '';
           str = str.substring(1);
           let nextParen;
           let numParens = 1;
-          while (((nextParen = /[\(\)]/.exec(str)) !== null) && numParens > 0) {
+          while (((nextParen = /[()]/.exec(str)) !== null) && numParens > 0) {
             const parenIndex = nextParen.index;
             const parenType = nextParen[0];
             if (parenType === '(') {
@@ -307,7 +307,7 @@ export default {
         if (reqString[0] === '(') {
           return getParenGroup(reqString);
         } else {
-          const nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
+          const nextMatch = /^([^/,]+)([/,])(.*)/g.exec(reqString);
           if (nextMatch !== null) {
             const nextReq = nextMatch[1];
             const restOfString = nextMatch[3];
@@ -319,7 +319,7 @@ export default {
         }
       }
       function isBaseReq (req) {
-        return /[\/\(\),]/g.exec(req) === null;
+        return /[/(),]/g.exec(req) === null;
       }
       const getClassInfo = this.classInfo;
       function parseReqs (reqString) {

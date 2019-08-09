@@ -46,7 +46,6 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
-import Vue from 'vue';
 import UAParser from 'ua-parser-js';
 import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';
 
@@ -179,7 +178,7 @@ export default {
             return verifyResponse.data;
           } else {
             this.logoutUser();
-            return Promise.reject('Token not valid');
+            return Promise.reject(new Error('Token not valid'));
           }
         }.bind(this));
     },
@@ -192,7 +191,7 @@ export default {
           ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
           : axiosFunc(process.env.FIREROAD_URL + link, headerList);
       } else {
-        return Promise.reject('No auth information');
+        return Promise.reject(new Error('No auth information'));
       }
     },
 
@@ -246,9 +245,8 @@ export default {
           if (response.status === 200 && response.data.success) {
             return response.data.files;
           } else {
-            return Promise.reject();
+            return Promise.reject(new Error('sync request not successfull in getUserData'));
           }
-          return response;
         }).then(function (files) {
           this.renumberRoads(files);
           const fileKeys = Object.keys(files);
@@ -260,7 +258,7 @@ export default {
               agent: files[fileKeys[i]].agent,
               contents: {
                 coursesOfStudy: ['girs'],
-                selectedSubjects: Array.from(Array(16), () => new Array()),
+                selectedSubjects: Array.from(Array(16), () => []),
                 progressOverrides: {}
               }
             };
@@ -365,7 +363,7 @@ export default {
       const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
         .then(function (response) {
           if (response.status !== 200) {
-            return Promise.reject('Unable to save road ' + this.oldid);
+            return Promise.reject(new Error('Unable to save road ' + this.oldid));
           } else {
             const newid = (response.data.id !== undefined ? response.data.id : this.oldid);
             if (response.data.success === false) {
@@ -481,8 +479,8 @@ export default {
       this.$store.commit('deleteRoad', roadID);
 
       if (roadID in this.newRoads) {
-        roadIndex = this.newRoads.indexOf(roadID);
-        this.newRoads.splice(roadID, 1);
+        const roadIndex = this.newRoads.indexOf(roadID);
+        this.newRoads.splice(roadIndex, 1);
       }
 
       if (this.loggedIn) {

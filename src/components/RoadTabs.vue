@@ -108,13 +108,9 @@
 </template>
 
 <script>
-import Road from './Road.vue';
-
 export default {
   name: 'RoadTabs',
   components: {
-    // TODO: This is not used?
-    'road': Road
   },
   data: function () {
     return {
