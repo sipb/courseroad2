@@ -208,7 +208,6 @@
 import Audit from './../components/Audit.vue';
 import ClassSearch from './../components/ClassSearch.vue';
 import Road from './../components/Road.vue';
-import FilterSet from './../components/FilterSet.vue';
 import RoadTabs from './../components/RoadTabs.vue';
 import ConflictDialog from './../components/ConflictDialog.vue';
 import Auth from './../components/Auth.vue';
@@ -227,7 +226,6 @@ export default {
     'audit': Audit,
     'class-search': ClassSearch,
     'road': Road,
-    'filter-set': FilterSet,
     'road-tabs': RoadTabs,
     'conflict-dialog': ConflictDialog,
     'auth': Auth,
@@ -420,7 +418,7 @@ export default {
       window.location.hash = '#/#road' + this.activeRoad;
       return false;
     },
-    addRoad: function (roadName, cos = ['girs'], ss = Array.from(Array(16), () => new Array()), overrides = {}) {
+    addRoad: function (roadName, cos = ['girs'], ss = Array.from(Array(16), () => []), overrides = {}) {
       const tempRoadID = '$' + this.$refs.authcomponent.newRoads.length + '$';
       const newContents = {
         coursesOfStudy: cos,

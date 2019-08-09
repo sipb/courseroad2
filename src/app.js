@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 import Vue from 'vue';
 import App from './App.vue';
 import MainPage from './pages/MainPage.vue';
