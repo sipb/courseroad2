@@ -288,6 +288,11 @@ export default {
         // subj not found in known courses
         return false;
       }
+
+      if(subj.equivalent_subjects !== undefined && subj.equivalent_subjects.indexOf(req) >= 0) {
+        return true;
+      }
+
       //ex: 6.00 satisfies the 6.0001 requirement
       if (subj.children !== undefined && subj.children.indexOf(req) >= 0) {
         return true;
