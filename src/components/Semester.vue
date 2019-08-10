@@ -329,9 +329,9 @@ export default {
 
       //ex: 6.0001 and 6.0002 together satisfy the 6.00 requirement
       if (subj.parent !== undefined && req === subj.parent) {
-        let parentCourse = this.allSubjects[this.$store.state.subjectsIndex[subj.parent]];
+        let parentCourse = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.parent]];
         if (parentCourse !== undefined) {
-          if (parentCourse.children.map(sid => allSubjects.indexOf(sid) >= 0).every()) {
+          if (parentCourse.children.every((sid) => allSubjects.indexOf(sid) >= 0)) {
             return true;
           }
         }
@@ -369,7 +369,7 @@ export default {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
           } else {
-            const anyClassSatisfies = subjects.map((s) => _this.classSatisfies(splitReq[i], s.id, allIDs)).some();
+            const anyClassSatisfies = subjects.some((s) => _this.classSatisfies(splitReq[i], s.id, allIDs));
             splitReq[i] = anyClassSatisfies ? 'true' : 'false';
           }
         }
