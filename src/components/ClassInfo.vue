@@ -61,6 +61,10 @@
               <v-icon>warning</v-icon>
               This subject does not have a schedule yet, so it may not be offered next semester.
             </h4>
+            <h4 v-if="currentSubject.is_historical">
+              <v-icon>warning</v-icon>
+              This subject is no longer offered (last offered {{ currentSubject.source_semester.split("-").join(" ") }})
+            </h4>
             <table cellspacing="4">
               <tr v-if="currentSubject.total_units!==undefined">
                 <td><b>Units</b></td>
@@ -242,7 +246,7 @@ export default {
     subjectsWithPrereq: function () {
       const currentID = this.currentSubject.subject_id;
       const currentDept = currentID.substring(0, currentID.indexOf('.'));
-      var IDMatcher = new RegExp('(?<!\\d)' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+      var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
       return this.$store.state.subjectsInfo.filter(function (s) {
         return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
       }).sort(function (s1, s2) {

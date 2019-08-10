@@ -30,7 +30,7 @@
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
-            <v-icon style="margin: 4px" small @click="$store.commit('removeClass', classInfo); $event.stopPropagation();">
+            <v-icon style="margin: 4px" small @click="$store.commit('removeClass', {classInfo: classInfo, classIndex: classIndex}); $event.stopPropagation();">
               cancel
             </v-icon>
             <v-card-text class="card-text">
@@ -77,7 +77,7 @@ import colorMixin from './../mixins/colorMixin.js';
 export default {
   name: 'Class',
   mixins: [colorMixin],
-  props: ['classInfo', 'semesterIndex', 'warnings'],
+  props: ['classIndex', 'classInfo', 'semesterIndex', 'warnings'],
   data () {
     return {
       warningDialog: false,
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     dragStart: function (event) {
-      event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo }));
+      event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo, classIndex: this.classIndex }));
       this.$store.commit('dragStartClass', {
         dragstart: event,
         basicClass: this.classInfo,
