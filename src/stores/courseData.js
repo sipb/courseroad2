@@ -189,17 +189,8 @@ const store = new Vuex.Store({
         state.classInfoStack.push(id);
       }
     },
-<<<<<<< HEAD
-    removeClass (state, classInfo) {
-      console.log(classInfo);
-      console.log(state.roads[state.activeRoad].contents.selectedSubjects);
-      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(classInfo);
-      console.log(classIndex);
-      state.roads[state.activeRoad].contents.selectedSubjects.splice(classIndex, 1);
-=======
     removeClass (state, { classInfo, classIndex }) {
       state.roads[state.activeRoad].contents.selectedSubjects[classInfo.semester].splice(classIndex, 1);
->>>>>>> master
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     removeReq (state, event) {
