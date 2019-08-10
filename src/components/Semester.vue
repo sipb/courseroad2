@@ -331,7 +331,7 @@ export default {
       if (subj.parent !== undefined && req === subj.parent) {
         let parentCourse = this.allSubjects[this.$store.state.subjectsIndex[subj.parent]];
         if (parentCourse !== undefined) {
-          if (parentCourse.children.reduce((acc, sid) => acc && allSubjects.indexOf(sid) >= 0, true)) {
+          if (parentCourse.children.map(sid => allSubjects.indexOf(sid) >= 0).every()) {
             return true;
           }
         }
@@ -369,7 +369,7 @@ export default {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
           } else {
-            const anyClassSatisfies = subjects.map((s) => _this.classSatisfies(splitReq[i], s.id, allIDs)).reduce((a, b) => a || b, false);
+            const anyClassSatisfies = subjects.map((s) => _this.classSatisfies(splitReq[i], s.id, allIDs)).some();
             splitReq[i] = anyClassSatisfies ? 'true' : 'false';
           }
         }
