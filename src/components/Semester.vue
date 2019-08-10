@@ -58,6 +58,15 @@
           :class-info="subject"
           :semester-index="index"
           :warnings="warnings[subjindex]"
+          :class-index="subjindex"
+        />
+        <class
+          v-if="isActiveRoad && addingFromCard && (offeredNow || !isSameYear)"
+          key="placeholder"
+          class-info="placeholder"
+          :semester-index="index"
+          :warnings="[]"
+          :class-index="semesterSubjects.length"
         />
       </v-layout>
     </v-container>
@@ -74,7 +83,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin],
-  props: ['selectedSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
+  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -83,6 +92,9 @@ export default {
     };
   },
   computed: {
+    isActiveRoad () {
+      return this.$store.state.activeRoad === this.roadID;
+    },
     itemAdding () {
       return this.$store.state.itemAdding;
     },
@@ -127,7 +139,13 @@ export default {
         }
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
-          if (semType >= 0) {
+
+          if (this.noLongerOffered(subj)) {
+            const lastSemester = subj.source_semester.split('-');
+            subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ')');
+          }
+
+          if (semType >= 0 && !this.noLongerOffered(subj)) {
             const isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
             if (!isUsuallyOffered) {
               subjectWarnings.push('<b>Not offered</b> — According to the course catalog, ' + subjID + ' is not usually offered in ' + this.semesterType + '.');
@@ -139,9 +157,7 @@ export default {
       return allWarnings;
     },
     concurrentSubjects: function () {
-      return this.selectedSubjects.filter(subj => {
-        return subj.semester <= this.index;
-      });
+      return this.selectedSubjects.slice(0, this.index + 1).flat();
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -163,16 +179,22 @@ export default {
             message: 'Add class here',
             textColor: 'DarkGreen'
           };
-        } else if (this.isSameYear) {
+        } else if (this.isSameYear && !this.itemAddingNoLongerOffered) {
           return {
             bgColor: 'red',
             message: 'Subject not available this semester',
             textColor: 'DarkRed'
           };
-        } else {
+        } else if (!this.itemAddingNoLongerOffered) {
           return {
             bgColor: 'yellow',
             message: 'Subject may not be available this semester',
+            textColor: 'DarkGoldenRod'
+          };
+        } else if (this.itemAddingNoLongerOffered) {
+          return {
+            bgColor: 'yellow',
+            message: 'Subject no longer offered',
             textColor: 'DarkGoldenRod'
           };
         }
@@ -187,27 +209,20 @@ export default {
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
     },
+    itemAddingNoLongerOffered: function () {
+      return this.noLongerOffered(this.itemAdding);
+    },
     offeredNow: function () {
-      if (!this.subjectsLoaded || this.itemAdding === undefined) {
+      if (!this.subjectsLoaded || this.itemAdding === undefined || this.itemAddingNoLongerOffered) {
         return false;
       }
+
       const semType = (this.index - 1) % 3;
       if (semType >= 0 && (this.addingFromCard || this.draggingOver)) {
         return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
       } else {
         return this.addingFromCard;
       }
-    },
-    semesterSubjects: function () {
-      const semSubjs = this.selectedSubjects.map(function (subj, ind) {
-        return Object.assign({ index: ind }, subj);
-      }).filter(subj => {
-        return this.index === subj.semester;
-      });
-      if (this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
-        semSubjs.push('placeholder');
-      }
-      return semSubjs;
     },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
@@ -259,11 +274,24 @@ export default {
       event.stopPropagation();
       this.$emit('change-year');
     },
+    noLongerOffered: function (course) {
+      if (course.is_historical) {
+        const lastSemester = course.source_semester.split('-');
+        const sourceSemester = ['fall', 'IAP', 'spring'].indexOf(lastSemester[0]);
+        // which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
+        const sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
+        const lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
+        if (this.index > lastSemesterNumber) {
+          return true;
+        }
+      }
+      return false;
+    },
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
-      return this.selectedSubjects.filter(s => {
+      const beforeThisSemester = this.selectedSubjects.slice(0, this.index).flat();
+      const previousQuarter = this.selectedSubjects[this.index].filter(s => {
         const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
-        const inPreviousSemester = s.semester < this.index;
         let inPreviousQuarter = false;
         if (subj2 !== undefined) {
           inPreviousQuarter = s.semester === this.index &&
@@ -271,8 +299,9 @@ export default {
             subj2.quarter_information !== undefined &&
             subj2.quarter_information.split(',')[0] === '0';
         }
-        return inPreviousSemester || inPreviousQuarter;
+        return inPreviousQuarter;
       });
+      return beforeThisSemester.concat(previousQuarter);
     },
     classSatisfies: function (req, id, allSubjects) {
       if (req === id) {
@@ -360,7 +389,7 @@ export default {
       }
     },
     ondrop: function (event) {
-      if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || !this.isSameYear || this.index === 0)) {
+      if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || this.itemAddingNoLongerOffered || !this.isSameYear || this.index === 0)) {
         const eventData = JSON.parse(event.dataTransfer.getData('classData'));
         if (eventData.isNew) {
           const newClass = {
@@ -372,7 +401,7 @@ export default {
           };
           this.$store.commit('addClass', newClass);
         } else {
-          this.$store.commit('moveClass', { classIndex: eventData.classInfo.index, semester: this.index });
+          this.$store.commit('moveClass', { currentClass: eventData.classInfo, classIndex: eventData.classIndex, semester: this.index });
         }
       }
       this.draggingOver = false;

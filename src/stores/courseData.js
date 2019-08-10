@@ -25,18 +25,25 @@ const store = new Vuex.Store({
         agent: '',
         contents: {
           coursesOfStudy: ['girs'],
-          selectedSubjects: [],
+          selectedSubjects: Array.from(Array(16), () => new Array()),
           progressOverrides: {}
         }
       }
     },
     subjectsIndex: {},
     subjectsInfo: [],
-    ignoreRoadChanges: false
+    ignoreRoadChanges: false,
+    // When changes are made to roads, different levels of fulfillment need to be update in the audit
+    // all: update audit for all majors (for changes like adding a class)
+    // {specific major}: update audit for a specific major (for changes like adding a major)
+    // none: no update to audit is needed (for changes like road name)
+    fulfillmentNeeded: 'all',
+    // list of road IDs that have not been retrieved from the server yet
+    unretrieved: []
   },
   mutations: {
     addClass (state, newClass) {
-      state.roads[state.activeRoad].contents.selectedSubjects.push(newClass);
+      state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     addFromCard (state, classItem) {
@@ -47,6 +54,7 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       Vue.set(state.roads, state.activeRoad, state.roads[state.activeRoad]);
+      state.fulfillmentNeeded = event;
     },
     allowCookies (state) {
       state.cookiesAllowed = true;
@@ -62,6 +70,7 @@ const store = new Vuex.Store({
       state.cookiesAllowed = false;
     },
     deleteRoad (state, id) {
+      state.ignoreRoadChanges = true;
       Vue.delete(state.roads, id);
     },
     dragStartClass (state, event) {
@@ -76,13 +85,23 @@ const store = new Vuex.Store({
       state.itemAdding = classInfo;
       state.addingFromCard = false;
     },
-    moveClass (state, { classIndex, semester }) {
-      state.roads[state.activeRoad].contents.selectedSubjects[classIndex].semester = semester;
+    moveClass (state, { currentClass, classIndex, semester }) {
+      state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(classIndex, 1);
+      currentClass.semester = semester;
+      state.roads[state.activeRoad].contents.selectedSubjects[semester].push(currentClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     overrideWarnings (state, payload) {
-      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(payload.classInfo);
-      Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[classIndex], 'overrideWarnings', payload.override);
+      const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
+      Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
+    },
+    setUnretrieved (state, roadIDs) {
+      state.unretrieved = roadIDs;
+    },
+    setRetrieved (state, roadID) {
+      // Remove from unretrieved list when a road is retrieved
+      const roadIDIndex = state.unretrieved.indexOf(roadID);
+      state.unretrieved.splice(roadIDIndex, 1);
     },
     parseGenericCourses (state) {
       const girAttributes = {
@@ -170,18 +189,24 @@ const store = new Vuex.Store({
         state.classInfoStack.push(id);
       }
     },
+<<<<<<< HEAD
     removeClass (state, classInfo) {
       console.log(classInfo);
       console.log(state.roads[state.activeRoad].contents.selectedSubjects);
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects.indexOf(classInfo);
       console.log(classIndex);
       state.roads[state.activeRoad].contents.selectedSubjects.splice(classIndex, 1);
+=======
+    removeClass (state, { classInfo, classIndex }) {
+      state.roads[state.activeRoad].contents.selectedSubjects[classInfo.semester].splice(classIndex, 1);
+>>>>>>> master
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     removeReq (state, event) {
       const reqIndex = state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
       state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.fulfillmentNeeded = 'none';
     },
     resetID (state, { oldid, newid }) {
       newid = newid.toString();
@@ -190,6 +215,8 @@ const store = new Vuex.Store({
         state.activeRoad = newid;
       }
       Vue.delete(state.roads, oldid);
+      state.ignoreRoadChanges = true;
+      state.fulfillmentNeeded = 'none';
     },
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;
@@ -198,9 +225,18 @@ const store = new Vuex.Store({
       if (ignoreSet) {
         state.ignoreRoadChanges = true;
       }
+      if (prop !== 'contents') {
+        state.fulfillmentNeeded = 'none';
+      }
       Vue.set(state.roads[id], prop, value);
     },
-    setRoad (state, { id, road }) {
+    setRoad (state, { id, road, ignoreSet }) {
+      if (ignoreSet) {
+        state.ignoreRoadChanges = true;
+      }
+      if (state.activeRoad !== id) {
+        state.fulfillmentNeeded = 'none';
+      }
       Vue.set(state.roads, id, road);
     },
     setRoads (state, roads) {
@@ -222,6 +258,10 @@ const store = new Vuex.Store({
     },
     watchRoadChanges (state) {
       state.ignoreRoadChanges = false;
+    },
+    // Reset fulfillment needed to default of all
+    resetFulfillmentNeeded (state) {
+      state.fulfillmentNeeded = 'all';
     }
   },
   actions: {

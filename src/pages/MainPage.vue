@@ -254,6 +254,7 @@ export default {
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
+      updatingFulfillment: false,
       showMobile: ['mobile', 'tabvar'].indexOf(new UAParser(navigator.userAgent).getDevice().type) !== -1
     };
   },
@@ -293,9 +294,16 @@ export default {
     // call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function (newRoad) {
       this.justLoaded = false;
+      if (this.$store.state.unretrieved.indexOf(newRoad) >= 0) {
+        const _this = this;
+        this.$refs.authcomponent.retrieveRoad(newRoad).then(function () {
+          _this.$store.commit('setRetrieved', newRoad);
+        });
+      } else if (newRoad !== '') {
+        this.updateFulfillment(this.$store.state.fulfillmentNeeded);
+      }
       if (newRoad !== '') {
         window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
-        this.updateFulfillment();
       }
     },
     cookiesAllowed: function (newCA) {
@@ -305,15 +313,17 @@ export default {
     },
     roads: {
       handler: function () {
+        this.justLoaded = false;
+        if (this.cookiesAllowed === undefined) {
+          this.$store.commit('allowCookies');
+        }
+        if (this.activeRoad !== '') {
+          this.updateFulfillment(this.$store.state.fulfillmentNeeded);
+        }
+        this.$store.commit('resetFulfillmentNeeded');
+
         if (!this.$store.state.ignoreRoadChanges) {
-          this.justLoaded = false;
-          if (this.cookiesAllowed === undefined) {
-            this.$store.commit('allowCookies');
-          }
-          if (this.activeRoad !== '') {
-            this.updateFulfillment();
-          }
-          this.$refs.authcomponent.save();
+          this.$refs.authcomponent.save(this.activeRoad);
         } else {
           this.$store.commit('watchRoadChanges');
         }
@@ -350,7 +360,8 @@ export default {
         this.reqList = ordered;
       });
 
-    this.updateFulfillment();
+    // Update fulfillment for all majors on load
+    this.updateFulfillment('all');
 
     document.body.addEventListener('click', function (e) {
       this.searchOpen = false;
@@ -376,14 +387,24 @@ export default {
     });
   },
   methods: {
-    updateFulfillment: function () {
-      const _this = this;
-      for (let r = 0; r < this.roads[this.activeRoad].contents.coursesOfStudy.length; r++) {
-        const req = this.roads[this.activeRoad].contents.coursesOfStudy[r];
-        axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, _this.roads[_this.activeRoad].contents).then(function (response) {
-          // This is necessary so Vue knows about the new property on reqTrees
-          Vue.set(this.data.reqTrees, this.req, response.data);
-        }.bind({ data: this, req: req }));
+    updateFulfillment: function (fulfillmentNeeded) {
+      if (!this.updatingFulfillment && fulfillmentNeeded !== 'none') {
+        this.updatingFulfillment = true;
+        const _this = this;
+        // list of majors to get audit fulfillment for depending on fulfillmentNeeded
+        const fulfillments = fulfillmentNeeded === 'all' ? this.roads[this.activeRoad].contents.coursesOfStudy : [fulfillmentNeeded];
+        for (let r = 0; r < fulfillments.length; r++) {
+          const req = fulfillments[r];
+          const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
+          alteredRoadContents.selectedSubjects = alteredRoadContents.selectedSubjects.flat();
+          axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
+            // This is necessary so Vue knows about the new property on reqTrees
+            Vue.set(this.data.reqTrees, this.req, response.data);
+          }.bind({ data: this, req: req }));
+        }
+        Vue.nextTick(function () {
+          this.updatingFulfillment = false;
+        }.bind(this));
       }
     },
     setActiveRoad: function () {
@@ -398,7 +419,7 @@ export default {
       window.location.hash = '#/#road' + this.activeRoad;
       return false;
     },
-    addRoad: function (roadName, cos = ['girs'], ss = [], overrides = {}) {
+    addRoad: function (roadName, cos = ['girs'], ss = Array.from(Array(16), () => new Array()), overrides = {}) {
       const tempRoadID = '$' + this.$refs.authcomponent.newRoads.length + '$';
       const newContents = {
         coursesOfStudy: cos,
@@ -414,10 +435,11 @@ export default {
       };
       this.$store.commit('setRoad', {
         id: tempRoadID,
-        road: newRoad
+        road: newRoad,
+        ignoreSet: false
       });
-      this.$refs.authcomponent.newRoads.push(tempRoadID);
       this.$store.commit('setActiveRoad', tempRoadID);
+      this.$refs.authcomponent.newRoads.push(tempRoadID);
     },
     conflict: function (conflictInfo) {
       this.$refs.conflictdialog.startConflict();
