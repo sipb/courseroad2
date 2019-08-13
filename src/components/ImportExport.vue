@@ -55,7 +55,7 @@
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
-                Make sure you have given this road a name, and uploaded/pasted the right thing.
+                Make sure you have given this road a name, and uploaded/pasted a valid '.road' file.
               </v-card-text>
             </v-card>
           </v-flex>
