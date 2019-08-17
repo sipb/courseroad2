@@ -61,7 +61,7 @@
               <v-icon>warning</v-icon>
               This subject is no longer offered (last offered {{ currentSubject.source_semester.split("-").join(" ") }})
             </h4>
-            <h4 v-else-if = "lateSchedule(currentSubject, $store.state.genericIndex)">
+            <h4 v-else-if="lateSchedule(currentSubject, $store.state.genericIndex)">
               <v-icon>warning</v-icon>
               This subject does not have a schedule yet, so it may not be offered next semester.
             </h4>
@@ -210,7 +210,7 @@ import $ from 'jquery';
 import SubjectScroll from '../components/SubjectScroll.vue';
 import ExpansionReqs from '../components/ExpansionReqs.vue';
 import colorMixin from './../mixins/colorMixin.js';
-import schedule from './../mixins/schedule.js'
+import schedule from './../mixins/schedule.js';
 
 export default {
   name: 'ClassInfo',

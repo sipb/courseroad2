@@ -76,7 +76,7 @@
 <script>
 import Class from './Class.vue';
 import colorMixin from './../mixins/colorMixin.js';
-import schedule from './../mixins/schedule.js'
+import schedule from './../mixins/schedule.js';
 
 var EQUIVALENCE_PAIRS = [
   ['6.0001', '6.00'],
@@ -221,7 +221,7 @@ export default {
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
     },
-    isScheduledSemester: function() {
+    isScheduledSemester: function () {
       const today = new Date();
       const month = today.getMonth();
       const scheduledSemester = (month === 4) ? this.currentSemester + 1 : this.currentSemester;
