@@ -318,18 +318,18 @@ export default {
         return false;
       }
 
-      if(subj.equivalent_subjects !== undefined && subj.equivalent_subjects.indexOf(req) >= 0) {
+      if (subj.equivalent_subjects !== undefined && subj.equivalent_subjects.indexOf(req) >= 0) {
         return true;
       }
 
-      //ex: 6.00 satisfies the 6.0001 requirement
+      // ex: 6.00 satisfies the 6.0001 requirement
       if (subj.children !== undefined && subj.children.indexOf(req) >= 0) {
         return true;
       }
 
-      //ex: 6.0001 and 6.0002 together satisfy the 6.00 requirement
+      // ex: 6.0001 and 6.0002 together satisfy the 6.00 requirement
       if (subj.parent !== undefined && req === subj.parent) {
-        let parentCourse = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.parent]];
+        const parentCourse = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.parent]];
         if (parentCourse !== undefined) {
           if (parentCourse.children.every((sid) => allSubjects.indexOf(sid) >= 0)) {
             return true;
@@ -356,14 +356,14 @@ export default {
       const _this = this;
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
-          //don't include things like 'permission of instructor'
+          // don't include things like 'permission of instructor'
           splitReq[i] = '';
-          //remove operator before & parentheses if directly before and after
-          if(splitReq[i] !== '(') {
-            splitReq[i-1] = '';
-          } else if(splitReq[i+1] === ')') {
-            splitReq[i-1] = '';
-            splitReq[i+1] = '';
+          // remove operator before & parentheses if directly before and after
+          if (splitReq[i] !== '(') {
+            splitReq[i - 1] = '';
+          } else if (splitReq[i + 1] === ')') {
+            splitReq[i - 1] = '';
+            splitReq[i + 1] = '';
           }
         } else if ('()/, '.indexOf(splitReq[i]) < 0) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
