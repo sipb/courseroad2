@@ -336,6 +336,9 @@ export default {
     const scrollers = $('.scroller');
     const scrollWidth = scrollers.width();
 
+    const today = new Date();
+    const month = today.getMonth();
+    this.currentSemester = (month >= 4 && month <= 10) ? 3 : 1;
     // moves nav drawer border with scroll
     // if the effect proves too annoying we can remove the borders instead
     // (commented out below)

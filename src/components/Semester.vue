@@ -76,6 +76,8 @@
 <script>
 import Class from './Class.vue';
 import colorMixin from './../mixins/colorMixin.js';
+import schedule from './../mixins/schedule.js';
+
 var EQUIVALENCE_PAIRS = [
   ['6.0001', '6.00'],
   ['6.0002', '6.00']
@@ -89,7 +91,7 @@ export default {
   components: {
     'class': Class
   },
-  mixins: [colorMixin],
+  mixins: [colorMixin, schedule],
   props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
   data: function () {
     return {
@@ -140,6 +142,9 @@ export default {
             if (!coreqsfulfilled) {
               subjectWarnings.push('<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.');
             }
+          }
+          if (this.isScheduledSemester && this.lateSchedule(subj, this.$store.state.genericIndex)) {
+            subjectWarnings.push('<b>No schedule</b> - Classes that do not yet have a schedule may not be offered.');
           }
         } else if (subjID in this.$store.state.genericIndex) {
           subj = this.$store.state.genericCourses[this.$store.state.genericIndex[subjID]];
@@ -215,6 +220,12 @@ export default {
     },
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
+    },
+    isScheduledSemester: function () {
+      const today = new Date();
+      const month = today.getMonth();
+      const scheduledSemester = (month === 4) ? this.currentSemester + 1 : this.currentSemester;
+      return this.index === scheduledSemester;
     },
     itemAddingNoLongerOffered: function () {
       return this.noLongerOffered(this.itemAdding);
