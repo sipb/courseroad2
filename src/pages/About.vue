@@ -47,13 +47,6 @@
             </p>
           </li>
           <li>
-            <h3>Search box</h3>
-            <p>
-              Scrolls with the page.
-              We don't like this either.
-            </p>
-          </li>
-          <li>
             <h3>Scrolling while dragging</h3>
             <p>
               The semester view does not scroll adaptively when you are dragging
