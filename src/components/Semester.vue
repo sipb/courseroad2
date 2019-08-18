@@ -358,11 +358,11 @@ export default {
         if (splitReq[i].indexOf('"') >= 0) {
           // don't include things like 'permission of instructor'
           splitReq[i] = '';
-          // remove operator before & parentheses if directly before and after
-          if (splitReq[i] !== '(') {
+          // remove operators before original string (now removed), but do not remove parenthesis
+          if (splitReq[i - 1] !== '(') {
             splitReq[i - 1] = '';
-          } else if (splitReq[i + 1] === ')') {
-            splitReq[i - 1] = '';
+          }
+          if (splitReq[i + 1] !== ')') {
             splitReq[i + 1] = '';
           }
         } else if ('()/, '.indexOf(splitReq[i]) < 0) {
