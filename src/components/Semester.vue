@@ -366,15 +366,10 @@ export default {
       const _this = this;
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
-          // don't include things like 'permission of instructor'
-          splitReq[i] = '';
-          // remove operators before original string (now removed), but do not remove parenthesis
-          if (splitReq[i - 1] !== '(') {
-            splitReq[i - 1] = '';
-          }
-          if (splitReq[i + 1] !== ')') {
-            splitReq[i + 1] = '';
-          }
+          // Set strings (like "permission of instructor") automatically to false
+          // If required as an alternative to other prereqs, will not affect fulfillment
+          // If the string is a required prereq, it must be manually dismissed
+          splitReq[i] = 'false';
         } else if ('()/, '.indexOf(splitReq[i]) < 0) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
