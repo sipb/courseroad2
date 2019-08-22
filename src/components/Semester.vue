@@ -78,14 +78,6 @@ import Class from './Class.vue';
 import colorMixin from './../mixins/colorMixin.js';
 import schedule from './../mixins/schedule.js';
 
-var EQUIVALENCE_PAIRS = [
-  ['6.0001', '6.00'],
-  ['6.0002', '6.00']
-];
-var EQUIVALENCE_SETS = [
-  [['6.0001', '6.0002'], '6.00']
-];
-
 export default {
   name: 'Semester',
   components: {
@@ -321,26 +313,41 @@ export default {
       });
       return beforeThisSemester.concat(previousQuarter);
     },
-    classSatisfies: function (req, id) {
+    classSatisfies: function (req, id, allSubjects) {
       if (req === id) {
         return true;
       }
-      for (let ep = 0; ep < EQUIVALENCE_PAIRS.length; ep++) {
-        const eqPair = EQUIVALENCE_PAIRS[ep];
-        if (req === eqPair[0] && id === eqPair[1]) {
-          return true;
+
+      let subj;
+      if (id in this.$store.state.subjectsIndex) {
+        subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[id]];
+      } else if (id in this.$store.state.genericIndex) {
+        subj = this.$store.state.genericCourses[this.$store.state.genericIndex[id]];
+      } else {
+        // subj not found in known courses
+        return false;
+      }
+
+      if (subj.equivalent_subjects !== undefined && subj.equivalent_subjects.indexOf(req) >= 0) {
+        return true;
+      }
+
+      // ex: 6.00 satisfies the 6.0001 requirement
+      if (subj.children !== undefined && subj.children.indexOf(req) >= 0) {
+        return true;
+      }
+
+      // ex: 6.0001 and 6.0002 together satisfy the 6.00 requirement
+      if (subj.parent !== undefined && req === subj.parent) {
+        const parentCourse = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.parent]];
+        if (parentCourse !== undefined) {
+          if (parentCourse.children.every((sid) => allSubjects.indexOf(sid) >= 0)) {
+            return true;
+          }
         }
       }
+
       if (req.indexOf('.') === -1) {
-        let subj;
-        if (id in this.$store.state.subjectsIndex) {
-          subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[id]];
-        } else if (id in this.$store.state.genericIndex) {
-          subj = this.$store.state.genericCourses[this.$store.state.genericIndex[id]];
-        } else {
-          // subj not found in known courses
-          return false;
-        }
         if (req.indexOf('GIR:') >= 0) {
           req = req.substring(4);
           return subj.gir_attribute === req;
@@ -359,21 +366,16 @@ export default {
       const _this = this;
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
-          splitReq[i] = 'true';
-        }
-        if ('()/, '.indexOf(splitReq[i]) < 0) {
+          // Set strings (like "permission of instructor") automatically to false
+          // If required as an alternative to other prereqs, will not affect fulfillment
+          // If the string is a required prereq, it must be manually dismissed
+          splitReq[i] = 'false';
+        } else if ('()/, '.indexOf(splitReq[i]) < 0) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
           } else {
-            const anyClassSatisfiesAlone = subjects.map((s) => _this.classSatisfies(splitReq[i], s.id)).reduce((a, b) => a || b, false);
-            let anyClassesSatisfyTogether = false;
-            for (let e = 0; e < EQUIVALENCE_SETS.length; e++) {
-              if (EQUIVALENCE_SETS[e][1] === splitReq[i] && EQUIVALENCE_SETS[e][0].reduce((acc, sid) => acc && allIDs.indexOf(sid) >= 0, true)) {
-                anyClassesSatisfyTogether = true;
-                break;
-              }
-            }
-            splitReq[i] = (anyClassSatisfiesAlone || anyClassesSatisfyTogether) ? 'true' : 'false';
+            const anyClassSatisfies = subjects.some((s) => _this.classSatisfies(splitReq[i], s.id, allIDs));
+            splitReq[i] = anyClassSatisfies ? 'true' : 'false';
           }
         }
       }
