@@ -104,7 +104,7 @@ export default {
       if (newCA) {
         this.$cookies.set('newRoads', this.getNewRoadData());
         if (this.loggedIn) {
-          this.$cookies.set('accessInfo', this.accessInfo);
+          this.$cookies.set('accessInfo', this.accessInfo, '3d');
         }
         this.setTabID();
       }
@@ -327,7 +327,7 @@ export default {
         .then(function (response) {
           if (response.data.success) {
             if (this.data.cookiesAllowed) {
-              this.data.$cookies.set('accessInfo', response.data.access_info);
+              this.data.$cookies.set('accessInfo', response.data.access_info, '3d');
             }
             this.data.accessInfo = response.data.access_info;
             this.data.verify();
