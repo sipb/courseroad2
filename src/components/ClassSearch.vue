@@ -247,7 +247,9 @@ export default {
     }
   },
   mounted () {
-    this.updateMenuStyle();
+    this.$nextTick(() => {
+      this.updateMenuStyle();
+    });
 
     window.cookies = this.$cookies;
     $(window).resize(function () {
