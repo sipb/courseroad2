@@ -147,7 +147,7 @@
     </v-content>
 
     <v-card
-      v-if="searchOpen"
+      v-show="searchOpen"
       id="searchMenuCard"
       class="elevation-8"
       @click.native="$event.stopPropagation();"

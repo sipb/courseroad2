@@ -57,7 +57,12 @@ export default {
   components: {
     'filter-set': FilterSet
   },
-  props: ['searchInput'],
+  props: {
+    searchInput: {
+      type: String,
+      required: true
+    }
+  },
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -128,7 +133,6 @@ export default {
       return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
-      this.chosenFilters.nameInput = this.searchInput;
       // only display subjects if you are filtering by something
       let returnAny = false;
       for (const filterName in this.chosenFilters) {
@@ -223,6 +227,9 @@ export default {
     }
   },
   watch: {
+    searchInput (newVal) {
+      this.chosenFilters.nameInput = newVal;
+    },
     classStackExists: function (oldExists, newExists) {
       Vue.nextTick(function () {
         this.updateMenuStyle();
