@@ -30,7 +30,7 @@ var router = new VueRouter({
   routes
 });
 
-VueCookies.config('3d');
+VueCookies.config(Infinity);
 
 new Vue({
   el: '#app',
