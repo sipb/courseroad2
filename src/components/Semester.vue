@@ -146,10 +146,10 @@ export default {
 
           if (this.noLongerOffered(subj)) {
             const lastSemester = subj.source_semester.split('-');
-            subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ')');
-          }
-
-          if (semType >= 0 && !this.noLongerOffered(subj)) {
+            subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ').');
+          } else if (this.notCurrentlyOffered(subj)) {
+            subjectWarnings.push(`<b>Not offered</b> - This subject is not offered for the ${subj.not_offered_year} school year.`);
+          } else if (semType >= 0) {
             const isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
             if (!isUsuallyOffered) {
               subjectWarnings.push('<b>Not offered</b> — According to the course catalog, ' + subjID + ' is not usually offered in ' + this.semesterType + '.');
@@ -183,22 +183,28 @@ export default {
             message: 'Add class here',
             textColor: 'DarkGreen'
           };
-        } else if (this.isSameYear && !this.itemAddingNoLongerOffered) {
+        } else if (this.itemAddingNoLongerOffered) {
+          return {
+            bgColor: 'yellow',
+            message: 'Subject no longer offered',
+            textColor: 'DarkGoldenRod'
+          };
+        } else if (this.itemAddingNotCurrentlyOffered) {
+          return {
+            bgColor: 'yellow',
+            message: 'Subject not offered this year',
+            textColor: 'DarkGoldenRod'
+          };
+        } else if (this.isSameYear) {
           return {
             bgColor: 'red',
             message: 'Subject not available this semester',
             textColor: 'DarkRed'
           };
-        } else if (!this.itemAddingNoLongerOffered) {
+        } else {
           return {
             bgColor: 'yellow',
             message: 'Subject may not be available this semester',
-            textColor: 'DarkGoldenRod'
-          };
-        } else if (this.itemAddingNoLongerOffered) {
-          return {
-            bgColor: 'yellow',
-            message: 'Subject no longer offered',
             textColor: 'DarkGoldenRod'
           };
         }
@@ -222,8 +228,15 @@ export default {
     itemAddingNoLongerOffered: function () {
       return this.noLongerOffered(this.itemAdding);
     },
+    itemAddingNotCurrentlyOffered: function () {
+      return this.notCurrentlyOffered(this.itemAdding);
+    },
     offeredNow: function () {
-      if (!this.subjectsLoaded || this.itemAdding === undefined || this.itemAddingNoLongerOffered) {
+      if (!this.subjectsLoaded ||
+          this.itemAdding === undefined ||
+          this.itemAddingNoLongerOffered ||
+          this.itemAddingNotCurrentlyOffered
+      ) {
         return false;
       }
 
@@ -294,6 +307,15 @@ export default {
         if (this.index > lastSemesterNumber) {
           return true;
         }
+      }
+      return false;
+    },
+    notCurrentlyOffered: function (course) {
+      if (course.not_offered_year) {
+        const year = parseInt(course.not_offered_year.slice(0, 4));
+
+        return (this.semesterYear === year && this.semesterType === 'Fall') ||
+            (this.semesterYear === year + 1 && ['IAP', 'Spring'].includes(this.semesterType));
       }
       return false;
     },
@@ -394,7 +416,14 @@ export default {
       }
     },
     ondrop: function (event) {
-      if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || this.itemAddingNoLongerOffered || !this.isSameYear || this.index === 0)) {
+      if (this.subjectsLoaded &&
+          this.itemAdding !== undefined &&
+          (this.offeredNow ||
+            this.itemAddingNoLongerOffered ||
+            this.itemAddingNotCurrentlyOffered ||
+            !this.isSameYear ||
+            this.index === 0)
+      ) {
         const eventData = JSON.parse(event.dataTransfer.getData('classData'));
         if (eventData.isNew) {
           const newClass = {

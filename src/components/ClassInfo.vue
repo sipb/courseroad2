@@ -58,12 +58,16 @@
               </v-btn>
             </v-layout>
             <h4 v-if="currentSubject.is_historical">
-              <v-icon>warning</v-icon>
+              <v-icon small>
+                warning
+              </v-icon>
               This subject is no longer offered (last offered {{ currentSubject.source_semester.split("-").join(" ") }})
             </h4>
-            <h4 v-else-if="lateSchedule(currentSubject, $store.state.genericIndex)">
-              <v-icon>warning</v-icon>
-              This subject does not have a schedule yet, so it may not be offered next semester.
+            <h4 v-else-if="currentSubject.not_offered_year">
+              <v-icon small>
+                warning
+              </v-icon>
+              This subject is not offered during the {{ currentSubject.not_offered_year }} school year.
             </h4>
             <table cellspacing="4">
               <tr v-if="currentSubject.total_units!==undefined">
