@@ -57,7 +57,12 @@ export default {
   components: {
     'filter-set': FilterSet
   },
-  props: ['searchInput'],
+  props: {
+    searchInput: {
+      type: String,
+      required: true
+    }
+  },
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -128,97 +133,87 @@ export default {
       return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
-      this.chosenFilters.nameInput = this.searchInput;
       // only display subjects if you are filtering by something
       let returnAny = false;
       for (const filterName in this.chosenFilters) {
         returnAny = returnAny || this.chosenFilters[filterName].length;
       }
-      if (returnAny) {
-        // escapes special characters for regex in a string
-        function escapeRegExp (string) {
-          return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-        }
-        // gets the .test function (which tests if a string matches regex) from each regex filter in a group
-        function getRegexFuncs (regexStrings) {
-          return regexStrings.map(function (rs) {
-            const r = new RegExp(rs, 'i');
-            const t = r.test.bind(r);
-            return t;
-          });
-        }
-        // gets a function that returns true if a string is true
-        // replaces $ in the string with the input (value of an attribute of the subject)
-        function getMathFuncs (mathStrings) {
-          return mathStrings.map(function (ms) {
-            return function (input) {
-              return eval(this.ms.replace(/\$/g, input));
-            }.bind({ ms: ms });
-          });
-        }
-        // gets functions that return a boolean if a filter is true
-        const filters = {
-          'subject_id,title': getRegexFuncs([this.chosenFilters.nameInput]),
-          'gir_attribute': getRegexFuncs(this.chosenFilters.girInput),
-          'hass_attribute': getRegexFuncs(this.chosenFilters.hassInput),
-          'communication_requirement': getRegexFuncs(this.chosenFilters.ciInput),
-          'level': getRegexFuncs(this.chosenFilters.levelInput),
-          'total_units': getRegexFuncs(this.chosenFilters.unitInput)
-        };
+      if (!returnAny) {
+        return [];
+      }
+
+      // escapes special characters for regex in a string
+      function escapeRegExp (string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+      }
+      // gets the .test function (which tests if a string matches regex) from each regex filter in a group
+      function getRegexFuncs (regexStrings) {
+        return regexStrings.map(function (rs) {
+          const r = new RegExp(rs, 'i');
+          const t = r.test.bind(r);
+          return t;
+        });
+      }
+      // gets functions that return a boolean if a filter is true
+      const filters = {
+        'subject_id,title': getRegexFuncs([this.chosenFilters.nameInput]),
+        'gir_attribute': getRegexFuncs(this.chosenFilters.girInput),
+        'hass_attribute': getRegexFuncs(this.chosenFilters.hassInput),
+        'communication_requirement': getRegexFuncs(this.chosenFilters.ciInput),
+        'level': getRegexFuncs(this.chosenFilters.levelInput),
+        'total_units': getRegexFuncs(this.chosenFilters.unitInput)
+      };
         // and or or function based on filter mode
-        const filterAction = this.filterGroupModes[this.filterGroupMode];
-        const filteredSubjects = this.allSubjects.filter(function (subject) {
-          for (const attrs in filters) {
-            // each test function in a filter group
-            const testers = filters[attrs];
-            if (testers.length) {
-              // if a single attribute group in a set returns true, the filter will match it
-              let passesAnyAttributeGroupInSet = false;
-              const attrSet = attrs.split(',');
-              for (let a = 0; a < attrSet.length; a++) {
-                const attr = attrSet[a];
-                let subjectattr = subject[attr];
-                if (!subject[attr]) {
-                  subjectattr = '';
-                }
-                // start with false for OR mode, and true for AND mode
-                let passesAttributeGroup = !filterAction(false, true);
-                // use the filter mode function (OR or AND) and test all filters in a group
-                for (let t = 0; t < testers.length; t++) {
-                  passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subjectattr));
-                }
-                if (passesAttributeGroup) {
-                  passesAnyAttributeGroupInSet = true;
-                }
+      const filterAction = this.filterGroupModes[this.filterGroupMode];
+      const filteredSubjects = this.allSubjects.filter(function (subject) {
+        for (const attrs in filters) {
+          // each test function in a filter group
+          const testers = filters[attrs];
+          if (testers.length) {
+            // if a single attribute group in a set returns true, the filter will match it
+            let passesAnyAttributeGroupInSet = false;
+            const attrSet = attrs.split(',');
+            for (let a = 0; a < attrSet.length; a++) {
+              const attr = attrSet[a];
+              let subjectattr = subject[attr];
+              if (!subject[attr]) {
+                subjectattr = '';
               }
-              // if the subject passes no attribute group in the set, don't include it
-              if (!passesAnyAttributeGroupInSet) {
-                return false;
+              // start with false for OR mode, and true for AND mode
+              let passesAttributeGroup = !filterAction(false, true);
+              // use the filter mode function (OR or AND) and test all filters in a group
+              for (let t = 0; t < testers.length; t++) {
+                passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subjectattr));
+              }
+              if (passesAttributeGroup) {
+                passesAnyAttributeGroupInSet = true;
               }
             }
+            // if the subject passes no attribute group in the set, don't include it
+            if (!passesAnyAttributeGroupInSet) {
+              return false;
+            }
           }
-          return true;
-        });
-        if (this.chosenFilters.nameInput.length) {
-          const sortingOrder = [this.chosenFilters.nameInput, '^' + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), '^' + escapeRegExp(this.chosenFilters.nameInput)];
-          const sortingFuncs = getRegexFuncs(sortingOrder);
-          const getOrderForString = function (matchingString) {
-            const matches = sortingFuncs.map((func) => func(matchingString));
-            return matches.lastIndexOf(true);
-          };
-          const getOrder = function (subject) {
-            const idMatch = getOrderForString(subject.subject_id);
-            const nameMatch = getOrderForString(subject.title);
-            return Math.max(idMatch, nameMatch);
-          };
-          return filteredSubjects.sort(function (subject1, subject2) {
-            return getOrder(subject2) - getOrder(subject1);
-          });
-        } else {
-          return filteredSubjects;
         }
+        return true;
+      });
+      if (this.chosenFilters.nameInput.length) {
+        const sortingOrder = [this.chosenFilters.nameInput, '^' + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), '^' + escapeRegExp(this.chosenFilters.nameInput)];
+        const sortingFuncs = getRegexFuncs(sortingOrder);
+        const getOrderForString = function (matchingString) {
+          const matches = sortingFuncs.map((func) => func(matchingString));
+          return matches.lastIndexOf(true);
+        };
+        const getOrder = function (subject) {
+          const idMatch = getOrderForString(subject.subject_id);
+          const nameMatch = getOrderForString(subject.title);
+          return Math.max(idMatch, nameMatch);
+        };
+        return filteredSubjects.sort(function (subject1, subject2) {
+          return getOrder(subject2) - getOrder(subject1);
+        });
       } else {
-        return [];
+        return filteredSubjects;
       }
     },
     classInfoStack () {
@@ -232,6 +227,9 @@ export default {
     }
   },
   watch: {
+    searchInput (newVal) {
+      this.chosenFilters.nameInput = newVal;
+    },
     classStackExists: function (oldExists, newExists) {
       Vue.nextTick(function () {
         this.updateMenuStyle();
@@ -249,7 +247,9 @@ export default {
     }
   },
   mounted () {
-    this.updateMenuStyle();
+    this.$nextTick(() => {
+      this.updateMenuStyle();
+    });
 
     window.cookies = this.$cookies;
     $(window).resize(function () {

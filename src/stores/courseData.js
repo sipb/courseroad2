@@ -25,7 +25,7 @@ const store = new Vuex.Store({
         agent: '',
         contents: {
           coursesOfStudy: ['girs'],
-          selectedSubjects: Array.from(Array(16), () => new Array()),
+          selectedSubjects: Array.from(Array(16), () => []),
           progressOverrides: {}
         }
       }

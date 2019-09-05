@@ -57,34 +57,6 @@
 </template>
 
 <script>
-Array.prototype.diff = function (a) {
-  return this.filter(function (i) {
-    return a.indexOf(i) === -1;
-  });
-};
-
-Array.prototype.count = function (elem) {
-  let countElem = 0;
-  for (let i = 0; i < this.length; i++) {
-    if (this[i] === elem) {
-      countElem++;
-    }
-  }
-  return countElem;
-};
-
-Array.prototype.renumberDuplicates = function () {
-  return this.map(function (elem, index) {
-    if (this.count(elem) > 1) {
-      const appendNumber = this.slice(0, index).count(elem);
-      return elem + '-' + appendNumber.toString();
-    } else {
-      return elem;
-    }
-  }.bind(this));
-};
-window.Array = Array;
-
 export default {
   name: 'ConflictDialog',
   props: ['conflictInfo'],
@@ -106,25 +78,49 @@ export default {
       this.conflictDialog = false;
     },
     colorSubject: function (subjectIndex, subjectList) {
-      const remoteSubjects = this.conflictInfo.other_contents.selectedSubjects.map(
+      const remoteSubjects = this.renumberDuplicates(this.conflictInfo.other_contents.selectedSubjects.map(
         s => s.id + ' ' + s.semester
-      ).renumberDuplicates();
-      const localSubjects = this.roads[this.conflictInfo.id].contents.selectedSubjects.map(
+      ));
+      const localSubjects = this.renumberDuplicates(this.roads[this.conflictInfo.id].contents.selectedSubjects.map(
         s => s.id + ' ' + s.semester
-      ).renumberDuplicates();
+      ));
       let currentSubject;
       if (subjectList === 'remote') {
         currentSubject = remoteSubjects[subjectIndex];
-        if (remoteSubjects.diff(localSubjects).indexOf(currentSubject) >= 0) {
+        if (this.diff(remoteSubjects, localSubjects).indexOf(currentSubject) >= 0) {
           return 'blue--text';
         }
       } else if (subjectList === 'local') {
         currentSubject = localSubjects[subjectIndex];
-        if (localSubjects.diff(remoteSubjects).indexOf(currentSubject) >= 0) {
+        if (this.diff(localSubjects, remoteSubjects).indexOf(currentSubject) >= 0) {
           return 'blue--text';
         }
       }
       return '';
+    },
+    diff: function (a1, a2) {
+      return a1.filter(function (i) {
+        return a2.indexOf(i) === -1;
+      });
+    },
+    count: function (arr, elem) {
+      let countElem = 0;
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === elem) {
+          countElem++;
+        }
+      }
+      return countElem;
+    },
+    renumberDuplicates: function (arr) {
+      return arr.map((elem, index) => {
+        if (this.count(arr, elem) > 1) {
+          const appendNumber = this.count(arr.slice(0, index), elem);
+          return elem + '-' + appendNumber.toString();
+        } else {
+          return elem;
+        }
+      });
     }
   }
 };

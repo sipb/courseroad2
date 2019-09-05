@@ -208,13 +208,12 @@ export default {
             textColor: 'DarkGoldenRod'
           };
         }
-      } else {
-        return {
-          bgColor: 'grey',
-          message: '',
-          textColor: ''
-        };
       }
+      return {
+        bgColor: 'grey',
+        message: '',
+        textColor: ''
+      };
     },
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
@@ -403,6 +402,7 @@ export default {
       }
       const reqExpression = splitReq.join('').replace(/\//g, '||').replace(/,/g, '&&');
       // i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
+      // eslint-disable-next-line no-eval
       return eval(reqExpression);
     },
     dragenter: function (event) {
