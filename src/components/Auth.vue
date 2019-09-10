@@ -268,13 +268,15 @@ export default {
               ignoreSet: true
             });
           }
-          if (this.justLoaded) {
+          if (this.justLoaded && fileKeys.length > 0) {
             this.$store.commit('deleteRoad', '$defaultroad$');
           }
           this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
           // Set list of unretrieved roads to all but first road ID
           this.$store.commit('setUnretrieved', fileKeys.slice(1));
-          return this.retrieveRoad(fileKeys[0]);
+          if (fileKeys.length) {
+            return this.retrieveRoad(fileKeys[0]);
+          }
         }.bind(this)).then(function () {
           this.gettingUserData = false;
         }.bind(this)).catch(function (err) {
