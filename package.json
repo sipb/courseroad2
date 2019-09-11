@@ -2,29 +2,17 @@
   "name": "courseroad",
   "version": "1.0.0",
   "description": "Course planning for MIT undergrads",
-  "main": "index.js",
+  "author": "npfoss, cvorbach, ksmori",
   "scripts": {
-    "lint": "node_modules/.bin/eslint --ext .js,.vue src/",
-    "lint-fix": "node_modules/.bin/eslint --ext .js,.vue --fix src/",
     "test": "test",
+    "lint": "node_modules/.bin/eslint --ext .js,.vue src/",
     "build-dev": "webpack --env.APP_URL=https://courseroad.mit.edu/dev --env.FIREROAD_URL=https://fireroad.mit.edu --mode=production --config build/webpack.config.dev.js",
     "build-prod": "webpack --env.APP_URL=https://courseroad.mit.edu --env.FIREROAD_URL=https://fireroad.mit.edu --mode=production --config build/webpack.config.dev.js",
-    "dev": "webpack-dev-server --env.APP_URL=http://localhost:8080 --env.FIREROAD_URL=https://fireroad-dev.mit.edu --mode=development --config build/webpack.config.dev.js"
+    "dev": "webpack-dev-server --env.APP_URL=http://localhost:8080 --env.FIREROAD_URL=https://fireroad-dev.mit.edu --mode=development --config build/webpack.config.dev.js",
+    "lint-fix": "node_modules/.bin/eslint --ext .js,.vue --fix src/",
+    "test:unit": "vue-cli-service test:unit"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/npfoss/courseroad2.git"
-  },
-  "keywords": [
-    "mit",
-    "courseroad"
-  ],
-  "author": "npfoss, cvorbach, ksmori",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/npfoss/courseroad2/issues"
-  },
-  "homepage": "https://github.com/npfoss/courseroad2#readme",
+  "main": "index.js",
   "dependencies": {
     "axios": "^0.19.0",
     "jquery": "^3.3.1",
@@ -46,6 +34,9 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.17",
     "@fortawesome/free-solid-svg-icons": "^5.8.1",
     "@fortawesome/vue-fontawesome": "^0.1.6",
+    "@vue/cli-plugin-unit-jest": "^3.11.0",
+    "@vue/cli-service": "^3.11.0",
+    "@vue/test-utils": "1.0.0-beta.29",
     "babel-loader": "^8.0.4",
     "css-loader": "^1.0.1",
     "eslint": "^5.16.0",
@@ -68,5 +59,28 @@
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
+  },
+  "bugs": {
+    "url": "https://github.com/npfoss/courseroad2/issues"
+  },
+  "homepage": "https://github.com/npfoss/courseroad2#readme",
+  "keywords": [
+    "mit",
+    "courseroad"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/npfoss/courseroad2.git"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      ".*\\.(vue)$": "vue-jest"
+    }
   }
 }
