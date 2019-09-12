@@ -57,15 +57,15 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
+  props: ['selectedSubjects', 'year', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
-      newYear: parseInt((this.currentSemester - 1) / 3),
-      numSems: numSemesters
+      //newYear: parseInt((this.currentSemester - 1) / 3),
+      numSems: numSemesters,
     };
   },
   computed: {
@@ -74,7 +74,17 @@ export default {
       const currentYear = today.getFullYear();
       const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
       return baseYear - Math.floor((this.currentSemester - 1) / 3);
+    },
+    newYear: {
+      get: function() {
+        if (this.year) {
+          return this.year;
+        } else {
+          return 0;
+      }
+      },
+      set: function(value) {}
     }
-  }
+  },
 };
 </script>

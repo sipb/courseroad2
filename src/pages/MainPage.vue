@@ -127,8 +127,10 @@
           :value="roadId"
         >
           <road
+            ref = 'roadcomponent'
             :selected-subjects="roads[roadId].contents.selectedSubjects"
             :road-i-d="roadId"
+            :year="year"
             :current-semester="currentSemester"
             :adding-from-card="addingFromCard && activeRoad===roadId"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
@@ -234,6 +236,8 @@ export default {
   },
   data: function () {
     return {
+      kerb: '',
+      year: 0,
       reqTrees: {},
       reqList: [],
       dragSemesterNum: -1,
@@ -286,7 +290,7 @@ export default {
     },
     roadref: function () {
       return '#road' + this.activeRoad;
-    }
+    },
   },
   watch: {
     // call fireroad to check fulfillment if you change active roads or change something about a road
@@ -327,7 +331,7 @@ export default {
         }
       },
       deep: true
-    }
+    },
   },
   mounted () {
     const today = new Date();
@@ -384,6 +388,31 @@ export default {
     }).catch((e) => {
       console.log('There was an error loading subjects: \n' + e);
     });
+
+    if (this.$refs.authcomponent.loggedIn) {
+      axios.get(process.env.FIREROAD_URL + `/auth/user_info/`, { headers: {
+        'Authorization': 'Bearer ' + this.$refs.authcomponent.accessInfo.access_token
+      } })
+      .then(response => {
+        let email = response.data.academic_id;
+        let end_point = email.indexOf('@');
+        this.kerb = email.slice(0, end_point);
+        //this.kerb = 'mrittenb';
+        axios.get('https://cors-anywhere.herokuapp.com/https://web.mit.edu/bin/cgicso?query=' + this.kerb, 
+        {headers: {'Access-Control-Allow-Origin': '*'}})
+          .then(response => {
+          let name_loc = response.data.indexOf("year");
+          if (name_loc === -1) {
+            console.log("Failed to find user");
+          } else {
+            // subtract 1 for zero-indexing
+            this.year = response.data.slice(name_loc + 6, name_loc + 7) - 1;
+            this.$refs.authcomponent.changeSemester(this.year);
+        }
+      });
+      })
+    };
+    
   },
   methods: {
     updateFulfillment: function (fulfillmentNeeded) {
