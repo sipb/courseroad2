@@ -1,22 +1,9 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
-import Vue from 'vue'
-import Vuex from 'vuex'
-import Vuetify from 'vuetify';
-import VueRouter from 'vue-router';
-import VueCookies from 'vue-cookies';
 import moment from 'moment';
 import ConflictDialog from '../../src/components/ConflictDialog.vue'
 
 Vue.use(Vuetify);
 const localVue = createLocalVue();
 localVue.use(Vuex);
-localVue.use(VueRouter);
-localVue.use(VueCookies);
-
-//So Vuetify doesn't yell about missing data-app
-const el = document.createElement('div');
-el.setAttribute('data-app', true);
-document.body.appendChild(el);
 
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 

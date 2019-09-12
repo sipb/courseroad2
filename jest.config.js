@@ -26,7 +26,8 @@ module.exports = {
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname'
-  ]
+  ],
+  setupTestFrameworkScriptFile: "./tests/unit/setup.js"
   // uncomment for full coverage details
   // collectCoverage: true,
   // collectCoverageFrom: ["**/*.{js,vue}", "!**/node_modules/**"],
