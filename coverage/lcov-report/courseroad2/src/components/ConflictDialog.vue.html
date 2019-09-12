@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for courseroad2/src/components/ConflictDialog.vue</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">courseroad2/src/components</a> ConflictDialog.vue
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">77.78% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>21/27</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">41.67% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>5/12</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">90.91% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>10/11</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">77.78% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>21/27</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">754x</span>
+<span class="cline-any cline-yes">754x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;template&gt;
+  &lt;v-dialog v-if="conflictInfo != undefined" v-model="conflictDialog" max-width="600"&gt;
+    &lt;v-card&gt;
+      &lt;v-btn icon flat style="float:right" @click="conflictDialog = false"&gt;
+        &lt;v-icon&gt;close&lt;/v-icon&gt;
+      &lt;/v-btn&gt;
+      &lt;v-card-title&gt;Save Conflict&lt;/v-card-title&gt;
+      &lt;v-layout row&gt;
+        &lt;!-- TODO: remove duplicate code? --&gt;
+        &lt;v-flex xs6 style="padding: 2em"&gt;
+          &lt;b&gt;Cloud&lt;/b&gt;
+          &lt;v-list&gt;
+            &lt;v-card style="padding: 1em"&gt;
+              Name: {{ conflictInfo.other_name }}
+            &lt;/v-card&gt;
+            &lt;v-card style="padding: 1em"&gt;
+              Agent: {{ conflictInfo.other_agent }}
+            &lt;/v-card&gt;
+            &lt;v-card style="padding: 1em"&gt;
+              Date: {{ conflictInfo.other_date }}
+            &lt;/v-card&gt;
+            &lt;v-card style="padding: 1em"&gt;
+              &lt;b&gt;&lt;p&gt;Contents:&lt;/p&gt;&lt;/b&gt;
+              &lt;p&gt;Courses of Study: &lt;span v-for="req in conflictInfo.other_contents.coursesOfStudy" :key="req"&gt; {{ req }} &lt;/span&gt;&lt;/p&gt;
+              &lt;p&gt;Selected Subjects: &lt;span v-for="(course, index) in conflictInfo.other_contents.selectedSubjects" :key="JSON.stringify(course)" :class="colorSubject(index, 'remote')"&gt; {{ course.id }} &lt;/span&gt;&lt;/p&gt;
+            &lt;/v-card&gt;
+          &lt;/v-list&gt;
+          &lt;v-btn color="primary" @click="$emit('update-local', conflictInfo.id) "&gt;
+            Keep Remote
+          &lt;/v-btn&gt;
+        &lt;/v-flex&gt;
+        &lt;v-flex xs6 style="padding: 2em"&gt;
+          &lt;b&gt;Local&lt;/b&gt;
+          &lt;v-list&gt;
+            &lt;v-card style="padding: 1em"&gt;
+              Name: {{ roads[conflictInfo.id].name }}
+            &lt;/v-card&gt;
+            &lt;v-card style="padding: 1em"&gt;
+              Agent: {{ roads[conflictInfo.id].agent }}
+            &lt;/v-card&gt;
+            &lt;v-card style="padding: 1em"&gt;
+              Date: {{ roads[conflictInfo.id].changed }}
+            &lt;/v-card&gt;
+            &lt;v-card style="padding: 1em"&gt;
+              &lt;b&gt;&lt;p&gt;Contents:&lt;/p&gt;&lt;/b&gt;
+              &lt;p&gt;Courses of Study: &lt;span v-for="req in roads[conflictInfo.id].contents.coursesOfStudy" :key="req"&gt; {{ req }} &lt;/span&gt;&lt;/p&gt;
+              &lt;p&gt;Selected Subjects: &lt;span v-for="(course, index) in roads[conflictInfo.id].contents.selectedSubjects.flat()" :key="JSON.stringify(course)" :class="colorSubject(index, 'local')"&gt; {{ course.id }} &lt;/span&gt;&lt;/p&gt;
+            &lt;/v-card&gt;
+          &lt;/v-list&gt;
+          &lt;v-btn color="primary" @click="$emit('update-remote', conflictInfo.id)"&gt;
+            Keep Local
+          &lt;/v-btn&gt;
+        &lt;/v-flex&gt;
+      &lt;/v-layout&gt;
+    &lt;/v-card&gt;
+  &lt;/v-dialog&gt;
+&lt;/template&gt;
+&nbsp;
+&lt;script&gt;
+export default {
+  name: 'ConflictDialog',
+  props: ['conflictInfo'],
+  data: function () {
+    return {
+      conflictDialog: false
+    };
+  },
+  computed: {
+    roads () {
+      return this.$store.state.roads;
+    }
+  },
+  methods: {
+    startConflict: function () {
+      this.conflictDialog = true;
+    },
+<span class="fstat-no" title="function not covered" >    resolveConflict: function () {</span>
+<span class="cstat-no" title="statement not covered" >      this.conflictDialog = false;</span>
+    },
+    colorSubject: function (subjectIndex, subjectList) {
+      const remoteSubjects = this.renumberDuplicates(this.conflictInfo.other_contents.selectedSubjects.map(
+        s =&gt; s.id + ' ' + s.semester
+      ));
+      const localSubjects = this.renumberDuplicates(this.roads[this.conflictInfo.id].contents.selectedSubjects.map(
+        s =&gt; s.id + ' ' + s.semester
+      ));
+      let currentSubject;
+<span class="missing-if-branch" title="else path not taken" >E</span>      if (subjectList === 'remote') {
+        currentSubject = remoteSubjects[subjectIndex];
+<span class="missing-if-branch" title="else path not taken" >E</span>        if (this.diff(remoteSubjects, localSubjects).indexOf(currentSubject) &gt;= 0) {
+          return 'blue--text';
+        }
+<span class="cstat-no" title="statement not covered" >      } else if (subjectList === 'local') {</span>
+<span class="cstat-no" title="statement not covered" >        currentSubject = localSubjects[subjectIndex];</span>
+<span class="cstat-no" title="statement not covered" >        if (this.diff(localSubjects, remoteSubjects).indexOf(currentSubject) &gt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >          return 'blue--text';</span>
+        }
+      }
+<span class="cstat-no" title="statement not covered" >      return '';</span>
+    },
+    diff: function (a1, a2) {
+      return a1.filter(function (i) {
+        return a2.indexOf(i) === -1;
+      });
+    },
+    count: function (arr, elem) {
+      let countElem = 0;
+      for (let i = 0; i &lt; arr.length; i++) {
+<span class="missing-if-branch" title="else path not taken" >E</span>        if (arr[i] === elem) {
+          countElem++;
+        }
+      }
+      return countElem;
+    },
+    renumberDuplicates: function (arr) {
+      return arr.map((elem, index) =&gt; {
+        if (this.count(arr, elem) &gt; 1) {
+          const appendNumber = this.count(arr.slice(0, index), elem);
+          return elem + '-' + appendNumber.toString();
+        } else {
+          return elem;
+        }
+      });
+    }
+  }
+};
+&lt;/script&gt;
+&nbsp;
+&lt;style scoped&gt;
+&lt;/style&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Sep 11 2019 20:05:04 GMT-0400 (Eastern Daylight Time)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

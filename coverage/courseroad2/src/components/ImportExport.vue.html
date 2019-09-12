@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for courseroad2/src/components/ImportExport.vue</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">courseroad2/src/components</a> ImportExport.vue
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/71</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/28</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/13</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/71</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;template&gt;
+  &lt;v-layout row grow&gt;
+    &lt;v-btn class="collapse-button" outline round color="primary" @click="exportRoad"&gt;
+      &lt;span class="hidden-sm-and-down"&gt;Export&lt;/span&gt;
+      &lt;font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" /&gt;
+    &lt;/v-btn&gt;
+&nbsp;
+    &lt;v-dialog
+      v-model="dialog"
+      max-width="600"
+    &gt;
+      &lt;v-btn slot="activator" class="collapse-button" outline round color="primary"&gt;
+        &lt;span class="hidden-sm-and-down"&gt;Import&lt;/span&gt;
+        &lt;font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" /&gt;
+      &lt;/v-btn&gt;
+      &lt;v-card&gt;
+        &lt;v-btn icon flat style="float:right;" @click="dialog = false"&gt;
+          &lt;v-icon&gt;close&lt;/v-icon&gt;
+        &lt;/v-btn&gt;
+        &lt;v-card-title class="headline lighten-2" primary-title&gt;
+          Import Road
+        &lt;/v-card-title&gt;
+        &lt;v-card-text&gt;
+          &lt;v-text-field
+            v-if="dialog"
+            v-model="roadtitle"
+            outline
+            label="Road name"
+            clearable
+            autofocus
+          /&gt;
+&nbsp;
+          &lt;v-spacer /&gt;
+          &lt;input id="file" type="file"&gt;
+&nbsp;
+          &lt;v-textarea
+            v-model="inputtext"
+            style="margin-top: 10px;"
+            label="Or copy/paste a road here"
+            full-width
+            single-line
+            outline
+          /&gt;
+&nbsp;
+          &lt;v-spacer /&gt;
+          &lt;v-flex v-if="otherRoadHasName(roadtitle)"&gt;
+            &lt;v-card color="red"&gt;
+              &lt;v-card-text&gt;
+                &lt;b&gt;Invalid input!&lt;/b&gt;
+                There's already a road with this name.
+              &lt;/v-card-text&gt;
+            &lt;/v-card&gt;
+          &lt;/v-flex&gt;
+          &lt;v-flex v-if="badinput"&gt;
+            &lt;v-card color="red"&gt;
+              &lt;v-card-text&gt;
+                &lt;b&gt;Invalid input!&lt;/b&gt;
+                Make sure you have given this road a name, and uploaded/pasted a valid '.road' file.
+              &lt;/v-card-text&gt;
+            &lt;/v-card&gt;
+          &lt;/v-flex&gt;
+        &lt;/v-card-text&gt;
+&nbsp;
+        &lt;v-card-actions&gt;
+          &lt;v-spacer /&gt;
+          &lt;v-btn flat @click="dialog = false"&gt;
+            Cancel
+          &lt;/v-btn&gt;
+          &lt;v-btn
+            color="primary"
+            :disabled="otherRoadHasName(roadtitle)"
+            @click="importRoad"
+          &gt;
+            Import!
+          &lt;/v-btn&gt;
+        &lt;/v-card-actions&gt;
+      &lt;/v-card&gt;
+    &lt;/v-dialog&gt;
+  &lt;/v-layout&gt;
+&lt;/template&gt;
+&nbsp;
+&lt;script&gt;
+<span class="cstat-no" title="statement not covered" >import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';</span>
+&nbsp;
+export default {
+  name: 'ImportExport',
+  components: {},
+  mixins: [simpleSSMixin],
+<span class="fstat-no" title="function not covered" >  data: function () {</span>
+<span class="cstat-no" title="statement not covered" >    return {</span>
+      dialog: false,
+      inputtext: '',
+      roadtitle: '',
+      badinput: false
+    };
+  },
+  computed: {
+    activeRoad () {
+<span class="cstat-no" title="statement not covered" >      return this.$store.state.activeRoad;</span>
+    },
+    roads () {
+<span class="cstat-no" title="statement not covered" >      return this.$store.state.roads;</span>
+    }
+  },
+  mounted () {
+    // read uploaded files
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >    const onFileChange = (event) =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >      const reader = new FileReader();</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >      reader.onload = (event) =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >        this.inputtext = event.target.result;</span>
+      };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      if (event.target.files[0]) {</span>
+        // would have been undefined if user exited file select dialog
+<span class="cstat-no" title="statement not covered" >        const name = event.target.files[0].name;</span>
+        // check for valid type hopefully
+<span class="cstat-no" title="statement not covered" >        if (name.substr(name.length - 5) === '.road') {</span>
+          // update title unless they already input one
+<span class="cstat-no" title="statement not covered" >          if (this.roadtitle === '') {</span>
+<span class="cstat-no" title="statement not covered" >            this.roadtitle = name.substr(0, name.length - 5);</span>
+          }
+          // finally, read the file
+<span class="cstat-no" title="statement not covered" >          reader.readAsText(event.target.files[0]);</span>
+        } else {
+          // wrong file type
+<span class="cstat-no" title="statement not covered" >          this.badinput = true;</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >          setTimeout(() =&gt; { this.badinput = false }, 7000);</span></span>
+        }
+      }
+    };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    document.getElementById('file').addEventListener('change', onFileChange);</span>
+  },
+  methods: {
+<span class="fstat-no" title="function not covered" >    exportRoad: function (event) {</span>
+<span class="cstat-no" title="statement not covered" >      const filename = this.roads[this.activeRoad].name + '.road';</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      const roadSubjects = this.roads[this.activeRoad].contents.selectedSubjects.flat();</span>
+<span class="cstat-no" title="statement not covered" >      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[this.activeRoad].contents, { selectedSubjects: roadSubjects });</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      const text = JSON.stringify(formattedRoadContents);</span>
+&nbsp;
+      // for some reason this is the way you download files...
+      //    create an element, click it, and remove it
+<span class="cstat-no" title="statement not covered" >      const element = document.createElement('a');</span>
+<span class="cstat-no" title="statement not covered" >      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));</span>
+<span class="cstat-no" title="statement not covered" >      element.setAttribute('download', filename);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      element.style.display = 'none';</span>
+<span class="cstat-no" title="statement not covered" >      document.body.appendChild(element);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      element.click();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      document.body.removeChild(element);</span>
+    },
+<span class="fstat-no" title="function not covered" >    importRoad: function (event) {</span>
+<span class="cstat-no" title="statement not covered" >      let fail = false;</span>
+      // check for legal input
+<span class="cstat-no" title="statement not covered" >      if (this.inputtext === '' || this.roadtitle === '') {</span>
+<span class="cstat-no" title="statement not covered" >        fail = true;</span>
+      }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      const expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'id'];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      if (!fail) {</span>
+<span class="cstat-no" title="statement not covered" >        try {</span>
+          // parse text and add to roads
+<span class="cstat-no" title="statement not covered" >          const obj = JSON.parse(this.inputtext);</span>
+          // sanitize
+          // progressOverrides must be defined
+<span class="cstat-no" title="statement not covered" >          if (obj.progressOverrides === undefined) {</span>
+<span class="cstat-no" title="statement not covered" >            obj.progressOverrides = {};</span>
+          }
+          // subject_id issue
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >          const newss = obj.selectedSubjects.map((s) =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >            if ('subject_id' in s) {</span>
+<span class="cstat-no" title="statement not covered" >              s.id = s.subject_id;</span>
+<span class="cstat-no" title="statement not covered" >              delete s.subject_id;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            return s;</span>
+          });
+<span class="cstat-no" title="statement not covered" >          obj.selectedSubjects = newss;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >          const ss = obj.selectedSubjects.map((s) =&gt; {</span></span>
+            // make sure it has everything, if not fill in from subjectsIndex or genericCourses
+            let subject;
+<span class="cstat-no" title="statement not covered" >            if (this.$store.state.subjectsIndex[s.id] !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >              subject = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];</span>
+<span class="cstat-no" title="statement not covered" >            } else if (this.$store.state.genericIndex[s.id] !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >              subject = this.$store.state.genericCourses[this.$store.state.genericIndex[s.id]];</span>
+            }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            if (subject !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >              expectedFields.map((f) =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >                if (s[f] === undefined) {</span>
+                  // right now (4/16/19) 'units' is the only one that doesn't match and needs an exception
+<span class="cstat-no" title="statement not covered" >                  if (f === 'units') {</span>
+<span class="cstat-no" title="statement not covered" >                    s[f] = subject['total_units'];</span>
+                  } else {
+<span class="cstat-no" title="statement not covered" >                    s[f] = subject[f];</span>
+                  }
+                }
+              });
+<span class="cstat-no" title="statement not covered" >              return s;</span>
+            }
+<span class="cstat-no" title="statement not covered" >            console.log('ignoring ' + s.id);</span>
+<span class="cstat-no" title="statement not covered" >            return undefined;</span>
+<span class="fstat-no" title="function not covered" >          }).filter((s) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            return s !== undefined;</span>
+          });
+&nbsp;
+          // convert selected subjects to more convenient format
+<span class="cstat-no" title="statement not covered" >          const simpless = this.getSimpleSelectedSubjects(ss);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, simpless, obj.progressOverrides);</span>
+        } catch (error) {
+<span class="cstat-no" title="statement not covered" >          fail = true;</span>
+<span class="cstat-no" title="statement not covered" >          console.log('import failed with error:');</span>
+<span class="cstat-no" title="statement not covered" >          console.error(error);</span>
+        }
+      }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      if (fail) {</span>
+<span class="cstat-no" title="statement not covered" >        this.badinput = true;</span>
+        // make warning go away after 7 seconds
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        setTimeout(() =&gt; { this.badinput = false }, 7000);</span></span>
+      } else {
+<span class="cstat-no" title="statement not covered" >        this.badinput = false;</span>
+<span class="cstat-no" title="statement not covered" >        this.dialog = false;</span>
+      }
+    },
+<span class="fstat-no" title="function not covered" >    otherRoadHasName: function (roadName) {</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >      const otherRoadNames = Object.keys(this.roads).filter(function (road) {</span></span>
+<span class="cstat-no" title="statement not covered" >        return this.roads[road].name === roadName;</span>
+      }.bind(this));
+<span class="cstat-no" title="statement not covered" >      return otherRoadNames.length &gt; 0;</span>
+    }
+  }
+};
+&lt;/script&gt;
+&nbsp;
+&lt;style scoped&gt;
+.collapse-button {
+  min-width: 0;
+}
+&lt;/style&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Sep 11 2019 20:09:06 GMT-0400 (Eastern Daylight Time)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

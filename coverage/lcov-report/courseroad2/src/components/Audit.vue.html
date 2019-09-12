@@ -1,0 +1,1100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for courseroad2/src/components/Audit.vue</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">All files</a> / <a href="index.html">courseroad2/src/components</a> Audit.vue
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/65</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/47</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/65</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;template&gt;
+  &lt;!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html --&gt;
+&nbsp;
+  &lt;v-flex style="padding: 0px 18px 0px 18px; overflow: auto;"&gt;
+    &lt;div style="display: flex; align-content: space-between; margin: 12px 0px;"&gt;
+      &lt;v-icon
+        :key="`icon-${isEditing}`"
+        v-slot:prepend
+        :color="isEditing ? 'success' : 'info'"
+        style="margin-right: 8px;"
+        @click="isEditing = !isEditing"
+        v-text="isEditing ? 'save' : 'edit'"
+      /&gt;
+      &lt;v-autocomplete
+        v-model="changeReqs"
+        :hint="!isEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+        :items="getCourses"
+        item-text="medium-title"
+        item-value="key"
+        :readonly="!isEditing"
+        :label="`${isEditing ? 'Edit your courses' : 'Your courses'}`"
+        persistent-hint
+        multiple
+        chips
+        deletable-chips
+        dense
+        no-data-text="'No results found'"
+      /&gt;
+    &lt;/div&gt;
+&nbsp;
+    &lt;v-treeview
+      v-model="tree"
+      :items="selectedTrees"
+      item-key="uniqueKey"
+      item-children="reqs"
+      open-on-click
+      :activatable="false"
+    &gt;
+      &lt;template slot="prepend" slot-scope="{ item }"&gt;
+        &lt;v-icon
+          v-if="!('reqs' in item)"
+          :style="fulfilledIcon(item)"
+          @click="clickRequirement(item)"
+        &gt;
+          {{ item['plain-string'] ?
+            (item["list-id"] in progressOverrides ?
+              (item.fulfilled ? "assignment_turned_in" : "assignment") :
+              "assignment_late" ) :
+            item.fulfilled ? "done" : "remove" }}
+        &lt;/v-icon&gt;
+      &lt;/template&gt;
+      &lt;template slot="label" slot-scope="{ item, leaf}"&gt;
+        &lt;requirement
+          :req="item"
+          :leaf="leaf"
+          @click.native="clickRequirement(item)"
+          @click-info="reqInfo($event, item)"
+        /&gt;
+      &lt;/template&gt;
+    &lt;/v-treeview&gt;
+&nbsp;
+    &lt;v-dialog v-model="progressDialog" max-width="600"&gt;
+      &lt;v-card v-if="progressReq !== undefined"&gt;
+        &lt;v-btn icon flat style="float:right" @click="progressDialog=false"&gt;
+          &lt;v-icon&gt;close&lt;/v-icon&gt;
+        &lt;/v-btn&gt;
+        &lt;v-card-title&gt;
+          &lt;h2&gt;Manual Progress: {{ progressReq.title }}&lt;/h2&gt;
+        &lt;/v-card-title&gt;
+        &lt;v-card-text&gt;
+          &lt;p&gt;
+            Because this requirement is custom to the individual, you have to
+            manually enter how many of these requirements you have completed for your degree.
+          &lt;/p&gt;
+          &lt;h3&gt;{{ capitalize(progressReq.threshold.criterion) }} Completed: {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}&lt;/h3&gt;
+          &lt;v-layout row justify-start style="width: 70%; margin: auto;"&gt;
+            &lt;v-flex shrink style="width: 3em; margin-right: 1em;"&gt;
+              &lt;v-text-field v-model="newManualProgress" type="number" /&gt;
+            &lt;/v-flex&gt;
+            &lt;v-flex&gt;
+              &lt;v-slider
+                v-model="newManualProgress"
+                :max="progressReq.threshold.cutoff"
+                :min="0"
+                :step="1"
+              /&gt;
+            &lt;/v-flex&gt;
+          &lt;/v-layout&gt;
+        &lt;/v-card-text&gt;
+        &lt;v-card-actions&gt;
+          &lt;v-spacer /&gt;
+          &lt;v-btn flat @click="progressDialog=false; progressReq=undefined;"&gt;
+            Cancel
+          &lt;/v-btn&gt;
+          &lt;v-btn color="primary" @click="updateManualProgress"&gt;
+            Update Progress
+          &lt;/v-btn&gt;
+        &lt;/v-card-actions&gt;
+      &lt;/v-card&gt;
+    &lt;/v-dialog&gt;
+&nbsp;
+    &lt;v-dialog v-model="viewDialog" max-width="600"&gt;
+      &lt;div v-if="dialogReq !== undefined"&gt;
+        &lt;v-card&gt;
+          &lt;v-btn icon flat style="float:right" @click="viewDialog=false"&gt;
+            &lt;v-icon&gt;close&lt;/v-icon&gt;
+          &lt;/v-btn&gt;
+          &lt;v-card-title&gt;{{ dialogReq["title"] }}&lt;/v-card-title&gt;
+          &lt;v-card-text v-if="'url' in dialogReq"&gt;
+            &lt;a target="_blank" :href="dialogReq['url']"&gt;Link to the real, up to date requirements&lt;/a&gt;
+          &lt;/v-card-text&gt;
+          &lt;v-card-text v-if="'desc' in dialogReq"&gt;
+            {{ dialogReq["desc"] }}
+          &lt;/v-card-text&gt;
+          &lt;v-card-text&gt;
+            &lt;div
+              class="percentage-bar p-block"
+              :style="percentage(dialogReq)"
+            &gt;
+              {{ dialogReq["percent_fulfilled"] }}% fulfilled
+            &lt;/div&gt;
+          &lt;/v-card-text&gt;
+          &lt;v-card-text v-if="'req' in dialogReq"&gt;
+            {{ dialogReq["req"] }}
+          &lt;/v-card-text&gt;
+          &lt;v-card-text&gt;
+            &lt;b&gt;Satisfying courses&lt;/b&gt;
+            &lt;div v-for="course in dialogReq['sat_courses']" :key="course"&gt;
+              {{ course }}
+            &lt;/div&gt;
+          &lt;/v-card-text&gt;
+          &lt;v-card-actions&gt;
+            &lt;v-spacer /&gt;
+            &lt;v-btn
+              v-if="'title-no-degree' in dialogReq"
+              color="error"
+              @click="deleteReq(dialogReq); viewDialog=false; dialogReq=undefined;"
+            &gt;
+              &lt;v-icon&gt;delete&lt;/v-icon&gt;
+              Remove Requirement
+            &lt;/v-btn&gt;
+          &lt;/v-card-actions&gt;
+        &lt;/v-card&gt;
+      &lt;/div&gt;
+    &lt;/v-dialog&gt;
+  &lt;/v-flex&gt;
+&lt;/template&gt;
+&nbsp;
+&lt;script&gt;
+<span class="cstat-no" title="statement not covered" >import Requirement from './Requirement.vue';</span>
+export default {
+  name: 'Audit',
+  components: {
+    requirement: Requirement
+  },
+  props: [
+    'selectedReqs',
+    'reqTrees',
+    'reqList',
+    'progressOverrides'
+  ],
+<span class="fstat-no" title="function not covered" >  data: function () {</span>
+<span class="cstat-no" title="statement not covered" >    return {</span>
+      tree: [],
+      viewDialog: false,
+      dialogReq: undefined,
+      progressDialog: false,
+      progressReq: undefined,
+      newManualProgress: 0,
+      isEditing: false
+    };
+  },
+  computed: {
+    changeReqs: {
+<span class="fstat-no" title="function not covered" >      get: function () {</span>
+<span class="cstat-no" title="statement not covered" >        return this.selectedReqs;</span>
+      },
+<span class="fstat-no" title="function not covered" >      set: function (newReqs) {</span>
+<span class="cstat-no" title="statement not covered" >        const currentReqs = this.selectedReqs;</span>
+<span class="cstat-no" title="statement not covered" >        if (currentReqs.length &gt; newReqs.length) {</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >          const diff = currentReqs.find(x =&gt; !newReqs.includes(x));</span></span>
+<span class="cstat-no" title="statement not covered" >          this.$store.commit('removeReq', diff);</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >          const newReq = newReqs[newReqs.length - 1];</span>
+<span class="cstat-no" title="statement not covered" >          this.$store.commit('addReq', newReq);</span>
+        }
+      }
+    },
+<span class="fstat-no" title="function not covered" >    getCourses: function () {</span>
+<span class="cstat-no" title="statement not covered" >      const list = this.reqList;</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >      const courses = Object.keys(list).map(x =&gt; Object.assign(list[x], { key: x }));</span></span>
+<span class="cstat-no" title="statement not covered" >      const sortKey = 'medium-title';</span>
+      // NOTE: brute force way sorting the courses given the fields we have
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >      courses.sort(function (c1, c2) {</span></span>
+<span class="cstat-no" title="statement not covered" >        const a = c1[sortKey].toLowerCase();</span>
+<span class="cstat-no" title="statement not covered" >        const b = c2[sortKey].toLowerCase();</span>
+<span class="cstat-no" title="statement not covered" >        if ((a.includes('major') &amp;&amp; b.includes('major')) || (a.includes('minor') &amp;&amp; b.includes('minor'))) {</span>
+<span class="cstat-no" title="statement not covered" >          let n1 = a.split(' ')[0].split('-')[0];</span>
+<span class="cstat-no" title="statement not covered" >          let n2 = b.split(' ')[0].split('-')[0];</span>
+<span class="cstat-no" title="statement not covered" >          n1 = isNaN(n1) &amp;&amp; !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;</span>
+<span class="cstat-no" title="statement not covered" >          n2 = isNaN(n2) &amp;&amp; !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;</span>
+<span class="cstat-no" title="statement not covered" >          if (n1 === n2) return a.localeCompare(b);</span>
+<span class="cstat-no" title="statement not covered" >          return (!isNaN(n1) &amp;&amp; !isNaN(n2)) || (isNaN(n1) &amp;&amp; isNaN(n2))</span>
+            ? n1 - n2
+            : (!isNaN(n1) ? -1 : 1);
+<span class="cstat-no" title="statement not covered" >        } else if (a.includes('major') &amp;&amp; b.includes('minor')) return -1;</span>
+        else if (b.includes('major') &amp;&amp; a.includes('minor')) return 1;
+        else if (a.includes('major') || a.includes('minor')) return -1;
+        else if (b.includes('major') || b.includes('minor')) return 1;
+        else return a.localeCompare(b);
+      });
+<span class="cstat-no" title="statement not covered" >      return courses;</span>
+    },
+<span class="fstat-no" title="function not covered" >    selectedTrees: function () {</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >      return this.selectedReqs.map(function (req, index) {</span></span>
+<span class="cstat-no" title="statement not covered" >        if (req in this.reqTrees) {</span>
+<span class="cstat-no" title="statement not covered" >          return this.assignListIDs(</span>
+            Object.assign({}, this.reqTrees[req]),
+            index
+          );
+        } else {
+<span class="cstat-no" title="statement not covered" >          return {</span>
+            title: 'loading...',
+            reqs: [],
+            uniqueKey: index
+          };
+        }
+      }, this);
+    }
+  },
+  methods: {
+<span class="fstat-no" title="function not covered" >    fulfilledIcon: function (req) {</span>
+<span class="cstat-no" title="statement not covered" >      return req.fulfilled &amp;&amp; (req.req !== undefined || req.sat_courses.length &gt; 0)</span>
+        ? 'color: #00b300;'
+        : '';
+    },
+<span class="fstat-no" title="function not covered" >    reqInfo: function (event, req) {</span>
+<span class="cstat-no" title="statement not covered" >      event.preventDefault();</span>
+<span class="cstat-no" title="statement not covered" >      event.stopPropagation();</span>
+<span class="cstat-no" title="statement not covered" >      this.viewDialog = true;</span>
+<span class="cstat-no" title="statement not covered" >      this.dialogReq = req;</span>
+    },
+<span class="fstat-no" title="function not covered" >    percentage: function (req) {</span>
+<span class="cstat-no" title="statement not covered" >      const pfulfilled = req.percent_fulfilled;</span>
+<span class="cstat-no" title="statement not covered" >      const pcolor = req.fulfilled</span>
+        ? '#00b300'
+        : req.percent_fulfilled &gt; 15
+          ? '#efce15'
+          : '#ef8214';
+<span class="cstat-no" title="statement not covered" >      return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: #fff`;</span>
+    },
+<span class="fstat-no" title="function not covered" >    deleteReq: function (req) {</span>
+<span class="cstat-no" title="statement not covered" >      const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));</span>
+<span class="cstat-no" title="statement not covered" >      this.$store.commit('removeReq', reqName);</span>
+    },
+<span class="fstat-no" title="function not covered" >    clickRequirement: function (item) {</span>
+<span class="cstat-no" title="statement not covered" >      if (item.req !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >        if (!item['plain-string']) {</span>
+<span class="cstat-no" title="statement not covered" >          let usedReq = item.req;</span>
+<span class="cstat-no" title="statement not covered" >          if (usedReq.indexOf('GIR:') === 0) {</span>
+<span class="cstat-no" title="statement not covered" >            usedReq = usedReq.substring(4);</span>
+          }
+<span class="cstat-no" title="statement not covered" >          this.$store.commit('pushClassStack', usedReq);</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >          this.startProgressDialog(item);</span>
+        }
+      }
+    },
+    // gives each list and sublist an id
+    // progress overrides are a dictionary where the keys are these list ids and the values are the manual progress
+    // for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
+<span class="fstat-no" title="function not covered" >    assignListIDs: function (req, index) {</span>
+<span class="cstat-no" title="statement not covered" >      if ('reqs' in req &amp;&amp; 'list-id' in req) {</span>
+<span class="cstat-no" title="statement not covered" >        let currentListID = req['list-id'];</span>
+<span class="cstat-no" title="statement not covered" >        if (currentListID.indexOf('.reql') &gt;= 0) {</span>
+          // if the requirement is top level, it will have .reql at the end and this needs to be removed
+<span class="cstat-no" title="statement not covered" >          req['list-id'] = req['list-id'].substring(</span>
+            0,
+            req['list-id'].indexOf('.reql')
+          );
+<span class="cstat-no" title="statement not covered" >          currentListID = req['list-id'];</span>
+        }
+<span class="cstat-no" title="statement not covered" >        req.uniqueKey = index + '-' + req['list-id'];</span>
+<span class="cstat-no" title="statement not covered" >        for (let r = 0; r &lt; req.reqs.length; r++) {</span>
+          // give each sub-requirement a list id of [parent list id].[index]
+<span class="cstat-no" title="statement not covered" >          Object.assign(req.reqs[r], { 'list-id': currentListID + '.' + r });</span>
+          // assign list ids to each of the children
+<span class="cstat-no" title="statement not covered" >          req.reqs[r] = this.assignListIDs(req.reqs[r], index);</span>
+        }
+      }
+<span class="cstat-no" title="statement not covered" >      return req;</span>
+    },
+<span class="fstat-no" title="function not covered" >    startProgressDialog: function (req) {</span>
+<span class="cstat-no" title="statement not covered" >      this.progressReq = Object.assign(</span>
+        { threshold: { criterion: 'subject', cutoff: 1, type: 'GTE' } },
+        req
+      );
+<span class="cstat-no" title="statement not covered" >      this.progressDialog = true;</span>
+<span class="cstat-no" title="statement not covered" >      if (this.progressReq['list-id'] in this.progressOverrides) {</span>
+<span class="cstat-no" title="statement not covered" >        this.newManualProgress = this.progressOverrides[this.progressReq['list-id']];</span>
+      }
+    },
+<span class="fstat-no" title="function not covered" >    capitalize: function (word) {</span>
+<span class="cstat-no" title="statement not covered" >      return word[0].toUpperCase() + word.substring(1);</span>
+    },
+<span class="fstat-no" title="function not covered" >    updateManualProgress: function () {</span>
+<span class="cstat-no" title="statement not covered" >      if (this.progressReq['list-id'] !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >        this.$store.commit('updateProgress', {</span>
+          listID: this.progressReq['list-id'],
+          progress: this.newManualProgress
+        });
+      }
+<span class="cstat-no" title="statement not covered" >      this.progressReq = undefined;</span>
+<span class="cstat-no" title="statement not covered" >      this.progressDialog = false;</span>
+<span class="cstat-no" title="statement not covered" >      this.newManualProgress = 0;</span>
+    }
+  }
+};
+&lt;/script&gt;
+&nbsp;
+&lt;style scoped&gt;
+.percentage-bar {
+  background: linear-gradient(
+    90deg,
+    var(--bar-color) var(--percent),
+    var(--bg-color) var(--percent)
+  );
+}
+.p-block {
+  height: 30px;
+  border: 1px solid gray;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.terminal {
+  cursor: default;
+}
+&lt;/style&gt;
+&lt;style&gt;
+/* Makes the leaf margin consistent with the margin of expandable reqs */
+div.v-treeview-node.v-treeview-node--leaf {
+  margin-left: 26px;
+}
+&lt;/style&gt;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Sep 11 2019 20:05:04 GMT-0400 (Eastern Daylight Time)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>
