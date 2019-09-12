@@ -3,10 +3,14 @@ language: node_js
 node_js:
   - "10"
 
-script: npm run test:unit
-# jobs:
-#   include:
-#     - stage: lint
-#     script: npm run lint
-#     - stage: unit
-#     script: npm run test:unit
+stages:
+  - compile
+  - test
+  - deploy
+
+jobs:
+  include:
+    - stage: lint
+      script: npm run lint
+    - stage: unit
+      script: npm run test:unit
