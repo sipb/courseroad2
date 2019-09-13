@@ -132,22 +132,16 @@ export default {
         let email = response.data.academic_id;
         let end_point = email.indexOf('@');
         let kerb = email.slice(0, end_point);
-        kerb = 'a';
         axios.get('https://cors-anywhere.herokuapp.com/https://web.mit.edu/bin/cgicso?query=' + kerb, 
         {headers: {'Access-Control-Allow-Origin': '*'}})
           .then(response => {
           let name_loc = response.data.indexOf("year");
           if (name_loc === -1) {
             console.log("Failed to find user");
-            console.log(this.$store.state.userYear);
-            console.log(this.year);
           } else {
             // subtract 1 for zero-indexing
             let year = response.data.slice(name_loc + 6, name_loc + 7) - 1;
-            console.log(year);
             this.$store.commit('setUserYear', year);
-            console.log(this.$store.state.userYear);
-            console.log(this.year);
         }
       });
       })
@@ -220,7 +214,7 @@ export default {
         .then(function (verifyResponse) {
           if (verifyResponse.data.success) {
             this.$emit('set-sem', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
-            this.year = Math.floor(verifyResponse.data.current_semester / 3);
+            this.year = Math.floor((verifyResponse.data.current_semester - 1)/ 3);
             return verifyResponse.data;
           } else {
             this.logoutUser();
