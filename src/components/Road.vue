@@ -64,8 +64,8 @@ export default {
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
-      //newYear: parseInt((this.currentSemester - 1) / 3),
-      numSems: numSemesters,
+      // newYear: parseInt((this.currentSemester - 1) / 3),
+      numSems: numSemesters
     };
   },
   computed: {
@@ -76,17 +76,17 @@ export default {
       return baseYear - Math.floor((this.currentSemester - 1) / 3);
     },
     newYear: {
-      get: function() {
+      get: function () {
         if (this.$store.state.userYear) {
           return this.$store.state.userYear;
         } else {
           return 0;
-      }
+        }
       },
-      set: function(value) {
+      set: function (value) {
         this.$store.commit('setUserYear', value);
       }
     }
-  },
+  }
 };
 </script>

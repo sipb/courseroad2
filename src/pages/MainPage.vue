@@ -127,7 +127,7 @@
           :value="roadId"
         >
           <road
-            ref = 'roadcomponent'
+            ref="roadcomponent"
             :selected-subjects="roads[roadId].contents.selectedSubjects"
             :road-i-d="roadId"
             :year="year"
@@ -290,7 +290,7 @@ export default {
     },
     roadref: function () {
       return '#road' + this.activeRoad;
-    },
+    }
   },
   watch: {
     // call fireroad to check fulfillment if you change active roads or change something about a road
@@ -331,7 +331,7 @@ export default {
         }
       },
       deep: true
-    },
+    }
   },
   mounted () {
     const today = new Date();
@@ -388,7 +388,6 @@ export default {
     }).catch((e) => {
       console.log('There was an error loading subjects: \n' + e);
     });
-    
   },
   methods: {
     updateFulfillment: function (fulfillmentNeeded) {
