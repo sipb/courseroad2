@@ -388,30 +388,6 @@ export default {
     }).catch((e) => {
       console.log('There was an error loading subjects: \n' + e);
     });
-
-    if (this.$refs.authcomponent.loggedIn) {
-      axios.get(process.env.FIREROAD_URL + `/auth/user_info/`, { headers: {
-        'Authorization': 'Bearer ' + this.$refs.authcomponent.accessInfo.access_token
-      } })
-      .then(response => {
-        let email = response.data.academic_id;
-        let end_point = email.indexOf('@');
-        this.kerb = email.slice(0, end_point);
-        //this.kerb = 'mrittenb';
-        axios.get('https://cors-anywhere.herokuapp.com/https://web.mit.edu/bin/cgicso?query=' + this.kerb, 
-        {headers: {'Access-Control-Allow-Origin': '*'}})
-          .then(response => {
-          let name_loc = response.data.indexOf("year");
-          if (name_loc === -1) {
-            console.log("Failed to find user");
-          } else {
-            // subtract 1 for zero-indexing
-            this.year = response.data.slice(name_loc + 6, name_loc + 7) - 1;
-            this.$refs.authcomponent.changeSemester(this.year);
-        }
-      });
-      })
-    };
     
   },
   methods: {

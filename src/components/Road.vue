@@ -77,13 +77,15 @@ export default {
     },
     newYear: {
       get: function() {
-        if (this.year) {
-          return this.year;
+        if (this.$store.state.userYear) {
+          return this.$store.state.userYear;
         } else {
           return 0;
       }
       },
-      set: function(value) {}
+      set: function(value) {
+        this.$store.commit('setUserYear', value);
+      }
     }
   },
 };

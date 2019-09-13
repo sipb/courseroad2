@@ -10,6 +10,7 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    userYear: 0,
     activeRoad: '$defaultroad$',
     addingFromCard: false,
     classInfoStack: [],
@@ -239,6 +240,9 @@ const store = new Vuex.Store({
     },
     setSubjectsInfo (state, data) {
       state.subjectsInfo = data;
+    },
+    setUserYear (state, year) {
+      state.userYear = year;
     },
     updateProgress (state, progress) {
       Vue.set(state.roads[state.activeRoad].contents.progressOverrides, progress.listID, progress.progress);
