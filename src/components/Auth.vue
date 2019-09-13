@@ -581,7 +581,7 @@ export default {
           this.$emit('set-sem', sem);
         }
       }.bind(this)).catch(function (err) {
-        if (err === 'No auth information') {
+        if (err.message === 'No auth information') {
           this.$emit('set-sem', sem);
         }
       }.bind(this));
