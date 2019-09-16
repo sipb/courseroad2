@@ -127,10 +127,8 @@
           :value="roadId"
         >
           <road
-            ref="roadcomponent"
             :selected-subjects="roads[roadId].contents.selectedSubjects"
             :road-i-d="roadId"
-            :year="year"
             :current-semester="currentSemester"
             :adding-from-card="addingFromCard && activeRoad===roadId"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
@@ -236,8 +234,6 @@ export default {
   },
   data: function () {
     return {
-      kerb: '',
-      year: 0,
       reqTrees: {},
       reqList: [],
       dragSemesterNum: -1,

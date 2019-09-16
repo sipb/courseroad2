@@ -57,14 +57,13 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'year', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
+  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
-      // newYear: parseInt((this.currentSemester - 1) / 3),
       numSems: numSemesters
     };
   },
