@@ -125,22 +125,22 @@ export default {
     },
     loggedIn (newLoggedIn) {
       if (newLoggedIn) {
-          const email = this.accessInfo.academic_id;
-          const endPoint = email.indexOf('@');
-          let kerb = email.slice(0, endPoint);
-          axios.get('https://cors-anywhere.herokuapp.com/https://web.mit.edu/bin/cgicso?query=' + kerb,
-            { headers: { 'Access-Control-Allow-Origin': '*' } })
-            .then(response => {
-              const nameLoc = response.data.indexOf('year');
-              if (nameLoc === -1) {
-                console.log('Failed to find user');
-              } else {
-                // add 6 because it looks like 'year: 1' so the number is 6 from the y
-                // subtract 1 for zero-indexing
-                const year = response.data.slice(nameLoc + 6, nameLoc + 7) - 1;
-                this.$store.commit('setUserYear', year);
-              }
-            });
+        const email = this.accessInfo.academic_id;
+        const endPoint = email.indexOf('@');
+        const kerb = email.slice(0, endPoint);
+        axios.get('https://cors-anywhere.herokuapp.com/https://web.mit.edu/bin/cgicso?query=' + kerb,
+          { headers: { 'Access-Control-Allow-Origin': '*' } })
+          .then(response => {
+            const nameLoc = response.data.indexOf('year');
+            if (nameLoc === -1) {
+              console.log('Failed to find user');
+            } else {
+              // add 6 because it looks like 'year: 1' so the number is 6 from the y
+              // subtract 1 for zero-indexing
+              const year = response.data.slice(nameLoc + 6, nameLoc + 7) - 1;
+              this.$store.commit('setUserYear', year);
+            }
+          });
       };
     }
   },
