@@ -52,6 +52,20 @@ import FilterSet from './FilterSet.vue';
 import $ from 'jquery';
 import Vue from 'vue';
 
+class Filter {
+  constructor(name, shortName, regexFilter, attributeNames, display) {
+    this.name = name;
+    this.short = shortName;
+    this.regex =  new RegExp(regexFilter, 'i').test;
+    this.attributes = attributeNames;
+    this.display = display;
+  }
+
+  matches(input) {
+    return this.regex(input);
+  }
+}
+
 export default {
   name: 'ClassSearch',
   components: {
