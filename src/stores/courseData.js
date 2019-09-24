@@ -242,6 +242,7 @@ const store = new Vuex.Store({
       state.subjectsInfo = data;
     },
     setUserYear (state, year) {
+      console.log('set user year to', year);
       state.userYear = year;
     },
     updateProgress (state, progress) {

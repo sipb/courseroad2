@@ -106,12 +106,14 @@ export default {
         }
       },
       set: function (value) {
+        console.log(value);
         this.$store.commit('setUserYear', value);
       }
     }
   },
   watch: {
     year (newYear) {
+      console.log('change semester');
       this.changeSemester(newYear);
     },
     cookiesAllowed (newCA) {
@@ -128,16 +130,16 @@ export default {
         const email = this.accessInfo.academic_id;
         const endPoint = email.indexOf('@');
         const kerb = email.slice(0, endPoint);
-        axios.get('https://cors-anywhere.herokuapp.com/https://web.mit.edu/bin/cgicso?query=' + kerb,
-          { headers: { 'Access-Control-Allow-Origin': '*' } })
+        axios.get('https://mit-people-v3.cloudhub.io/people/v3/people/' + 'npfoss',
+          { headers: { 'client_id': '01fce9ed7f9d4d26939a68a4126add9b', 
+          'client_secret': 'D4ce51aA6A32421DA9AddF4188b93255'}})
           .then(response => {
-            const nameLoc = response.data.indexOf('year');
-            if (nameLoc === -1) {
-              console.log('Failed to find user');
+            // subtract 1 for zero-indexing
+            let year = response.data.item.affiliations[0].classYear - 1;
+            if (year === undefined) {
+              console.log('Failed to find user yar');
+              year = 0;
             } else {
-              // add 6 because it looks like 'year: 1' so the number is 6 from the y
-              // subtract 1 for zero-indexing
-              const year = response.data.slice(nameLoc + 6, nameLoc + 7) - 1;
               this.$store.commit('setUserYear', year);
             }
           });
@@ -210,6 +212,7 @@ export default {
         .then(function (verifyResponse) {
           if (verifyResponse.data.success) {
             this.$emit('set-sem', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
+            console.log('verify');
             this.year = Math.floor((verifyResponse.data.current_semester - 1) / 3);
             return verifyResponse.data;
           } else {
@@ -235,6 +238,7 @@ export default {
       return this.doSecure(axios.get, link, false);
     },
     postSecure: function (link, params) {
+      console.log('posting');
       return this.doSecure(axios.post, link, params);
     },
     retrieveRoad: function (roadID) {
@@ -566,7 +570,9 @@ export default {
       const sem = currentMonth >= 5 && currentMonth <= 10
         ? 1 + year * 3
         : 3 + year * 3;
+      console.log('outside sem:', sem);
       this.postSecure('/set_semester/', { semester: sem + (currentMonth === 4 ? 1 : 0) }).then(function (res) {
+        console.log('inside sem:', sem);
         if (res.status === 200 && res.data.success) {
           this.$emit('set-sem', sem);
         }
