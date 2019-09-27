@@ -17,7 +17,6 @@
       :is-open="visibleList[index-1]"
       :base-year="baseYear"
       :adding-from-card="addingFromCard"
-      :current-semester="currentSemester"
       :dragging-over="dragSemesterNum===index-1"
       @change-year="changeYearDialog = true"
     />
@@ -57,7 +56,7 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
+  props: ['selectedSubjects', 'roadID', 'addingFromCard', 'dragSemesterNum'],
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;
@@ -72,18 +71,14 @@ export default {
       const today = new Date();
       const currentYear = today.getFullYear();
       const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
-      return baseYear - Math.floor((this.currentSemester - 1) / 3);
+      return baseYear - Math.floor((this.$store.state.currentSemester - 1) / 3);
     },
     newYear: {
       get: function () {
-        if (this.$store.state.userYear) {
-          return this.$store.state.userYear;
-        } else {
-          return 0;
-        }
+        return Math.floor((this.$store.state.currentSemester - 1) / 3);
       },
-      set: function (value) {
-        this.$store.commit('setUserYear', value);
+      set: function (year) {
+        this.$emit('change-year', year);
       }
     }
   }

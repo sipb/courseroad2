@@ -96,24 +96,9 @@ export default {
     },
     saveIcon: function () {
       return this.saveWarnings.length ? 'warning' : 'save';
-    },
-    year: {
-      get: function () {
-        if (this.$store.state.userYear) {
-          return this.$store.state.userYear;
-        } else {
-          return 0;
-        }
-      },
-      set: function (value) {
-        this.$store.commit('setUserYear', value);
-      }
     }
   },
   watch: {
-    year (newYear) {
-      this.changeSemester(newYear);
-    },
     cookiesAllowed (newCA) {
       if (newCA) {
         this.$cookies.set('newRoads', this.getNewRoadData());
@@ -133,12 +118,11 @@ export default {
             'client_secret': 'D4ce51aA6A32421DA9AddF4188b93255' } })
           .then(response => {
             // subtract 1 for zero-indexing
-            let year = response.data.item.affiliations[0].classYear - 1;
+            const year = response.data.item.affiliations[0].classYear - 1;
             if (year === undefined) {
               console.log('Failed to find user year');
-              year = 0;
             } else {
-              this.$store.commit('setUserYear', year);
+              this.changeSemester(year);
             }
           });
       };
@@ -209,8 +193,7 @@ export default {
       return axios.get(process.env.FIREROAD_URL + '/verify/', headerList)
         .then(function (verifyResponse) {
           if (verifyResponse.data.success) {
-            this.$emit('set-sem', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
-            this.year = Math.floor((verifyResponse.data.current_semester - 1) / 3);
+            this.$store.commit('setCurrentSemester', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
             return verifyResponse.data;
           } else {
             this.logoutUser();
@@ -571,11 +554,11 @@ export default {
         : 3 + year * 3;
       this.postSecure('/set_semester/', { semester: sem + (currentMonth === 4 ? 1 : 0) }).then(function (res) {
         if (res.status === 200 && res.data.success) {
-          this.$emit('set-sem', sem);
+          this.$store.commit('setCurrentSemester', sem);
         }
       }.bind(this)).catch(function (err) {
         if (err.message === 'No auth information') {
-          this.$emit('set-sem', sem);
+          this.$store.commit('setCurrentSemester', sem);
         }
       }.bind(this));
     }

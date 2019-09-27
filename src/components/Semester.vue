@@ -84,7 +84,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin, schedule],
-  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
+  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -95,6 +95,9 @@ export default {
   computed: {
     isActiveRoad () {
       return this.$store.state.activeRoad === this.roadID;
+    },
+    currentSemester () {
+      return this.$store.state.currentSemester;
     },
     itemAdding () {
       return this.$store.state.itemAdding;
