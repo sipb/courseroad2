@@ -53,18 +53,78 @@ import $ from 'jquery';
 import Vue from 'vue';
 
 class Filter {
-  constructor(name, shortName, regexFilter, attributeNames, display) {
+  constructor(name, shortName, regexFilter, attributeNames, mode) {
     this.name = name;
     this.short = shortName;
-    this.regex =  new RegExp(regexFilter, 'i').test;
+    this.regex =  new RegExp(regexFilter, 'i');
     this.attributes = attributeNames;
-    this.display = display;
+    if (mode == undefined) {
+      mode = "OR";
+    }
+    this.combine = {
+      "AND": (a, b) => a && b;
+      "OR": (a, b) => a || b;
+    }[mode];
   }
 
-  matches(input) {
-    return this.regex(input);
+  matches(subject) {
+    var isMatch = !this.combine(true, false);
+    for (var attribute in attributes) {
+      isMatch = this.combine(isMatch, this.regex.test(subject[attribute]));
+    }
+    return isMatch;
   }
 }
+
+class FilterSet {
+  constructor(name, filters, combination, commonAttribute) {
+    this.name = name;
+    this.filters = filters;
+    this.combine = {
+      "AND": (a, b) => a && b;
+      "OR": (a, b) => a || b;
+    }[combination];
+    this.attribute = commonAttribute;
+  }
+
+  matches(subject) {
+    var isMatch = !this.combine(true, false);
+    for (var f = 0; f < this.filters.length; f++) {
+      isMatch = this.combine(isMatch, this.filters[f].matches(subject));
+    }
+    return isMatch;
+  }
+}
+
+Filter(name, shortName, regexFilter, attributeNames, mode)
+
+FilterSet(name, filters, combination, commonAttribute)
+
+var girAny = Filter('GIR:Any', 'Any', '.+', ['gir_attribute']),
+var girLab =  Filter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']),
+var girRest = Filter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attribute']),
+var hassAny = Filter('HASS:Any', 'Any', 'HASS', ['hass_attribute']),
+var hassArt = Filter('HASS-A', 'A', 'HASS-A', ['hass_attribute']),
+var hassSocialScience = Filter('HASS-S', 'S', 'HASS-S', ['hass_attribute']),
+var hassHumanity = Filter('HASS-H', 'H', 'HASS-H', ['hass_attribute']),
+var ciAny = Filter('CI:Any', 'Any', 'CI.+', ['communication_requirement']),
+var ciH = Filter('CI-H', 'CI-H', 'CI-H', ['communication_requirement']),
+var ciHW = Filter('CI-HW', 'CI-HW', 'CI-HW', ['communication_requirement']),
+var ciNone = Filter('Not CI', 'None', '^(?!CI)', ['communication_requirement']),
+var levelUG = Filter('Undergraduate', 'UG', 'U', ['level']),
+var levelG = Filter('Graduate', 'G', 'G', ['level']),
+var unitsLt6 = Filter('<6', '<6', '^[0-5]$', ['total_units']),
+var units6 = Filter('6', '6', '^6$', ['total_units']),
+var units9 = Filter('9', '9', '^9$', ['total_units']),
+var units12 = Filter('12', '12', '^12$', ['total_units']),
+var units15 = Filter('15', '15', '^15$', ['total_units']),
+var units6To15 = Filter('6-15', '6-15', '^([7-9]|1[0-5])$', ['total_units']),
+var unitsGte15 = Filter('>=15', '>15', '([2-9][0-9]|1[6-9])$', ['total_units'])
+
+
+var girs = FilterSet('GIR', [girAny, girLab, girRest], 'OR');
+
+
 
 export default {
   name: 'ClassSearch',
@@ -92,6 +152,7 @@ export default {
         levelInput: [],
         unitInput: []
       },
+
       // list of all filters
       // most are regex but unitInput tests math equations
       // name is the display name of the filter, short is the short display name, and filterString is the filter regex/math
