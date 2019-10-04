@@ -42,6 +42,11 @@ const store = new Vuex.Store({
     // list of road IDs that have not been retrieved from the server yet
     unretrieved: []
   },
+  getters: {
+    userYear (state) {
+      return Math.floor((state.currentSemester - 1) / 3);
+    }
+  },
   mutations: {
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);

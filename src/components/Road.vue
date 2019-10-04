@@ -15,7 +15,6 @@
       :semester-subjects="selectedSubjects[index-1]"
       :road-i-d="roadID"
       :is-open="visibleList[index-1]"
-      :base-year="baseYear"
       :adding-from-card="addingFromCard"
       :dragging-over="dragSemesterNum===index-1"
       @change-year="changeYearDialog = true"
@@ -67,18 +66,12 @@ export default {
     };
   },
   computed: {
-    baseYear: function () {
-      const today = new Date();
-      const currentYear = today.getFullYear();
-      const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
-      return baseYear - this.year;
-    },
     year: {
       get: function () {
-        return Math.floor((this.$store.state.currentSemester - 1) / 3);
+        return this.$store.getters.userYear;
       },
       set: function (newYear) {
-        this.$emit('change-year', newYear);
+        this.$emit('change-year', newYear); // rename either this or the one in semester
       }
     }
   }

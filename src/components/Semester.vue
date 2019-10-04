@@ -84,7 +84,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin, schedule],
-  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear'],
+  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -95,6 +95,13 @@ export default {
   computed: {
     isActiveRoad () {
       return this.$store.state.activeRoad === this.roadID;
+    },
+    baseYear: function () {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
+      console.log(this.$store.getters.userYear);
+      return baseYear - this.$store.getters.userYear;
     },
     currentSemester () {
       return this.$store.state.currentSemester;
@@ -297,7 +304,7 @@ export default {
   methods: {
     changeYear: function (event) {
       event.stopPropagation();
-      this.$emit('change-year');
+      this.$emit('change-year'); //renane this
     },
     noLongerOffered: function (course) {
       if (course.is_historical) {
