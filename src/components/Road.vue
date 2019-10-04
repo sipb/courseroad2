@@ -17,7 +17,7 @@
       :is-open="visibleList[index-1]"
       :adding-from-card="addingFromCard"
       :dragging-over="dragSemesterNum===index-1"
-      @change-year="changeYearDialog = true"
+      @open-change-year-dialog="changeYearDialog = true"
     />
     <v-dialog v-model="changeYearDialog" max-width="600">
       <v-card>
@@ -71,7 +71,7 @@ export default {
         return this.$store.getters.userYear;
       },
       set: function (newYear) {
-        this.$emit('change-year', newYear); // rename either this or the one in semester
+        this.$emit('change-year', newYear);
       }
     }
   }

@@ -11,7 +11,7 @@
           <span style="width: 6em; display: inline-block;">
             <b>
               <v-hover>
-                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="changeYear">
+                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
                   {{ semesterType }}
                   {{ semesterYear }}
                 </span>
@@ -100,7 +100,6 @@ export default {
       const today = new Date();
       const currentYear = today.getFullYear();
       const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
-      console.log(this.$store.getters.userYear);
       return baseYear - this.$store.getters.userYear;
     },
     currentSemester () {
@@ -302,9 +301,9 @@ export default {
     }
   },
   methods: {
-    changeYear: function (event) {
+    openChangeYearDialog: function (event) {
       event.stopPropagation();
-      this.$emit('change-year'); //renane this
+      this.$emit('open-change-year-dialog');
     },
     noLongerOffered: function (course) {
       if (course.is_historical) {
