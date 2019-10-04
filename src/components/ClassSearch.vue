@@ -53,11 +53,12 @@ import $ from 'jquery';
 import Vue from 'vue';
 
 class Filter {
-  constructor(name, shortName, regexFilter, attributeNames, mode) {
+  constructor(name, shortName, regexFilter, attributeNames, requires, mode) {
     this.name = name;
     this.short = shortName;
-    this.regex =  new RegExp(regexFilter, 'i');
+    this.regex =  regexFilter;
     this.attributes = attributeNames;
+    this.requires = requires;
     if (mode == undefined) {
       mode = "OR";
     }
@@ -67,17 +68,23 @@ class Filter {
     }[mode];
   }
 
-  matches(subject) {
+  matches(subject, inputs) {
     var isMatch = !this.combine(true, false);
+    if (this.requires) {
+      var regexAddOn = inputs[this.requires];
+    }
+
+    var testerFunction = new RegExp(this.regex + regexAddOn).test;
+
     for (var attribute in attributes) {
-      isMatch = this.combine(isMatch, this.regex.test(subject[attribute]));
+      isMatch = this.combine(isMatch, testerFunction(subject[attribute]));
     }
     return isMatch;
   }
 }
 
 class FilterSet {
-  constructor(name, filters, combination, commonAttribute) {
+  constructor(name, filters, combination) {
     this.name = name;
     this.filters = filters;
     this.combine = {
@@ -87,42 +94,45 @@ class FilterSet {
     this.attribute = commonAttribute;
   }
 
-  matches(subject) {
+  matches(subject, applied, inputs) {
     var isMatch = !this.combine(true, false);
     for (var f = 0; f < this.filters.length; f++) {
-      isMatch = this.combine(isMatch, this.filters[f].matches(subject));
+      if (applied.indexOf(f) >= 0) {
+        isMatch = this.combine(isMatch, this.filters[f].matches(subject, inputs));
+      }
     }
     return isMatch;
   }
 }
 
-Filter(name, shortName, regexFilter, attributeNames, mode)
 
-FilterSet(name, filters, combination, commonAttribute)
-
-var girAny = Filter('GIR:Any', 'Any', '.+', ['gir_attribute']),
-var girLab =  Filter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']),
-var girRest = Filter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attribute']),
-var hassAny = Filter('HASS:Any', 'Any', 'HASS', ['hass_attribute']),
-var hassArt = Filter('HASS-A', 'A', 'HASS-A', ['hass_attribute']),
-var hassSocialScience = Filter('HASS-S', 'S', 'HASS-S', ['hass_attribute']),
-var hassHumanity = Filter('HASS-H', 'H', 'HASS-H', ['hass_attribute']),
-var ciAny = Filter('CI:Any', 'Any', 'CI.+', ['communication_requirement']),
-var ciH = Filter('CI-H', 'CI-H', 'CI-H', ['communication_requirement']),
-var ciHW = Filter('CI-HW', 'CI-HW', 'CI-HW', ['communication_requirement']),
-var ciNone = Filter('Not CI', 'None', '^(?!CI)', ['communication_requirement']),
-var levelUG = Filter('Undergraduate', 'UG', 'U', ['level']),
-var levelG = Filter('Graduate', 'G', 'G', ['level']),
-var unitsLt6 = Filter('<6', '<6', '^[0-5]$', ['total_units']),
-var units6 = Filter('6', '6', '^6$', ['total_units']),
-var units9 = Filter('9', '9', '^9$', ['total_units']),
-var units12 = Filter('12', '12', '^12$', ['total_units']),
-var units15 = Filter('15', '15', '^15$', ['total_units']),
-var units6To15 = Filter('6-15', '6-15', '^([7-9]|1[0-5])$', ['total_units']),
-var unitsGte15 = Filter('>=15', '>15', '([2-9][0-9]|1[6-9])$', ['total_units'])
-
+var girAny = Filter('GIR:Any', 'Any', '.+', ['gir_attribute']);
+var girLab =  Filter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
+var girRest = Filter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attribute']);
+var hassAny = Filter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
+var hassArt = Filter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
+var hassSocialScience = Filter('HASS-S', 'S', 'HASS-S', ['hass_attribute']);
+var hassHumanity = Filter('HASS-H', 'H', 'HASS-H', ['hass_attribute']);
+var ciAny = Filter('CI:Any', 'Any', 'CI.+', ['communication_requirement']);
+var ciH = Filter('CI-H', 'CI-H', 'CI-H', ['communication_requirement']);
+var ciHW = Filter('CI-HW', 'CI-HW', 'CI-HW', ['communication_requirement']);
+var ciNone = Filter('Not CI', 'None', '^(?!CI)', ['communication_requirement']);
+var levelUG = Filter('Undergraduate', 'UG', 'U', ['level']);
+var levelG = Filter('Graduate', 'G', 'G', ['level']);
+var unitsLt6 = Filter('<6', '<6', '^[0-5]$', ['total_units']);
+var units6 = Filter('6', '6', '^6$', ['total_units']);
+var units9 = Filter('9', '9', '^9$', ['total_units']);
+var units12 = Filter('12', '12', '^12$', ['total_units']);
+var units15 = Filter('15', '15', '^15$', ['total_units']);
+var units6To15 = Filter('6-15', '6-15', '^([7-9]|1[0-5])$', ['total_units']);
+var unitsGte15 = Filter('>=15', '>15', '([2-9][0-9]|1[6-9])$', ['total_units']);
+var textFilter = Filter('Subject ID', 'ID', '', ['subject_id', 'title'], 'nameInput', 'OR');
 
 var girs = FilterSet('GIR', [girAny, girLab, girRest], 'OR');
+var hass = FilterSet('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity], 'OR');
+var ci = FilterSet('CI', [ciAny, ciH, ciNone], 'OR');
+var level = FilterSet('Level', [levelUG, levelG], 'OR');
+var units = FilterSet('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15]);
 
 
 
