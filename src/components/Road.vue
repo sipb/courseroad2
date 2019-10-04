@@ -39,7 +39,7 @@
           <v-btn flat @click="changeYearDialog = false">
             Cancel
           </v-btn>
-          <v-btn color="primary" @click="$emit('change-year',newYear); changeYearDialog = false;">
+          <v-btn color="primary" @click="$emit('change-year',year); changeYearDialog = false;">
             Submit
           </v-btn>
         </v-card-actions>
@@ -71,7 +71,7 @@ export default {
       const today = new Date();
       const currentYear = today.getFullYear();
       const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
-      return baseYear - Math.floor((this.$store.state.currentSemester - 1) / 3);
+      return baseYear - this.year;
     },
     year: {
       get: function () {

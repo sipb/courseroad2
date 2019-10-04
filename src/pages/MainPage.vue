@@ -329,7 +329,7 @@ export default {
   mounted () {
     const today = new Date();
     const month = today.getMonth();
-    this.$store.state.currentSemester = (month >= 4 && month <= 10) ? 1 : 3;
+    this.$store.commit('setCurrentSemester', (month >= 4 && month <= 10) ? 1 : 3);
 
     const borders = $('.v-navigation-drawer__border');
     const scrollers = $('.scroller');
