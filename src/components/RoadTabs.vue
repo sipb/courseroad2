@@ -6,10 +6,11 @@
     >
       <v-tabs-slider />
       <v-tab
+        :class="tabStyle"
         v-for="roadId in Object.keys(roads)"
         :key="roadId"
         :href="`#${roadId}`"
-        @click="$store.commit('setActiveRoad', roadId)"
+        @click="$store.commit('setActiveRoad', roadId);"
       >
         {{ roads[roadId].name }}
         <v-btn v-show="roadId == tabRoad" icon flat @click="newRoadName = roads[roadId].name; editDialog = true;">
@@ -120,7 +121,8 @@ export default {
       duplicateRoad: false,
       duplicateRoadSource: '$defaultroad$',
       newRoadName: '',
-      tabRoad: this.activeRoad
+      tabRoad: this.activeRoad,
+      tabStyle: 'tabStyle'
     };
   },
   computed: {
@@ -169,5 +171,14 @@ export default {
 div.v-tabs__container {
   display: unset;
   white-space: unset;
+}
+.tabStyle{
+  border-top:1px solid #81b1ff;
+  border-left:1px solid #81b1ff;
+  border-right:1px solid #81b1ff;
+  border-top-left-radius: 10px;
+}
+.tabStyle:hover{
+  background-color:#cae1f8;
 }
 </style>
