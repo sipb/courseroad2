@@ -53,51 +53,90 @@ import $ from 'jquery';
 import Vue from 'vue';
 
 class Filter {
-  constructor(name, shortName, regexFilter, attributeNames, requires, mode) {
+  constructor(name, shortName, filter, attributeNames, requires, mode) {
     this.name = name;
     this.short = shortName;
-    this.regex =  regexFilter;
+    this.filter = filter;
     this.attributes = attributeNames;
     this.requires = requires;
     if (mode == undefined) {
       mode = "OR";
     }
     this.combine = {
-      "AND": (a, b) => a && b;
-      "OR": (a, b) => a || b;
+      "AND": (a, b) => a && b,
+      "OR": (a, b) => a || b
     }[mode];
   }
 
   matches(subject, inputs) {
     var isMatch = !this.combine(true, false);
-    if (this.requires) {
-      var regexAddOn = inputs[this.requires];
-    }
-
-    var testerFunction = new RegExp(this.regex + regexAddOn).test;
-
-    for (var attribute in attributes) {
-      isMatch = this.combine(isMatch, testerFunction(subject[attribute]));
+    for (var a = 0; a < this.attributes.length; a++) {
+      var attribute = this.attributes[a];
+      console.log(attribute);
+      console.log(subject[attribute]);
+      console.log(this.filter(subject[attribute]))
+      isMatch = this.combine(isMatch, this.filter(subject[attribute]));
     }
     return isMatch;
   }
+
 }
 
-class FilterSet {
+class RegexFilter extends Filter {
+  constructor(name, shortName, regex, attributeNames, requires, mode) {
+    var regexObject = new RegExp(regex, 'i');
+    var testFunction = regexObject.test.bind(regexObject);
+    super(name, shortName, testFunction, attributeNames, requires, mode);
+    this.regex = regex;
+  }
+
+  matches(subject, inputs) {
+    var regexAddOn = '';
+
+    if (this.requires != undefined) {
+      regexAddOn = inputs[this.requires];
+    }
+
+    var oldTestFunction = this.filter;
+    var newRegexObject = new RegExp(this.regex + regexAddOn, 'i');
+    this.filter =  newRegexObject.test.bind(newRegexObject);
+
+    var result =  Object.getPrototypeOf(RegexFilter.prototype).matches.call(this, subject, inputs);
+    this.filter = oldTestFunction;
+    return result;
+  }
+
+}
+
+
+class MathFilter extends Filter {
+  constructor(name, shortName, range, inclusive, attributeNames, mode) {
+    var comparator = function(input) {
+      if ((range[0] == undefined || input > range[0]) && (range[1] == undefined || input < range[1])) {
+        return true;
+      } else if(inclusive && (input == range[0] || input == range[1])) {
+        return true;
+      }
+      return false;
+    }.bind({inclusive: inclusive, range: range});
+    super(name, shortName, comparator, attributeNames, [], mode);
+  }
+}
+
+class FilterGroup {
   constructor(name, filters, combination) {
     this.name = name;
     this.filters = filters;
     this.combine = {
-      "AND": (a, b) => a && b;
-      "OR": (a, b) => a || b;
+      "AND": (a, b) => a && b,
+      "OR": (a, b) => a || b
     }[combination];
-    this.attribute = commonAttribute;
   }
 
   matches(subject, applied, inputs) {
     var isMatch = !this.combine(true, false);
     for (var f = 0; f < this.filters.length; f++) {
-      if (applied.indexOf(f) >= 0) {
+      if (applied[f]) {
         isMatch = this.combine(isMatch, this.filters[f].matches(subject, inputs));
       }
     }
@@ -106,34 +145,33 @@ class FilterSet {
 }
 
 
-var girAny = Filter('GIR:Any', 'Any', '.+', ['gir_attribute']);
-var girLab =  Filter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
-var girRest = Filter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attribute']);
-var hassAny = Filter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
-var hassArt = Filter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
-var hassSocialScience = Filter('HASS-S', 'S', 'HASS-S', ['hass_attribute']);
-var hassHumanity = Filter('HASS-H', 'H', 'HASS-H', ['hass_attribute']);
-var ciAny = Filter('CI:Any', 'Any', 'CI.+', ['communication_requirement']);
-var ciH = Filter('CI-H', 'CI-H', 'CI-H', ['communication_requirement']);
-var ciHW = Filter('CI-HW', 'CI-HW', 'CI-HW', ['communication_requirement']);
-var ciNone = Filter('Not CI', 'None', '^(?!CI)', ['communication_requirement']);
-var levelUG = Filter('Undergraduate', 'UG', 'U', ['level']);
-var levelG = Filter('Graduate', 'G', 'G', ['level']);
-var unitsLt6 = Filter('<6', '<6', '^[0-5]$', ['total_units']);
-var units6 = Filter('6', '6', '^6$', ['total_units']);
-var units9 = Filter('9', '9', '^9$', ['total_units']);
-var units12 = Filter('12', '12', '^12$', ['total_units']);
-var units15 = Filter('15', '15', '^15$', ['total_units']);
-var units6To15 = Filter('6-15', '6-15', '^([7-9]|1[0-5])$', ['total_units']);
-var unitsGte15 = Filter('>=15', '>15', '([2-9][0-9]|1[6-9])$', ['total_units']);
-var textFilter = Filter('Subject ID', 'ID', '', ['subject_id', 'title'], 'nameInput', 'OR');
+var girAny = new RegexFilter('GIR:Any', 'Any', '.+', ['gir_attribute']);
+var girLab =  new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
+var girRest = new RegexFilter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attribute']);
+var hassAny = new RegexFilter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
+var hassArt = new RegexFilter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
+var hassSocialScience = new RegexFilter('HASS-S', 'S', 'HASS-S', ['hass_attribute']);
+var hassHumanity = new RegexFilter('HASS-H', 'H', 'HASS-H', ['hass_attribute']);
+var ciAny = new RegexFilter('CI:Any', 'Any', 'CI.+', ['communication_requirement']);
+var ciH = new RegexFilter('CI-H', 'CI-H', 'CI-H', ['communication_requirement']);
+var ciHW = new RegexFilter('CI-HW', 'CI-HW', 'CI-HW', ['communication_requirement']);
+var ciNone = new RegexFilter('Not CI', 'None', '^(?!CI)', ['communication_requirement']);
+var levelUG = new RegexFilter('Undergraduate', 'UG', 'U', ['level']);
+var levelG = new RegexFilter('Graduate', 'G', 'G', ['level']);
+var unitsLt6 = new MathFilter('<6', '<6', [undefined, 6], false, ['total_units']);
+var units6 = new MathFilter('6', '6', [6, 6], true, ['total_units']);
+var units9 = new MathFilter('9', '9', [9, 9], true, ['total_units']);
+var units12 = new MathFilter('12', '12', [12, 12], true, ['total_units']);
+var units15 = new MathFilter('15', '15', [15, 15], true, ['total_units']);
+var units6To15 = new MathFilter('6-15', '6-15', [6, 15], true, ['total_units']);
+var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_units']);
+var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'nameInput', 'OR');
 
-var girs = FilterSet('GIR', [girAny, girLab, girRest], 'OR');
-var hass = FilterSet('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity], 'OR');
-var ci = FilterSet('CI', [ciAny, ciH, ciNone], 'OR');
-var level = FilterSet('Level', [levelUG, levelG], 'OR');
-var units = FilterSet('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15]);
-
+var girs = new FilterGroup('GIR', [girAny, girLab, girRest], 'OR');
+var hass = new FilterGroup('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity], 'OR');
+var ci = new FilterGroup('CI', [ciAny, ciH, ciNone], 'OR');
+var level = new FilterGroup('Level', [levelUG, levelG], 'OR');
+var units = new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR');
 
 
 export default {
