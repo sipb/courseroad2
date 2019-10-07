@@ -81,10 +81,14 @@ class Filter {
 
 class RegexFilter extends Filter {
   constructor(name, shortName, regex, attributeNames, requires, mode) {
-    var regexObject = new RegExp(regex, 'i');
-    var testFunction = regexObject.test.bind(regexObject);
+    var testFunction = RegexFilter.getRegexTestFunction(regex);
     super(name, shortName, testFunction, attributeNames, requires, mode);
     this.regex = regex;
+  }
+
+  static getRegexTestFunction(regex) {
+    var regexObject = new RegExp(regex, 'i');
+    return regexObject.test.bind(regexObject);
   }
 
   matches(subject, inputs) {
@@ -95,12 +99,70 @@ class RegexFilter extends Filter {
     }
 
     var oldTestFunction = this.filter;
-    var newRegexObject = new RegExp(this.regex + regexAddOn, 'i');
-    this.filter =  newRegexObject.test.bind(newRegexObject);
+    this.filter = RegexFilter.getRegexTestFunction(this.regex + regexAddOn)
 
-    var result =  Object.getPrototypeOf(RegexFilter.prototype).matches.call(this, subject, inputs);
+    var result =  super.matches.call(this, subject, inputs);
     this.filter = oldTestFunction;
     return result;
+  }
+
+  setupVariants(inputs, priorityDirections, priorityOrder) {
+    var atStart = function(regex) {
+      return '^' + regex;
+    }
+    var asLiteral = function(regex) {
+      return regex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    var priorityFunctions = {
+      'atStart': atStart,
+      'asLiteral': asLiteral
+    }
+
+    var applicationOrder = ['asLiteral', 'atStart'];
+
+    var regexAddOn = '';
+
+    if (this.requires != undefined) {
+      regexAddOn = inputs[this.requires];
+    }
+
+    var regex = this.regex + regexAddOn;
+
+    var regexPriorities = [[]];
+
+    priorityOrder.reverse();
+    for(var p = 0; p < priorityOrder.length; p++) {
+      var isPrioritized = priorityDirections[priorityOrder[p]];
+
+      var arrayWithPriority = regexPriorities.map((funcNames)=>funcNames.concat([priorityOrder[p]]));
+      if (isPrioritized) {
+        regexPriorities.push(...arrayWithPriority);
+      } else {
+        arrayWithPriority.push(...regexPriorities);
+        regexPriorities = arrayWithPriority;
+      }
+    }
+
+    var priorities = regexPriorities.map(function(priorityFuncs) {
+      return priorityFuncs
+            .sort((a, b) => applicationOrder.indexOf(a) - applicationOrder.indexOf(b))
+            .reduce((acc, func) => (priorityFunctions[func])(acc), regex);
+    }).map(RegexFilter.getRegexTestFunction);
+
+    this.priorities = priorities;
+  }
+
+  compareByVariants(subject) {
+    var orders = [];
+
+    for (var a = 0; a < this.attributes.length; a++) {
+      var matches = this.priorities.map((test)=> test(subject[this.attributes[a]]));
+      orders.push(matches.lastIndexOf(true));
+    }
+
+    return Math.max(...orders);
+
   }
 
 }
@@ -217,46 +279,31 @@ export default {
       if (!returnAny) {
         return [];
       }
-
-      // escapes special characters for regex in a string
-      function escapeRegExp (string) {
-        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-      }
-      // gets the .test function (which tests if a string matches regex) from each regex filter in a group
-      function getRegexFuncs (regexStrings) {
-        return regexStrings.map(function (rs) {
-          const r = new RegExp(rs, 'i');
-          const t = r.test.bind(r);
-          return t;
-        });
-      }
-
+      
       const filteredSubjects = this.allSubjects.filter(function(subject) {
         var matches = true;
         for (var filterGroup in this.allFilters) {
           matches = matches && this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup], { nameInput: this.nameInput });
         }
+        matches = matches & textFilter.matches(subject, { nameInput: this.nameInput });
         return matches;
       }.bind(this))
 
-      if (this.nameInput.length) {
-        const sortingOrder = [this.nameInput, '^' + this.nameInput, escapeRegExp(this.nameInput), '^' + escapeRegExp(this.nameInput)];
-        const sortingFuncs = getRegexFuncs(sortingOrder);
-        const getOrderForString = function (matchingString) {
-          const matches = sortingFuncs.map((func) => func(matchingString));
-          return matches.lastIndexOf(true);
-        };
-        const getOrder = function (subject) {
-          const idMatch = getOrderForString(subject.subject_id);
-          const nameMatch = getOrderForString(subject.title);
-          return Math.max(idMatch, nameMatch);
-        };
-        return filteredSubjects.sort(function (subject1, subject2) {
-          return getOrder(subject2) - getOrder(subject1);
+
+      if(this.nameInput.length) {
+        textFilter.setupVariants({nameInput: this.nameInput}, {'atStart': true, 'asLiteral': true}, ['asLiteral', 'atStart']);
+
+        var getSortOrder = function(subject) {
+          return textFilter.compareByVariants(subject);
+        }.bind({nameInput: this.nameInput});
+
+        return filteredSubjects.sort(function(subject1, subject2) {
+          return getSortOrder(subject2) - getSortOrder(subject1);
         });
       } else {
         return filteredSubjects;
       }
+
     },
     classInfoStack () {
       return this.$store.state.classInfoStack;
