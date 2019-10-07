@@ -69,7 +69,9 @@ class Filter {
   }
 
   matches(subject, inputs) {
+    // starting value of true for and, false for or
     var isMatch = !this.combine(true, false);
+    // check each attribute for a match
     for (var a = 0; a < this.attributes.length; a++) {
       var attribute = this.attributes[a];
       isMatch = this.combine(isMatch, this.filter(subject[attribute]));
@@ -88,24 +90,25 @@ class RegexFilter extends Filter {
 
   static getRegexTestFunction(regex) {
     var regexObject = new RegExp(regex, 'i');
+    // Regex test function only works when bound to the regex object
     return regexObject.test.bind(regexObject);
   }
 
   matches(subject, inputs) {
-    var regexAddOn = '';
-
-    if (this.requires != undefined) {
-      regexAddOn = inputs[this.requires];
-    }
-
     var oldTestFunction = this.filter;
-    this.filter = RegexFilter.getRegexTestFunction(this.regex + regexAddOn)
+
+    // Add input to regex test function if applicable
+    if (this.requires != undefined) {
+      var regexAddOn = inputs[this.requires];
+      this.filter = RegexFilter.getRegexTestFunction(this.regex + regexAddOn)
+    }
 
     var result =  super.matches.call(this, subject, inputs);
     this.filter = oldTestFunction;
     return result;
   }
 
+  // Set up the priorities of variants of the regex
   setupVariants(inputs, priorityDirections, priorityOrder) {
     var atStart = function(regex) {
       return '^' + regex;
@@ -114,13 +117,16 @@ class RegexFilter extends Filter {
       return regex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    // Functions to transform regex by a priority
     var priorityFunctions = {
       'atStart': atStart,
       'asLiteral': asLiteral
     }
 
+    // Order to apply functions (must add ^ after escaping, for example)
     var applicationOrder = ['asLiteral', 'atStart'];
 
+    // Get regex from inputs
     var regexAddOn = '';
 
     if (this.requires != undefined) {
@@ -129,13 +135,17 @@ class RegexFilter extends Filter {
 
     var regex = this.regex + regexAddOn;
 
+    // Create list of different combinations of functions to apply
+    // Prioritized functions last; which priority to consider first by priority order
     var regexPriorities = [[]];
 
     priorityOrder.reverse();
     for(var p = 0; p < priorityOrder.length; p++) {
       var isPrioritized = priorityDirections[priorityOrder[p]];
-
+      // Create two lists; one with priority applied, the other without
       var arrayWithPriority = regexPriorities.map((funcNames)=>funcNames.concat([priorityOrder[p]]));
+
+      // If this priority is prioritized, put it last
       if (isPrioritized) {
         regexPriorities.push(...arrayWithPriority);
       } else {
@@ -144,23 +154,29 @@ class RegexFilter extends Filter {
       }
     }
 
+    // Apply these functions to the base regex, in the application order
     var priorities = regexPriorities.map(function(priorityFuncs) {
       return priorityFuncs
             .sort((a, b) => applicationOrder.indexOf(a) - applicationOrder.indexOf(b))
             .reduce((acc, func) => (priorityFunctions[func])(acc), regex);
     }).map(RegexFilter.getRegexTestFunction);
 
+    // Set member variable to use in future prioritization checks
     this.priorities = priorities;
   }
 
   compareByVariants(subject) {
+    // List of sort numbers for different attributes
     var orders = [];
 
     for (var a = 0; a < this.attributes.length; a++) {
+      // Get last index where the regex in the priority list matches
+      // The priority list is in reverse order of priority
       var matches = this.priorities.map((test)=> test(subject[this.attributes[a]]));
       orders.push(matches.lastIndexOf(true));
     }
 
+    // Get largest sort priority of all the matching attributes
     return Math.max(...orders);
 
   }
@@ -204,7 +220,6 @@ class FilterGroup {
     return noFilters || isMatch;
   }
 }
-
 
 var girAny = new RegexFilter('GIR:Any', 'Any', '.+', ['gir_attribute']);
 var girLab =  new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
@@ -271,7 +286,7 @@ export default {
       return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
-      // only display subjects if you are filtering by something
+      // Only display subjects if you are filtering by something
       let returnAny = this.nameInput.length > 0;
       for (const filterName in this.chosenFilters) {
         returnAny = returnAny || this.chosenFilters[filterName].reduce((acc, applied) => acc || applied, false);
@@ -279,7 +294,8 @@ export default {
       if (!returnAny) {
         return [];
       }
-      
+
+      // Filter subjects that match all filter sets and the text filter
       const filteredSubjects = this.allSubjects.filter(function(subject) {
         var matches = true;
         for (var filterGroup in this.allFilters) {
@@ -289,17 +305,16 @@ export default {
         return matches;
       }.bind(this))
 
-
+      // Sort subjects by priority order
       if(this.nameInput.length) {
+        // Sort first by if it's a literal string vs regex match, then by if it starts with the search
         textFilter.setupVariants({nameInput: this.nameInput}, {'atStart': true, 'asLiteral': true}, ['asLiteral', 'atStart']);
 
-        var getSortOrder = function(subject) {
-          return textFilter.compareByVariants(subject);
-        }.bind({nameInput: this.nameInput});
-
+        // Compare by variants for each subject
         return filteredSubjects.sort(function(subject1, subject2) {
-          return getSortOrder(subject2) - getSortOrder(subject1);
+          return textFilter.compareByVariants(subject2) - textFilter.compareByVariants(subject1);
         });
+        
       } else {
         return filteredSubjects;
       }
