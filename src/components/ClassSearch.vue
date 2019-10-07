@@ -1,13 +1,13 @@
 <template>
   <v-container :style="searchHeight + 'display: flex; flex-direction:column;'">
     <div>
-      <filter-set v-model="chosenFilters.girInput" :label="'GIR'" :filters="allFilters.girInput" />
-      <filter-set v-model="chosenFilters.hassInput" :label="'HASS'" :filters="allFilters.hassInput" />
-      <filter-set v-model="chosenFilters.ciInput" :label="'CI'" :filters="allFilters.ciInput" />
-      <filter-set v-model="chosenFilters.levelInput" :label="'Level'" :filters="allFilters.levelInput" />
-      <filter-set v-model="chosenFilters.unitInput" :label="'Units'" :filters="allFilters.unitInput" />
+      <filter-set v-model="chosenFilters.girs" :label="'GIR'" :filters="allFilters.girs.filters" />
+      <filter-set v-model="chosenFilters.hass" :label="'HASS'" :filters="allFilters.hass.filters" />
+      <filter-set v-model="chosenFilters.ci" :label="'CI'" :filters="allFilters.ci.filters" />
+      <filter-set v-model="chosenFilters.level" :label="'Level'" :filters="allFilters.level.filters" />
+      <filter-set v-model="chosenFilters.units" :label="'Units'" :filters="allFilters.units.filters" />
     </div>
-    <h4> Search: {{ chosenFilters.nameInput }} </h4>
+    <h4> Search: {{ nameInput }} </h4>
     <h4> Results: </h4>
     <div style="display: flex; flex: 1; min-height: 0px;">
       <div style="flex: 1; overflow: auto;">
@@ -72,9 +72,6 @@ class Filter {
     var isMatch = !this.combine(true, false);
     for (var a = 0; a < this.attributes.length; a++) {
       var attribute = this.attributes[a];
-      console.log(attribute);
-      console.log(subject[attribute]);
-      console.log(this.filter(subject[attribute]))
       isMatch = this.combine(isMatch, this.filter(subject[attribute]));
     }
     return isMatch;
@@ -135,12 +132,14 @@ class FilterGroup {
 
   matches(subject, applied, inputs) {
     var isMatch = !this.combine(true, false);
+    var noFilters = true;
     for (var f = 0; f < this.filters.length; f++) {
       if (applied[f]) {
         isMatch = this.combine(isMatch, this.filters[f].matches(subject, inputs));
       }
+      noFilters = noFilters && !applied[f];
     }
-    return isMatch;
+    return noFilters || isMatch;
   }
 }
 
@@ -167,13 +166,6 @@ var units6To15 = new MathFilter('6-15', '6-15', [6, 15], true, ['total_units']);
 var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_units']);
 var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'nameInput', 'OR');
 
-var girs = new FilterGroup('GIR', [girAny, girLab, girRest], 'OR');
-var hass = new FilterGroup('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity], 'OR');
-var ci = new FilterGroup('CI', [ciAny, ciH, ciNone], 'OR');
-var level = new FilterGroup('Level', [levelUG, levelG], 'OR');
-var units = new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR');
-
-
 export default {
   name: 'ClassSearch',
   components: {
@@ -191,60 +183,21 @@ export default {
       searchHeight: '',
       menuMargin: 20,
       // lists of the filters turned on in each filter group
+      nameInput: '',
       chosenFilters: {
-        nameInput: '',
-        girInput: [],
-        hassInput: [],
-        ciInput: [],
-        // semesterInput: [],
-        levelInput: [],
-        unitInput: []
+        girs: [false, false, false],
+        hass: [false, false, false, false],
+        ci: [false, false, false],
+        level: [false, false],
+        units: [false, false, false, false, false, false, false]
       },
-
-      // list of all filters
-      // most are regex but unitInput tests math equations
-      // name is the display name of the filter, short is the short display name, and filterString is the filter regex/math
       allFilters: {
-        girInput: [
-          { name: 'Any', short: 'Any', filterString: '.+' },
-          { name: 'Lab', short: 'Lab', filterString: '.*(LAB|LAB2).*' },
-          { name: 'REST', short: 'REST', filterString: '.*(REST|RST2).*' }
-        ],
-        hassInput: [
-          { name: 'Any', short: 'Any', filterString: 'HASS' },
-          { name: 'Art', short: 'A', filterString: 'HASS-A' },
-          { name: 'Social Science', short: 'S', filterString: 'HASS-S' },
-          { name: 'Humanity', short: 'H', filterString: 'HASS-H' }
-        ],
-        ciInput: [
-          { name: 'Any', short: 'Any', filterString: 'CI.+' },
-          { name: 'CI-H', short: 'CI-H', filterString: 'CI-H' },
-          { name: 'CI-HW', short: 'CI-HW', filterString: 'CI-HW' },
-          // {name: "CI-M", short: "CI-M", filterString: "CI-M"},
-          { name: 'Not CI', short: 'None', filterString: '^(?!CI)' }
-        ],
-        levelInput: [
-          { name: 'Undergraduate', short: 'UG', filterString: 'U' },
-          { name: 'Graduate', short: 'G', filterString: 'G' }
-        ],
-        unitInput: [
-          { name: '<6', short: '<6', filterString: '^[0-5]$' },
-          { name: '6', short: '6', filterString: '^6$' },
-          { name: '9', short: '9', filterString: '^9$' },
-          { name: '12', short: '12', filterString: '^12$' },
-          { name: '15', short: '15', filterString: '^15$' },
-          { name: '6-15', short: '6-15', filterString: '^([7-9]|1[0-5])$' },
-          { name: '>=15', short: '>15', filterString: '([2-9][0-9]|1[6-9])$' }
-        ]
+        girs: new FilterGroup('GIR', [girAny, girLab, girRest], 'OR'),
+        hass: new FilterGroup('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity], 'OR'),
+        ci: new FilterGroup('CI', [ciAny, ciH, ciNone], 'OR'),
+        level: new FilterGroup('Level', [levelUG, levelG], 'OR'),
+        units: new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR')
       },
-      // modes to filter by across a filter group
-      filterGroupModes: {
-        'AND': function (a, b) { return a && b },
-        'OR': function (a, b) { return a || b }
-      },
-      // set this to AND to get subjects that match all filters turned on in a group
-      // set this to OR to get subjects that match any filter turned on in a group
-      filterGroupMode: 'OR',
       rowsPerPageItems: [5, 10, 20, 50, { 'text': '$vuetify.dataIterator.rowsPerPageAll', 'value': -1 }],
       pagination: {
         rowsPerPage: 20
@@ -257,9 +210,9 @@ export default {
     },
     autocomplete: function () {
       // only display subjects if you are filtering by something
-      let returnAny = false;
+      let returnAny = this.nameInput.length > 0;
       for (const filterName in this.chosenFilters) {
-        returnAny = returnAny || this.chosenFilters[filterName].length;
+        returnAny = returnAny || this.chosenFilters[filterName].reduce((acc, applied) => acc || applied, false);
       }
       if (!returnAny) {
         return [];
@@ -277,51 +230,17 @@ export default {
           return t;
         });
       }
-      // gets functions that return a boolean if a filter is true
-      const filters = {
-        'subject_id,title': getRegexFuncs([this.chosenFilters.nameInput]),
-        'gir_attribute': getRegexFuncs(this.chosenFilters.girInput),
-        'hass_attribute': getRegexFuncs(this.chosenFilters.hassInput),
-        'communication_requirement': getRegexFuncs(this.chosenFilters.ciInput),
-        'level': getRegexFuncs(this.chosenFilters.levelInput),
-        'total_units': getRegexFuncs(this.chosenFilters.unitInput)
-      };
-        // and or or function based on filter mode
-      const filterAction = this.filterGroupModes[this.filterGroupMode];
-      const filteredSubjects = this.allSubjects.filter(function (subject) {
-        for (const attrs in filters) {
-          // each test function in a filter group
-          const testers = filters[attrs];
-          if (testers.length) {
-            // if a single attribute group in a set returns true, the filter will match it
-            let passesAnyAttributeGroupInSet = false;
-            const attrSet = attrs.split(',');
-            for (let a = 0; a < attrSet.length; a++) {
-              const attr = attrSet[a];
-              let subjectattr = subject[attr];
-              if (!subject[attr]) {
-                subjectattr = '';
-              }
-              // start with false for OR mode, and true for AND mode
-              let passesAttributeGroup = !filterAction(false, true);
-              // use the filter mode function (OR or AND) and test all filters in a group
-              for (let t = 0; t < testers.length; t++) {
-                passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subjectattr));
-              }
-              if (passesAttributeGroup) {
-                passesAnyAttributeGroupInSet = true;
-              }
-            }
-            // if the subject passes no attribute group in the set, don't include it
-            if (!passesAnyAttributeGroupInSet) {
-              return false;
-            }
-          }
+
+      const filteredSubjects = this.allSubjects.filter(function(subject) {
+        var matches = true;
+        for (var filterGroup in this.allFilters) {
+          matches = matches && this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup], { nameInput: this.nameInput });
         }
-        return true;
-      });
-      if (this.chosenFilters.nameInput.length) {
-        const sortingOrder = [this.chosenFilters.nameInput, '^' + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), '^' + escapeRegExp(this.chosenFilters.nameInput)];
+        return matches;
+      }.bind(this))
+
+      if (this.nameInput.length) {
+        const sortingOrder = [this.nameInput, '^' + this.nameInput, escapeRegExp(this.nameInput), '^' + escapeRegExp(this.nameInput)];
         const sortingFuncs = getRegexFuncs(sortingOrder);
         const getOrderForString = function (matchingString) {
           const matches = sortingFuncs.map((func) => func(matchingString));
@@ -351,7 +270,7 @@ export default {
   },
   watch: {
     searchInput (newVal) {
-      this.chosenFilters.nameInput = newVal;
+      this.nameInput = newVal;
     },
     classStackExists: function (oldExists, newExists) {
       Vue.nextTick(function () {
