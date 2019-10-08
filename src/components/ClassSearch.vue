@@ -53,22 +53,22 @@ import $ from 'jquery';
 import Vue from 'vue';
 
 class Filter {
-  constructor(name, shortName, filter, attributeNames, requires, mode) {
+  constructor (name, shortName, filter, attributeNames, requires, mode) {
     this.name = name;
     this.short = shortName;
     this.filter = filter;
     this.attributes = attributeNames;
     this.requires = requires;
-    if (mode == undefined) {
-      mode = "OR";
+    if (mode === undefined) {
+      mode = 'OR';
     }
     this.combine = {
-      "AND": (a, b) => a && b,
-      "OR": (a, b) => a || b
+      'AND': (a, b) => a && b,
+      'OR': (a, b) => a || b
     }[mode];
   }
 
-  matches(subject, inputs) {
+  matches (subject, inputs) {
     // starting value of true for and, false for or
     var isMatch = !this.combine(true, false);
     // check each attribute for a match
@@ -78,50 +78,49 @@ class Filter {
     }
     return isMatch;
   }
-
 }
 
 class RegexFilter extends Filter {
-  constructor(name, shortName, regex, attributeNames, requires, mode) {
+  constructor (name, shortName, regex, attributeNames, requires, mode) {
     var testFunction = RegexFilter.getRegexTestFunction(regex);
     super(name, shortName, testFunction, attributeNames, requires, mode);
     this.regex = regex;
   }
 
-  static getRegexTestFunction(regex) {
+  static getRegexTestFunction (regex) {
     var regexObject = new RegExp(regex, 'i');
     // Regex test function only works when bound to the regex object
     return regexObject.test.bind(regexObject);
   }
 
-  matches(subject, inputs) {
+  matches (subject, inputs) {
     var oldTestFunction = this.filter;
 
     // Add input to regex test function if applicable
-    if (this.requires != undefined) {
+    if (this.requires !== undefined) {
       var regexAddOn = inputs[this.requires];
-      this.filter = RegexFilter.getRegexTestFunction(this.regex + regexAddOn)
+      this.filter = RegexFilter.getRegexTestFunction(this.regex + regexAddOn);
     }
 
-    var result =  super.matches.call(this, subject, inputs);
+    var result = super.matches.call(this, subject, inputs);
     this.filter = oldTestFunction;
     return result;
   }
 
   // Set up the priorities of variants of the regex
-  setupVariants(inputs, priorityDirections, priorityOrder) {
-    var atStart = function(regex) {
+  setupVariants (inputs, priorityDirections, priorityOrder) {
+    var atStart = function (regex) {
       return '^' + regex;
-    }
-    var asLiteral = function(regex) {
+    };
+    var asLiteral = function (regex) {
       return regex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
+    };
 
     // Functions to transform regex by a priority
     var priorityFunctions = {
       'atStart': atStart,
       'asLiteral': asLiteral
-    }
+    };
 
     // Order to apply functions (must add ^ after escaping, for example)
     var applicationOrder = ['asLiteral', 'atStart'];
@@ -129,7 +128,7 @@ class RegexFilter extends Filter {
     // Get regex from inputs
     var regexAddOn = '';
 
-    if (this.requires != undefined) {
+    if (this.requires !== undefined) {
       regexAddOn = inputs[this.requires];
     }
 
@@ -140,10 +139,10 @@ class RegexFilter extends Filter {
     var regexPriorities = [[]];
 
     priorityOrder.reverse();
-    for(var p = 0; p < priorityOrder.length; p++) {
+    for (var p = 0; p < priorityOrder.length; p++) {
       var isPrioritized = priorityDirections[priorityOrder[p]];
       // Create two lists; one with priority applied, the other without
-      var arrayWithPriority = regexPriorities.map((funcNames)=>funcNames.concat([priorityOrder[p]]));
+      var arrayWithPriority = regexPriorities.map((funcNames) => funcNames.concat([priorityOrder[p]]));
 
       // If this priority is prioritized, put it last
       if (isPrioritized) {
@@ -155,60 +154,57 @@ class RegexFilter extends Filter {
     }
 
     // Apply these functions to the base regex, in the application order
-    var priorities = regexPriorities.map(function(priorityFuncs) {
+    var priorities = regexPriorities.map(function (priorityFuncs) {
       return priorityFuncs
-            .sort((a, b) => applicationOrder.indexOf(a) - applicationOrder.indexOf(b))
-            .reduce((acc, func) => (priorityFunctions[func])(acc), regex);
+        .sort((a, b) => applicationOrder.indexOf(a) - applicationOrder.indexOf(b))
+        .reduce((acc, func) => (priorityFunctions[func])(acc), regex);
     }).map(RegexFilter.getRegexTestFunction);
 
     // Set member variable to use in future prioritization checks
     this.priorities = priorities;
   }
 
-  compareByVariants(subject) {
+  compareByVariants (subject) {
     // List of sort numbers for different attributes
     var orders = [];
 
     for (var a = 0; a < this.attributes.length; a++) {
       // Get last index where the regex in the priority list matches
       // The priority list is in reverse order of priority
-      var matches = this.priorities.map((test)=> test(subject[this.attributes[a]]));
+      var matches = this.priorities.map((test) => test(subject[this.attributes[a]]));
       orders.push(matches.lastIndexOf(true));
     }
 
     // Get largest sort priority of all the matching attributes
     return Math.max(...orders);
-
   }
-
 }
 
-
 class MathFilter extends Filter {
-  constructor(name, shortName, range, inclusive, attributeNames, mode) {
-    var comparator = function(input) {
-      if ((range[0] == undefined || input > range[0]) && (range[1] == undefined || input < range[1])) {
+  constructor (name, shortName, range, inclusive, attributeNames, mode) {
+    var comparator = function (input) {
+      if ((range[0] === undefined || input > range[0]) && (range[1] === undefined || input < range[1])) {
         return true;
-      } else if(inclusive && (input == range[0] || input == range[1])) {
+      } else if (inclusive && (input === range[0] || input === range[1])) {
         return true;
       }
       return false;
-    }.bind({inclusive: inclusive, range: range});
+    };
     super(name, shortName, comparator, attributeNames, [], mode);
   }
 }
 
 class FilterGroup {
-  constructor(name, filters, combination) {
+  constructor (name, filters, combination) {
     this.name = name;
     this.filters = filters;
     this.combine = {
-      "AND": (a, b) => a && b,
-      "OR": (a, b) => a || b
+      'AND': (a, b) => a && b,
+      'OR': (a, b) => a || b
     }[combination];
   }
 
-  matches(subject, applied, inputs) {
+  matches (subject, applied, inputs) {
     var isMatch = !this.combine(true, false);
     var noFilters = true;
     for (var f = 0; f < this.filters.length; f++) {
@@ -222,7 +218,7 @@ class FilterGroup {
 }
 
 var girAny = new RegexFilter('GIR:Any', 'Any', '.+', ['gir_attribute']);
-var girLab =  new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
+var girLab = new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
 var girRest = new RegexFilter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attribute']);
 var hassAny = new RegexFilter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
 var hassArt = new RegexFilter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
@@ -271,7 +267,7 @@ export default {
       allFilters: {
         girs: new FilterGroup('GIR', [girAny, girLab, girRest], 'OR'),
         hass: new FilterGroup('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity], 'OR'),
-        ci: new FilterGroup('CI', [ciAny, ciH, ciNone], 'OR'),
+        ci: new FilterGroup('CI', [ciAny, ciH, ciHW, ciNone], 'OR'),
         level: new FilterGroup('Level', [levelUG, levelG], 'OR'),
         units: new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR')
       },
@@ -296,29 +292,27 @@ export default {
       }
 
       // Filter subjects that match all filter sets and the text filter
-      const filteredSubjects = this.allSubjects.filter(function(subject) {
+      const filteredSubjects = this.allSubjects.filter(function (subject) {
         var matches = true;
         for (var filterGroup in this.allFilters) {
           matches = matches && this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup], { nameInput: this.nameInput });
         }
         matches = matches & textFilter.matches(subject, { nameInput: this.nameInput });
         return matches;
-      }.bind(this))
+      }.bind(this));
 
       // Sort subjects by priority order
-      if(this.nameInput.length) {
+      if (this.nameInput.length) {
         // Sort first by if it's a literal string vs regex match, then by if it starts with the search
-        textFilter.setupVariants({nameInput: this.nameInput}, {'atStart': true, 'asLiteral': true}, ['asLiteral', 'atStart']);
+        textFilter.setupVariants({ nameInput: this.nameInput }, { 'atStart': true, 'asLiteral': true }, ['asLiteral', 'atStart']);
 
         // Compare by variants for each subject
-        return filteredSubjects.sort(function(subject1, subject2) {
+        return filteredSubjects.sort(function (subject1, subject2) {
           return textFilter.compareByVariants(subject2) - textFilter.compareByVariants(subject1);
         });
-        
       } else {
         return filteredSubjects;
       }
-
     },
     classInfoStack () {
       return this.$store.state.classInfoStack;
