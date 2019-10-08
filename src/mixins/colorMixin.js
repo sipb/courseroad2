@@ -12,6 +12,7 @@ export default {
     };
   },
   methods: {
+    // Color Identifier can be id or the custom color
     courseColor: function (id) {
       if (id !== undefined) {
         let course = id.split('.')[0];

@@ -53,3 +53,50 @@ https://github.com/venkatesh-sivaraman/fireroad-server/blob/develop/requirements
 .generic-HASS-S { background-color: #7C39BF; }
 .generic-CI-H { background-color: #BF39B1; }
 .generic-CI-HW { background-color: #BF3961; }
+
+//Custom Classes from https://github.com/venkatesh-sivaraman/FireRoad-Android/blob/cdb736aa1c77f6cb07e5bbb884e2482ce008e5be/app/src/main/java/com/base12innovations/android/fireroad/models/course/ColorManager.java
+
+.@0{ background-color: #B55757; }
+.@1{ background-color: #B58657; }
+.@2{ background-color: #B5B557; }
+.@3{ background-color: #86B557; }
+.@4{ background-color: #57B557; }
+.@5{ background-color: #57B586; }
+.@6{ background-color: #DE4343; }
+.@7{ background-color: #DE9043; }
+.@8{ background-color: #DEDE43; }
+.@9{ background-color: #90DE43; }
+.@10{ background-color: #43DE43; }
+.@11{ background-color: #43DE90; }
+.@12{ background-color: #B51616; }
+.@13{ background-color: #B56516; }
+.@14{ background-color: #B5B516; }
+.@15{ background-color: #65B516; }
+.@16{ background-color: #16B516; }
+.@17{ background-color: #16B565; }
+
+.@18{ background-color: #57B5B5; }
+.@19{ background-color: #5786B5; }
+.@20{ background-color: #5757B5; }
+.@21{ background-color: #8657B5; }
+.@22{ background-color: #B557B5; }
+.@23{ background-color: #B55786; }
+.@24{ background-color: #43DEDE; }
+.@25{ background-color: #4390DE; }
+.@26{ background-color: #4343DE; }
+.@27{ background-color: #9043DE; }
+.@28{ background-color: #DE43DE; }
+.@29{ background-color: #DE4390; }
+.@30{ background-color: #16B5B5; }
+.@31{ background-color: #1665B5; }
+.@32{ background-color: #1616B5; }
+.@33{ background-color: #6516B5; }
+.@34{ background-color: #B516B5; }
+.@35{ background-color: #B51665; }
+
+.@36{ background-color: #000000; }
+.@37{ background-color: #262626; }
+.@38{ background-color: #4D4D4D; }
+.@39{ background-color: #737373; }
+.@40{ background-color: #999999; }
+.@41{ background-color: #BFBFBF; }
