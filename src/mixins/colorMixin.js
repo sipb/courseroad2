@@ -1,3 +1,4 @@
+// Colors are at assets/css/coursecolors.css 
 export default {
   data: function () {
     return {
@@ -12,8 +13,15 @@ export default {
     };
   },
   methods: {
-    // Color Identifier can be id or the custom color
-    courseColor: function (id) {
+    // colorIdentifier can be id or the custom color
+    courseColor: function (colorIdentifier) {
+      //all customcolors start with an '@' character
+      if (colorIdentifier.startsWith('@')){
+        return colorIdentifier;
+      } else {
+        id = colorIdentifier;
+      }
+
       if (id !== undefined) {
         let course = id.split('.')[0];
         if (course.indexOf('GIR:') >= 0) {
