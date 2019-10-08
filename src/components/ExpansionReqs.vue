@@ -80,15 +80,15 @@ export default {
   methods: {
     fcssecape: function (ch, asCodePoint) {
       if (asCodePoint) {
-          if (ch === "\0") {
-              return "\uFFFD";
-          }
-          return ch.slice(0, -1) + "\\" + ch.charCodeAt(ch.length - 1).toString(16) + " ";
+        if (ch === '\0') {
+          return '\uFFFD';
+        }
+        return ch.slice(0, -1) + '\\' + ch.charCodeAt(ch.length - 1).toString(16) + ' ';
       }
-      return "\\" + ch;
+      return '\\' + ch;
     },
     escape: function (sel) {
-      return (sel + "").replace(/([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g
+      return (sel + '').replace(/([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g
         , fcssescape);
     },
     clickSubject: function (subj, scroller) {
@@ -108,7 +108,7 @@ export default {
         Vue.nextTick(function () {
           const scrollPoint = document.getElementById(escape(scrollPointID));
           const topPoint = scrollPoint.getBoundingClientRect().top;
-          const cardBody = document.getElementById("cardBody");
+          const cardBody = document.getElementById('cardBody');
           const cardTopPoint = cardBody.getBoundingClientRect().top;
           cardBody.scrollTop = topPoint - cardTopPoint + cardBody.scrollTop - 10;
         });
@@ -131,7 +131,7 @@ export default {
         scrollPoint = document.getElementById('ds' + this.whichScroller + escape(this.reqID));
       }
       const topPoint = scrollPoint.getBoundingClientRect().top;
-      const cardBody = document.getElementById("cardBody");
+      const cardBody = document.getElementById('cardBody');
       const cardTopPoint = cardBody.getBoundingClientRect().top;
       cardBody.scrollTop = topPoint - cardTopPoint + cardBody.scrollTop - 10;
     }
