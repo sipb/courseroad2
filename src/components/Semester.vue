@@ -5,14 +5,14 @@
     dropzone="copy"
     @dragover.native.prevent
   >
-    <v-container slot="header" grid-list-xs style="padding: 0;">
+    <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;">
       <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
           <span style="width: 6em; display: inline-block;">
             <b>
-              {{ semesterType }}
               <v-hover>
                 <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="changeYear">
+                  {{ semesterType }}
                   {{ semesterYear }}
                 </span>
               </v-hover>
@@ -33,7 +33,9 @@
               </div>
             </v-card>
           </v-flex>
-          <v-flex v-if="isOpen" xs10 :style="{ 'color': semData.textColor }">
+        </v-layout>
+        <v-layout v-else>
+          <v-flex xs10 :style="{ 'color': semData.textColor }">
             {{ semData.message }}
           </v-flex>
         </v-layout>
@@ -56,11 +58,15 @@
           :class-info="subject"
           :semester-index="index"
           :warnings="warnings[subjindex]"
-          @remove-class="$emit('remove-class', $event)"
-          @click-class="$emit('click-class',$event)"
-          @add-at-placeholder="$emit('add-at-placeholder', $event)"
-          @drag-start-class="$emit('drag-start-class', $event)"
-          @override-warnings="$emit('override-warnings',$event)"
+          :class-index="subjindex"
+        />
+        <class
+          v-if="isActiveRoad && addingFromCard && (offeredNow || !isSameYear)"
+          key="placeholder"
+          class-info="placeholder"
+          :semester-index="index"
+          :warnings="[]"
+          :class-index="semesterSubjects.length"
         />
       </v-layout>
     </v-container>
@@ -70,21 +76,15 @@
 <script>
 import Class from './Class.vue';
 import colorMixin from './../mixins/colorMixin.js';
-var EQUIVALENCE_PAIRS = [
-  ['6.0001', '6.00'],
-  ['6.0002', '6.00']
-];
-var EQUIVALENCE_SETS = [
-  [['6.0001', '6.0002'], '6.00']
-];
+import schedule from './../mixins/schedule.js';
 
 export default {
   name: 'Semester',
   components: {
     'class': Class
   },
-  mixins: [colorMixin],
-  props: ['selectedSubjects', 'index', 'allSubjects', 'roadID', 'isOpen', 'baseYear', 'subjectsIndex', 'genericCourses', 'genericIndex', 'addingFromCard', 'itemAdding', 'currentSemester'],
+  mixins: [colorMixin, schedule],
+  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -93,8 +93,17 @@ export default {
     };
   },
   computed: {
+    isActiveRoad () {
+      return this.$store.state.activeRoad === this.roadID;
+    },
+    itemAdding () {
+      return this.$store.state.itemAdding;
+    },
+    addingFromCard () {
+      return this.$store.state.addingFromCard;
+    },
     subjectsLoaded: function () {
-      return Object.keys(this.subjectsIndex).length > 0;
+      return Object.keys(this.$store.state.subjectsIndex).length > 0;
     },
     warnings: function () {
       const allWarnings = Array(this.semesterSubjects.length).fill([]);
@@ -102,10 +111,10 @@ export default {
         const subjectWarnings = [];
         const subjID = this.semesterSubjects[i].id;
         let subj;
-        if (subjID in this.subjectsIndex) {
-          subj = this.allSubjects[this.subjectsIndex[subjID]];
-          var prereqString = this.allSubjects[this.subjectsIndex[subjID]].prerequisites;
-          var coreqString = this.allSubjects[this.subjectsIndex[subjID]].corequisites;
+        if (subjID in this.$store.state.subjectsIndex) {
+          subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]];
+          var prereqString = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]].prerequisites;
+          var coreqString = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]].corequisites;
           var prereqsfulfilled = true;
           var coreqsfulfilled = true;
           if (prereqString !== undefined) {
@@ -126,12 +135,21 @@ export default {
               subjectWarnings.push('<b>Unsatisfied corequisite</b> — One or more corequisites are not yet fulfilled.');
             }
           }
-        } else if (subjID in this.genericIndex) {
-          subj = this.genericCourses[this.genericIndex[subjID]];
+          if (this.isScheduledSemester && this.lateSchedule(subj, this.$store.state.genericIndex)) {
+            subjectWarnings.push('<b>No schedule</b> - Classes that do not yet have a schedule may not be offered.');
+          }
+        } else if (subjID in this.$store.state.genericIndex) {
+          subj = this.$store.state.genericCourses[this.$store.state.genericIndex[subjID]];
         }
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
-          if (semType >= 0) {
+
+          if (this.noLongerOffered(subj)) {
+            const lastSemester = subj.source_semester.split('-');
+            subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ').');
+          } else if (this.notCurrentlyOffered(subj)) {
+            subjectWarnings.push(`<b>Not offered</b> - This subject is not offered for the ${subj.not_offered_year} school year.`);
+          } else if (semType >= 0) {
             const isUsuallyOffered = [subj.offered_fall, subj.offered_IAP, subj.offered_spring][semType];
             if (!isUsuallyOffered) {
               subjectWarnings.push('<b>Not offered</b> — According to the course catalog, ' + subjID + ' is not usually offered in ' + this.semesterType + '.');
@@ -143,9 +161,7 @@ export default {
       return allWarnings;
     },
     concurrentSubjects: function () {
-      return this.selectedSubjects.filter(subj => {
-        return subj.semester <= this.index;
-      });
+      return this.selectedSubjects.slice(0, this.index + 1).flat();
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -167,6 +183,18 @@ export default {
             message: 'Add class here',
             textColor: 'DarkGreen'
           };
+        } else if (this.itemAddingNoLongerOffered) {
+          return {
+            bgColor: 'yellow',
+            message: 'Subject no longer offered',
+            textColor: 'DarkGoldenRod'
+          };
+        } else if (this.itemAddingNotCurrentlyOffered) {
+          return {
+            bgColor: 'yellow',
+            message: 'Subject not offered this year',
+            textColor: 'DarkGoldenRod'
+          };
         } else if (this.isSameYear) {
           return {
             bgColor: 'red',
@@ -180,21 +208,37 @@ export default {
             textColor: 'DarkGoldenRod'
           };
         }
-      } else {
-        return {
-          bgColor: 'grey',
-          message: '',
-          textColor: ''
-        };
       }
+      return {
+        bgColor: 'grey',
+        message: '',
+        textColor: ''
+      };
     },
     isSameYear: function () {
       return Math.floor((this.index - 1) / 3) === Math.floor((this.currentSemester - 1) / 3);
     },
+    isScheduledSemester: function () {
+      const today = new Date();
+      const month = today.getMonth();
+      const scheduledSemester = (month === 4) ? this.currentSemester + 1 : this.currentSemester;
+      return this.index === scheduledSemester;
+    },
+    itemAddingNoLongerOffered: function () {
+      return this.noLongerOffered(this.itemAdding);
+    },
+    itemAddingNotCurrentlyOffered: function () {
+      return this.notCurrentlyOffered(this.itemAdding);
+    },
     offeredNow: function () {
-      if (!this.subjectsLoaded || this.itemAdding === undefined) {
+      if (!this.subjectsLoaded ||
+          this.itemAdding === undefined ||
+          this.itemAddingNoLongerOffered ||
+          this.itemAddingNotCurrentlyOffered
+      ) {
         return false;
       }
+
       const semType = (this.index - 1) % 3;
       if (semType >= 0 && (this.addingFromCard || this.draggingOver)) {
         return [this.itemAdding.offered_fall, this.itemAdding.offered_IAP, this.itemAdding.offered_spring][semType];
@@ -202,36 +246,35 @@ export default {
         return this.addingFromCard;
       }
     },
-    semesterSubjects: function () {
-      const semSubjs = this.selectedSubjects.map(function (subj, ind) {
-        return Object.assign(subj, { index: ind });
-      }).filter(subj => {
-        return this.index === subj.semester;
-      });
-      if (this.addingFromCard && (this.offeredNow || !this.isSameYear)) {
-        semSubjs.push('placeholder');
-      }
-      return semSubjs;
-    },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
-        if (subj.id in this.subjectsIndex) {
-          return this.allSubjects[this.subjectsIndex[subj.id]];
-        } else if (subj.id in this.genericIndex) {
-          return this.genericCourses[this.genericIndex[subj.id]];
+        if (subj.id in this.$store.state.subjectsIndex) {
+          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.id]];
+        } else if (subj.id in this.$store.state.genericIndex) {
+          return this.$store.state.genericCourses[this.$store.state.genericIndex[subj.id]];
         } else {
           return undefined;
         }
       }.bind(this)).filter(function (subj) {
         return subj !== undefined;
       });
-      const addNums = function (a, b) {
-        a = isNaN(a) ? 0 : a;
-        b = isNaN(b) ? 0 : b;
-        return a + b;
+      const totalUnits = classesInfo.reduce(function (units, subj) {
+        let tu = subj.total_units;
+        tu = isNaN(tu) ? 0 : tu;
+        return units + tu;
+      }, 0);
+      const totalExpectedHours = function (hours, subj) {
+        let eh = subj.in_class_hours + subj.out_of_class_hours;
+        eh = isNaN(eh) ? subj.total_units : eh;
+        eh = isNaN(eh) ? 0 : eh;
+        return hours + eh;
       };
-      const totalUnits = classesInfo.map((s) => s.total_units).reduce(addNums, 0);
-      const expectedHours = classesInfo.map((s) => s.in_class_hours + s.out_of_class_hours).reduce(addNums, 0);
+      const isInQuarter = function (subj, quarter) {
+        return subj.quarter_information === undefined || parseInt(subj.quarter_information.split(',')[0]) === quarter;
+      };
+      const expectedHoursQuarter1 = classesInfo.filter((s) => isInQuarter(s, 0)).reduce(totalExpectedHours, 0);
+      const expectedHoursQuarter2 = classesInfo.filter((s) => isInQuarter(s, 1)).reduce(totalExpectedHours, 0);
+      const expectedHours = Math.max(expectedHoursQuarter1, expectedHoursQuarter2);
       return {
         totalUnits: totalUnits,
         expectedHours: expectedHours
@@ -253,11 +296,33 @@ export default {
       event.stopPropagation();
       this.$emit('change-year');
     },
+    noLongerOffered: function (course) {
+      if (course.is_historical) {
+        const lastSemester = course.source_semester.split('-');
+        const sourceSemester = ['fall', 'IAP', 'spring'].indexOf(lastSemester[0]);
+        // which class year the last year offered corresponds to; +1 if fall because fall semester year is off by 1
+        const sourceYear = parseInt(lastSemester[1]) - this.baseYear + (sourceSemester === 0 ? 1 : 0);
+        const lastSemesterNumber = sourceYear * 3 + sourceSemester + 1;
+        if (this.index > lastSemesterNumber) {
+          return true;
+        }
+      }
+      return false;
+    },
+    notCurrentlyOffered: function (course) {
+      if (course.not_offered_year) {
+        const year = parseInt(course.not_offered_year.slice(0, 4));
+
+        return (this.semesterYear === year && this.semesterType === 'Fall') ||
+            (this.semesterYear === year + 1 && ['IAP', 'Spring'].includes(this.semesterType));
+      }
+      return false;
+    },
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
-      return this.selectedSubjects.filter(s => {
-        const subj2 = this.allSubjects[this.subjectsIndex[s.id]];
-        const inPreviousSemester = s.semester < this.index;
+      const beforeThisSemester = this.selectedSubjects.slice(0, this.index).flat();
+      const previousQuarter = this.selectedSubjects[this.index].filter(s => {
+        const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
         let inPreviousQuarter = false;
         if (subj2 !== undefined) {
           inPreviousQuarter = s.semester === this.index &&
@@ -265,34 +330,50 @@ export default {
             subj2.quarter_information !== undefined &&
             subj2.quarter_information.split(',')[0] === '0';
         }
-        return inPreviousSemester || inPreviousQuarter;
+        return inPreviousQuarter;
       });
+      return beforeThisSemester.concat(previousQuarter);
     },
-    classSatisfies: function (req, id) {
+    classSatisfies: function (req, id, allSubjects) {
       if (req === id) {
         return true;
       }
-      for (let ep = 0; ep < EQUIVALENCE_PAIRS.length; ep++) {
-        const eqPair = EQUIVALENCE_PAIRS[ep];
-        if (req === eqPair[0] && id === eqPair[1]) {
-          return true;
+
+      let subj;
+      if (id in this.$store.state.subjectsIndex) {
+        subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[id]];
+      } else if (id in this.$store.state.genericIndex) {
+        subj = this.$store.state.genericCourses[this.$store.state.genericIndex[id]];
+      } else {
+        // subj not found in known courses
+        return false;
+      }
+
+      if (subj.equivalent_subjects !== undefined && subj.equivalent_subjects.indexOf(req) >= 0) {
+        return true;
+      }
+
+      // ex: 6.00 satisfies the 6.0001 requirement
+      if (subj.children !== undefined && subj.children.indexOf(req) >= 0) {
+        return true;
+      }
+
+      // ex: 6.0001 and 6.0002 together satisfy the 6.00 requirement
+      if (subj.parent !== undefined && req === subj.parent) {
+        const parentCourse = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.parent]];
+        if (parentCourse !== undefined) {
+          if (parentCourse.children.every((sid) => allSubjects.indexOf(sid) >= 0)) {
+            return true;
+          }
         }
       }
+
       if (req.indexOf('.') === -1) {
-        let subj;
-        if (id in this.subjectsIndex) {
-          subj = this.allSubjects[this.subjectsIndex[id]];
-        } else if (id in this.genericIndex) {
-          subj = this.genericCourses[this.genericIndex[id]];
-        } else {
-          // subj not found in known courses
-          return false;
-        }
         if (req.indexOf('GIR:') >= 0) {
           req = req.substring(4);
           return subj.gir_attribute === req;
         } else if (req.indexOf('HASS') >= 0) {
-          return subj.hass_attribute === req;
+          return subj.hass_attribute.split(',').indexOf(req) >= 0;
         } else if (req.indexOf('CI') >= 0) {
           return subj.communication_requirement === req;
         }
@@ -306,26 +387,22 @@ export default {
       const _this = this;
       for (let i = 0; i < splitReq.length; i++) {
         if (splitReq[i].indexOf('"') >= 0) {
-          splitReq[i] = 'true';
-        }
-        if ('()/, '.indexOf(splitReq[i]) < 0) {
+          // Set strings (like "permission of instructor") automatically to false
+          // If required as an alternative to other prereqs, will not affect fulfillment
+          // If the string is a required prereq, it must be manually dismissed
+          splitReq[i] = 'false';
+        } else if ('()/, '.indexOf(splitReq[i]) < 0) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
           } else {
-            const anyClassSatisfiesAlone = subjects.map((s) => _this.classSatisfies(splitReq[i], s.id)).reduce((a, b) => a || b, false);
-            let anyClassesSatisfyTogether = false;
-            for (let e = 0; e < EQUIVALENCE_SETS.length; e++) {
-              if (EQUIVALENCE_SETS[e][1] === splitReq[i] && EQUIVALENCE_SETS[e][0].reduce((acc, sid) => acc && allIDs.indexOf(sid) >= 0, true)) {
-                anyClassesSatisfyTogether = true;
-                break;
-              }
-            }
-            splitReq[i] = (anyClassSatisfiesAlone || anyClassesSatisfyTogether) ? 'true' : 'false';
+            const anyClassSatisfies = subjects.some((s) => _this.classSatisfies(splitReq[i], s.id, allIDs));
+            splitReq[i] = anyClassSatisfies ? 'true' : 'false';
           }
         }
       }
       const reqExpression = splitReq.join('').replace(/\//g, '||').replace(/,/g, '&&');
       // i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
+      // eslint-disable-next-line no-eval
       return eval(reqExpression);
     },
     dragenter: function (event) {
@@ -339,7 +416,14 @@ export default {
       }
     },
     ondrop: function (event) {
-      if (this.subjectsLoaded && this.itemAdding !== undefined && (this.offeredNow || !this.isSameYear || this.index === 0)) {
+      if (this.subjectsLoaded &&
+          this.itemAdding !== undefined &&
+          (this.offeredNow ||
+            this.itemAddingNoLongerOffered ||
+            this.itemAddingNotCurrentlyOffered ||
+            !this.isSameYear ||
+            this.index === 0)
+      ) {
         const eventData = JSON.parse(event.dataTransfer.getData('classData'));
         if (eventData.isNew) {
           const newClass = {
@@ -349,9 +433,9 @@ export default {
             id: this.itemAdding.subject_id,
             units: this.itemAdding.total_units
           };
-          this.$emit('add-class', newClass);
+          this.$store.commit('addClass', newClass);
         } else {
-          this.$emit('move-class', { classIndex: eventData.classInfo.index, semester: this.index });
+          this.$store.commit('moveClass', { currentClass: eventData.classInfo, classIndex: eventData.classIndex, semester: this.index });
         }
       }
       this.draggingOver = false;

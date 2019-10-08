@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 import Vue from 'vue';
 import App from './App.vue';
 import MainPage from './pages/MainPage.vue';
@@ -10,6 +11,8 @@ import './css/app.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+import store from './stores/courseData';
 
 library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
 
@@ -28,10 +31,11 @@ var router = new VueRouter({
   routes
 });
 
-VueCookies.config('3d');
+VueCookies.config(Infinity);
 
 new Vue({
   el: '#app',
   router: router,
-  render: h => h(App)
+  render: h => h(App),
+  store
 });

@@ -32,7 +32,7 @@
         {{ saveIcon }}
       </v-icon>
       <div>
-        <p v-for="saveWarning in saveWarnings" :key="saveWarning">
+        <p v-for="saveWarning in saveWarnings" :key="saveWarning.name + saveWarning.error">
           {{ saveWarning.name }}: {{ saveWarning.error }}
         </p>
       </div>
@@ -46,8 +46,8 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
-import Vue from 'vue';
 import UAParser from 'ua-parser-js';
+import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';
 
 var DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
@@ -65,7 +65,8 @@ function getQueryObject () {
 export default {
   name: 'Auth',
   components: {},
-  props: ['roads', 'justLoaded', 'activeRoad', 'conflictInfo'],
+  mixins: [simpleSSMixin],
+  props: ['justLoaded', 'conflictInfo'],
   data: function () {
     return {
       accessInfo: undefined,
@@ -74,13 +75,21 @@ export default {
       saveWarnings: [],
       gettingUserData: false,
       currentlySaving: false,
-      authCookiesAllowed: false,
       tabID: Math.floor(Math.random() * 16 ** 10).toString(16)
     };
   },
   computed: {
+    activeRoad () {
+      return this.$store.state.activeRoad;
+    },
+    cookiesAllowed () {
+      return this.$store.state.cookiesAllowed;
+    },
+    roads () {
+      return this.$store.state.roads;
+    },
     saveColor: function () {
-      if (!this.authCookiesAllowed && !this.loggedIn) {
+      if (!this.cookiesAllowed && !this.loggedIn) {
         return 'gray';
       }
       return this.saveWarnings.length ? 'warning' : 'primary';
@@ -90,9 +99,13 @@ export default {
     }
   },
   watch: {
-    authCookiesAllowed: function (newCA, oldCA) {
+    cookiesAllowed (newCA) {
       if (newCA) {
-        this.$emit('allow-cookies');
+        this.$cookies.set('newRoads', this.getNewRoadData());
+        if (this.loggedIn) {
+          this.$cookies.set('accessInfo', this.accessInfo, '3d');
+        }
+        this.setTabID();
       }
     }
   },
@@ -100,31 +113,35 @@ export default {
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
+        for (var roadID in newRoads) {
+          if (!Array.isArray(newRoads[roadID].contents.selectedSubjects[0])) {
+            newRoads[roadID].contents.selectedSubjects = this.getSimpleSelectedSubjects(newRoads[roadID].contents.selectedSubjects);
+          }
+        }
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
-            this.$emit('set-active', Object.keys(newRoads)[0]);
+            this.$store.commit('setActiveRoad', Object.keys(newRoads)[0]);
           }
-          this.$emit('set-roads', newRoads);
+          this.$store.commit('setRoads', newRoads);
         } else {
-          this.$emit('set-roads', Object.assign(newRoads, this.roads));
+          this.$store.commit('setRoads', Object.assign(newRoads, this.roads));
         }
         this.newRoads = Object.keys(newRoads);
       }
-      this.allowCookies();
+      this.$store.commit('allowCookies');
     }
 
     window.cookies = this.$cookies;
     if (this.$cookies.isKey('accessInfo')) {
       this.loggedIn = true;
       this.accessInfo = this.$cookies.get('accessInfo');
-      this.$emit('set-sem', this.accessInfo.current_semester);
       this.verify();
-      this.allowCookies();
+      this.$store.commit('allowCookies');
       this.getUserData();
     }
 
     window.onbeforeunload = function () {
-      if (this.authCookiesAllowed) {
+      if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
         const tabs = JSON.parse(this.$cookies.get('tabs'));
         const tabIndex = tabs.indexOf(tabID);
@@ -153,14 +170,15 @@ export default {
       const headerList = { headers: {
         'Authorization': 'Bearer ' + this.accessInfo.access_token
       } };
+      const currentMonth = new Date().getMonth();
       return axios.get(process.env.FIREROAD_URL + '/verify/', headerList)
         .then(function (verifyResponse) {
           if (verifyResponse.data.success) {
-            this.$emit('set-sem', verifyResponse.data.current_semester);
+            this.$emit('set-sem', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
             return verifyResponse.data;
           } else {
             this.logoutUser();
-            return Promise.reject('Token not valid');
+            return Promise.reject(new Error('Token not valid'));
           }
         }.bind(this));
     },
@@ -169,14 +187,11 @@ export default {
         const headerList = { headers: {
           'Authorization': 'Bearer ' + this.accessInfo.access_token
         } };
-        return this.verify()
-          .then(function (verifyResponse) {
-            return params
-              ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
-              : axiosFunc(process.env.FIREROAD_URL + link, headerList);
-          });
+        return params
+          ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
+          : axiosFunc(process.env.FIREROAD_URL + link, headerList);
       } else {
-        return Promise.reject('No auth information');
+        return Promise.reject(new Error('No auth information'));
       }
     },
 
@@ -186,55 +201,83 @@ export default {
     postSecure: function (link, params) {
       return this.doSecure(axios.post, link, params);
     },
+    retrieveRoad: function (roadID) {
+      const _this = this;
+      this.gettingUserData = true;
+      return this.getSecure('/sync/roads/?id=' + roadID).then(function (roadData) {
+        if (roadData.status === 200 && roadData.data.success) {
+          roadData.data.file.downloaded = moment().format(DATE_FORMAT);
+          roadData.data.file.changed = moment().format(DATE_FORMAT);
+        }
 
+        // sanitize subject_id
+        const newss = roadData.data.file.contents.selectedSubjects.map((s) => {
+          if ('subject_id' in s) {
+            s.id = s.subject_id;
+            delete s.subject_id;
+          }
+          return s;
+        });
+        roadData.data.file.contents.selectedSubjects = newss;
+
+        // convert selected subjects to more convenient format
+        roadData.data.file.contents.selectedSubjects = _this.getSimpleSelectedSubjects(roadData.data.file.contents.selectedSubjects);
+        // sanitize progressOverrides
+        if (roadData.data.file.contents.progressOverrides === undefined) {
+          roadData.data.file.contents.progressOverrides = {};
+        }
+        _this.$store.commit('setRoad', {
+          id: roadID,
+          road: roadData.data.file,
+          ignoreSet: true
+        });
+        _this.gettingUserData = false;
+        return roadData;
+      });
+    },
     getUserData: function () {
       this.gettingUserData = true;
+      for (var i = 0; i < this.newRoads.length; i++) {
+        this.saveRemote(this.newRoads[i]);
+      }
       this.getSecure('/sync/roads/')
         .then(function (response) {
           if (response.status === 200 && response.data.success) {
-            return Object.keys(response.data.files);
+            return response.data.files;
           } else {
-            return Promise.reject();
+            return Promise.reject(new Error('sync request not successfull in getUserData'));
           }
-          return response;
-        }).then(function (fileKeys) {
-          const fileLinks = fileKeys.map(function (fk) {
-            return this.getSecure('/sync/roads/?id=' + fk);
-          }.bind(this));
-          return Promise.all(fileLinks).then((fl) => [fileKeys, fl]);
-        }.bind(this)).then(function ([roadIDs, roadData]) {
-          if (roadData !== undefined) {
-            this.renumberRoads(roadData);
-            if (this.justLoaded) {
-              Vue.delete(this.roads, '$defaultroad$');
-            }
-            for (let r = 0; r < roadIDs.length; r++) {
-              if (roadData[r].status === 200 && roadData[r].data.success) {
-                roadData[r].data.file.downloaded = moment().format(DATE_FORMAT);
-                roadData[r].data.file.changed = moment().format(DATE_FORMAT);
-                if (roadData[r].data.file.contents.progressOverrides === undefined) {
-                  roadData[r].data.file.contents.progressOverrides = {};
-                }
-                this.$emit('set-road', roadIDs[r], roadData[r].data.file);
+        }).then(function (files) {
+          this.renumberRoads(files);
+          const fileKeys = Object.keys(files);
+          for (var i = 0; i < fileKeys.length; i++) {
+            const blankRoad = {
+              downloaded: moment().format(DATE_FORMAT),
+              changed: files[fileKeys[i]].changed,
+              name: files[fileKeys[i]].name,
+              agent: files[fileKeys[i]].agent,
+              contents: {
+                coursesOfStudy: ['girs'],
+                selectedSubjects: Array.from(Array(16), () => []),
+                progressOverrides: {}
               }
-              // sanitize subject_id
-              const newss = roadData[r].data.file.contents.selectedSubjects.map((s) => {
-                if ('subject_id' in s) {
-                  s.id = s.subject_id;
-                  delete s.subject_id;
-                }
-                return s;
-              });
-              roadData[r].data.file.contents.selectedSubjects = newss;
-              // sanitize progressOverrides
-              if (roadData[r].data.file.contents.progressOverrides === undefined) {
-                roadData[r].data.file.contents.progressOverrides = {};
-              }
-
-              this.$emit('set-road', roadIDs[r], roadData[r].data.file);
-            }
-            this.$emit('set-active', Object.keys(this.roads)[0]);
+            };
+            this.$store.commit('setRoad', {
+              id: fileKeys[i],
+              road: blankRoad,
+              ignoreSet: true
+            });
           }
+          if (this.justLoaded && fileKeys.length > 0) {
+            this.$store.commit('deleteRoad', '$defaultroad$');
+          }
+          this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
+          // Set list of unretrieved roads to all but first road ID
+          this.$store.commit('setUnretrieved', fileKeys.slice(1));
+          if (fileKeys.length) {
+            return this.retrieveRoad(fileKeys[0]);
+          }
+        }.bind(this)).then(function () {
           this.gettingUserData = false;
         }.bind(this)).catch(function (err) {
           alert(err);
@@ -258,10 +301,11 @@ export default {
       }
       return newName;
     },
-    renumberRoads: function (cloudRoads) {
+    renumberRoads: function (cloudFiles) {
+      const cloudRoads = Object.keys(cloudFiles).map((id) => cloudFiles[id]);
       const cloudNames = cloudRoads.map(function (cr) {
         try {
-          return cr.data.file.name;
+          return cr.name;
         } catch (err) {
           return undefined;
         }
@@ -270,7 +314,10 @@ export default {
         const localName = this.roads[roadID].name;
         if (cloudNames.indexOf(localName) >= 0) {
           const renumberedName = this.renumber(localName, cloudNames);
-          Vue.set(this.roads[roadID], 'name', renumberedName);
+          this.$store.commit('setRoadName', {
+            id: roadID,
+            name: renumberedName
+          });
         }
       }
     },
@@ -279,8 +326,8 @@ export default {
       axios.get(process.env.FIREROAD_URL + '/fetch_token/?code=' + code)
         .then(function (response) {
           if (response.data.success) {
-            if (this.data.authCookiesAllowed) {
-              this.data.$cookies.set('accessInfo', response.data.access_info);
+            if (this.data.cookiesAllowed) {
+              this.data.$cookies.set('accessInfo', response.data.access_info, '3d');
             }
             this.data.accessInfo = response.data.access_info;
             this.data.verify();
@@ -298,89 +345,93 @@ export default {
         this.getAuthorizationToken(code);
       }
     },
-    save: function () {
+    save: function (roadID) {
       if (this.loggedIn) {
-        this.saveRemote();
+        this.saveRemote(roadID);
       } else {
         this.saveLocal();
       }
     },
-    saveRemote: function () {
+    saveRemote: function (roadID) {
       this.currentlySaving = true;
       this.saveWarnings = [];
-      const savePromises = [];
-      for (const roadID in this.roads) {
-        const assignKeys = { override: false, agent: this.getAgent() };
-        if (!roadID.includes('$')) {
-          assignKeys.id = roadID;
-        }
-        const newRoad = Object.assign(this.roads[roadID], assignKeys);
-        const savePromise = this.postSecure('/sync/sync_road/', newRoad)
-          .then(function (response) {
-            if (response.status !== 200) {
-              return Promise.reject('Unable to save road ' + this.oldid);
-            } else {
-              const newid = (response.data.id !== undefined ? response.data.id : this.oldid);
-              if (response.data.success === false) {
-                this.data.saveWarnings.push({ id: newid, error: response.data.error_msg, name: this.data.roads[this.oldid].name });
-              }
-              if (response.data.result === 'conflict') {
-                const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
-                this.data.$emit('conflict', conflictInfo);
-              } else {
-                if (response.data.id !== undefined) {
-                  // note: code moved to app.vue for reset id
-                  // this is to fix a problem where the activeroad gets reset to the first one
-                  // i suspect this is because the three events required were not happening
-                  // in the correct order or something
-                  if (this.oldid !== response.data.id.toString()) {
-                    this.data.$emit('reset-id', this.oldid, response.data.id);
-                  }
-                  return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
-                } else {
-                  return Promise.resolve({ oldid: this.oldid, newid: this.oldid, state: 'same' });
-                }
-                // TODO: this is unreachable code. figure out what is going on.
-                this.data.$emit('set-road-prop', newid, 'downloaded', moment().format(DATE_FORMAT));
-              }
-            }
-          }.bind({ oldid: roadID, data: this }));
-        savePromises.push(savePromise);
+      const assignKeys = { override: false, agent: this.getAgent() };
+      if (!roadID.includes('$')) {
+        assignKeys.id = roadID;
       }
-      return Promise.all(savePromises)
-        .then(function (saveResults) {
-          for (let s = 0; s < saveResults.length; s++) {
-            const savedResult = saveResults[s];
-            if (savedResult.state === 'changed') {
-              const oldIdIndex = this.newRoads.indexOf(savedResult.oldid);
-              if (oldIdIndex >= 0) {
-                this.newRoads.splice(oldIdIndex, 1);
+      const roadSubjects = this.roads[roadID].contents.selectedSubjects.flat();
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
+      Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
+      const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
+        .then(function (response) {
+          if (response.status !== 200) {
+            return Promise.reject(new Error('Unable to save road ' + this.oldid));
+          } else {
+            const newid = (response.data.id !== undefined ? response.data.id : this.oldid);
+            if (response.data.success === false) {
+              this.data.saveWarnings.push({ id: newid, error: response.data.error_msg, name: this.data.roads[this.oldid].name });
+            }
+            if (response.data.result === 'conflict') {
+              const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
+              this.data.$emit('conflict', conflictInfo);
+            } else {
+              this.data.$store.commit('setRoadProp', {
+                id: this.oldid,
+                prop: 'downloaded',
+                value: moment().format(DATE_FORMAT),
+                ignoreSet: true
+              });
+
+              if (response.data.id !== undefined) {
+                // note: code moved to app.vue for reset id
+                // this is to fix a problem where the activeroad gets reset to the first one
+                // i suspect this is because the three events required were not happening
+                // in the correct order or something
+                if (this.oldid !== response.data.id.toString()) {
+                  this.data.$store.commit('resetID', { oldid: this.oldid, newid: response.data.id });
+                }
+                return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'changed' });
+              } else {
+                return Promise.resolve({ oldid: this.oldid, newid: this.oldid, state: 'same' });
               }
             }
           }
-          if (this.$cookies.isKey('newRoads')) {
-            this.$cookies.set('newRoads', {});
+        }.bind({ oldid: roadID, data: this }));
+      savePromise.then(function (saveResult) {
+        if (saveResult.state === 'changed') {
+          const oldIdIndex = this.newRoads.indexOf(saveResult.oldid);
+          if (oldIdIndex >= 0) {
+            this.newRoads.splice(oldIdIndex, 1);
           }
-          this.currentlySaving = false;
-        }.bind(this)).catch(function (err) {
-          console.log(err);
-          this.currentlySaving = false;
-        }.bind(this));
+        }
+        if (this.$cookies.isKey('newRoads')) {
+          this.$cookies.set('newRoads', this.getNewRoadData());
+        }
+        this.currentlySaving = false;
+      }.bind(this)).catch(function (err) {
+        console.log(err);
+        this.currentlySaving = false;
+      }.bind(this));
     },
     saveLocal: function () {
       this.currentlySaving = true;
-      if (this.authCookiesAllowed) {
+      if (this.cookiesAllowed) {
         this.$cookies.set('newRoads', this.getNewRoadData());
       }
-      this.currentlySaving = false;
       for (const roadID in this.roads) {
-        this.$emit('set-road-prop', roadID, 'downloaded', moment().format(DATE_FORMAT));
+        this.$store.commit('setRoadProp', {
+          id: roadID,
+          prop: 'downloaded',
+          value: moment().format(DATE_FORMAT),
+          ignoreSet: true
+        });
       }
+      this.currentlySaving = false;
     },
     getNewRoadData: function () {
       const newRoadData = {};
       if (this.newRoads.indexOf('$defaultroad$') === -1 && '$defaultroad$' in this.roads) {
-        if (this.roads['$defaultroad$'].contents.selectedSubjects.length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
+        if (this.roads['$defaultroad$'].contents.selectedSubjects.flat().length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
           this.newRoads.push('$defaultroad$');
         }
       }
@@ -393,22 +444,23 @@ export default {
       return newRoadData;
     },
     updateRemote: function (roadID) {
-      const newRoad = Object.assign(this.roads[roadID], { id: roadID, override: true, agent: this.getAgent() });
+      const newRoad = { id: roadID, override: true, agent: this.getAgent() };
+      Object.assign(newRoad, this.roads[roadID]);
       this.postSecure('/sync/sync_road/', newRoad)
         .then(function (response) {
           if (!response.data.success) {
-            this.saveWarnings.push({ error: response.data.error_msg, id: roadID, name: this.roads[roadID] });
+            this.saveWarnings.push({ error: response.data.error_msg || response.data.error, id: roadID, name: this.roads[roadID] });
           }
         });
       this.$emit('resolve-conflict');
     },
 
     updateLocal: function (roadID) {
-      Vue.set(this.roads[roadID], 'name', this.conflictInfo.other_name);
-      Vue.set(this.roads[roadID], 'agent', this.conflictInfo.other_agent);
-      Vue.set(this.roads[roadID], 'changed_date', this.conflictInfo.other_date);
-      Vue.set(this.roads[roadID], 'contents', this.conflictInfo.other_contents);
-      Vue.set(this.roads[roadID], 'downloaded', moment().format(DATE_FORMAT));
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false });
+      this.$store.commit('setRoadProp', { id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false });
       this.$emit('resolve-conflict');
     },
 
@@ -418,19 +470,19 @@ export default {
         const withoutRoad = Object.keys(this.roads).slice(0, roadIndex).concat(Object.keys(this.roads).slice(roadIndex + 1));
         if (withoutRoad.length) {
           if (withoutRoad.length > roadIndex) {
-            this.$emit('set-active', withoutRoad[roadIndex]);
+            this.$store.commit('setActiveRoad', withoutRoad[roadIndex]);
           } else {
-            this.$emit('set-active', withoutRoad[roadIndex - 1]);
+            this.$store.commit('setActiveRoad', withoutRoad[roadIndex - 1]);
           }
         } else {
-          this.$emit('set-active', '');
+          this.$store.commit('setActiveRoad', '');
         }
       }
-      this.$emit('delete-road', roadID);
+      this.$store.commit('deleteRoad', roadID);
 
       if (roadID in this.newRoads) {
-        roadIndex = this.newRoads.indexOf(roadID);
-        this.newRoads.splice(roadID, 1);
+        const roadIndex = this.newRoads.indexOf(roadID);
+        this.newRoads.splice(roadIndex, 1);
       }
 
       if (this.loggedIn) {
@@ -439,23 +491,12 @@ export default {
         }
       }
     },
-    allowCookies: function () {
-      this.$cookies.set('newRoads', this.getNewRoadData());
-      this.authCookiesAllowed = true;
-      if (this.loggedIn) {
-        this.$cookies.set('accessInfo', this.accessInfo);
-      }
-      this.setTabID();
-    },
-    disallowCookies() {
-      this.authCookiesAllowed = false;
-    },
     getAgent: function () {
       const ua = UAParser(navigator.userAgent);
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
     },
     setTabID: function () {
-      if (this.authCookiesAllowed) {
+      if (this.cookiesAllowed) {
         if (sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
           if (this.$cookies.isKey('tabs')) {
@@ -486,10 +527,10 @@ export default {
     },
     changeSemester: function (year) {
       const currentMonth = new Date().getMonth();
-      const sem = currentMonth >= 4 && currentMonth <= 10
+      const sem = currentMonth >= 5 && currentMonth <= 10
         ? 1 + year * 3
         : 3 + year * 3;
-      this.postSecure('/set_semester/', { semester: sem }).then(function (res) {
+      this.postSecure('/set_semester/', { semester: sem + (currentMonth === 4 ? 1 : 0) }).then(function (res) {
         if (res.status === 200 && res.data.success) {
           this.$emit('set-sem', sem);
         }

@@ -12,7 +12,7 @@
         <v-card-title :class="['card-header',courseColor(currentSubject.subject_id)]">
           <v-flex style="display: flex; flex-direction: row; align-items: center;">
             <div style="padding: 0; margin: 0; display: block;">
-              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$emit('pop-stack')">
+              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$store.commit('popClassStack')">
                 <v-icon>navigate_before</v-icon>
               </v-btn>
             </div>
@@ -20,7 +20,7 @@
               <h3>{{ currentSubject.subject_id }}</h3>
             </div>
             <div style="margin-left:auto">
-              <v-btn icon style="margin: 0;" @click="$emit('close-classinfo')">
+              <v-btn icon style="margin: 0;" @click="$store.commit('clearClassInfoStack')">
                 <v-icon style="margin:0; padding: 0; color:white;">
                   close
                 </v-icon>
@@ -52,11 +52,23 @@
                 small
                 style="margin-left:auto;"
                 class="secondary"
-                @click="cancelAddClass"
+                @click="$store.commit('cancelAddFromCard')"
               >
                 <v-icon>block</v-icon>
               </v-btn>
             </v-layout>
+            <h4 v-if="currentSubject.is_historical">
+              <v-icon small>
+                warning
+              </v-icon>
+              This subject is no longer offered (last offered {{ currentSubject.source_semester.split("-").join(" ") }})
+            </h4>
+            <h4 v-else-if="currentSubject.not_offered_year">
+              <v-icon small>
+                warning
+              </v-icon>
+              This subject is not offered during the {{ currentSubject.not_offered_year }} school year.
+            </h4>
             <table cellspacing="4">
               <tr v-if="currentSubject.total_units!==undefined">
                 <td><b>Units</b></td>
@@ -129,7 +141,7 @@
                 </td>
               </tr>
               <tr v-if="currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined">
-                <td><b>{{ currentSubject.subject_id in genericIndex ? "Average* hours" : "Hours" }}</b></td>
+                <td><b>{{ currentSubject.subject_id in $store.state.genericIndex ? "Average* hours" : "Hours" }}</b></td>
                 <td>
                   <table cellspacing="0">
                     <tr v-if="currentSubject.in_class_hours !== undefined">
@@ -142,15 +154,15 @@
                 </td>
               </tr>
             </table>
-            <p v-if="currentSubject.subject_id in genericIndex">
+            <p v-if="currentSubject.subject_id in $store.state.genericIndex">
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
-            <p>{{ currentSubject.description }}</p>
+            <p v-html="currentSubject.description" />
             <p v-if="currentSubject.url !== undefined">
               <a target="_blank" :href="currentSubject.url">View in course catalog</a>
             </p>
-            <p v-if="currentSubject.subject_id in subjectsIndex">
+            <p v-if="currentSubject.subject_id in $store.state.subjectsIndex">
               <a target="_blank" :href="'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
                 View Course Evaluations
               </a>
@@ -186,6 +198,10 @@
               <h3>Related subjects</h3>
               <subject-scroll :subjects="currentSubject.related_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
             </div>
+            <div v-if="subjectsWithPrereq.length > 0">
+              <h3>Subjects with {{ currentSubject.subject_id }} as Prerequisite</h3>
+              <subject-scroll :subjects="subjectsWithPrereq" @click-subject="clickRelatedSubject" />
+            </div>
           </div>
         </v-card-text>
       </v-card>
@@ -197,6 +213,7 @@
 import SubjectScroll from '../components/SubjectScroll.vue';
 import ExpansionReqs from '../components/ExpansionReqs.vue';
 import colorMixin from './../mixins/colorMixin.js';
+import schedule from './../mixins/schedule.js';
 
 export default {
   name: 'ClassInfo',
@@ -204,15 +221,20 @@ export default {
     'subject-scroll': SubjectScroll,
     'expansion-reqs': ExpansionReqs
   },
-  mixins: [colorMixin],
-  props: ['subjects', 'classInfoStack', 'subjectsIndex', 'genericCourses', 'genericIndex', 'addingFromCard'],
+  mixins: [colorMixin, schedule],
   data: function () { return {} },
   computed: {
+    addingFromCard () {
+      return this.$store.state.addingFromCard;
+    },
+    classInfoStack () {
+      return this.$store.state.classInfoStack;
+    },
     currentSubject: function () {
       const currentID = this.classInfoStack[this.classInfoStack.length - 1];
-      return currentID in this.subjectsIndex
-        ? this.subjects[this.subjectsIndex[currentID]]
-        : this.genericCourses[this.genericIndex[currentID]];
+      return currentID in this.$store.state.subjectsIndex
+        ? this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[currentID]]
+        : this.$store.state.genericCourses[this.$store.state.genericIndex[currentID]];
     },
     parsedPrereqs: function () {
       return this.currentSubject.prerequisites !== undefined
@@ -223,31 +245,48 @@ export default {
       return this.currentSubject.corequisites !== undefined
         ? this.parseRequirements(this.currentSubject.corequisites)
         : { reqs: [] };
+    },
+    subjectsWithPrereq: function () {
+      const currentID = this.currentSubject.subject_id;
+      const currentDept = currentID.substring(0, currentID.indexOf('.'));
+      var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+      return this.$store.state.subjectsInfo.filter(function (s) {
+        return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
+      }).sort(function (s1, s2) {
+        // show subjects in same department first
+        var dept1 = s1.subject_id.substring(0, s1.subject_id.indexOf('.'));
+        var dept2 = s2.subject_id.substring(0, s2.subject_id.indexOf('.'));
+        if (dept1 === currentDept && dept2 !== currentDept) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
     }
   },
   methods: {
     classInfo: function (subjectID) {
-      const subj = this.subjects[this.subjectsIndex[subjectID]];
+      const subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjectID]];
       return subj || {
         subject_id: subjectID,
         title: ''
       };
     },
     clickRelatedSubject: function (subject) {
-      this.$emit('push-stack', subject.id);
+      this.$store.commit('pushClassStack', subject.id);
       document.getElementById('cardBody').scrollTop = 0;
     },
     parseRequirements: function (requirements) {
       // TODO: a way to make this more ETU?
       // remove spaces after commas and slashes
-      requirements = requirements.replace(/([,\/])\s+/g, '$1');
+      requirements = requirements.replace(/([,/])\s+/g, '$1');
       function getParenGroup (str) {
         if (str[0] === '(') {
           let retString = '';
           str = str.substring(1);
           let nextParen;
           let numParens = 1;
-          while (((nextParen = /[\(\)]/.exec(str)) !== null) && numParens > 0) {
+          while (((nextParen = /[()]/.exec(str)) !== null) && numParens > 0) {
             const parenIndex = nextParen.index;
             const parenType = nextParen[0];
             if (parenType === '(') {
@@ -267,7 +306,7 @@ export default {
         if (reqString[0] === '(') {
           return getParenGroup(reqString);
         } else {
-          const nextMatch = /^([^\/,]+)([\/,])(.*)/g.exec(reqString);
+          const nextMatch = /^([^/,]+)([/,])(.*)/g.exec(reqString);
           if (nextMatch !== null) {
             const nextReq = nextMatch[1];
             const restOfString = nextMatch[3];
@@ -279,7 +318,7 @@ export default {
         }
       }
       function isBaseReq (req) {
-        return /[\/\(\),]/g.exec(req) === null;
+        return /[/(),]/g.exec(req) === null;
       }
       const getClassInfo = this.classInfo;
       function parseReqs (reqString) {
@@ -365,10 +404,7 @@ export default {
       return rList;
     },
     addClass: function () {
-      this.$emit('add-class', this.currentSubject);
-    },
-    cancelAddClass: function () {
-      this.$emit('cancel-add-class');
+      this.$store.commit('addFromCard', this.currentSubject);
     }
   }
 };

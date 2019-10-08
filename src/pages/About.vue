@@ -26,10 +26,31 @@
       <p class="px-3">
         <ul style="display: inline-block;">
           <li>
+            <h3>Class year</h3>
+            <p>
+              Yeah, changing your class year is really unintuitive right now, sorry about that.
+              The way to do it now is to click on a year number (e.g. "2021").
+            </p>
+          </li>
+          <li>
+            <h3>Slow page load</h3>
+            <p>
+              We haven't done much optimization for loading time yet,
+              but we recognize that it's annoying an are working on it.
+            </p>
+          </li>
+          <li>
+            <h3>Slow drag and drop</h3>
+            <p>
+              There's a noticable delay between dragging and dropping a subject
+              and the page updating and letting you do things again.
+            </p>
+          </li>
+          <li>
             <h3>Scrolling while dragging</h3>
             <p>
               The semester view does not scroll adaptively when you are dragging
-              classes into it. We are working to fix this.
+              classes into it.
             </p>
           </li>
           <li>
@@ -41,10 +62,30 @@
             </p>
           </li>
           <li>
+            <h3>Degree audit</h3>
+            <p>
+              It's never going to be perfect, because the audit is presented in English,
+              which allows unlimited flexibility and annoying edge cases.
+              However, we should be able to handle most normal use cases
+              so be sure to submit mistakes through the
+              <a target="_blank" href="https://fireroad.mit.edu/requirements/">
+                requirements editor
+              </a>.
+              We're also working on handling petitions and overrides for the audit,
+              which we know is important for a lot of people.
+            </p>
+          </li>
+          <li>
             <h3>Responsiveness on mobile devices</h3>
             <p>
               CourseRoad is intended for non-mobile screen sizes. If you want to
               use a similar tool on your phone, check out the FireRoad app (see below).
+            </p>
+          </li>
+          <li>
+            <h3>And probably others...</h3>
+            <p>
+              See the full, most up to date list of issues on <a target="_blank" href="https://github.com/sipb/courseroad2/issues">GitHub</a>.
             </p>
           </li>
         </ul>
