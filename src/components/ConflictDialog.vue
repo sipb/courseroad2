@@ -7,7 +7,7 @@
       <v-card-title>Save Conflict</v-card-title>
       <v-layout row>
         <!-- TODO: remove duplicate code? -->
-        <v-flex xs6 style="padding: 2em" id = "cloud-column">
+        <v-flex id="cloud-column" xs6 style="padding: 2em">
           <b>Cloud</b>
           <v-list>
             <v-card style="padding: 1em">
@@ -22,14 +22,16 @@
             <v-card style="padding: 1em">
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for="req in conflictInfo.other_contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
-              <p id = "selected-subjects-cloud">Selected Subjects: <span v-for="(course, index) in conflictInfo.other_contents.selectedSubjects" :key="JSON.stringify(course)" :class="colorSubject(index, 'remote')"> {{ course.id }} </span></p>
+              <p id="selected-subjects-cloud">
+                Selected Subjects: <span v-for="(course, index) in conflictInfo.other_contents.selectedSubjects" :key="JSON.stringify(course)" :class="colorSubject(index, 'remote')"> {{ course.id }} </span>
+              </p>
             </v-card>
           </v-list>
           <v-btn color="primary" @click="$emit('update-local', conflictInfo.id) ">
             Keep Remote
           </v-btn>
         </v-flex>
-        <v-flex xs6 style="padding: 2em" id = "local-column">
+        <v-flex id="local-column" xs6 style="padding: 2em">
           <b>Local</b>
           <v-list>
             <v-card style="padding: 1em">
@@ -44,7 +46,9 @@
             <v-card style="padding: 1em">
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for="req in roads[conflictInfo.id].contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
-              <p id = "selected-subjects-local">Selected Subjects: <span v-for="(course, index) in roads[conflictInfo.id].contents.selectedSubjects.flat()" :key="JSON.stringify(course)" :class="colorSubject(index, 'local')"> {{ course.id }} </span></p>
+              <p id="selected-subjects-local">
+                Selected Subjects: <span v-for="(course, index) in roads[conflictInfo.id].contents.selectedSubjects.flat()" :key="JSON.stringify(course)" :class="colorSubject(index, 'local')"> {{ course.id }} </span>
+              </p>
             </v-card>
           </v-list>
           <v-btn color="primary" @click="$emit('update-remote', conflictInfo.id)">

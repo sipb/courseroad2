@@ -1,6 +1,6 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
+import Vuex from 'vuex';
 import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
 import VueCookies from 'vue-cookies';
