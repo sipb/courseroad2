@@ -6,11 +6,8 @@ and choose which classes to take when in order to maximize your time at MIT.
 CourseRoad allows you to look more than one semester ahead make fully informed choices about the big picture.
 
 # Installation
-TODO: do a practice install from scratch and make this section better.
 
-`npm install` in the base directory should 'just work' (might need to prepend `sudo ` if your npm environment is messy like mine).
-
-If that doesn't work... just do `npm install <package> --save-dev` for every package mentioned in error messages until it works (have to run command below).
+`npm install`
 
 # Running
 `npm run dev` then go to <http://localhost:8080/>.
@@ -22,3 +19,5 @@ How to push changes to the live site:
 ./deploy.sh [dev or prod] [kerberos]
 ```
 which will deploy the code to the [dev](https://courseroad.mit.edu/dev/) and [main](https://courseroad.mit.edu/) sites respectively.
+
+**Very important:** Always deploy to `dev` and test it before deploying to `prod`!

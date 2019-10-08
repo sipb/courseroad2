@@ -12,25 +12,14 @@
       :key="index-1"
       :index="index-1"
       :selected-subjects="selectedSubjects"
-      :all-subjects="subjects"
+      :semester-subjects="selectedSubjects[index-1]"
       :road-i-d="roadID"
       :is-open="visibleList[index-1]"
       :base-year="baseYear"
       :adding-from-card="addingFromCard"
-      :item-adding="itemAdding"
       :current-semester="currentSemester"
       :dragging-over="dragSemesterNum===index-1"
-      :subjects-index="subjectsIndex"
-      :generic-courses="genericCourses"
-      :generic-index="genericIndex"
-      @add-at-placeholder="$emit('add-at-placeholder',$event)"
-      @add-class="$emit('add-class', $event)"
-      @move-class="$emit('move-class', $event)"
-      @remove-class="$emit('remove-class', $event)"
-      @click-class="$emit('click-class',$event)"
       @change-year="changeYearDialog = true"
-      @override-warnings="$emit('override-warnings',$event)"
-      @drag-start-class="$emit('drag-start-class',$event)"
     />
     <v-dialog v-model="changeYearDialog" max-width="600">
       <v-card>
@@ -68,10 +57,10 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'subjects', 'roadID', 'currentSemester', 'addingFromCard', 'itemAdding', 'dragSemesterNum', 'subjectsIndex', 'genericCourses', 'genericIndex'],
+  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
   data: function () {
-    let defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
-    let numSemesters = 16;// this.currentSemester >= 13 ? 16 : 13
+    const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
+    const numSemesters = 16;
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
@@ -81,15 +70,10 @@ export default {
   },
   computed: {
     baseYear: function () {
-      var today = new Date();
-      var currentYear = today.getFullYear();
-      var baseYear = (today.getMonth() >= 4 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
       return baseYear - Math.floor((this.currentSemester - 1) / 3);
-    }
-  },
-  watch: {
-    currentSemester: function (newSem, oldSem) {
-      this.numSems = newSem >= 13 ? 16 : 13;
     }
   }
 };

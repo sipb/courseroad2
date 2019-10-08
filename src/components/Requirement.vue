@@ -12,6 +12,7 @@
           <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
             {{ req["title-no-degree"] }}
           </span>
+          <span v-else-if="'medium-title' in req && req['medium-title'] != ''">{{ req['medium-title'] }}</span>
           <span v-else-if="'short-title' in req && req['short-title'] != ''">
             {{ req['short-title'] }}
           </span>
@@ -43,7 +44,7 @@
             && req.percent_fulfilled !== 'N/A'"
           :style="'float: right; color: '+percentageTextColor"
         >
-          &nbsp{{ req.percent_fulfilled }}%
+          &nbsp;{{ req.percent_fulfilled }}%
           <v-icon
             v-if="'reqs' in req && hoveringOver"
             style="padding-left: 0.2em; padding-right: 0em;"
@@ -65,7 +66,7 @@
 <script>
 export default {
   name: 'Requirement',
-  props: ['req', 'leaf', 'subjects', 'genericCourses', 'subjectIndex', 'genericIndex'],
+  props: ['req', 'leaf'],
   data: function () {
     return {
       open: [],
@@ -76,15 +77,15 @@ export default {
   computed: {
     classInfo: function () {
       if ('req' in this.req) {
-        if (this.req.req in this.subjectIndex) {
-          return this.subjects[this.subjectIndex[this.req.req]];
+        if (this.req.req in this.$store.state.subjectsIndex) {
+          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[this.req.req]];
         }
-        var attributeReq = this.req.req;
+        let attributeReq = this.req.req;
         if (attributeReq.indexOf('GIR:') === 0) {
           attributeReq = attributeReq.substring(4);
         }
-        if (attributeReq in this.genericIndex) {
-          return this.genericCourses[this.genericIndex[attributeReq]];
+        if (attributeReq in this.$store.state.genericIndex) {
+          return this.$store.state.genericCourses[this.$store.state.genericIndex[attributeReq]];
         }
       }
       return undefined;
@@ -94,18 +95,12 @@ export default {
     },
     canDrag: function () {
       return this.classInfo !== undefined ||
-        ('req' in this.req && (Object.keys(this.subjectIndex).length === 0));
+        ('req' in this.req && (Object.keys(this.$store.state.subjectsIndex).length === 0));
     },
     reqFulfilled: function () {
-      if (this.req.fulfilled) {
-        return {
-          fulfilled: true
-        };
-      } else {
-        return {
-          fulfilled: false
-        };
-      }
+      return {
+        fulfilled: !!this.req.fulfilled
+      };
     },
     percentageTextColor: function () {
       return this.req.fulfilled
@@ -119,26 +114,24 @@ export default {
     },
     percentage: function () {
       const pfulfilled = this.req.percent_fulfilled;
-      const pstring = `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
-      return pstring;
+      return `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
     },
     percentage_bar: function () {
-      var showPBar = ('reqs' in this.req || 'threshold' in this.req);
-      var pblock = {
+      const showPBar = ('reqs' in this.req || 'threshold' in this.req);
+      return {
         'percentage-bar': showPBar,
         'p-bar': showPBar
       };
-      return pblock;
     }
   },
   methods: {
     dragStart: function (event) {
-      var usedInfo = this.classInfo;
+      let usedInfo = this.classInfo;
       if (usedInfo === undefined) {
         usedInfo = { id: this.req.req };
       }
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: true, classIndex: -1 }));
-      this.$emit('drag-start-class', {
+      this.$store.commit('dragStartClass', {
         dragstart: event,
         classInfo: usedInfo,
         isNew: true
@@ -149,9 +142,6 @@ export default {
 </script>
 
 <style scoped>
-  .fulfilled {
-    /* background:  radial-gradient(#00b300,white); */
-  }
   .requirement {
     font-size: 0.75em;
   }

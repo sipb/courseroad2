@@ -16,7 +16,7 @@
           :rows-per-page-items="rowsPerPageItems"
           :pagination.sync="pagination"
           :no-data-text="'No results'"
-          :rows-per-page-text="'Results per page: '"
+          :rows-per-page-text="'Results per page:\xa0'"
           :hide-headers="true"
         >
           <template slot="items" slot-scope="props">
@@ -25,17 +25,17 @@
                 slot-scope="{ hover }"
                 :class="{ 'elevation-3': hover }"
                 draggable="true"
-                style="cursor: grab; margin: 4px; display: block;"
+                style="cursor: grab; margin: 4px;"
                 @dragstart="dragStart($event, props)"
                 @click="viewClassInfo(props)"
               >
-                <td style="padding: 0; white-space: nowrap; width: 30%;">
+                <td style="padding: 0px; white-space: nowrap; width: 30%;">
                   <v-icon style="vertical-align: middle;">
                     drag_indicator
                   </v-icon>
                   <span style="vertical-align: middle;"> {{ props.item.subject_id }}</span>
                 </td>
-                <td style="width: 60%;">
+                <td style="padding: 2px 4px 2px 0px; width: 60%;">
                   {{ props.item.title }}
                 </td>
               </tr>
@@ -57,7 +57,12 @@ export default {
   components: {
     'filter-set': FilterSet
   },
-  props: ['subjects', 'searchInput', 'classInfoStack', 'cookiesAllowed', 'genericCourses'],
+  props: {
+    searchInput: {
+      type: String,
+      required: true
+    }
+  },
   data: function () {
     return {
       dragSemesterNum: -1,
@@ -125,119 +130,105 @@ export default {
   },
   computed: {
     allSubjects: function () {
-      return this.genericCourses.concat(this.subjects);
+      return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
       // only display subjects if you are filtering by something
-      var returnAny = false;
-      for (var filterName in this.chosenFilters) {
+      let returnAny = false;
+      for (const filterName in this.chosenFilters) {
         returnAny = returnAny || this.chosenFilters[filterName].length;
       }
-      if (returnAny) {
-        // escapes special characters for regex in a string
-        function escapeRegExp (string) {
-          return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-        }
-        // gets the .test function (which tests if a string matches regex) from each regex filter in a group
-        function getRegexFuncs (regexStrings) {
-          return regexStrings.map(function (rs) {
-            var r = new RegExp(rs, 'i');
-            var t = r.test.bind(r);
-            return t;
-          });
-        }
-        // gets a function that returns true if a string is true
-        // replaces $ in the string with the input (value of an attribute of the subject)
-        function getMathFuncs (mathStrings) {
-          return mathStrings.map(function (ms) {
-            return function (input) {
-              return eval(this.ms.replace(/\$/g, input));
-            }.bind({ ms: ms });
-          });
-        }
-        // gets functions that return a boolean if a filter is true
-        var filters = {
-          'subject_id,title': getRegexFuncs([this.chosenFilters.nameInput]),
-          'gir_attribute': getRegexFuncs(this.chosenFilters.girInput),
-          'hass_attribute': getRegexFuncs(this.chosenFilters.hassInput),
-          'communication_requirement': getRegexFuncs(this.chosenFilters.ciInput),
-          'level': getRegexFuncs(this.chosenFilters.levelInput),
-          'total_units': getRegexFuncs(this.chosenFilters.unitInput)
-        };
-        // gets all possible values of an attribute
-
-        // var allSubjects = this.subjects;
-        // function unique(arr) {
-        //   return [... new Set(arr)]
-        // }
-        // function allAttr(attr) {
-        //   return unique(allSubjects.map(s=>s[attr]));
-        // }
-        // console.log(allAttr("hass_attribute"));
-
-        // and or or function based on filter mode
-        var filterAction = this.filterGroupModes[this.filterGroupMode];
-        var filteredSubjects = this.allSubjects.filter(function (subject) {
-          for (var attrs in filters) {
-            // each test function in a filter group
-            var testers = filters[attrs];
-            if (testers.length) {
-              // if a single attribute group in a set returns true, the filter will match it
-              var passesAnyAttributeGroupInSet = false;
-              var attrSet = attrs.split(',');
-              for (var a = 0; a < attrSet.length; a++) {
-                var attr = attrSet[a];
-                var subjectattr = subject[attr];
-                if (!subject[attr]) {
-                  subjectattr = '';
-                }
-                // start with false for OR mode, and true for AND mode
-                var passesAttributeGroup = !filterAction(false, true);
-                // use the filter mode function (OR or AND) and test all filters in a group
-                for (var t = 0; t < testers.length; t++) {
-                  passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subjectattr));
-                }
-                if (passesAttributeGroup) {
-                  passesAnyAttributeGroupInSet = true;
-                }
-              }
-              // if the subject passes no attribute group in the set, don't include it
-              if (!passesAnyAttributeGroupInSet) {
-                return false;
-              }
-            }
-          }
-          return true;
-        });
-        if (this.chosenFilters.nameInput.length) {
-          var sortingOrder = [this.chosenFilters.nameInput, '^' + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), '^' + escapeRegExp(this.chosenFilters.nameInput)];
-          var sortingFuncs = getRegexFuncs(sortingOrder);
-          var getOrderForString = function (matchingString) {
-            var matches = sortingFuncs.map((func) => func(matchingString));
-            return matches.lastIndexOf(true);
-          };
-          var getOrder = function (subject) {
-            var idMatch = getOrderForString(subject.subject_id);
-            var nameMatch = getOrderForString(subject.title);
-            return Math.max(idMatch, nameMatch);
-          };
-          return filteredSubjects.sort(function (subject1, subject2) {
-            return getOrder(subject2) - getOrder(subject1);
-          });
-        } else {
-          return filteredSubjects;
-        }
-      } else {
+      if (!returnAny) {
         return [];
       }
+
+      // escapes special characters for regex in a string
+      function escapeRegExp (string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+      }
+      // gets the .test function (which tests if a string matches regex) from each regex filter in a group
+      function getRegexFuncs (regexStrings) {
+        return regexStrings.map(function (rs) {
+          const r = new RegExp(rs, 'i');
+          const t = r.test.bind(r);
+          return t;
+        });
+      }
+      // gets functions that return a boolean if a filter is true
+      const filters = {
+        'subject_id,title': getRegexFuncs([this.chosenFilters.nameInput]),
+        'gir_attribute': getRegexFuncs(this.chosenFilters.girInput),
+        'hass_attribute': getRegexFuncs(this.chosenFilters.hassInput),
+        'communication_requirement': getRegexFuncs(this.chosenFilters.ciInput),
+        'level': getRegexFuncs(this.chosenFilters.levelInput),
+        'total_units': getRegexFuncs(this.chosenFilters.unitInput)
+      };
+        // and or or function based on filter mode
+      const filterAction = this.filterGroupModes[this.filterGroupMode];
+      const filteredSubjects = this.allSubjects.filter(function (subject) {
+        for (const attrs in filters) {
+          // each test function in a filter group
+          const testers = filters[attrs];
+          if (testers.length) {
+            // if a single attribute group in a set returns true, the filter will match it
+            let passesAnyAttributeGroupInSet = false;
+            const attrSet = attrs.split(',');
+            for (let a = 0; a < attrSet.length; a++) {
+              const attr = attrSet[a];
+              let subjectattr = subject[attr];
+              if (!subject[attr]) {
+                subjectattr = '';
+              }
+              // start with false for OR mode, and true for AND mode
+              let passesAttributeGroup = !filterAction(false, true);
+              // use the filter mode function (OR or AND) and test all filters in a group
+              for (let t = 0; t < testers.length; t++) {
+                passesAttributeGroup = filterAction(passesAttributeGroup, testers[t](subjectattr));
+              }
+              if (passesAttributeGroup) {
+                passesAnyAttributeGroupInSet = true;
+              }
+            }
+            // if the subject passes no attribute group in the set, don't include it
+            if (!passesAnyAttributeGroupInSet) {
+              return false;
+            }
+          }
+        }
+        return true;
+      });
+      if (this.chosenFilters.nameInput.length) {
+        const sortingOrder = [this.chosenFilters.nameInput, '^' + this.chosenFilters.nameInput, escapeRegExp(this.chosenFilters.nameInput), '^' + escapeRegExp(this.chosenFilters.nameInput)];
+        const sortingFuncs = getRegexFuncs(sortingOrder);
+        const getOrderForString = function (matchingString) {
+          const matches = sortingFuncs.map((func) => func(matchingString));
+          return matches.lastIndexOf(true);
+        };
+        const getOrder = function (subject) {
+          const idMatch = getOrderForString(subject.subject_id);
+          const nameMatch = getOrderForString(subject.title);
+          return Math.max(idMatch, nameMatch);
+        };
+        return filteredSubjects.sort(function (subject1, subject2) {
+          return getOrder(subject2) - getOrder(subject1);
+        });
+      } else {
+        return filteredSubjects;
+      }
+    },
+    classInfoStack () {
+      return this.$store.state.classInfoStack;
     },
     classStackExists: function () {
       return this.classInfoStack.length > 0;
+    },
+    cookiesAllowed () {
+      return this.$store.state.cookiesAllowed;
     }
   },
   watch: {
-    searchInput: function (newSearch, oldSearch) {
-      this.chosenFilters.nameInput = newSearch;
+    searchInput (newVal) {
+      this.chosenFilters.nameInput = newVal;
     },
     classStackExists: function (oldExists, newExists) {
       Vue.nextTick(function () {
@@ -249,14 +240,16 @@ export default {
         this.$cookies.set('paginationRows', newRows);
       }
     },
-    cookiesAllowed: function (newCookies, oldCookies) {
-      if (newCookies) {
+    cookiesAllowed: function (newCA) {
+      if (newCA) {
         this.$cookies.set('paginationRows', this.pagination.rowsPerPage);
       }
     }
   },
   mounted () {
-    this.updateMenuStyle();
+    this.$nextTick(() => {
+      this.updateMenuStyle();
+    });
 
     window.cookies = this.$cookies;
     $(window).resize(function () {
@@ -270,30 +263,30 @@ export default {
   methods: {
     dragStart: function (event, classItem) {
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: true, classIndex: -1 }));
-      this.$emit('drag-start-class', {
+      this.$store.commit('dragStartClass', {
         dragstart: event,
         classInfo: classItem.item,
         isNew: true
       });
     },
     updateMenuStyle: function () {
-      var searchInputElem = document.getElementById('searchInputTF');
-      var searchInputRect = searchInputElem.getBoundingClientRect();
-      var searchMenuTop = searchInputRect.top + searchInputRect.height;
-      var searchInput = $('#searchInputTF');
-      var menuWidth = searchInput.outerWidth();
-      var classInfoCard = $('#classInfoCard');
-      var menuBottom;
+      const searchInputElem = document.getElementById('searchInputTF');
+      const searchInputRect = searchInputElem.getBoundingClientRect();
+      const searchMenuTop = searchInputRect.top + searchInputRect.height;
+      const searchInput = $('#searchInputTF');
+      const menuWidth = searchInput.outerWidth();
+      const classInfoCard = $('#classInfoCard');
+      let menuBottom;
       if (classInfoCard.length) {
         menuBottom = classInfoCard.position().top;
       } else {
         menuBottom = $(window).innerHeight();
       }
-      var maxHeight = menuBottom - searchMenuTop - this.menuMargin;
+      const maxHeight = menuBottom - searchMenuTop - this.menuMargin;
       this.searchHeight = 'max-height: ' + maxHeight + 'px;width: ' + menuWidth + 'px;';
     },
     viewClassInfo: function (item) {
-      this.$emit('view-class-info', item.item.subject_id);
+      this.$store.commit('pushClassStack', item.item.subject_id);
     }
   }
 };

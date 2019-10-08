@@ -1,17 +1,18 @@
+/* eslint-disable no-new */
 import Vue from 'vue';
 import App from './App.vue';
 import MainPage from './pages/MainPage.vue';
 import About from './pages/About.vue';
 import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
-import $ from 'jquery';
 import VueCookies from 'vue-cookies';
-import './assets/css/coursecolors.css';
-import 'vuetify/dist/vuetify.min.css';
+import './css/app.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+import store from './stores/courseData';
 
 library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
 
@@ -30,10 +31,11 @@ var router = new VueRouter({
   routes
 });
 
-VueCookies.config('3d');
+VueCookies.config(Infinity);
 
 new Vue({
   el: '#app',
   router: router,
-  render: h => h(App)
+  render: h => h(App),
+  store
 });
