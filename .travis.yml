@@ -3,11 +3,6 @@ language: node_js
 node_js:
   - "11"
 
-stages:
-  - compile
-  - test
-  - deploy
-
 jobs:
   include:
     - stage: lint
