@@ -18,10 +18,9 @@ export default {
       //all customcolors start with an '@' character
       if (colorIdentifier.startsWith('@')){
         return colorIdentifier;
-      } else {
-        id = colorIdentifier;
-      }
+      } 
 
+      let id = colorIdentifier;
       if (id !== undefined) {
         let course = id.split('.')[0];
         if (course.indexOf('GIR:') >= 0) {
