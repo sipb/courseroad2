@@ -7,8 +7,6 @@
       <filter-set v-model="chosenFilters.level" :label="'Level'" :filters="allFilters.level.filters" />
       <filter-set v-model="chosenFilters.units" :label="'Units'" :filters="allFilters.units.filters" />
     </div>
-    <h4> Search: {{ nameInput }} </h4>
-    <h4> Results: </h4>
     <div style="display: flex; flex: 1; min-height: 0px;">
       <div style="flex: 1; overflow: auto;">
         <v-data-table
