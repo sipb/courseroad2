@@ -284,7 +284,7 @@ export default {
       // Only display subjects if you are filtering by something
       let returnAny = this.nameInput.length > 0;
       for (const filterName in this.chosenFilters) {
-        returnAny = returnAny || this.chosenFilters[filterName].reduce((acc, applied) => acc || applied, false);
+        returnAny = returnAny || this.chosenFilters[filterName].some((f)=>f);
       }
       if (!returnAny) {
         return [];
