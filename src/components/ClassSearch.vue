@@ -203,14 +203,14 @@ class FilterGroup {
     }[combination];
   }
 
-  matches (subject, applied, inputs) {
+  matches (subject, active, inputs) {
     var isMatch = !this.combine(true, false);
     var noFilters = true;
     for (var f = 0; f < this.filters.length; f++) {
-      if (applied[f]) {
+      if (active[f]) {
         isMatch = this.combine(isMatch, this.filters[f].matches(subject, inputs));
       }
-      noFilters = noFilters && !applied[f];
+      noFilters = noFilters && !active[f];
     }
     return noFilters || isMatch;
   }
