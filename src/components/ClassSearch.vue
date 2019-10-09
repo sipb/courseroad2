@@ -295,9 +295,9 @@ export default {
         var matches = Object.keys(this.allFilters).every((filterGroup) => {
           return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup], { nameInput: this.nameInput });
         })
-        matches = matches & textFilter.matches(subject, { nameInput: this.nameInput });
+        matches = matches && textFilter.matches(subject, { nameInput: this.nameInput });
         return matches;
-      }.bind(this));
+      });
 
       // Sort subjects by priority order
       if (this.nameInput.length) {
