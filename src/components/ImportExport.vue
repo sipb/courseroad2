@@ -1,6 +1,6 @@
 <template>
   <v-layout row grow>
-    <v-btn class="collapse-button" outline round color="primary" @click="exportRoad">
+    <v-btn class="collapse-button" outline color="primary" @click="exportRoad">
       <span class="hidden-sm-and-down">Export</span>
       <font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" />
     </v-btn>
@@ -9,7 +9,7 @@
       v-model="dialog"
       max-width="600"
     >
-      <v-btn slot="activator" class="collapse-button" outline round color="primary">
+      <v-btn slot="activator" class="collapse-button" outline color="primary">
         <span class="hidden-sm-and-down">Import</span>
         <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
       </v-btn>
