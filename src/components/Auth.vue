@@ -107,6 +107,25 @@ export default {
         }
         this.setTabID();
       }
+    },
+    loggedIn (newLoggedIn) {
+      if (newLoggedIn && this.$cookies.get('has_set_year') !== 'true') {
+        const email = this.accessInfo.academic_id;
+        const endPoint = email.indexOf('@');
+        const kerb = email.slice(0, endPoint);
+        axios.get('https://mit-people-v3.cloudhub.io/people/v3/people/' + kerb,
+          { headers: { 'client_id': '01fce9ed7f9d4d26939a68a4126add9b',
+            'client_secret': 'D4ce51aA6A32421DA9AddF4188b93255' } })
+          .then(response => {
+            // subtract 1 for zero-indexing
+            const year = response.data.item.affiliations[0].classYear - 1;
+            if (year === undefined) {
+              console.log('Failed to find user year');
+            } else {
+              this.changeSemester(year);
+            }
+          });
+      };
     }
   },
   mounted () {
@@ -174,7 +193,7 @@ export default {
       return axios.get(process.env.FIREROAD_URL + '/verify/', headerList)
         .then(function (verifyResponse) {
           if (verifyResponse.data.success) {
-            this.$emit('set-sem', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
+            this.$store.commit('setCurrentSemester', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
             return verifyResponse.data;
           } else {
             this.logoutUser();
@@ -526,17 +545,20 @@ export default {
       }
     },
     changeSemester: function (year) {
+      if (this.cookiesAllowed) {
+        this.$cookies.set('has_set_year', true);
+      }
       const currentMonth = new Date().getMonth();
       const sem = currentMonth >= 5 && currentMonth <= 10
         ? 1 + year * 3
         : 3 + year * 3;
       this.postSecure('/set_semester/', { semester: sem + (currentMonth === 4 ? 1 : 0) }).then(function (res) {
         if (res.status === 200 && res.data.success) {
-          this.$emit('set-sem', sem);
+          this.$store.commit('setCurrentSemester', sem);
         }
       }.bind(this)).catch(function (err) {
-        if (err === 'No auth information') {
-          this.$emit('set-sem', sem);
+        if (err.message === 'No auth information') {
+          this.$store.commit('setCurrentSemester', sem);
         }
       }.bind(this));
     }

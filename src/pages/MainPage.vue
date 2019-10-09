@@ -47,7 +47,6 @@
         :conflict-info="conflictInfo"
         @conflict="conflict"
         @resolve-conflict="resolveConflict"
-        @set-sem="setSemester"
       />
 
       <v-layout justify-end>
@@ -129,7 +128,6 @@
           <road
             :selected-subjects="roads[roadId].contents.selectedSubjects"
             :road-i-d="roadId"
-            :current-semester="currentSemester"
             :adding-from-card="addingFromCard && activeRoad===roadId"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
             @change-year="$refs.authcomponent.changeSemester($event)"
@@ -248,7 +246,6 @@ export default {
       conflictDialog: false,
       conflictInfo: undefined,
       searchInput: '',
-      currentSemester: 1,
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
@@ -332,7 +329,7 @@ export default {
   mounted () {
     const today = new Date();
     const month = today.getMonth();
-    this.currentSemester = (month >= 4 && month <= 10) ? 1 : 3;
+    this.$store.commit('setCurrentSemester', (month >= 4 && month <= 10) ? 1 : 3);
 
     const borders = $('.v-navigation-drawer__border');
     const scrollers = $('.scroller');
@@ -461,9 +458,6 @@ export default {
     },
     updateRemote: function (id) {
       this.$refs.authcomponent.updateRemote(id);
-    },
-    setSemester: function (sem) {
-      this.currentSemester = Math.max(1, sem);
     },
     dismissOld: function () {
       this.dismissedOld = true;
