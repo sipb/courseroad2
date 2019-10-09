@@ -292,14 +292,14 @@ export default {
       }
 
       // Filter subjects that match all filter sets and the text filter
-      const filteredSubjects = this.allSubjects.filter(function (subject) {
+      const filteredSubjects = this.allSubjects.filter((subject) => {
         var matches = true;
         for (var filterGroup in this.allFilters) {
           matches = matches && this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup], { nameInput: this.nameInput });
         }
         matches = matches && textFilter.matches(subject, { nameInput: this.nameInput });
         return matches;
-      }.bind(this));
+      });
 
       // Sort subjects by priority order
       if (this.nameInput.length) {
