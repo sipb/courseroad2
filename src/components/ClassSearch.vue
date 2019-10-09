@@ -291,7 +291,7 @@ export default {
       }
 
       // Filter subjects that match all filter sets and the text filter
-      const filteredSubjects = this.allSubjects.filter(function (subject) {
+      const filteredSubjects = this.allSubjects.filter((subject) => {
         var matches = Object.keys(this.allFilters).every((filterGroup) => {
           return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup], { nameInput: this.nameInput });
         })
