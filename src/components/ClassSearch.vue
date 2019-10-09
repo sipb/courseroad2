@@ -51,12 +51,11 @@ import $ from 'jquery';
 import Vue from 'vue';
 
 class Filter {
-  constructor (name, shortName, filter, attributeNames, requires, mode) {
+  constructor (name, shortName, filter, attributeNames, mode) {
     this.name = name;
     this.short = shortName;
     this.filter = filter;
     this.attributes = attributeNames;
-    this.requires = requires;
     if (mode === undefined) {
       mode = 'OR';
     }
@@ -81,8 +80,10 @@ class Filter {
 class RegexFilter extends Filter {
   constructor (name, shortName, regex, attributeNames, requires, mode) {
     var testFunction = RegexFilter.getRegexTestFunction(regex);
-    super(name, shortName, testFunction, attributeNames, requires, mode);
+    super(name, shortName, testFunction, attributeNames, mode);
     this.regex = regex;
+    // Input required to construct the regex (for filters that change based on input)
+    this.requires = requires;
   }
 
   static getRegexTestFunction (regex) {
@@ -188,7 +189,7 @@ class MathFilter extends Filter {
       }
       return false;
     };
-    super(name, shortName, comparator, attributeNames, [], mode);
+    super(name, shortName, comparator, attributeNames, mode);
   }
 }
 
