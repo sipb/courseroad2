@@ -2,6 +2,7 @@ node_modules
 dist
 .idea
 *~
+**.DS_Store
 
 
 ## GitHub's auto .gitignore for Node projects
