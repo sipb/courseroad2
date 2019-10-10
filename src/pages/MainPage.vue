@@ -3,6 +3,7 @@
   <v-app
     id="app-wrapper"
   >
+  <meta name="description" contents="A four-year academic planner for the MIT community">
     <v-dialog v-model="showMobile" fullscreen>
       <v-card height="100%">
         <v-container fill-height>
