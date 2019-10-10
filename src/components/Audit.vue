@@ -123,8 +123,23 @@
           <v-card-text v-if="'req' in dialogReq">
             {{ dialogReq["req"] }}
           </v-card-text>
+          <div style="display:flex">
+            <v-card-text style="width:auto">
+              <b>Petition this Requirement:</b>
+            </v-card-text>
+            <v-autocomplete 
+              :items="selectedSubjects.flat()" 
+              item-value="id" 
+              item-text="id"
+              label="Select Class"
+              >
+            </v-autocomplete>
+            <v-btn color="green" class="white--text">
+              Submit
+            </v-btn>
+          </div>
           <v-card-text>
-            <b>Satisfying courses</b>
+            <b>Satisfying courses:</b>
             <div v-for="course in dialogReq['sat_courses']" :key="course">
               {{ course }}
             </div>
@@ -155,6 +170,7 @@ export default {
   },
   props: [
     'selectedReqs',
+    'selectedSubjects',
     'reqTrees',
     'reqList',
     'progressOverrides'
@@ -167,7 +183,7 @@ export default {
       progressDialog: false,
       progressReq: undefined,
       newManualProgress: 0,
-      isEditing: false
+      isEditing: false,
     };
   },
   computed: {
