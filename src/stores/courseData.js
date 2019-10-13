@@ -33,6 +33,7 @@ const store = new Vuex.Store({
     },
     subjectsIndex: {},
     subjectsInfo: [],
+    subjectsInfoNoDescriptions: [],
     ignoreRoadChanges: false,
     // When changes are made to roads, different levels of fulfillment need to be update in the audit
     // all: update audit for all majors (for changes like adding a class)
@@ -267,6 +268,25 @@ const store = new Vuex.Store({
   actions: {
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
+      let subjectsInfoNoDescriptions = response.data.map(function(x) {
+        //console.log(x);
+        /*try {
+          x = new Map(Object.entries(x));
+        }
+        catch(e) {
+          console.log(e)
+        };
+        x.delete("description");*/
+        delete x.description;
+        return x
+      });
+      let testArray = [{a: 1, b:2}, {a: 1, c: 3}];
+      console.log(typeof(testArray[1]));
+      console.log(JSON.stringify(testArray));
+      console.log(testArray);
+      console.log(subjectsInfoNoDescriptions.slice(1, 5));
+      console.log(JSON.stringify(subjectsInfoNoDescriptions.slice(1, 5)));
+      localStorage.subjectsInfoNoDescriptions = JSON.stringify(subjectsInfoNoDescriptions);
       commit('setSubjectsInfo', response.data);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
