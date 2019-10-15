@@ -124,19 +124,19 @@
             {{ dialogReq["req"] }}
           </v-card-text>
           <div style="display:flex">
-            <v-card-text style="width:auto">
+            <v-card-text style="width:auto" class="center-text">
               <b>Petition this Requirement:</b>
             </v-card-text>
             <v-autocomplete 
-              :items="selectedSubjects.flat()" 
+              :items="removeSharedItems(selectedSubjects.flat(), dialogReq['sat_courses'])"
               item-value="id" 
               item-text="id"
               label="Select Class"
+              chips
+              deletable-chips
+              multiple
               >
             </v-autocomplete>
-            <v-btn color="green" class="white--text">
-              Submit
-            </v-btn>
           </div>
           <v-card-text>
             <b>Satisfying courses:</b>
@@ -329,6 +329,22 @@ export default {
       this.progressReq = undefined;
       this.progressDialog = false;
       this.newManualProgress = 0;
+    },
+    removeSharedItems: function (courses, coursesToFilter) {
+
+      return courses.filter(function(el) {
+        for (var i = 0; i < coursesToFilter.length; i++) {
+            console.log("i=" + i)
+            console.log("el.id: " + el.id)
+            console.log("coursesToFilter[i]: " + coursesToFilter[i])
+            if (el.id === coursesToFilter[i]) {
+              console.log("Returns False")
+              return false
+            }
+        }
+        console.log("Returns true")
+        return true
+      });
     }
   }
 };
