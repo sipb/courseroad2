@@ -331,18 +331,12 @@ export default {
       this.newManualProgress = 0;
     },
     removeSharedItems: function (courses, coursesToFilter) {
-
       return courses.filter(function(el) {
         for (var i = 0; i < coursesToFilter.length; i++) {
-            console.log("i=" + i)
-            console.log("el.id: " + el.id)
-            console.log("coursesToFilter[i]: " + coursesToFilter[i])
             if (el.id === coursesToFilter[i]) {
-              console.log("Returns False")
               return false
             }
         }
-        console.log("Returns true")
         return true
       });
     }
