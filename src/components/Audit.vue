@@ -128,7 +128,7 @@
               <b>Petition this Requirement:</b>
             </v-card-text>
             <v-autocomplete 
-              :items="removeSharedItems(selectedSubjects.flat(), dialogReq['sat_courses'])"
+              :items="removeSharedCourses(selectedSubjects.flat(), dialogReq['sat_courses']).sort(sortCourses)"
               item-value="id" 
               item-text="id"
               label="Select Class"
@@ -330,15 +330,21 @@ export default {
       this.progressDialog = false;
       this.newManualProgress = 0;
     },
-    removeSharedItems: function (courses, coursesToFilter) {
+    removeSharedCourses: function (courses, coursesToFilter) {
+      // Takes two arrays of courses and returns an array without the courses in coursesToFilter
       return courses.filter(function(el) {
         for (var i = 0; i < coursesToFilter.length; i++) {
             if (el.id === coursesToFilter[i]) {
-              return false
+              return false;
             }
         }
-        return true
+        return true;
       });
+    },
+    sortCourses: function (courseOne, courseTwo) {
+      var courseOneId = courseOne.id;
+      var courseTwoId = courseTwo.id;
+      return parseFloat(courseOneId) - parseFloat(courseTwoId);
     }
   }
 };
