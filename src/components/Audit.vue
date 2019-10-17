@@ -333,7 +333,7 @@ export default {
     removeSharedCourses: function (courses, coursesToFilter) {
       // Takes two arrays of courses and returns an array without the courses in coursesToFilter
       return courses.filter(function(el) {
-        for (var i = 0; i < coursesToFilter.length; i++) {
+        for (let i = 0; i < coursesToFilter.length; i++) {
             if (el.id === coursesToFilter[i]) {
               return false;
             }
@@ -342,8 +342,8 @@ export default {
       });
     },
     sortCourses: function (courseOne, courseTwo) {
-      var courseOneId = courseOne.id;
-      var courseTwoId = courseTwo.id;
+      let courseOneId = courseOne.id;
+      let courseTwoId = courseTwo.id;
       return parseFloat(courseOneId) - parseFloat(courseTwoId);
     }
   }
