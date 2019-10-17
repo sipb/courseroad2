@@ -28,6 +28,7 @@
         slot="activator"
         :color="saveColor"
         style="user-select: none;"
+        id="save-icon"
       >
         {{ saveIcon }}
       </v-icon>
