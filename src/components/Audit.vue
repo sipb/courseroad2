@@ -344,7 +344,22 @@ export default {
     sortCourses: function (courseOne, courseTwo) {
       let courseOneId = courseOne.id;
       let courseTwoId = courseTwo.id;
-      return parseFloat(courseOneId) - parseFloat(courseTwoId);
+      if (isNaN(parseFloat(courseOneId)) && isNaN(parseFloat(courseTwoId))) {
+        let majorOneId = courseOneId.substring(0, 2);
+        let majorTwoId = courseTwoId.substring(0, 2);
+        if (majorOneId.localeCompare(majorTwoId) === 0) {
+          let courseNumberOne = courseOneId.substring(courseOneId.lastIndexOf(".")+1);
+          let courseNumberTwo = courseTwoId.substring(courseTwoId.lastIndexOf(".")+1);
+          return parseInt(courseNumberOne) - parseInt(courseNumberTwo);
+        }
+        return majorOneId.localeCompare(majorTwoId);
+      } else if (isNaN(parseFloat(courseOneId))) {
+        return 1;
+      } else if (isNaN(parseFloat(courseTwoId))) {
+        return -1;
+      } else {
+        return parseFloat(courseOneId) - parseFloat(courseTwoId);
+      }
     }
   }
 };
