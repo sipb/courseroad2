@@ -1,5 +1,3 @@
-// to satisfy the ever-needy eslint
-/* global it, expect, mount, beforeEach, describe, shallowMount Vue, Vuex, Vuetify, createLocalVue */
 import moment from 'moment';
 import ConflictDialog from '../../src/components/ConflictDialog.vue';
 
