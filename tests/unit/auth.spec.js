@@ -29,6 +29,18 @@ const conflictInfo = {
   this_date: '2019-06-18T01:00:32+00:00'
 };
 
+const storeCookies = new Vuex.Store({
+  state: {
+    cookiesAllowed: true
+  }
+});
+
+const storeNoCookies = new Vuex.Store({
+  state: {
+    cookiesAllowed: false
+  }
+});
+
 describe('Auth', () => {
   it('mirrors store properties', () => {
     const store1 = new Vuex.Store({
@@ -83,26 +95,41 @@ describe('Auth', () => {
     expect(wrapper2.vm.roads).toMatchObject(store2.state.roads);
   });
   it('displays the save button correctly', () => {
-    const storeCookies = new Vuex.Store({
-      state: {
-        cookiesAllowed: true
-      }
-    });
-    const storeNoCookies = new Vuex.Store({
-      state: {
-        cookiesAllowed: false
-      }
-    });
     const wrapper1 = mount(Auth, { store: storeNoCookies, localVue });
     const saveIcon1 = wrapper1.find('#save-icon');
-    expect(saveIcon1.classes('gray--text')).toBeTruthy();
+    expect(saveIcon1.classes('gray--text')).toBe(true);
+    expect(saveIcon1.find("i").text()).toMatch("save");
     wrapper1.setData({ accessInfo: {academic_id: 'test@mit.edu'},loggedIn: true });
-    expect(saveIcon1.classes('primary--text')).toBeTruthy();
+    expect(saveIcon1.classes('primary--text')).toBe(true);
+    expect(saveIcon1.find("i").text()).toMatch("save");
 
     const wrapper2 = mount(Auth, { store: storeCookies, localVue });
     const saveIcon2 = wrapper2.find('#save-icon');
-    expect(saveIcon2.classes('primary--text')).toBeTruthy();
-    wrapper1.setData({ saveWarnings: ['some warning']});
-    expect(saveIcon2.classes('warning--text')).toBeTruthy();
+    expect(saveIcon2.classes('primary--text')).toBe(true);
+    expect(saveIcon2.find("i").text()).toMatch("save");
+    wrapper2.setData({ saveWarnings: ['some warning']});
+    expect(saveIcon2.classes('warning--text')).toBe(true);
+    expect(saveIcon2.find("i").text()).toMatch("warning");
+  });
+  it('sets the correct tab IDs', () => {
+     const wrapper = shallowMount(Auth, { store: storeCookies, localVue });
+     expect(sessionStorage.tabID).toBeUndefined();
+
+     // Initialize tab ID with no existing tab IDs
+     wrapper.vm.setTabID();
+     expect(sessionStorage.tabID).toBe('1');
+     expect(wrapper.vm.tabID).toBe('1');
+     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual([1]);
+     sessionStorage.tabID = undefined;
+     sessionStorage.removeItem('tabID');
+
+     //Initialize tab ID with sequential existing tab IDs
+     const initialTabs = [1, 2, 3, 4];
+     const expectedTabs = initialTabs.concat([5])
+     wrapper.vm.$cookies.set('tabs', JSON.stringify(initialTabs));
+     wrapper.vm.setTabID();
+     expect(sessionStorage.tabID).toBe('5');
+     expect(wrapper.vm.tabID).toBe('5');
+     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabs);
   });
 })

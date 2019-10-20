@@ -166,7 +166,11 @@ export default {
         const tabs = JSON.parse(this.$cookies.get('tabs'));
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
-        this.$cookies.set('tabs', JSON.stringify(tabs));
+        if(tabs.length) {
+          this.$cookies.set('tabs', JSON.stringify(tabs));
+        } else {
+          this.$cookies.remove('tabs');
+        }
       }
       if (this.currentlySaving) {
         return 'Are you sure you want to leave?  Your roads are not saved.';
@@ -530,17 +534,17 @@ export default {
           }
         } else {
           // TODO: look into whether this = sign is acting correctly?
-          if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs'))).length) {
+          if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs')))) {
             const maxTab = Math.max(...tabs);
             const newTab = (maxTab + 1).toString();
             sessionStorage.tabID = newTab;
             this.tabID = newTab;
-            tabs.push(newTab);
+            tabs.push(maxTab + 1);
             this.$cookies.set('tabs', JSON.stringify(tabs));
           } else {
             sessionStorage.tabID = '1';
             this.tabID = '1';
-            this.$cookies.set('tabs', '["1"]');
+            this.$cookies.set('tabs', '[1]');
           }
         }
       }
