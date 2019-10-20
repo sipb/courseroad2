@@ -518,23 +518,21 @@ export default {
     },
     getAgent: function () {
       const ua = UAParser(navigator.userAgent);
-      console.log("getting agent");
-      console.log(navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID);
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
     },
     setTabID: function () {
-      console.log("setting tab ID");
       if (this.cookiesAllowed) {
         if (sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
+          const tabNum = parseInt(this.tabID);
           if (this.$cookies.isKey('tabs')) {
             var tabs = JSON.parse(this.$cookies.get('tabs'));
-            if (tabs.indexOf(this.tabID) === -1) {
-              tabs.push(this.tabID);
+            if (tabs.indexOf(tabNum) === -1) {
+              tabs.push(tabNum);
               this.$cookies.set('tabs', JSON.stringify(tabs));
             }
           } else {
-            this.$cookies.set('tabs', JSON.stringify([this.tabID]));
+            this.$cookies.set('tabs', JSON.stringify([tabNum]));
           }
         } else {
           // TODO: look into whether this = sign is acting correctly?
@@ -552,7 +550,6 @@ export default {
           }
         }
       }
-      console.log(this.tabID);
     },
     changeSemester: function (year) {
       if (this.cookiesAllowed) {

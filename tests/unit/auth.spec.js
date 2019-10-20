@@ -120,16 +120,47 @@ describe('Auth', () => {
      expect(sessionStorage.tabID).toBe('1');
      expect(wrapper.vm.tabID).toBe('1');
      expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual([1]);
-     sessionStorage.tabID = undefined;
      sessionStorage.removeItem('tabID');
 
      //Initialize tab ID with sequential existing tab IDs
-     const initialTabs = [1, 2, 3, 4];
-     const expectedTabs = initialTabs.concat([5])
-     wrapper.vm.$cookies.set('tabs', JSON.stringify(initialTabs));
+     const initialTabsSeq = [1, 2, 3, 4];
+     const expectedTabsSeq = initialTabsSeq.concat([5])
+     wrapper.vm.$cookies.set('tabs', JSON.stringify(initialTabsSeq));
      wrapper.vm.setTabID();
      expect(sessionStorage.tabID).toBe('5');
      expect(wrapper.vm.tabID).toBe('5');
-     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabs);
+     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabsSeq);
+     sessionStorage.removeItem('tabID');
+
+     //Initialize tab ID with gap in tab IDs
+     const initialTabsGap = [1, 2, 4, 8];
+     const expectedTabsGap = initialTabsGap.concat([9]);
+     wrapper.vm.$cookies.set('tabs', JSON.stringify(initialTabsGap));
+     wrapper.vm.setTabID();
+     expect(sessionStorage.tabID).toBe('9');
+     expect(wrapper.vm.tabID).toBe('9');
+     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabsGap);
+
+     //Tab ID taken from session storage
+     wrapper.setData({tabID: '27'});
+     wrapper.vm.setTabID();
+     expect(wrapper.vm.tabID).toBe('9');
+     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabsGap);
+
+     //Tab ID set in cookies if absent
+     wrapper.vm.$cookies.set('tabs', JSON.stringify(initialTabsGap));
+     wrapper.setData({tabID: '27'});
+     wrapper.vm.setTabID();
+     expect(wrapper.vm.tabID).toBe('9');
+     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabsGap);
+
+     //Tab ID set in cookies if no cookie set
+     wrapper.vm.$cookies.remove('tabs');
+     wrapper.setData({tabID: '27'});
+     wrapper.vm.setTabID();
+     expect(wrapper.vm.tabID).toBe('9');
+     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual([9]);
+
+     sessionStorage.removeItem('tabID');
   });
 })
