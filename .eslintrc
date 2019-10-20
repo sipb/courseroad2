@@ -1,4 +1,5 @@
 {
+  "plugins": ["jest"],
   "extends": [
     "plugin:vue/recommended",
     "standard"
@@ -27,10 +28,20 @@
   "overrides": [
     {
       "files": [
-        "**/__tests__/*.{j,t}s?(x)"
+        "tests/unit/*.spec.js"
       ],
       "env": {
         "jest": true
+      },
+      "globals": {
+        "mount": "readonly",
+        "shallowMount": "readonly",
+        "createLocalVue": "readonly",
+        "Vue": "readonly",
+        "Vuex": "readonly",
+        "Vuetify": "readonly",
+        "VueRouter": "readonly",
+        "VueCookies": "readonly"
       }
     }
   ]
