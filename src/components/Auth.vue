@@ -385,8 +385,9 @@ export default {
       }
       const roadSubjects = this.roads[roadID].contents.selectedSubjects.flat();
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
-      Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
-      const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
+      const roadToSend = {};
+      Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
+      const savePromise = this.postSecure('/sync/sync_road/', roadToSend)
         .then(function (response) {
           if (response.status !== 200) {
             return Promise.reject(new Error('Unable to save road ' + this.oldid));
@@ -517,9 +518,12 @@ export default {
     },
     getAgent: function () {
       const ua = UAParser(navigator.userAgent);
+      console.log("getting agent");
+      console.log(navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID);
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
     },
     setTabID: function () {
+      console.log("setting tab ID");
       if (this.cookiesAllowed) {
         if (sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
@@ -548,6 +552,7 @@ export default {
           }
         }
       }
+      console.log(this.tabID);
     },
     changeSemester: function (year) {
       if (this.cookiesAllowed) {
