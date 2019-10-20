@@ -380,7 +380,7 @@ export default {
       this.currentlySaving = true;
       this.saveWarnings = [];
       const assignKeys = { override: false, agent: this.getAgent() };
-      if (!roadID.includes('$')) {
+      if (!roadID.indexOf('$') >= 0) {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.roads[roadID].contents.selectedSubjects.flat();
