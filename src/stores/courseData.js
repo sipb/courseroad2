@@ -2,7 +2,6 @@ import axios from 'axios';
 import moment from 'moment';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { ENGINE_METHOD_NONE } from 'constants';
 
 Vue.use(Vuex);
 
@@ -16,7 +15,7 @@ const store = new Vuex.Store({
     addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
-    fullSubjectInfo: false,
+    fullSubjectsInfo: false,
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
@@ -34,7 +33,7 @@ const store = new Vuex.Store({
       }
     },
     subjectsIndex: {},
-    subjectsInfo: JSON.parse(localStorage.subjectsInfoNoDescriptions),
+    subjectsInfo: [],
     ignoreRoadChanges: false,
     // When changes are made to roads, different levels of fulfillment need to be update in the audit
     // all: update audit for all majors (for changes like adding a class)
@@ -220,6 +219,9 @@ const store = new Vuex.Store({
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;
     },
+    setFullSubjectsInfo (state, full) {
+      state.fullSubjectsInfo = full;
+    },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
         state.ignoreRoadChanges = true;
@@ -269,14 +271,13 @@ const store = new Vuex.Store({
   actions: {
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
-      let subjectsInfoNoDescriptions = response.data.map(function(x) {
-        x = {'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 
-        'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap};
-        return x
+      const subjectsInfoNoDescriptions = response.data.map(function (x) {
+        x = { 'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap };
+        return x;
       });
       localStorage.subjectsInfoNoDescriptions = JSON.stringify(subjectsInfoNoDescriptions);
       commit('setSubjectsInfo', response.data);
-      this.state.fullSubjectInfo = true;
+      commit('setFullSubjectsInfo', true);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
@@ -320,20 +321,8 @@ function getMatchingAttributes (gir, hass, ci) {
     totalObject.out_of_class_hours /= matchingClasses.length;
     return totalObject;
   } else {
-    const matchingClasses = store.state.subjectsInfo.filter(function (subject) {
-      return false;
-    });
-    const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
-      return {
-        offered_spring: accumObject.offered_spring || nextClass.offered_spring,
-        offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
-        offered_fall: accumObject.offered_fall || nextClass.offered_fall,
-      };
-    }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0 });
-    totalObject.in_class_hours /= matchingClasses.length;
-    totalObject.out_of_class_hours /= matchingClasses.length;
-    return totalObject;
-  }
+    return false;
+  };
 }
 
 export default store;

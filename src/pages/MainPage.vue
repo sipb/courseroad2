@@ -331,6 +331,7 @@ export default {
     const today = new Date();
     const month = today.getMonth();
     this.$store.commit('setCurrentSemester', (month >= 4 && month <= 10) ? 1 : 3);
+    this.$store.commit('setSubjectsInfo', JSON.parse(localStorage.subjectsInfoNoDescriptions));
 
     const borders = $('.v-navigation-drawer__border');
     const scrollers = $('.scroller');
