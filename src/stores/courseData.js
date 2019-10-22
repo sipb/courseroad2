@@ -2,6 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { ENGINE_METHOD_NONE } from 'constants';
 
 Vue.use(Vuex);
 
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
     addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
+    fullSubjectInfo: false,
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
@@ -32,8 +34,7 @@ const store = new Vuex.Store({
       }
     },
     subjectsIndex: {},
-    subjectsInfo: [],
-    subjectsInfoNoDescriptions: [],
+    subjectsInfo: JSON.parse(localStorage.subjectsInfoNoDescriptions),
     ignoreRoadChanges: false,
     // When changes are made to roads, different levels of fulfillment need to be update in the audit
     // all: update audit for all majors (for changes like adding a class)
@@ -269,25 +270,13 @@ const store = new Vuex.Store({
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
       let subjectsInfoNoDescriptions = response.data.map(function(x) {
-        //console.log(x);
-        /*try {
-          x = new Map(Object.entries(x));
-        }
-        catch(e) {
-          console.log(e)
-        };
-        x.delete("description");*/
-        delete x.description;
+        x = {'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 
+        'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap};
         return x
       });
-      let testArray = [{a: 1, b:2}, {a: 1, c: 3}];
-      console.log(typeof(testArray[1]));
-      console.log(JSON.stringify(testArray));
-      console.log(testArray);
-      console.log(subjectsInfoNoDescriptions.slice(1, 5));
-      console.log(JSON.stringify(subjectsInfoNoDescriptions.slice(1, 5)));
       localStorage.subjectsInfoNoDescriptions = JSON.stringify(subjectsInfoNoDescriptions);
       commit('setSubjectsInfo', response.data);
+      this.state.fullSubjectInfo = true;
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
@@ -307,28 +296,44 @@ const store = new Vuex.Store({
 });
 
 function getMatchingAttributes (gir, hass, ci) {
-  const matchingClasses = store.state.subjectsInfo.filter(function (subject) {
-    if (gir !== undefined && subject.gir_attribute !== gir) {
+  if (store.state.fullSubjectInfo) {
+    const matchingClasses = store.state.subjectsInfo.filter(function (subject) {
+      if (gir !== undefined && subject.gir_attribute !== gir) {
+        return false;
+      }
+      if (hass !== undefined && subject.hass_attribute !== hass) {
+        return false;
+      }
+      return !(ci !== undefined && subject.communication_requirement !== ci);
+    });
+    const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
+      return {
+        offered_spring: accumObject.offered_spring || nextClass.offered_spring,
+        offered_summer: accumObject.offered_summer || nextClass.offered_summer,
+        offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
+        offered_fall: accumObject.offered_fall || nextClass.offered_fall,
+        in_class_hours: accumObject.in_class_hours + (nextClass.in_class_hours !== undefined ? nextClass.in_class_hours : 0),
+        out_of_class_hours: accumObject.out_of_class_hours + (nextClass.out_of_class_hours !== undefined ? nextClass.out_of_class_hours : 0)
+      };
+    }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0 });
+    totalObject.in_class_hours /= matchingClasses.length;
+    totalObject.out_of_class_hours /= matchingClasses.length;
+    return totalObject;
+  } else {
+    const matchingClasses = store.state.subjectsInfo.filter(function (subject) {
       return false;
-    }
-    if (hass !== undefined && subject.hass_attribute !== hass) {
-      return false;
-    }
-    return !(ci !== undefined && subject.communication_requirement !== ci);
-  });
-  const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
-    return {
-      offered_spring: accumObject.offered_spring || nextClass.offered_spring,
-      offered_summer: accumObject.offered_summer || nextClass.offered_summer,
-      offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
-      offered_fall: accumObject.offered_fall || nextClass.offered_fall,
-      in_class_hours: accumObject.in_class_hours + (nextClass.in_class_hours !== undefined ? nextClass.in_class_hours : 0),
-      out_of_class_hours: accumObject.out_of_class_hours + (nextClass.out_of_class_hours !== undefined ? nextClass.out_of_class_hours : 0)
-    };
-  }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0 });
-  totalObject.in_class_hours /= matchingClasses.length;
-  totalObject.out_of_class_hours /= matchingClasses.length;
-  return totalObject;
+    });
+    const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
+      return {
+        offered_spring: accumObject.offered_spring || nextClass.offered_spring,
+        offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
+        offered_fall: accumObject.offered_fall || nextClass.offered_fall,
+      };
+    }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0 });
+    totalObject.in_class_hours /= matchingClasses.length;
+    totalObject.out_of_class_hours /= matchingClasses.length;
+    return totalObject;
+  }
 }
 
 export default store;
