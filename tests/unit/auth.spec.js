@@ -41,6 +41,40 @@ const storeNoCookies = new Vuex.Store({
   }
 });
 
+const storeBasic = new Vuex.Store({
+  state: {
+    activeRoad: "45",
+    cookiesAllowed: true,
+    roads: {
+      "45": {
+        downloaded: moment().format(DATE_FORMAT),
+        changed: moment().format(DATE_FORMAT),
+        name: 'My First Road',
+        agent: '',
+        contents: {
+          coursesOfStudy: ['girs'],
+          selectedSubjects: [[{ 'title': 'Introduction to Algorithms', 'id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 }, { 'title': 'Computation Structures', 'id': '6.004', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 }, { 'title': 'Principles of Chemical Science', 'id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 0 }], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+          progressOverrides: {}
+        }
+      }
+    }
+  },
+  mutations: {
+    allowCookies (state) {
+      state.cookiesAllowed = true;
+    }
+  }
+})
+
+const fakeAuth = {
+  academic_id: "test@mit.edu",
+  access_token: "ok5E4OTjVNXihfnnENwrDnxKPuv2cUnAYSGMNJwTvlN5LFeilRHUmXXLBkElyAmnEe6wVX8YFcHmRarvLS1peYDMS8Ogl8s0sOb3nAgYDJzgrUp5raDXdUjZ",
+  current_semester: 1,
+  sub: "1823d7331b1ad886ab1253b18a86e2",
+  success: true,
+  username: "627816884"
+}
+
 describe('Auth', () => {
   it('mirrors store properties', () => {
     const store1 = new Vuex.Store({
@@ -163,4 +197,10 @@ describe('Auth', () => {
 
      sessionStorage.removeItem('tabID');
   });
+  it('sends the correct tab ID when saving a road', () => {
+    VueCookies.set("accessInfo", fakeAuth);
+    const wrapper = shallowMount(Auth, { store: storeBasic, localVue });
+    wrapper.vm.saveRemote("45");
+    VueCookies.remove("accessInfo");
+  })
 })
