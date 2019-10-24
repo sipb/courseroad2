@@ -248,7 +248,6 @@ const store = new Vuex.Store({
       Vue.set(state.roads[id], 'changed', moment().format(DATE_FORMAT));
     },
     setSubjectsInfo (state, data) {
-      console.log('setting subjectsInfo');
       state.subjectsInfo = data;
     },
     setCurrentSemester (state, sem) {
@@ -259,13 +258,7 @@ const store = new Vuex.Store({
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setFromLocalStorage (state, localStore) {
-      console.log('in store.setFromLocalStorage');
       store.replaceState(localStore);
-      store.state.subjectsInfo = JSON.parse(localStorage.subjectsInfoNoDescriptions);
-      console.log('from localstorage:');
-      console.log(JSON.parse(localStorage.subjectsInfoNoDescriptions));
-      console.log('from store: ');
-      console.log(store.state.subjectsInfo);
     },
     updateRoad (state, id, road) {
       Object.assign(state.roads[id], road);
@@ -281,23 +274,11 @@ const store = new Vuex.Store({
   actions: {
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
-      console.log('in store.loadAllSubjects, loaded from FireRoad');
-      //commit('setSubjectsInfo', response.data);
-      console.log('loaded subjects');
-      //console.log('here');
-      //console.log(store.state.subjectsInfo);
-      console.log('from local storage:');
-      console.log(JSON.parse(localStorage.subjectsInfoNoDescriptions));
-      console.log('from store:');
-      console.log(store.state.subjectsInfo);
-      //commit('setFullSubjectsInfo', true);
-      //console.log(localStorage.store);
+      commit('setSubjectsInfo', response.data);
+      commit('setFullSubjectsInfo', true);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
-      //localStorage.subjectsInfoNoDescriptions = [];
-      //localStorage.store = JSON.stringify(this.$store.state);
-      //localStorage.subjectsInfoNoDescriptions = JSON.stringify(subjectsInfoNoDescriptions);
     },
     addAtPlaceholder ({ commit, state }, index) {
       const newClass = {
