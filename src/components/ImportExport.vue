@@ -135,7 +135,7 @@ export default {
     exportRoad: function (event) {
       const filename = this.roads[this.activeRoad].name + '.road';
 
-      const roadSubjects = this.roads[this.activeRoad].contents.selectedSubjects.flat();
+      const roadSubjects = this.flatten(this.roads[this.activeRoad].contents.selectedSubjects);
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[this.activeRoad].contents, { selectedSubjects: roadSubjects });
 
       const text = JSON.stringify(formattedRoadContents);
