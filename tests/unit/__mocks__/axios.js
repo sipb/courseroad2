@@ -79,7 +79,6 @@ module.exports = {
     }
     return new Promise(function(resolve, reject) {
       if(query === 'sync/sync_road/') {
-        console.log(params);
         const username = user.username;
         const roadID = params.id;
         delete params.id;

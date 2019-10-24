@@ -159,6 +159,8 @@ export default {
       this.getUserData();
     }
 
+    // this.setTabID();
+
     window.onbeforeunload = function () {
       if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
@@ -520,6 +522,7 @@ export default {
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
     },
     setTabID: function () {
+      console.log('setting tab ID');
       if (this.cookiesAllowed) {
         if (sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
@@ -534,11 +537,13 @@ export default {
             this.$cookies.set('tabs', JSON.stringify([tabNum]));
           }
         } else {
+          console.log('looking in cookies');
           // TODO: look into whether this = sign is acting correctly?
           if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs')))) {
             const maxTab = Math.max(...tabs);
             const newTab = (maxTab + 1).toString();
             sessionStorage.tabID = newTab;
+            console.log('setting to ' + newTab);
             this.tabID = newTab;
             tabs.push(maxTab + 1);
             this.$cookies.set('tabs', JSON.stringify(tabs));

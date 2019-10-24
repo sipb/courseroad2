@@ -152,8 +152,7 @@ describe('Auth', () => {
   });
   it('sets the correct tab IDs', () => {
      const wrapper = shallowMount(Auth, { store: storeCookies, localVue });
-     expect(sessionStorage.tabID).toBeUndefined();
-
+     
      // Initialize tab ID with no existing tab IDs
      wrapper.vm.setTabID();
      expect(sessionStorage.tabID).toBe('1');
@@ -203,10 +202,11 @@ describe('Auth', () => {
      sessionStorage.removeItem('tabID');
   });
   it('sends the correct tab ID when saving a road', () => {
-    console.log(axios.get.mock.calls);
+    console.log('final test');
+    $cookies.set('tabs', [1, 2, 4, 8]);
     $cookies.set('accessInfo', fakeAuth);
     const wrapper = shallowMount(Auth, { store: storeBasic, localVue , mocks: { $cookies }});
     wrapper.vm.saveRemote('45');
-    console.log(axios.get.mock.calls);
+    console.log(axios.post.mock.calls);
   })
 })
