@@ -17,7 +17,7 @@ export default {
     courseColor: function (subject) {
       // Custom course have custom_color component
       if (subject.custom_color) {
-        return subject.custom_color;
+        return 'custom_color-' + subject.custom_color.slice(1);
       }
       // Otherwise it's normal class which id determines color
       let id = subject.id || subject.subject_id;
