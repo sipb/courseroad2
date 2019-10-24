@@ -9,7 +9,7 @@
         height="40%"
         min-width="23em"
       >
-        <v-card-title :class="['card-header',courseColor(currentSubject.subject_id)]">
+        <v-card-title :class="['card-header',courseColor(currentSubject)]">
           <v-flex style="display: flex; flex-direction: row; align-items: center;">
             <div style="padding: 0; margin: 0; display: block;">
               <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$store.commit('popClassStack')">

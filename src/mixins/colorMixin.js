@@ -13,14 +13,14 @@ export default {
     };
   },
   methods: {
-    // colorIdentifier can be id or the custom color
-    courseColor: function (colorIdentifier) {
-      //all customcolors start with an '@' character
-      if (colorIdentifier.startsWith('@')){
-        return colorIdentifier;
-      } 
-
-      let id = colorIdentifier;
+    // courseColor takes in subject
+    courseColor: function (subject) {
+      //Custom course have custom_color component
+      if (subject.custom_color){
+        return subject.custom_color;
+      }
+      // Otherwise it's normal class which id determines color
+      let id = subject.id || subject.subject_id;
       if (id !== undefined) {
         let course = id.split('.')[0];
         if (course.indexOf('GIR:') >= 0) {
