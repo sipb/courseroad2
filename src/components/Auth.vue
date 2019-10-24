@@ -4,7 +4,6 @@
       v-if="!loggedIn"
       class="collapse-button"
       outline
-      round
       color="primary"
       @click="loginUser"
     >
@@ -15,7 +14,6 @@
       v-if="loggedIn"
       class="collapse-button"
       outline
-      round
       color="primary"
       @click="logoutUser"
     >
