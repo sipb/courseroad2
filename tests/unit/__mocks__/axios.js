@@ -1,5 +1,9 @@
+import moment from 'moment';
+const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
+
 import users from './../data/users';
 import roads from './../data/roads';
+
 
 function find(documents, values) {
   return documents.filter(function(document) {
@@ -75,11 +79,20 @@ module.exports = {
     }
     return new Promise(function(resolve, reject) {
       if(query === 'sync/sync_road/') {
+        console.log(params);
         const username = user.username;
         const roadID = params.id;
         delete params.id;
         delete params.override;
         Object.assign(roads[username][roadID], params);
+        resolve({
+          status: 200,
+          data: {
+            success: true,
+            result: 'update_remote',
+            changed: moment().format(DATE_FORMAT)
+          }
+        })
       }
     });
   })
