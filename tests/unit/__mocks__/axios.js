@@ -1,4 +1,5 @@
 import users from './../data/users';
+import roads from './../data/roads';
 
 function find(documents, values) {
   return documents.filter(function(document) {
@@ -26,28 +27,35 @@ function findOne(documents, values) {
   return undefined;
 }
 
+function getUserFromHeaders(headers) {
+  if(headers.Authorization === undefined) {
+    return 'Authorization error';
+  }
+  const token = headers.Authorization.split('Bearer ')[1];
+  const user = findOne(users, { access_token: token });
+  return user;
+}
+
 module.exports = {
   get: jest.fn(function(url, headers) {
-    const urlParts = url.split("/");
-    const query = urlParts.slice(3).join("/");
+    const urlParts = url.split('/');
+    const query = urlParts.slice(3).join('/');
     return new Promise(function(resolve, reject) {
-      if(query == "verify/") {
-        if(headers.Authorization === undefined) {
-          reject('Forbidden 403');
-        }
-        const token = headers.Authorization.split(':')[1];
-        const user = findOne(users, { access_token: token });
-        if(user !== undefined) {
+      if(query == 'verify/') {
+        const user = getUserFromHeaders(headers.headers);
+        if(user === 'Authorization Error') {
+          reject('Forbidden 403')
+        } else if(user === undefined) {
           resolve({
             data: {
-              current_semester: user.current_semester,
-              success: true
+              success: false
             }
           });
         } else {
           resolve({
             data: {
-              success: false
+              current_semester: user.current_semester,
+              success: true
             }
           });
         }
@@ -57,6 +65,22 @@ module.exports = {
     });
   }),
   post: jest.fn(function(url, params, headers) {
-    console.log("Trying to post " + url + " with " + JSON.stringify(params));
+    const urlParts = url.split('/');
+    const query = urlParts.slice(3).join('/');
+    const user = getUserFromHeaders(headers.headers);
+    if(user === 'Authorization Error') {
+      return Promise.reject('Forbidden 403');
+    } else if(user === undefined) {
+      return Promise.resolve({ data: { success: false }});
+    }
+    return new Promise(function(resolve, reject) {
+      if(query === 'sync/sync_road/') {
+        const username = user.username;
+        const roadID = params.id;
+        delete params.id;
+        delete params.override;
+        Object.assign(roads[username][roadID], params);
+      }
+    });
   })
 }
