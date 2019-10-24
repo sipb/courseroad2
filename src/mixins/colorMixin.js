@@ -1,4 +1,4 @@
-// Colors are at assets/css/coursecolors.css 
+// Colors are at assets/css/coursecolors.css
 export default {
   data: function () {
     return {
@@ -15,8 +15,8 @@ export default {
   methods: {
     // courseColor takes in subject
     courseColor: function (subject) {
-      //Custom course have custom_color component
-      if (subject.custom_color){
+      // Custom course have custom_color component
+      if (subject.custom_color) {
         return subject.custom_color;
       }
       // Otherwise it's normal class which id determines color
