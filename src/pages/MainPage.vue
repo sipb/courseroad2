@@ -331,8 +331,25 @@ export default {
     const today = new Date();
     const month = today.getMonth();
     this.$store.commit('setCurrentSemester', (month >= 4 && month <= 10) ? 1 : 3);
-    this.$store.commit('setSubjectsInfo', JSON.parse(localStorage.subjectsInfoNoDescriptions));
-
+    
+    if (localStorage.store !== 'undefined') {
+      console.log('in mounting, before changing store');
+      //console.log(localStorage.store);
+      //console.log(localStorage.store);
+      //localStorage.store = JSON.stringify(this.$store.state);
+      const localSubjects = JSON.parse(localStorage.subjectsInfoNoDescriptions);
+      console.log('from local storage:');
+      console.log(localSubjects);
+      console.log('from store:');
+      console.log(this.$store.state.subjectsInfo);
+      this.$store.commit('setFromLocalStorage', JSON.parse(localStorage.store));
+      console.log('in mounting, after changing store');
+      console.log('from local storage:');
+      console.log(localSubjects);
+      console.log('from store:');
+      console.log(this.$store.state.subjectsInfo);
+    };
+    
     const borders = $('.v-navigation-drawer__border');
     const scrollers = $('.scroller');
     const scrollWidth = scrollers.width();
@@ -364,6 +381,25 @@ export default {
     document.body.addEventListener('click', function (e) {
       this.searchOpen = false;
     }.bind(this));
+    let that = this;
+    window.addEventListener('beforeunload', function(event) {
+      const subjectsInfoNoDescriptions = that.$store.state.subjectsInfo.map(function (x) {
+        x = { 'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap };
+        return x;
+      });
+      //console.log('from local storage:');
+      //console.log(JSON.parse(localStorage.subjectsInfoNoDescriptions));
+      //console.log('from store:');
+      //console.log(store.state.subjectsInfo);
+      // test
+      localStorage.timesUpdated = JSON.parse(localStorage.timesUpdated) + 1;
+      localStorage.testSemester = that.$store.state.currentSemester;
+      //localStorage.subjectsInfo = JSON.stringify(this.$store.state.subjectsInfo);
+      that.$store.commit('setSubjectsInfo', subjectsInfoNoDescriptions);
+      localStorage.store = JSON.stringify(that.$store.state);
+      //localStorage.subjectsInfo = JSON.stringify(this.$store.state.subjectsInfo);
+      localStorage.subjectsInfoNoDescriptions = JSON.stringify(subjectsInfoNoDescriptions);
+    });
 
     if (this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
@@ -385,6 +421,24 @@ export default {
     });
   },
   methods: {
+    updateLocalStorage: function () {
+      const subjectsInfoNoDescriptions = this.$store.state.subjectsInfo.map(function (x) {
+        x = { 'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap };
+        return x;
+      });
+      //console.log('from local storage:');
+      //console.log(JSON.parse(localStorage.subjectsInfoNoDescriptions));
+      //console.log('from store:');
+      //console.log(store.state.subjectsInfo);
+      // test
+      localStorage.timesUpdated = JSON.parse(localStorage.timesUpdated) + 1;
+      localStorage.testSemester = this.$store.state.currentSemester;
+      //localStorage.subjectsInfo = JSON.stringify(this.$store.state.subjectsInfo);
+      this.$store.commit('setSubjectsInfo', subjectsInfoNoDescriptions);
+      localStorage.store = JSON.stringify(this.$store.state);
+      //localStorage.subjectsInfo = JSON.stringify(this.$store.state.subjectsInfo);
+      localStorage.subjectsInfoNoDescriptions = JSON.stringify(subjectsInfoNoDescriptions);
+    },
     updateFulfillment: function (fulfillmentNeeded) {
       if (!this.updatingFulfillment && fulfillmentNeeded !== 'none') {
         this.updatingFulfillment = true;
