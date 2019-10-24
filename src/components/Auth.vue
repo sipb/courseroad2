@@ -151,12 +151,9 @@ export default {
       this.$store.commit('allowCookies');
     }
 
-    window.cookies = this.$cookies;
     if (this.$cookies.isKey('accessInfo')) {
-      console.log(this.$cookies.get('accessInfo'));
-      this.loggedIn = true;
       this.accessInfo = this.$cookies.get('accessInfo');
-      console.log(this.accessInfo);
+      this.loggedIn = true;
       this.verify();
       this.$store.commit('allowCookies');
       this.getUserData();
@@ -193,7 +190,6 @@ export default {
       window.location.reload();
     },
     verify: function () {
-      console.log('verifying');
       const headerList = { headers: {
         'Authorization': 'Bearer ' + this.accessInfo.access_token
       } };
@@ -204,7 +200,6 @@ export default {
             this.$store.commit('setCurrentSemester', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
             return verifyResponse.data;
           } else {
-            console.log("not verified");
             this.logoutUser();
             return Promise.reject(new Error('Token not valid'));
           }

@@ -6,6 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueCookies from 'vue-cookies';
 library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
 
+import users from './data/users';
+const axios = require('axios');
+
+jest.mock('axios');
+
+import $cookies from './__mocks__/cookies';
+
 Vue.use(Vuetify);
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -13,7 +20,10 @@ localVue.component('font-awesome-icon', FontAwesomeIcon);
 localVue.use(VueCookies);
 
 
+
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
+
+const fakeAuth = users[0];
 
 const conflictInfo = {
   id: 45,
@@ -66,16 +76,11 @@ const storeBasic = new Vuex.Store({
   }
 })
 
-const fakeAuth = {
-  academic_id: "test@mit.edu",
-  access_token: "ok5E4OTjVNXihfnnENwrDnxKPuv2cUnAYSGMNJwTvlN5LFeilRHUmXXLBkElyAmnEe6wVX8YFcHmRarvLS1peYDMS8Ogl8s0sOb3nAgYDJzgrUp5raDXdUjZ",
-  current_semester: 1,
-  sub: "1823d7331b1ad886ab1253b18a86e2",
-  success: true,
-  username: "627816884"
-}
-
 describe('Auth', () => {
+  afterEach(() => {
+    axios.get.mockClear();
+    axios.post.mockClear();
+  }),
   it('mirrors store properties', () => {
     const store1 = new Vuex.Store({
       state: {
@@ -198,9 +203,10 @@ describe('Auth', () => {
      sessionStorage.removeItem('tabID');
   });
   it('sends the correct tab ID when saving a road', () => {
-    VueCookies.set("accessInfo", fakeAuth);
-    const wrapper = shallowMount(Auth, { store: storeBasic, localVue });
-    wrapper.vm.saveRemote("45");
-    VueCookies.remove("accessInfo");
+    console.log(axios.get.mock.calls);
+    $cookies.set('accessInfo', fakeAuth);
+    const wrapper = shallowMount(Auth, { store: storeBasic, localVue , mocks: { $cookies }});
+    wrapper.vm.saveRemote('45');
+    console.log(axios.get.mock.calls);
   })
 })
