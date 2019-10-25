@@ -127,7 +127,22 @@ export default {
         viewDialog(newVal) {
             this.viewDialogChild = newVal;
         }
-
     }
 }
 </script>
+<style scoped>
+.percentage-bar {
+  background: linear-gradient(
+    90deg,
+    var(--bar-color) var(--percent),
+    var(--bg-color) var(--percent)
+  );
+}
+.p-block {
+  height: 30px;
+  border: 1px solid gray;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+</style>

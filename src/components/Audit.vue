@@ -100,7 +100,6 @@
     </v-dialog>
 
     <info-dialog
-      :selected-reqs="selectedReqs"
       :selected-subjects="selectedSubjects"
       :view-dialog="viewDialog"
       :dialog-req="dialogReq"
@@ -268,28 +267,11 @@ export default {
       this.progressDialog = false;
       this.newManualProgress = 0;
     },
-    updateViewDialog: function (updatedValue) {
-      this.viewDialog = updatedValue;
-    }
   }
 };
 </script>
 
 <style scoped>
-.percentage-bar {
-  background: linear-gradient(
-    90deg,
-    var(--bar-color) var(--percent),
-    var(--bg-color) var(--percent)
-  );
-}
-.p-block {
-  height: 30px;
-  border: 1px solid gray;
-  padding-left: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
 .terminal {
   cursor: default;
 }
