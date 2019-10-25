@@ -3,6 +3,7 @@
   <v-app
     id="app-wrapper"
   >
+    <meta name="description" contents="A four-year academic planner for the MIT community">
     <v-dialog v-model="showMobile" fullscreen>
       <v-card height="100%">
         <v-container fill-height>
@@ -47,7 +48,6 @@
         :conflict-info="conflictInfo"
         @conflict="conflict"
         @resolve-conflict="resolveConflict"
-        @set-sem="setSemester"
       />
 
       <v-layout justify-end>
@@ -129,7 +129,6 @@
           <road
             :selected-subjects="roads[roadId].contents.selectedSubjects"
             :road-i-d="roadId"
-            :current-semester="currentSemester"
             :adding-from-card="addingFromCard && activeRoad===roadId"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
             @change-year="$refs.authcomponent.changeSemester($event)"
@@ -248,7 +247,6 @@ export default {
       conflictDialog: false,
       conflictInfo: undefined,
       searchInput: '',
-      currentSemester: 1,
       dismissedOld: false,
       dismissedCookies: false,
       searchOpen: false,
@@ -332,7 +330,7 @@ export default {
   mounted () {
     const today = new Date();
     const month = today.getMonth();
-    this.currentSemester = (month >= 4 && month <= 10) ? 1 : 3;
+    this.$store.commit('setCurrentSemester', (month >= 4 && month <= 10) ? 1 : 3);
 
     const borders = $('.v-navigation-drawer__border');
     const scrollers = $('.scroller');
@@ -395,7 +393,7 @@ export default {
         for (let r = 0; r < fulfillments.length; r++) {
           const req = fulfillments[r];
           const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
-          alteredRoadContents.selectedSubjects = alteredRoadContents.selectedSubjects.flat();
+          alteredRoadContents.selectedSubjects = this.flatten(alteredRoadContents.selectedSubjects);
           axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);
@@ -461,9 +459,6 @@ export default {
     },
     updateRemote: function (id) {
       this.$refs.authcomponent.updateRemote(id);
-    },
-    setSemester: function (sem) {
-      this.currentSemester = Math.max(1, sem);
     },
     dismissOld: function () {
       this.dismissedOld = true;

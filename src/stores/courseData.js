@@ -10,6 +10,7 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    currentSemester: 1,
     activeRoad: '$defaultroad$',
     addingFromCard: false,
     classInfoStack: [],
@@ -40,6 +41,11 @@ const store = new Vuex.Store({
     fulfillmentNeeded: 'all',
     // list of road IDs that have not been retrieved from the server yet
     unretrieved: []
+  },
+  getters: {
+    userYear (state) {
+      return Math.floor((state.currentSemester - 1) / 3);
+    }
   },
   mutations: {
     addClass (state, newClass) {
@@ -239,6 +245,9 @@ const store = new Vuex.Store({
     },
     setSubjectsInfo (state, data) {
       state.subjectsInfo = data;
+    },
+    setCurrentSemester (state, sem) {
+      state.currentSemester = Math.max(1, sem);
     },
     updateProgress (state, progress) {
       Vue.set(state.roads[state.activeRoad].contents.progressOverrides, progress.listID, progress.progress);

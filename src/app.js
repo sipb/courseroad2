@@ -13,6 +13,7 @@ import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import store from './stores/courseData';
+import BrowserSupportPlugin from './plugins/browserSupport';
 
 library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
 
@@ -21,6 +22,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(Vuetify);
 Vue.use(VueCookies);
 Vue.use(VueRouter);
+Vue.use(BrowserSupportPlugin);
 
 var routes = [
   { path: '/', component: MainPage },

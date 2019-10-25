@@ -15,11 +15,9 @@
       :semester-subjects="selectedSubjects[index-1]"
       :road-i-d="roadID"
       :is-open="visibleList[index-1]"
-      :base-year="baseYear"
       :adding-from-card="addingFromCard"
-      :current-semester="currentSemester"
       :dragging-over="dragSemesterNum===index-1"
-      @change-year="changeYearDialog = true"
+      @open-change-year-dialog="changeYearDialog = true"
     />
     <v-dialog v-model="changeYearDialog" max-width="600">
       <v-card>
@@ -31,7 +29,7 @@
         </v-card-title>
         <v-card-text>
           <v-select
-            v-model="newYear"
+            v-model="year"
             :items="[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
           />
         </v-card-text>
@@ -40,7 +38,7 @@
           <v-btn flat @click="changeYearDialog = false">
             Cancel
           </v-btn>
-          <v-btn color="primary" @click="$emit('change-year',newYear); changeYearDialog = false;">
+          <v-btn color="primary" @click="$emit('change-year',year); changeYearDialog = false;">
             Submit
           </v-btn>
         </v-card-actions>
@@ -57,23 +55,24 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
+  props: ['selectedSubjects', 'roadID', 'addingFromCard', 'dragSemesterNum'],
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
-      newYear: parseInt((this.currentSemester - 1) / 3),
       numSems: numSemesters
     };
   },
   computed: {
-    baseYear: function () {
-      const today = new Date();
-      const currentYear = today.getFullYear();
-      const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
-      return baseYear - Math.floor((this.currentSemester - 1) / 3);
+    year: {
+      get: function () {
+        return this.$store.getters.userYear;
+      },
+      set: function (newYear) {
+        this.$emit('change-year', newYear);
+      }
     }
   }
 };
