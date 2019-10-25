@@ -27,11 +27,13 @@
             <v-card-text style="width:auto" class="center-text">
               <b>Petition this Requirement:</b>
             </v-card-text>
-            <v-autocomplete 
+            <v-autocomplete v-model="activePetitionedReqs"
               :items="removeSharedCourses(selectedSubjects.flat(), dialogReq['sat_courses']).sort(sortCourses)"
-              item-value="id" 
               item-text="id"
+              return-object
               label="Select Class"
+              no-data-text="No Courses Found"
+              v-on:change="updatePetitionedReqs"
               chips
               deletable-chips
               multiple
@@ -70,7 +72,8 @@ export default {
     ],
     data: function () {
         return {
-            viewDialogChild: false
+            viewDialogChild: false,
+            petitionedReqs: {}
         }
     },
     methods: {
@@ -117,6 +120,19 @@ export default {
                 return -1;
             } else {
                 return parseFloat(courseOneId) - parseFloat(courseTwoId);
+            }
+        },
+        updatePetitionedReqs: function (items) {
+            this.petitionedReqs[this.dialogReq.uniqueKey] = items;
+        }
+    },
+    computed: {
+        activePetitionedReqs: {
+            get: function () {
+                return this.petitionedReqs[this.dialogReq.uniqueKey];
+            },
+            set: function (newReqs) {
+                this.petitionedReqs[this.dialogReq.uniqueKey] = newReqs;
             }
         }
     },
