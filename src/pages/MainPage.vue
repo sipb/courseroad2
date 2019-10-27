@@ -2,6 +2,7 @@
 <template>
   <v-app
     id="app-wrapper"
+    :dark="useDark"
   >
     <v-dialog v-model="showMobile" fullscreen>
       <v-card height="100%">
@@ -30,7 +31,7 @@
         </v-container>
       </v-card>
     </v-dialog>
-    <v-toolbar fixed app dense class="elevation-2">
+    <v-toolbar fixed app dense class="elevation-2 background2">
       <road-tabs
         slot="extension"
         @delete-road="$refs.authcomponent.deleteRoad($event)"
@@ -76,13 +77,18 @@
       <v-container fill-height style="padding: 0;">
         <v-layout fill-height column>
           <v-layout shrink style="padding: 14px; padding-bottom: 0;" row align-center>
-            <v-flex shrink class="blue-grey lighten-5" style="user-select: none; color: inherit; text-decoration: none; border-radius: 2px; padding: 6px 8px; display: inline-block;">
+            <v-flex shrink class="crlogo" style="user-select: none; color: inherit; text-decoration: none; border-radius: 2px; padding: 6px 8px; display: inline-block;">
               <v-icon size="1.3em" color="#00b300">
                 check_box
               </v-icon>
               <h3 style="display: inline;">
                 C o u r s e R o a d
               </h3>
+            </v-flex>
+            <v-flex>
+              <v-btn class="mx-2 elevation-2" dark fab small color="primary" @click="useDark = !useDark">
+                <v-icon>mdi-{{useDark ? 'white-balance-sunny' : 'weather-night'}}</v-icon>
+              </v-btn>
             </v-flex>
             <v-flex>
               <router-link to="/about" style="float: right;">
@@ -165,7 +171,7 @@
 
     <v-footer v-if="!dismissedOld || !dismissedCookies" fixed style="height: unset;">
       <v-layout column>
-        <v-flex v-if="!dismissedOld" class="lime accent-1 py-1 px-2">
+        <v-flex v-if="!dismissedOld" class="discord-purple py-1 px-2">
           <v-layout row align-center>
             <v-flex>
               Looking for the old courseroad?  Visit the old website <a target="_blank" href="https://courseroad.mit.edu/old">here</a> and export your roads!
@@ -178,7 +184,7 @@
           </v-layout>
         </v-flex>
         <v-divider v-if="!dismissedOld && !dismissedCookies" />
-        <v-flex v-if="!dismissedCookies" class="lime accent-3 py-1 px-2">
+        <v-flex v-if="!dismissedCookies" class="discordPurple py-1 px-2">
           <v-layout row align-center>
             <v-flex>
               This website uses cookies and session storage to store your data and login token, and important features like saving roads will not work without them.
@@ -254,6 +260,19 @@ export default {
     };
   },
   computed: {
+    useDark: {
+      get() {
+        return this.$store.state.useDarkTheme;
+      },
+      set (value) {
+        this.$store.commit('setUseDarkTheme', value)
+        this.$vuetify.theme.primary = value ? this.$vuetify.theme.discordOrange : this.$vuetify.theme.defaultPrimary;
+        this.$vuetify.theme.background = value ? this.$vuetify.theme.backgroundDark : this.$vuetify.theme.backgroundLight;
+        this.$vuetify.theme.background2 = value ? this.$vuetify.theme.backgroundDark : this.$vuetify.theme.background2Light;
+        this.$vuetify.theme.search = value ? this.$vuetify.theme.backgroundDark : this.$vuetify.theme.searchLight;
+        this.$vuetify.theme.crlogo = value ? this.$vuetify.theme.crlogoDark : this.$vuetify.theme.crlogoLight;
+      }
+    },
     activeRoad: {
       get () {
         return this.$store.state.activeRoad;

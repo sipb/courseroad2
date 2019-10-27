@@ -35,7 +35,7 @@
           </v-flex>
         </v-layout>
         <v-layout v-else>
-          <v-flex xs10 :style="{ 'color': semData.textColor }">
+          <v-flex xs10 :class="semData.textColor+'--text '+textBrightness">
             {{ semData.message }}
           </v-flex>
         </v-layout>
@@ -43,7 +43,6 @@
     </v-container>
 
     <v-container
-      class="lighten-3"
       fluid
       grid-list-md
       :class="semData.bgColor"
@@ -93,6 +92,10 @@ export default {
     };
   },
   computed: {
+    textBrightness (){
+      var value = 'text--'+(this.$store.state.useDarkTheme ? 'lighten-2' : 'darken-4') ;
+      return value;
+    },
     isActiveRoad () {
       return this.$store.state.activeRoad === this.roadID;
     },
@@ -176,50 +179,50 @@ export default {
       if (this.addingFromCard || this.draggingOver) {
         if (!this.subjectsLoaded) {
           return {
-            bgColor: 'red',
+            bgColor: "error",
             message: 'Loading subjects... give us a minute',
-            textColor: 'DarkRed'
+            textColor: "error"
           };
         } else if (this.itemAdding === undefined) {
           return {
-            bgColor: 'red',
+            bgColor: "error",
             message: 'If you see this message, contact courseroad@mit.edu and tell them "710".',
-            textColor: 'DarkRed'
+            textColor: "error"
           };
         } else if (this.index === 0 || this.offeredNow) {
           return {
-            bgColor: 'green',
+            bgColor: "success",
             message: 'Add class here',
-            textColor: 'DarkGreen'
+            textColor: "success"
           };
         } else if (this.itemAddingNoLongerOffered) {
           return {
-            bgColor: 'yellow',
+            bgColor: "warning",
             message: 'Subject no longer offered',
-            textColor: 'DarkGoldenRod'
+            textColor: "warning"
           };
         } else if (this.itemAddingNotCurrentlyOffered) {
           return {
-            bgColor: 'yellow',
+            bgColor: "warning",
             message: 'Subject not offered this year',
-            textColor: 'DarkGoldenRod'
+            textColor: "warning"
           };
         } else if (this.isSameYear) {
           return {
-            bgColor: 'red',
+            bgColor: "error",
             message: 'Subject not available this semester',
-            textColor: 'DarkRed'
+            textColor: "error"
           };
         } else {
           return {
-            bgColor: 'yellow',
+            bgColor: "warning",
             message: 'Subject may not be available this semester',
-            textColor: 'DarkGoldenRod'
+            textColor: "warning"
           };
         }
       }
       return {
-        bgColor: 'grey',
+        bgColor: 'background',
         message: '',
         textColor: ''
       };
