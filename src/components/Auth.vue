@@ -159,7 +159,7 @@ export default {
       this.getUserData();
     }
 
-    // this.setTabID();
+    this.setTabID();
 
     window.onbeforeunload = function () {
       if (this.cookiesAllowed) {
@@ -538,6 +538,10 @@ export default {
           }
         } else {
           console.log('looking in cookies');
+          if(this.$cookies.isKey('tabs')) {
+            console.log(this.$cookies.get('tabs'));
+            console.log(this.$cookies.get('tabs').length);
+          }
           // TODO: look into whether this = sign is acting correctly?
           if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs')))) {
             const maxTab = Math.max(...tabs);
