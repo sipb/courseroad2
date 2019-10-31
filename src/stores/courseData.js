@@ -49,7 +49,7 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    setUseDarkTheme(state, newValue){
+    setUseDarkTheme (state, newValue) {
       state.useDarkTheme = newValue;
     },
     addClass (state, newClass) {

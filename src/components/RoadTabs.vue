@@ -4,7 +4,7 @@
       v-model="tabRoad"
       show-arrows
     >
-      <v-tabs-slider color="primary"/>
+      <v-tabs-slider color="primary" />
       <v-tab
         v-for="roadId in Object.keys(roads)"
         :key="roadId"

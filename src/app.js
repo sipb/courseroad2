@@ -21,10 +21,10 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.use(Vuetify, {
   theme: {
-    primary: "#F26521",
-    defaultPrimary: "#1976D2",
-    discordOrange: "#F26521",
-    discordPurple: "#7289DA",
+    primary: '#F26521',
+    defaultPrimary: '#1976D2',
+    discordOrange: '#F26521',
+    discordPurple: '#7289DA',
     crlogo: colors.blueGrey.darken2,
     crlogoDark: colors.blueGrey.darken2,
     crlogoLight: colors.blueGrey.lighten5,

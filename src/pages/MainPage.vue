@@ -86,8 +86,15 @@
               </h3>
             </v-flex>
             <v-flex>
-              <v-btn class="mx-2 elevation-2" dark fab small color="primary" @click="useDark = !useDark">
-                <v-icon>mdi-{{useDark ? 'white-balance-sunny' : 'weather-night'}}</v-icon>
+              <v-btn
+                class="mx-2 elevation-2"
+                dark
+                fab
+                small
+                color="primary"
+                @click="useDark = !useDark"
+              >
+                <v-icon>mdi-{{ useDark ? 'white-balance-sunny' : 'weather-night' }}</v-icon>
               </v-btn>
             </v-flex>
             <v-flex>
@@ -261,11 +268,11 @@ export default {
   },
   computed: {
     useDark: {
-      get() {
+      get () {
         return this.$store.state.useDarkTheme;
       },
       set (value) {
-        this.$store.commit('setUseDarkTheme', value)
+        this.$store.commit('setUseDarkTheme', value);
         this.$vuetify.theme.primary = value ? this.$vuetify.theme.discordOrange : this.$vuetify.theme.defaultPrimary;
         this.$vuetify.theme.background = value ? this.$vuetify.theme.backgroundDark : this.$vuetify.theme.backgroundLight;
         this.$vuetify.theme.background2 = value ? this.$vuetify.theme.backgroundDark : this.$vuetify.theme.background2Light;
