@@ -15,7 +15,7 @@ const store = new Vuex.Store({
     addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
-    fullSubjectsInfo: false,
+    fullSubjectsInfoLoaded: false,
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
@@ -219,8 +219,8 @@ const store = new Vuex.Store({
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;
     },
-    setFullSubjectsInfo (state, full) {
-      state.fullSubjectsInfo = full;
+    setFullSubjectsInfoLoaded (state, isFull) {
+      state.fullSubjectsInfoLoaded = isFull;
     },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
@@ -275,7 +275,7 @@ const store = new Vuex.Store({
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
       commit('setSubjectsInfo', response.data);
-      commit('setFullSubjectsInfo', true);
+      commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
@@ -295,45 +295,29 @@ const store = new Vuex.Store({
 });
 
 function getMatchingAttributes (gir, hass, ci) {
-  if (store.state.fullSubjectInfo) {
-    const matchingClasses = store.state.subjectsInfo.filter(function (subject) {
-      if (store.state.fullSubjectsInfo === false) {
-        return false;
-      } else {
-        if (gir !== undefined && subject.gir_attribute !== gir) {
-          return false;
-        }
-        if (hass !== undefined && subject.hass_attribute !== hass) {
-          return false;
-        }
-        return !(ci !== undefined && subject.communication_requirement !== ci);
-      }
+  const matchingClasses = store.state.subjectsInfo.filter(function (subject) {
+    if (gir !== undefined && subject.gir_attribute !== gir) {
+      return false;
     }
-    );
-    const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
-      if (store.state.fullSubjectsInfo === false) {
-        return {
-          offered_spring: accumObject.offered_spring || nextClass.offered_spring,
-          offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
-          offered_fall: accumObject.offered_fall || nextClass.offered_fall
-        };
-      } else {
-        return {
-          offered_spring: accumObject.offered_spring || nextClass.offered_spring,
-          offered_summer: accumObject.offered_summer || nextClass.offered_summer,
-          offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
-          offered_fall: accumObject.offered_fall || nextClass.offered_fall,
-          in_class_hours: accumObject.in_class_hours + (nextClass.in_class_hours !== undefined ? nextClass.in_class_hours : 0),
-          out_of_class_hours: accumObject.out_of_class_hours + (nextClass.out_of_class_hours !== undefined ? nextClass.out_of_class_hours : 0)
-        };
-      }
-    }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0 });
-    totalObject.in_class_hours /= matchingClasses.length;
-    totalObject.out_of_class_hours /= matchingClasses.length;
-    return totalObject;
-  } else {
-    return false;
-  };
+    if (hass !== undefined && subject.hass_attribute !== hass) {
+      return false;
+    }
+    return !(ci !== undefined && subject.communication_requirement !== ci);
+  }
+  );
+  const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
+    return {
+      offered_spring: accumObject.offered_spring || nextClass.offered_spring,
+      offered_summer: accumObject.offered_summer || nextClass.offered_summer,
+      offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
+      offered_fall: accumObject.offered_fall || nextClass.offered_fall,
+      in_class_hours: accumObject.in_class_hours + (nextClass.in_class_hours !== undefined ? nextClass.in_class_hours : 0),
+      out_of_class_hours: accumObject.out_of_class_hours + (nextClass.out_of_class_hours !== undefined ? nextClass.out_of_class_hours : 0)
+    };
+  }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0 });
+  totalObject.in_class_hours /= matchingClasses.length;
+  totalObject.out_of_class_hours /= matchingClasses.length;
+  return totalObject;
 }
 
 export default store;

@@ -3,7 +3,6 @@
   <v-app
     id="app-wrapper"
   >
-    <meta name="description" contents="A four-year academic planner for the MIT community">
     <v-dialog v-model="showMobile" fullscreen>
       <v-card height="100%">
         <v-container fill-height>
@@ -365,17 +364,15 @@ export default {
     document.body.addEventListener('click', function (e) {
       this.searchOpen = false;
     }.bind(this));
-    const that = this;
-    window.addEventListener('beforeunload', function (event) {
-      // this needs to be here instead of calling a separate function because we need to define that = this above
-      // if you call "this" in here, it refers to the window and not the component
+
+    window.addEventListener('beforeunload', () => {
       if (this.cookiesAllowed) {
-        const subjectsInfoNoDescriptions = that.$store.state.subjectsInfo.map(function (x) {
+        const subjectsInfoNoDescriptions = this.$store.state.subjectsInfo.map(function (x) {
           x = { 'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap };
           return x;
         });
-        that.$store.commit('setSubjectsInfo', subjectsInfoNoDescriptions);
-        localStorage.store = JSON.stringify(that.$store.state);
+        this.$store.commit('setSubjectsInfo', subjectsInfoNoDescriptions);
+        localStorage.store = JSON.stringify(this.$store.state);
       }
     });
 
