@@ -51,7 +51,7 @@
             <v-btn
               v-if="'title-no-degree' in dialogReq"
               color="error"
-              @click="deleteReq(dialogReq); viewDialogChild = false; dialogReq=undefined;"
+              @click="deleteReq(dialogReq); viewDialogChild = false; $emit('update:dialog-req', undefined);"
             >
               <v-icon>delete</v-icon>
                 Remove Requirement
@@ -68,7 +68,7 @@ export default {
     props: [
         'selectedSubjects',
         'viewDialog',
-        'dialogReq'
+        'dialogReq',
     ],
     data: function () {
         return {
@@ -100,7 +100,7 @@ export default {
                 }
                 return true;
             });
-            },
+        },
         sortCourses: function (courseOne, courseTwo) {
             // Sorts courses into major order. With courses with letters within the id it will be ordered based on semester placed in.
             let courseOneId = courseOne.id;
@@ -122,8 +122,8 @@ export default {
                 return parseFloat(courseOneId) - parseFloat(courseTwoId);
             }
         },
-        updatePetitionedReqs: function (items) {
-            this.petitionedReqs[this.dialogReq.uniqueKey] = items;
+        updatePetitionedReqs: function (newReq) {
+            this.petitionedReqs[this.dialogReq.uniqueKey] = newReq;
         }
     },
     computed: {
@@ -132,7 +132,7 @@ export default {
                 return this.petitionedReqs[this.dialogReq.uniqueKey];
             },
             set: function (newReqs) {
-                this.petitionedReqs[this.dialogReq.uniqueKey] = newReqs;
+                  this.petitionedReqs[this.dialogReq.uniqueKey] = newReqs;
             }
         }
     },

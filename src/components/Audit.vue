@@ -104,6 +104,7 @@
       :view-dialog="viewDialog"
       :dialog-req="dialogReq"
       @update:view-dialog="viewDialog = $event"
+      @update:dialog-req="dialogReq = $event"
     >
     </info-dialog>
   </v-flex>
