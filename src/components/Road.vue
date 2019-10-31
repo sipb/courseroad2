@@ -30,6 +30,7 @@
         <v-card-text>
           <v-select
             v-model="year"
+            id="year-choices"
             :items="[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
           />
         </v-card-text>
@@ -38,7 +39,7 @@
           <v-btn flat @click="changeYearDialog = false">
             Cancel
           </v-btn>
-          <v-btn color="primary" @click="$emit('change-year',year); changeYearDialog = false;">
+          <v-btn id="change-year" coloor="primary" @click="$emit('change-year',year); changeYearDialog = false;">
             Submit
           </v-btn>
         </v-card-actions>
