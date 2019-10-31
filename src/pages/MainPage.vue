@@ -3,7 +3,7 @@
   <v-app
     id="app-wrapper"
   >
-    <meta name="description" contents="A four-year academic planner for the MIT undergraduate community">
+    <meta name="description" contents="A four-year academic planner for the MIT community">
     <v-dialog v-model="showMobile" fullscreen>
       <v-card height="100%">
         <v-container fill-height>
@@ -408,7 +408,7 @@ export default {
         for (let r = 0; r < fulfillments.length; r++) {
           const req = fulfillments[r];
           const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
-          alteredRoadContents.selectedSubjects = alteredRoadContents.selectedSubjects.flat();
+          alteredRoadContents.selectedSubjects = this.flatten(alteredRoadContents.selectedSubjects);
           axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);

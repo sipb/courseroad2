@@ -4,7 +4,6 @@
       v-if="!loggedIn"
       class="collapse-button"
       outline
-      round
       color="primary"
       @click="loginUser"
     >
@@ -15,7 +14,6 @@
       v-if="loggedIn"
       class="collapse-button"
       outline
-      round
       color="primary"
       @click="logoutUser"
     >
@@ -378,7 +376,7 @@ export default {
       if (!roadID.includes('$')) {
         assignKeys.id = roadID;
       }
-      const roadSubjects = this.roads[roadID].contents.selectedSubjects.flat();
+      const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
       Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
       const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
@@ -450,7 +448,7 @@ export default {
     getNewRoadData: function () {
       const newRoadData = {};
       if (this.newRoads.indexOf('$defaultroad$') === -1 && '$defaultroad$' in this.roads) {
-        if (this.roads['$defaultroad$'].contents.selectedSubjects.flat().length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
+        if (this.flatten(this.roads['$defaultroad$'].contents.selectedSubjects).length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
           this.newRoads.push('$defaultroad$');
         }
       }
