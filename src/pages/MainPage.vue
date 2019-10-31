@@ -330,8 +330,8 @@ export default {
     const today = new Date();
     const month = today.getMonth();
     this.$store.commit('setCurrentSemester', (month >= 4 && month <= 10) ? 1 : 3);
-    if (localStorage.store !== 'undefined' && this.cookiesAllowed) {
-      this.$store.commit('setFromLocalStorage', JSON.parse(localStorage.store));
+    if (localStorage.courseRoadStore !== 'undefined' && this.cookiesAllowed) {
+      this.$store.commit('setFromLocalStorage', JSON.parse(localStorage.courseRoadStore));
     };
     const borders = $('.v-navigation-drawer__border');
     const scrollers = $('.scroller');
@@ -372,7 +372,7 @@ export default {
           return x;
         });
         this.$store.commit('setSubjectsInfo', subjectsInfoNoDescriptions);
-        localStorage.store = JSON.stringify(this.$store.state);
+        localStorage.courseRoadStore = JSON.stringify(this.$store.state);
       }
     });
 
