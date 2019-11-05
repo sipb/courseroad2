@@ -28,12 +28,13 @@
               <b>Petition this Requirement:</b>
             </v-card-text>
             <v-autocomplete v-model="activePetitionedReqs"
+              menu-props="lazy"
               :items="removeSharedCourses(selectedSubjects.flat(), dialogReq['sat_courses']).sort(sortCourses)"
               item-text="id"
               return-object
               label="Select Class"
               no-data-text="No Courses Found"
-              v-on:change="updatePetitionedReqs"
+              
               chips
               deletable-chips
               multiple
@@ -121,9 +122,6 @@ export default {
             } else {
                 return parseFloat(courseOneId) - parseFloat(courseTwoId);
             }
-        },
-        updatePetitionedReqs: function (newReq) {
-            this.petitionedReqs[this.dialogReq.uniqueKey] = newReq;
         }
     },
     computed: {
