@@ -51,7 +51,7 @@
             <v-btn
               v-if="'title-no-degree' in dialogReq"
               color="error"
-              @click="deleteReq(dialogReq); viewDialogChild = false; $emit('update:dialog-req', undefined);"
+              @click="deleteReq(dialogReq); viewDialogChild = false;"
             >
               <v-icon>delete</v-icon>
                 Remove Requirement
@@ -139,6 +139,9 @@ export default {
     watch: {
         viewDialogChild(newVal) {
             this.$emit("update:view-dialog", newVal);
+            if (newVal === false) {
+                this.$emit('update:dialog-req', undefined);
+            }
         },
         viewDialog(newVal) {
             this.viewDialogChild = newVal;
