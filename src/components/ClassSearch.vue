@@ -1,5 +1,5 @@
 <template>
-  <v-container :style="searchHeight + 'display: flex; flex-direction:column;'">
+  <v-container :style="searchHeight + 'display: flex; flex-direction:column;'" class="search">
     <div>
       <filter-set v-model="chosenFilters.girInput" :label="'GIR'" :filters="allFilters.girInput" />
       <filter-set v-model="chosenFilters.hassInput" :label="'HASS'" :filters="allFilters.hassInput" />

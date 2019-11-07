@@ -10,6 +10,7 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    useDarkTheme: true,
     currentSemester: 1,
     activeRoad: '$defaultroad$',
     addingFromCard: false,
@@ -48,6 +49,9 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    setUseDarkTheme (state, newValue) {
+      state.useDarkTheme = newValue;
+    },
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
