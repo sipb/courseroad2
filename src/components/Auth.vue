@@ -26,6 +26,7 @@
         slot="activator"
         :color="saveColor"
         style="user-select: none;"
+        id="save-icon"
       >
         {{ saveIcon }}
       </v-icon>
@@ -148,14 +149,15 @@ export default {
       this.$store.commit('allowCookies');
     }
 
-    window.cookies = this.$cookies;
     if (this.$cookies.isKey('accessInfo')) {
-      this.loggedIn = true;
       this.accessInfo = this.$cookies.get('accessInfo');
+      this.loggedIn = true;
       this.verify();
       this.$store.commit('allowCookies');
       this.getUserData();
     }
+
+    this.setTabID();
 
     window.onbeforeunload = function () {
       if (this.cookiesAllowed) {
@@ -163,7 +165,11 @@ export default {
         const tabs = JSON.parse(this.$cookies.get('tabs'));
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
-        this.$cookies.set('tabs', JSON.stringify(tabs));
+        if(tabs.length) {
+          this.$cookies.set('tabs', JSON.stringify(tabs));
+        } else {
+          this.$cookies.remove('tabs');
+        }
       }
       if (this.currentlySaving) {
         return 'Are you sure you want to leave?  Your roads are not saved.';
@@ -373,13 +379,14 @@ export default {
       this.currentlySaving = true;
       this.saveWarnings = [];
       const assignKeys = { override: false, agent: this.getAgent() };
-      if (!roadID.includes('$')) {
+      if (!roadID.indexOf('$') >= 0) {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
-      Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
-      const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
+      const roadToSend = {};
+      Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
+      const savePromise = this.postSecure('/sync/sync_road/', roadToSend)
         .then(function (response) {
           if (response.status !== 200) {
             return Promise.reject(new Error('Unable to save road ' + this.oldid));
@@ -513,31 +520,39 @@ export default {
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
     },
     setTabID: function () {
+      console.log('setting tab ID');
       if (this.cookiesAllowed) {
         if (sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
+          const tabNum = parseInt(this.tabID);
           if (this.$cookies.isKey('tabs')) {
             var tabs = JSON.parse(this.$cookies.get('tabs'));
-            if (tabs.indexOf(this.tabID) === -1) {
-              tabs.push(this.tabID);
+            if (tabs.indexOf(tabNum) === -1) {
+              tabs.push(tabNum);
               this.$cookies.set('tabs', JSON.stringify(tabs));
             }
           } else {
-            this.$cookies.set('tabs', JSON.stringify([this.tabID]));
+            this.$cookies.set('tabs', JSON.stringify([tabNum]));
           }
         } else {
+          console.log('looking in cookies');
+          if(this.$cookies.isKey('tabs')) {
+            console.log(this.$cookies.get('tabs'));
+            console.log(this.$cookies.get('tabs').length);
+          }
           // TODO: look into whether this = sign is acting correctly?
-          if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs'))).length) {
+          if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs')))) {
             const maxTab = Math.max(...tabs);
             const newTab = (maxTab + 1).toString();
             sessionStorage.tabID = newTab;
+            console.log('setting to ' + newTab);
             this.tabID = newTab;
-            tabs.push(newTab);
+            tabs.push(maxTab + 1);
             this.$cookies.set('tabs', JSON.stringify(tabs));
           } else {
             sessionStorage.tabID = '1';
             this.tabID = '1';
-            this.$cookies.set('tabs', '["1"]');
+            this.$cookies.set('tabs', '[1]');
           }
         }
       }
