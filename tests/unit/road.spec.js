@@ -62,16 +62,7 @@ describe('Road', () => {
         //expect(yearChoices.selectedItems).toHaveLength(4);
        // yearChoices.at(0).setSelected(2);
     }),
-    it('closes the changeYearDialog when submit is selected', () => {
-        const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
-    }),
-    it('closes the dialog when cancel is selected', () => {
-        const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
-    }),
-    it('does not emit change-year or change new-year hen cancel is submitted', () => {
-        const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
-    }),
-    it('closes the dialog when the x is selected', () => {
+    it('does not emit change-year or change new-year when cancel is submitted', () => {
         const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
     }),
     it('displays open semesters', () => {
