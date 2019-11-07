@@ -152,57 +152,56 @@ describe('Auth', () => {
   });
   it('sets the correct tab IDs', () => {
      const wrapper = shallowMount(Auth, { store: storeCookies, localVue });
-     
+
      // Initialize tab ID with no existing tab IDs
      wrapper.vm.setTabID();
      expect(sessionStorage.tabID).toBe('1');
      expect(wrapper.vm.tabID).toBe('1');
-     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual([1]);
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual([1]);
      sessionStorage.removeItem('tabID');
 
      //Initialize tab ID with sequential existing tab IDs
      const initialTabsSeq = [1, 2, 3, 4];
      const expectedTabsSeq = initialTabsSeq.concat([5])
-     wrapper.vm.$cookies.set('tabs', JSON.stringify(initialTabsSeq));
+     wrapper.vm.$cookies.set('tabs', {'ids': initialTabsSeq});
      wrapper.vm.setTabID();
      expect(sessionStorage.tabID).toBe('5');
      expect(wrapper.vm.tabID).toBe('5');
-     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabsSeq);
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual(expectedTabsSeq);
      sessionStorage.removeItem('tabID');
 
      //Initialize tab ID with gap in tab IDs
      const initialTabsGap = [1, 2, 4, 8];
      const expectedTabsGap = initialTabsGap.concat([9]);
-     wrapper.vm.$cookies.set('tabs', JSON.stringify(initialTabsGap));
+     wrapper.vm.$cookies.set('tabs', {'ids': initialTabsGap});
      wrapper.vm.setTabID();
      expect(sessionStorage.tabID).toBe('9');
      expect(wrapper.vm.tabID).toBe('9');
-     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabsGap);
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual(expectedTabsGap);
 
      //Tab ID taken from session storage
      wrapper.setData({tabID: '27'});
      wrapper.vm.setTabID();
      expect(wrapper.vm.tabID).toBe('9');
-     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabsGap);
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual(expectedTabsGap);
 
      //Tab ID set in cookies if absent
-     wrapper.vm.$cookies.set('tabs', JSON.stringify(initialTabsGap));
+     wrapper.vm.$cookies.set('tabs', {'ids': initialTabsGap});
      wrapper.setData({tabID: '27'});
      wrapper.vm.setTabID();
      expect(wrapper.vm.tabID).toBe('9');
-     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual(expectedTabsGap);
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual(expectedTabsGap);
 
      //Tab ID set in cookies if no cookie set
      wrapper.vm.$cookies.remove('tabs');
      wrapper.setData({tabID: '27'});
      wrapper.vm.setTabID();
      expect(wrapper.vm.tabID).toBe('9');
-     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual([9]);
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual([9]);
 
      sessionStorage.removeItem('tabID');
   });
   it('sends the correct tab ID when saving a road', () => {
-    console.log('final test');
     $cookies.set('tabs', [1, 2, 4, 8]);
     $cookies.set('accessInfo', fakeAuth);
     const wrapper = shallowMount(Auth, { store: storeBasic, localVue , mocks: { $cookies }});

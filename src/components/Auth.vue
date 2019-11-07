@@ -164,11 +164,12 @@ export default {
     window.onbeforeunload = function () {
       if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
-        const tabs = JSON.parse(this.$cookies.get('tabs'));
+        const tabs = this.$cookies.get('tabs').ids;
+        console.log("Indexing into tabs");
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
         if(tabs.length) {
-          this.$cookies.set('tabs', JSON.stringify(tabs));
+          this.$cookies.set('tabs', {'ids': tabs});
         } else {
           this.$cookies.remove('tabs');
         }
@@ -522,39 +523,32 @@ export default {
       return navigator.platform + ' ' + ua.browser.name + ' Tab ' + this.tabID;
     },
     setTabID: function () {
-      console.log('setting tab ID');
       if (this.cookiesAllowed) {
         if (sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
           const tabNum = parseInt(this.tabID);
           if (this.$cookies.isKey('tabs')) {
-            var tabs = JSON.parse(this.$cookies.get('tabs'));
+            var tabs = this.$cookies.get('tabs').ids;
             if (tabs.indexOf(tabNum) === -1) {
               tabs.push(tabNum);
-              this.$cookies.set('tabs', JSON.stringify(tabs));
+              this.$cookies.set('tabs', {'ids': tabs});
             }
           } else {
-            this.$cookies.set('tabs', JSON.stringify([tabNum]));
+            this.$cookies.set('tabs', {'ids': [tabNum]});
           }
         } else {
-          console.log('looking in cookies');
-          if(this.$cookies.isKey('tabs')) {
-            console.log(this.$cookies.get('tabs'));
-            console.log(this.$cookies.get('tabs').length);
-          }
           // TODO: look into whether this = sign is acting correctly?
-          if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs')))) {
+          if (this.$cookies.isKey('tabs') && (tabs = this.$cookies.get('tabs').ids)) {
             const maxTab = Math.max(...tabs);
             const newTab = (maxTab + 1).toString();
             sessionStorage.tabID = newTab;
-            console.log('setting to ' + newTab);
             this.tabID = newTab;
             tabs.push(maxTab + 1);
-            this.$cookies.set('tabs', JSON.stringify(tabs));
+            this.$cookies.set('tabs', {'ids': tabs});
           } else {
             sessionStorage.tabID = '1';
             this.tabID = '1';
-            this.$cookies.set('tabs', '[1]');
+            this.$cookies.set('tabs', {'ids': [1]});
           }
         }
       }
