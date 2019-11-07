@@ -7,7 +7,7 @@ import roads from './../data/roads';
 
 function find(documents, values) {
   return documents.filter(function(document) {
-    for(attribute in values) {
+    for(var attribute in values) {
       if(document[attribute] !== values[attribute]) {
         return false;
       }
@@ -19,7 +19,7 @@ function find(documents, values) {
 function findOne(documents, values) {
   for(var d = 0; d < documents.length; d++) {
     var matches = true;
-    for(attribute in values) {
+    for(var attribute in values) {
       if(documents[d][attribute] !== values[attribute]) {
         matches = false;
       }
