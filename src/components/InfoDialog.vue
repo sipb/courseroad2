@@ -34,7 +34,6 @@
               return-object
               label="Select Class"
               no-data-text="No Courses Found"
-              
               chips
               deletable-chips
               multiple
@@ -69,12 +68,11 @@ export default {
     props: [
         'selectedSubjects',
         'viewDialog',
-        'dialogReq',
+        'dialogReq'
     ],
     data: function () {
         return {
             viewDialogChild: false,
-            petitionedReqs: {}
         }
     },
     methods: {
@@ -127,10 +125,15 @@ export default {
     computed: {
         activePetitionedReqs: {
             get: function () {
-                return this.petitionedReqs[this.dialogReq.uniqueKey];
+                console.log('Get petitionedReqs')
+                console.log(this.dialogReq.uniqueKey);
+                console.log(this.$store.state.roads[this.$store.state.activeRoad].petitionedReqs);
+                return this.$store.state.roads[this.$store.state.activeRoad].contents.petitionedReqs[this.dialogReq.uniqueKey];
             },
             set: function (newReqs) {
-                  this.petitionedReqs[this.dialogReq.uniqueKey] = newReqs;
+                console.log('Set petitionedReqs');
+                console.log(newReqs);
+                this.$store.commit('setPetitionedReqs', {uniqueKey: this.dialogReq.uniqueKey, newReqs: newReqs});
             }
         }
     },

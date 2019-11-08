@@ -26,7 +26,8 @@ const store = new Vuex.Store({
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: Array.from(Array(16), () => []),
-          progressOverrides: {}
+          progressOverrides: {},
+          petitionedReqs: {}
         }
       }
     },
@@ -94,6 +95,9 @@ const store = new Vuex.Store({
     overrideWarnings (state, payload) {
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
       Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
+    },
+    setPetitionedReqs (state, { uniqueKey, newReqs }) {
+      state.roads[state.activeRoad].contents.petitionedReqs[uniqueKey] = newReqs;
     },
     setUnretrieved (state, roadIDs) {
       state.unretrieved = roadIDs;

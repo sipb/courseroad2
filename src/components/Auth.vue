@@ -117,6 +117,9 @@ export default {
           if (!Array.isArray(newRoads[roadID].contents.selectedSubjects[0])) {
             newRoads[roadID].contents.selectedSubjects = this.getSimpleSelectedSubjects(newRoads[roadID].contents.selectedSubjects);
           }
+          if (newRoads[roadID].contents.petitionedReqs === undefined) {
+            newRoads[roadID].contents.petitionedReqs = {};
+          }
         }
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
@@ -226,6 +229,9 @@ export default {
         if (roadData.data.file.contents.progressOverrides === undefined) {
           roadData.data.file.contents.progressOverrides = {};
         }
+        if (roadData.data.file.contents.petitionedReqs === undefined) {
+          roundData.data.file.contents.petitionedReqs = {};
+        }
         _this.$store.commit('setRoad', {
           id: roadID,
           road: roadData.data.file,
@@ -259,7 +265,8 @@ export default {
               contents: {
                 coursesOfStudy: ['girs'],
                 selectedSubjects: Array.from(Array(16), () => []),
-                progressOverrides: {}
+                progressOverrides: {},
+                petitionedReqs: {}
               }
             };
             this.$store.commit('setRoad', {
@@ -360,7 +367,7 @@ export default {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.roads[roadID].contents.selectedSubjects.flat();
-      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: {}, petitionedReqs: {} }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
       Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
       const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
         .then(function (response) {
