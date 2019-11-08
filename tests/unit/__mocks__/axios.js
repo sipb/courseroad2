@@ -32,39 +32,49 @@ function findOne(documents, values) {
 }
 
 function getUserFromHeaders(headers) {
-  if(headers.Authorization === undefined) {
-    return 'Authorization error';
+  if(headers === undefined || headers.Authorization === undefined) {
+    return 'Authorization Error';
   }
   const token = headers.Authorization.split('Bearer ')[1];
   const user = findOne(users, { access_token: token });
   return user;
 }
 
+function getUserFromHeadersPromise(headers, resolve, reject) {
+  const user = getUserFromHeaders(headers);
+  console.log(user);
+  if(user === 'Authorization Error') {
+    console.log("Rejecting authorization error");
+    reject('Forbidden 403');
+  } else if (user === undefined) {
+    console.log('User was undefined');
+    resolve({
+      data: {
+        success: false
+      }
+    });
+  } else {
+    return user;
+  }
+}
+
 module.exports = {
   get: jest.fn(function(url, headers) {
+    console.log(url);
     const urlParts = url.split('/');
     const query = urlParts.slice(3).join('/');
     return new Promise(function(resolve, reject) {
       if(query == 'verify/') {
-        const user = getUserFromHeaders(headers.headers);
-        if(user === 'Authorization Error') {
-          reject('Forbidden 403')
-        } else if(user === undefined) {
-          resolve({
-            data: {
-              success: false
-            }
-          });
-        } else {
-          resolve({
-            data: {
-              current_semester: user.current_semester,
-              success: true
-            }
-          });
-        }
-      } 
-
+        const user = getUserFromHeadersPromise(headers.headers, resolve, reject);
+        console.log(user);
+        resolve({
+          data: {
+            current_semester: user.current_semester,
+            success: true
+          }
+        });
+        console.log("I just resolved");
+      }
       else {
         reject('Unknown function');
       }

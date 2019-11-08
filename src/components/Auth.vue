@@ -154,9 +154,10 @@ export default {
     if (this.$cookies.isKey('accessInfo')) {
       this.accessInfo = this.$cookies.get('accessInfo');
       this.loggedIn = true;
-      this.verify();
       this.$store.commit('allowCookies');
-      this.getUserData();
+      this.verify().then(() => {
+        this.getUserData();
+      });
     }
 
     this.setTabID();
@@ -206,7 +207,10 @@ export default {
             this.logoutUser();
             return Promise.reject(new Error('Token not valid'));
           }
-        }.bind(this));
+        }.bind(this)).catch(function(err) {
+          this.logoutUser();
+          return Promise.reject(err);
+        });
     },
     doSecure: function (axiosFunc, link, params) {
       if (this.loggedIn && this.accessInfo !== undefined) {
