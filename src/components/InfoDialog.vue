@@ -125,14 +125,9 @@ export default {
     computed: {
         activePetitionedReqs: {
             get: function () {
-                console.log('Get petitionedReqs')
-                console.log(this.dialogReq.uniqueKey);
-                console.log(this.$store.state.roads[this.$store.state.activeRoad].petitionedReqs);
                 return this.$store.state.roads[this.$store.state.activeRoad].contents.petitionedReqs[this.dialogReq.uniqueKey];
             },
             set: function (newReqs) {
-                console.log('Set petitionedReqs');
-                console.log(newReqs);
                 this.$store.commit('setPetitionedReqs', {uniqueKey: this.dialogReq.uniqueKey, newReqs: newReqs});
             }
         }
