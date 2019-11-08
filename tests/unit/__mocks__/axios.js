@@ -63,7 +63,9 @@ module.exports = {
             }
           });
         }
-      } else {
+      } 
+
+      else {
         reject('Unknown function');
       }
     });

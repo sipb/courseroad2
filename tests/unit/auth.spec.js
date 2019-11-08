@@ -6,8 +6,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueCookies from 'vue-cookies';
 library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
 
+
+
 import users from './data/users';
+import stores from './data/stores';
 const axios = require('axios');
+
+window.alert = jest.fn((text) => console.log(text));
+window.location.reload = jest.fn();
 
 jest.mock('axios');
 
@@ -18,8 +24,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.component('font-awesome-icon', FontAwesomeIcon);
 localVue.use(VueCookies);
-
-
 
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
@@ -39,39 +43,22 @@ const conflictInfo = {
   this_date: '2019-06-18T01:00:32+00:00'
 };
 
-const storeCookies = new Vuex.Store({
-  state: {
-    cookiesAllowed: true
-  }
-});
-
-const storeNoCookies = new Vuex.Store({
-  state: {
-    cookiesAllowed: false
-  }
-});
-
-const storeBasic = new Vuex.Store({
-  state: {
-    activeRoad: "45",
-    cookiesAllowed: true,
-    roads: {
-      "45": {
-        downloaded: moment().format(DATE_FORMAT),
-        changed: moment().format(DATE_FORMAT),
-        name: 'My First Road',
-        agent: '',
-        contents: {
-          coursesOfStudy: ['girs'],
-          selectedSubjects: [[{ 'title': 'Introduction to Algorithms', 'id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 }, { 'title': 'Computation Structures', 'id': '6.004', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 }, { 'title': 'Principles of Chemical Science', 'id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 0 }], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
-          progressOverrides: {}
-        }
+const storeCookies = stores.constructNewStore({cookiesAllowed: true});
+const storeNoCookies = stores.constructNewStore({cookiesAllowed: false});
+const storeBasic = stores.constructNewStore({
+  activeRoad: "45",
+  cookiesAllowed: true,
+  roads: {
+    "45": {
+      downloaded: moment().format(DATE_FORMAT),
+      changed: moment().format(DATE_FORMAT),
+      name: 'My First Road',
+      agent: '',
+      contents: {
+        coursesOfStudy: ['girs'],
+        selectedSubjects: [[{ 'title': 'Introduction to Algorithms', 'id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 }, { 'title': 'Computation Structures', 'id': '6.004', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 }, { 'title': 'Principles of Chemical Science', 'id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 0 }], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+        progressOverrides: {}
       }
-    }
-  },
-  mutations: {
-    allowCookies (state) {
-      state.cookiesAllowed = true;
     }
   }
 })
@@ -151,7 +138,7 @@ describe('Auth', () => {
     expect(saveIcon2.find("i").text()).toMatch("warning");
   });
   it('sets the correct tab IDs', () => {
-     const wrapper = shallowMount(Auth, { store: storeCookies, localVue });
+     const wrapper = shallowMount(Auth, { store: storeCookies, localVue, mocks: { $cookies } });
 
      // Initialize tab ID with no existing tab IDs
      wrapper.vm.setTabID();
