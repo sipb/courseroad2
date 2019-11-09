@@ -86,10 +86,21 @@ class RegexFilter extends Filter {
     this.requires = requires;
   }
 
+  static escapeRegex (regex) {
+    return regex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
   static getRegexTestFunction (regex) {
-    var regexObject = new RegExp(regex, 'i');
+    var regexObject;
+    try {
+      regexObject = new RegExp(regex, 'i');
+    } catch(e) {
+      // If a regex cannot be constructed, default to matching the literal
+      regexObject = new RegExp(RegexFilter.escapeRegex(regex), 'i');
+    }
     // Regex test function only works when bound to the regex object
     return regexObject.test.bind(regexObject);
+
   }
 
   matches (subject, inputs) {
@@ -112,7 +123,7 @@ class RegexFilter extends Filter {
       return '^' + regex;
     };
     var asLiteral = function (regex) {
-      return regex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return RegexFilter.escapeRegex(regex);
     };
 
     // Functions to transform regex by a priority
