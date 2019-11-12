@@ -326,6 +326,14 @@ export default {
       deep: true
     }
   },
+  created () {
+    if (parseInt(this.$cookies.get('versionNumber')) !== this.$store.state.versionNumber) {
+      console.log('Warning: the version number has changed.');
+      // do whatever needs to happen when the version changed, probably including clearing local storage
+      // then update the version number cookie
+      this.$cookies.set('versionNumber', this.$store.state.versionNumber);
+    }
+  },
   mounted () {
     const today = new Date();
     const month = today.getMonth();
