@@ -331,6 +331,7 @@ export default {
       console.log('Warning: the version number has changed.');
       // do whatever needs to happen when the version changed, probably including clearing local storage
       // then update the version number cookie
+      localStorage.clear();
       this.$cookies.set('versionNumber', this.$store.state.versionNumber);
     }
   },
