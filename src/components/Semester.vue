@@ -26,7 +26,7 @@
         <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
           <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.id+'-'+subjindex+'-'+index" xs3>
             <v-card>
-              <div v-if="subject!=='placeholder'" :class="courseColor(subject.id)">
+              <div v-if="subject!=='placeholder'" :class="courseColor(subject)">
                 <v-card-text class="mini-course">
                   <b>{{ subject.id }}</b>
                 </v-card-text>

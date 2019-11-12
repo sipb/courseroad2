@@ -10,6 +10,7 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    versionNumber: 1,
     currentSemester: 1,
     activeRoad: '$defaultroad$',
     addingFromCard: false,

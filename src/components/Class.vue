@@ -100,7 +100,7 @@ export default {
       }
     },
     cardClass: function (classInfo) {
-      return `classbox ${this.courseColor(classInfo.id)}`;
+      return `classbox ${this.courseColor(classInfo)}`;
     }
   }
 };
