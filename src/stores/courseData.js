@@ -10,7 +10,7 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    versionNumber: 1,
+    versionNumber: '1.0.0', // change when making backwards-incompatible changes
     currentSemester: 1,
     activeRoad: '$defaultroad$',
     addingFromCard: false,
