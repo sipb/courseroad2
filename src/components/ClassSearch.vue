@@ -94,13 +94,12 @@ class RegexFilter extends Filter {
     var regexObject;
     try {
       regexObject = new RegExp(regex, 'i');
-    } catch(e) {
+    } catch (e) {
       // If a regex cannot be constructed, default to matching the literal
       regexObject = new RegExp(RegexFilter.escapeRegex(regex), 'i');
     }
     // Regex test function only works when bound to the regex object
     return regexObject.test.bind(regexObject);
-
   }
 
   matches (subject, inputs) {
