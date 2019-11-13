@@ -39,7 +39,7 @@
           <v-btn flat @click="changeYearDialog = false">
             Cancel
           </v-btn>
-          <v-btn id="change-year" coloor="primary" @click="$emit('change-year',year); changeYearDialog = false;">
+          <v-btn id="change-year" color="primary" @click="$emit('change-year',year); changeYearDialog = false;">
             Submit
           </v-btn>
         </v-card-actions>

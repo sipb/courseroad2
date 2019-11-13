@@ -20,24 +20,24 @@ describe('Road', () => {
                 currentSemester: 1,
                 itemAdding: false,
                 addingFromCard: false,
+                userYear: 1
             },
             getters: {
-                userYear: () => {return 1}
+                userYear: () => {return store.state.userYear}
             },
             mutations: {
-                addClass: () => {
+                addClass: (state) => {
                     return true
                 },
-                moveClass: () => {
+                moveClass: (state) => {
                     return true
+                },
+                setUserYear: (state, newYear) => {
+                    store.state.userYear = newYear;
                 }
             }
         })
     });
-    it('is a Vue instance', () => {
-        const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
-        expect(wrapper.isVueInstance()).toBeTruthy();
-    }),
     it('opens the changeYearDialog', () => {
         const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
         expect(wrapper.vm.changeYearDialog).toBe(false);
@@ -52,23 +52,10 @@ describe('Road', () => {
         const emitEvent = wrapper.emitted()['change-year'][0];
         expect(emitEvent).toBeTruthy();
     }),
-    it('changes year when a year is selected', () => {
+    it('updates year when year is changed in the store', () => {
         const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
         expect(wrapper.vm.year).toBe(1);
-        //expect(wrapper.vm.$data.items).toHaveLength(2);
-        let yearChoices = wrapper.find('#year-choices');
-        const menu = yearChoices.find('.v-input__slot') // doesn't find anything
-        //menu.trigger('click');
-        //expect(yearChoices.selectedItems).toHaveLength(4);
-       // yearChoices.at(0).setSelected(2);
-    }),
-    it('does not emit change-year or change new-year when cancel is submitted', () => {
-        const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
-    }),
-    it('displays open semesters', () => {
-        const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
-    }),
-    it('does not display closed semesters', () => {
-        const wrapper = mount(Road, {stubs: {'semester': true}, propsData: {'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false, }, store, localVue});
+        wrapper.vm.$store.commit('setUserYear', 2);
+        expect(wrapper.vm.year).toBe(2);
     })
 })
