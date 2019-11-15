@@ -380,7 +380,7 @@ export default {
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
       const roadToSend = {};
       Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
-      const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
+      const savePromise = this.postSecure('/sync/sync_road/', roadToSend)
         .then(function (response) {
           if (response.status !== 200) {
             return Promise.reject(new Error('Unable to save road ' + this.oldid));
