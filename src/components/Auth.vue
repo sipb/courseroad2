@@ -378,7 +378,8 @@ export default {
       }
       const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
-      Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
+      const roadToSend = {};
+      Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
       const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
         .then(function (response) {
           if (response.status !== 200) {
