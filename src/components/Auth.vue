@@ -230,7 +230,7 @@ export default {
           roadData.data.file.contents.progressOverrides = {};
         }
         if (roadData.data.file.contents.petitionedReqs === undefined) {
-          roundData.data.file.contents.petitionedReqs = {};
+          roadData.data.file.contents.petitionedReqs = {};
         }
         _this.$store.commit('setRoad', {
           id: roadID,
