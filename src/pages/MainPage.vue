@@ -3,7 +3,6 @@
   <v-app
     id="app-wrapper"
   >
-    <meta name="description" contents="A four-year academic planner for the MIT community">
     <v-dialog v-model="showMobile" fullscreen>
       <v-card height="100%">
         <v-container fill-height>
@@ -332,6 +331,7 @@ export default {
       console.log('Warning: the version number has changed.');
       // do whatever needs to happen when the version changed, probably including clearing local storage
       // then update the version number cookie
+      localStorage.clear();
       this.$cookies.set('versionNumber', this.$store.state.versionNumber);
     }
   },
@@ -339,7 +339,9 @@ export default {
     const today = new Date();
     const month = today.getMonth();
     this.$store.commit('setCurrentSemester', (month >= 4 && month <= 10) ? 1 : 3);
-
+    if (localStorage.courseRoadStore !== undefined && this.cookiesAllowed) {
+      this.$store.commit('setFromLocalStorage', JSON.parse(localStorage.courseRoadStore));
+    };
     const borders = $('.v-navigation-drawer__border');
     const scrollers = $('.scroller');
     const scrollWidth = scrollers.width();
@@ -371,6 +373,17 @@ export default {
     document.body.addEventListener('click', function (e) {
       this.searchOpen = false;
     }.bind(this));
+
+    window.addEventListener('beforeunload', () => {
+      if (this.cookiesAllowed) {
+        const subjectsInfoNoDescriptions = this.$store.state.subjectsInfo.map(function (x) {
+          x = { 'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap };
+          return x;
+        });
+        this.$store.commit('setSubjectsInfo', subjectsInfoNoDescriptions);
+        localStorage.courseRoadStore = JSON.stringify(this.$store.state);
+      }
+    });
 
     if (this.$cookies.isKey('dismissedOld')) {
       this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));

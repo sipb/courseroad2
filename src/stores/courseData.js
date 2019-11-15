@@ -16,6 +16,7 @@ const store = new Vuex.Store({
     addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
+    fullSubjectsInfoLoaded: false,
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
@@ -219,6 +220,9 @@ const store = new Vuex.Store({
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;
     },
+    setFullSubjectsInfoLoaded (state, isFull) {
+      state.fullSubjectsInfoLoaded = isFull;
+    },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
         state.ignoreRoadChanges = true;
@@ -254,6 +258,9 @@ const store = new Vuex.Store({
       Vue.set(state.roads[state.activeRoad].contents.progressOverrides, progress.listID, progress.progress);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
+    setFromLocalStorage (state, localStore) {
+      store.replaceState(localStore);
+    },
     updateRoad (state, id, road) {
       Object.assign(state.roads[id], road);
     },
@@ -269,6 +276,7 @@ const store = new Vuex.Store({
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
       commit('setSubjectsInfo', response.data);
+      commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
@@ -297,6 +305,7 @@ function getMatchingAttributes (gir, hass, ci) {
     }
     return !(ci !== undefined && subject.communication_requirement !== ci);
   });
+
   const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
     return {
       offered_spring: accumObject.offered_spring || nextClass.offered_spring,
