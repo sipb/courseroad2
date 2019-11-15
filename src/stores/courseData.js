@@ -304,8 +304,8 @@ function getMatchingAttributes (gir, hass, ci) {
       return false;
     }
     return !(ci !== undefined && subject.communication_requirement !== ci);
-  }
-  );
+  });
+
   const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
     return {
       offered_spring: accumObject.offered_spring || nextClass.offered_spring,
