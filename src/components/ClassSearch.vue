@@ -65,7 +65,9 @@ class Filter {
     }[mode];
   }
 
-  matches (subject, inputs) {
+  setupInputs (input) {}
+
+  matches (subject) {
     // starting value of true for and, false for or
     var isMatch = !this.combine(true, false);
     // check each attribute for a match
@@ -82,6 +84,7 @@ class RegexFilter extends Filter {
     var testFunction = RegexFilter.getRegexTestFunction(regex);
     super(name, shortName, testFunction, attributeNames, mode);
     this.regex = regex;
+    this.originalFilter = testFunction;
     // Input required to construct the regex (for filters that change based on input)
     this.requires = requires;
   }
@@ -102,18 +105,13 @@ class RegexFilter extends Filter {
     return regexObject.test.bind(regexObject);
   }
 
-  matches (subject, inputs) {
-    var oldTestFunction = this.filter;
-
-    // Add input to regex test function if applicable
-    if (this.requires !== undefined) {
+  setupInputs (inputs) {
+    if (this.requires != undefined) {
       var regexAddOn = inputs[this.requires];
       this.filter = RegexFilter.getRegexTestFunction(this.regex + regexAddOn);
+    } else {
+      this.filter = this.originalFilter;
     }
-
-    var result = super.matches.call(this, subject, inputs);
-    this.filter = oldTestFunction;
-    return result;
   }
 
   // Set up the priorities of variants of the regex
@@ -291,6 +289,7 @@ export default {
       return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
+      let astart = Date.now();
       // Only display subjects if you are filtering by something
       let returnAny = this.nameInput.length > 0;
       for (const filterName in this.chosenFilters) {
@@ -300,14 +299,27 @@ export default {
         return [];
       }
 
+      for (var filterGroup in this.allFilters) {
+        for (var f = 0; f < this.allFilters[filterGroup].length; f++ ) {
+          let filter = this.allFilters[filterGroup][f];
+          filter.setupInputs( { nameInput: this.nameInput });
+        }
+      }
+
+      let subjectTimes = []
+
       // Filter subjects that match all filter sets and the text filter
       const filteredSubjects = this.allSubjects.filter((subject) => {
+        let start = Date.now();
         var matches = Object.keys(this.allFilters).every((filterGroup) => {
-          return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup], { nameInput: this.nameInput });
+          return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
         });
         matches = matches && textFilter.matches(subject, { nameInput: this.nameInput });
+        let end = Date.now();
+        subjectTimes.push(end - start);
         return matches;
       });
+      console.log(subjectTimes.reduce((a, b) => a + b, 0)/subjectTimes.length);
 
       // Sort subjects by priority order
       if (this.nameInput.length) {
@@ -315,9 +327,12 @@ export default {
         textFilter.setupVariants({ nameInput: this.nameInput }, { 'atStart': true, 'asLiteral': true }, ['asLiteral', 'atStart']);
 
         // Compare by variants for each subject
-        return filteredSubjects.sort(function (subject1, subject2) {
+        let sortedSubjects =  filteredSubjects.sort(function (subject1, subject2) {
           return textFilter.compareByVariants(subject2) - textFilter.compareByVariants(subject1);
         });
+        let aend = Date.now();
+        console.log(aend - astart);
+        return sortedSubjects;
       } else {
         return filteredSubjects;
       }
