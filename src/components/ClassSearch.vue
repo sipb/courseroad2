@@ -311,22 +311,23 @@ export default {
 
       // Filter subjects that match all filter sets and the text filter
       const filteredSubjects = this.allSubjects.filter((subject) => {
-        let start = Date.now();
-        let mstart = Date.now();
-        var matches = Object.keys(this.allFilters).every((filterGroup) => {
+        // let start = Date.now();
+        // let tstart = Date.now();
+        var matches = textFilter.matches(subject, { nameInput: this.nameInput });
+        // let tend = Date.now();
+        // let mstart = Date.now();
+        matches = matches && Object.keys(this.allFilters).every((filterGroup) => {
             return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
         });
-        let tstart = Date.now();
-        matches = matches && textFilter.matches(subject, { nameInput: this.nameInput });
-        let end = Date.now();
-        subjectTimes.push(end - start);
-        textTimes.push(end - tstart);
-        groupTimes.push(end - mstart);
+        // let end = Date.now();
+        // subjectTimes.push(end - start);
+        // textTimes.push(tend - tstart);
+        // groupTimes.push(end - mstart);
         return matches;
       });
       // console.log(subjectTimes.reduce((a, b) => a + b, 0)/subjectTimes.length);
       // console.log(textTimes.reduce((a, b) => a + b, 0)/textTimes.length);
-      console.log(groupTimes.reduce((a, b) => a + b, 0)/groupTimes.length);
+      // console.log(groupTimes.reduce((a, b) => a + b, 0)/groupTimes.length);
 
       // Sort subjects by priority order
       if (this.nameInput.length) {
