@@ -294,7 +294,6 @@ export default {
       return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
-      let astart = Date.now();
       // Only display subjects if you are filtering by something
       let returnAny = this.nameInput.length > 0;
       for (const filterName in this.chosenFilters) {
@@ -306,31 +305,13 @@ export default {
 
       textFilter.setupInputs({ nameInput: this.nameInput });
 
-      let subjectTimes = [];
-      let textTimes = [];
-      let groupTimes = [];
-
-      //TODO looks like the problem is that the group matching takes too long
-
       // Filter subjects that match all filter sets and the text filter
       const filteredSubjects = this.allSubjects.filter((subject) => {
-        // let start = Date.now();
-        // let tstart = Date.now();
         var matches = textFilter.matches(subject, { nameInput: this.nameInput });
-        // let tend = Date.now();
-        // let mstart = Date.now();
-        matches = matches && Object.keys(this.allFilters).every((filterGroup) => {
+        return matches && Object.keys(this.allFilters).every((filterGroup) => {
             return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
         });
-        // let end = Date.now();
-        // subjectTimes.push(end - start);
-        // textTimes.push(tend - tstart);
-        // groupTimes.push(end - mstart);
-        return matches;
       });
-      // console.log(subjectTimes.reduce((a, b) => a + b, 0)/subjectTimes.length);
-      // console.log(textTimes.reduce((a, b) => a + b, 0)/textTimes.length);
-      // console.log(groupTimes.reduce((a, b) => a + b, 0)/groupTimes.length);
 
       // Sort subjects by priority order
       if (this.nameInput.length) {
@@ -338,12 +319,9 @@ export default {
         textFilter.setupVariants({ nameInput: this.nameInput }, { 'atStart': true, 'asLiteral': true }, ['asLiteral', 'atStart']);
 
         // Compare by variants for each subject
-        let sortedSubjects =  filteredSubjects.sort(function (subject1, subject2) {
+        return filteredSubjects.sort(function (subject1, subject2) {
           return textFilter.compareByVariants(subject2) - textFilter.compareByVariants(subject1);
         });
-        let aend = Date.now();
-        console.log(aend - astart);
-        return sortedSubjects;
       } else {
         return filteredSubjects;
       }
