@@ -212,15 +212,17 @@ class FilterGroup {
   }
 
   matches (subject, active, inputs) {
-    var isMatch = !this.combine(true, false);
-    var noFilters = true;
-    for (var f = 0; f < this.filters.length; f++) {
-      if (active[f]) {
-        isMatch = this.combine(isMatch, this.filters[f].matches(subject, inputs));
-      }
-      noFilters = noFilters && !active[f];
+    if (!active.some((a)=>a)) {
+      return true;
     }
-    return noFilters || isMatch;
+    const baseCombinationValue = !this.combine(true, false);
+    var isMatch = baseCombinationValue;
+    for (var f = 0; f < this.filters.length; f++) {
+      if (active[f] && isMatch == baseCombinationValue) {
+        isMatch = this.combine(isMatch, this.filters[f].matches(subject));
+      }
+    }
+    return isMatch;
   }
 }
 
@@ -299,27 +301,32 @@ export default {
         return [];
       }
 
-      for (var filterGroup in this.allFilters) {
-        for (var f = 0; f < this.allFilters[filterGroup].length; f++ ) {
-          let filter = this.allFilters[filterGroup][f];
-          filter.setupInputs( { nameInput: this.nameInput });
-        }
-      }
+      textFilter.setupInputs({ nameInput: this.nameInput });
 
-      let subjectTimes = []
+      let subjectTimes = [];
+      let textTimes = [];
+      let groupTimes = [];
+
+      //TODO looks like the problem is that the group matching takes too long
 
       // Filter subjects that match all filter sets and the text filter
       const filteredSubjects = this.allSubjects.filter((subject) => {
         let start = Date.now();
+        let mstart = Date.now();
         var matches = Object.keys(this.allFilters).every((filterGroup) => {
-          return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
+            return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
         });
+        let tstart = Date.now();
         matches = matches && textFilter.matches(subject, { nameInput: this.nameInput });
         let end = Date.now();
         subjectTimes.push(end - start);
+        textTimes.push(end - tstart);
+        groupTimes.push(end - mstart);
         return matches;
       });
-      console.log(subjectTimes.reduce((a, b) => a + b, 0)/subjectTimes.length);
+      // console.log(subjectTimes.reduce((a, b) => a + b, 0)/subjectTimes.length);
+      // console.log(textTimes.reduce((a, b) => a + b, 0)/textTimes.length);
+      console.log(groupTimes.reduce((a, b) => a + b, 0)/groupTimes.length);
 
       // Sort subjects by priority order
       if (this.nameInput.length) {
