@@ -218,8 +218,11 @@ class FilterGroup {
     const baseCombinationValue = !this.combine(true, false);
     var isMatch = baseCombinationValue;
     for (var f = 0; f < this.filters.length; f++) {
-      if (active[f] && isMatch == baseCombinationValue) {
+      if (active[f]) {
         isMatch = this.combine(isMatch, this.filters[f].matches(subject));
+        if(isMatch != baseCombinationValue) {
+          return isMatch;
+        }
       }
     }
     return isMatch;
