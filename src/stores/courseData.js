@@ -10,10 +10,13 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    versionNumber: '1.0.0', // change when making backwards-incompatible changes
+    currentSemester: 1,
     activeRoad: '$defaultroad$',
     addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
+    fullSubjectsInfoLoaded: false,
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
@@ -41,6 +44,11 @@ const store = new Vuex.Store({
     fulfillmentNeeded: 'all',
     // list of road IDs that have not been retrieved from the server yet
     unretrieved: []
+  },
+  getters: {
+    userYear (state) {
+      return Math.floor((state.currentSemester - 1) / 3);
+    }
   },
   mutations: {
     addClass (state, newClass) {
@@ -216,6 +224,9 @@ const store = new Vuex.Store({
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;
     },
+    setFullSubjectsInfoLoaded (state, isFull) {
+      state.fullSubjectsInfoLoaded = isFull;
+    },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
         state.ignoreRoadChanges = true;
@@ -244,9 +255,15 @@ const store = new Vuex.Store({
     setSubjectsInfo (state, data) {
       state.subjectsInfo = data;
     },
+    setCurrentSemester (state, sem) {
+      state.currentSemester = Math.max(1, sem);
+    },
     updateProgress (state, progress) {
       Vue.set(state.roads[state.activeRoad].contents.progressOverrides, progress.listID, progress.progress);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    setFromLocalStorage (state, localStore) {
+      store.replaceState(localStore);
     },
     updateRoad (state, id, road) {
       Object.assign(state.roads[id], road);
@@ -263,6 +280,7 @@ const store = new Vuex.Store({
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
       commit('setSubjectsInfo', response.data);
+      commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
@@ -291,6 +309,7 @@ function getMatchingAttributes (gir, hass, ci) {
     }
     return !(ci !== undefined && subject.communication_requirement !== ci);
   });
+
   const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
     return {
       offered_spring: accumObject.offered_spring || nextClass.offered_spring,

@@ -11,7 +11,7 @@
           <span style="width: 6em; display: inline-block;">
             <b>
               <v-hover>
-                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="changeYear">
+                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
                   {{ semesterType }}
                   {{ semesterYear }}
                 </span>
@@ -26,7 +26,7 @@
         <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
           <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.id+'-'+subjindex+'-'+index" xs3>
             <v-card>
-              <div v-if="subject!=='placeholder'" :class="courseColor(subject.id)">
+              <div v-if="subject!=='placeholder'" :class="courseColor(subject)">
                 <v-card-text class="mini-course">
                   <b>{{ subject.id }}</b>
                 </v-card-text>
@@ -84,7 +84,7 @@ export default {
     'class': Class
   },
   mixins: [colorMixin, schedule],
-  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
+  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen'],
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -95,6 +95,15 @@ export default {
   computed: {
     isActiveRoad () {
       return this.$store.state.activeRoad === this.roadID;
+    },
+    baseYear: function () {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
+      return baseYear - this.$store.getters.userYear;
+    },
+    currentSemester () {
+      return this.$store.state.currentSemester;
     },
     itemAdding () {
       return this.$store.state.itemAdding;
@@ -161,7 +170,7 @@ export default {
       return allWarnings;
     },
     concurrentSubjects: function () {
-      return this.selectedSubjects.slice(0, this.index + 1).flat();
+      return this.flatten(this.selectedSubjects.slice(0, this.index + 1));
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -292,9 +301,9 @@ export default {
     }
   },
   methods: {
-    changeYear: function (event) {
+    openChangeYearDialog: function (event) {
       event.stopPropagation();
-      this.$emit('change-year');
+      this.$emit('open-change-year-dialog');
     },
     noLongerOffered: function (course) {
       if (course.is_historical) {
@@ -320,7 +329,7 @@ export default {
     },
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
-      const beforeThisSemester = this.selectedSubjects.slice(0, this.index).flat();
+      const beforeThisSemester = this.flatten(this.selectedSubjects.slice(0, this.index));
       const previousQuarter = this.selectedSubjects[this.index].filter(s => {
         const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
         let inPreviousQuarter = false;

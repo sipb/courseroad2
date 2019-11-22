@@ -3,22 +3,12 @@
 
   <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;">
     <div style="display: flex; align-content: space-between; margin: 12px 0px;">
-      <v-icon
-        :key="`icon-${isEditing}`"
-        v-slot:prepend
-        :color="isEditing ? 'success' : 'info'"
-        style="margin-right: 8px;"
-        @click="isEditing = !isEditing"
-        v-text="isEditing ? 'save' : 'edit'"
-      />
       <v-autocomplete
         v-model="changeReqs"
-        :hint="!isEditing ? 'Click the icon to edit' : 'Click the icon to save'"
+        :hint="'Your programs'.concat(changeReqs.length < 2 ? ' -- click to add a major' : '')"
         :items="getCourses"
         item-text="medium-title"
         item-value="key"
-        :readonly="!isEditing"
-        :label="`${isEditing ? 'Edit your courses' : 'Your courses'}`"
         persistent-hint
         multiple
         chips
