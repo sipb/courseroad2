@@ -436,7 +436,6 @@ export default {
       this.currentlySaving = false;
     },
     getNewRoadData: function () {
-      console.log('getNewRoadData running');
       const newRoadData = {};
       if (this.newRoads.indexOf('$defaultroad$') === -1 && '$defaultroad$' in this.roads) {
         if (this.roads['$defaultroad$'].contents.selectedSubjects.flat().length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
