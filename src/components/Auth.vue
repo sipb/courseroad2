@@ -166,7 +166,6 @@ export default {
       if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
         const tabs = this.$cookies.get('tabs').ids;
-        console.log("Indexing into tabs");
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
         if(tabs.length) {
@@ -235,6 +234,7 @@ export default {
       const _this = this;
       this.gettingUserData = true;
       return this.getSecure('/sync/roads/?id=' + roadID).then(function (roadData) {
+        console.log(roadData.data.file.contents);
         if (roadData.status === 200 && roadData.data.success) {
           roadData.data.file.downloaded = moment().format(DATE_FORMAT);
           roadData.data.file.changed = moment().format(DATE_FORMAT);
@@ -256,6 +256,8 @@ export default {
         if (roadData.data.file.contents.progressOverrides === undefined) {
           roadData.data.file.contents.progressOverrides = {};
         }
+        console.log("im gonna set a road");
+        console.log(roadData.data.file);
         _this.$store.commit('setRoad', {
           id: roadID,
           road: roadData.data.file,

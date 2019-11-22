@@ -189,6 +189,7 @@ describe('Auth', () => {
      sessionStorage.removeItem('tabID');
   });
   it('sends the correct tab ID when saving a road', () => {
+    console.log("Im gonna do the last test now");
     $cookies.set('tabs', {'ids': [1, 2, 4, 8]});
     $cookies.set('accessInfo', fakeAuth);
     const wrapper = shallowMount(Auth, { store: storeBasic, localVue , mocks: { $cookies }});

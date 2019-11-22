@@ -4,6 +4,7 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 import users from './../data/users';
 import roads from './../data/roads';
 
+console.log(roads);
 
 function find(documents, values) {
   return documents.filter(function(document) {
@@ -31,6 +32,15 @@ function findOne(documents, values) {
   return undefined;
 }
 
+function objectSlice(obj, attributes) {
+  var newObj = {};
+  for(var a = 0; a < attributes.length; a++) {
+    var attr = attributes[a];
+    newObj[attr] = obj[attr];
+  }
+  return newObj;
+}
+
 function getUserFromHeaders(headers) {
   if(headers === undefined || headers.Authorization === undefined) {
     return 'Authorization Error';
@@ -42,16 +52,14 @@ function getUserFromHeaders(headers) {
 
 function getUserFromHeadersPromise(headers, resolve, reject) {
   const user = getUserFromHeaders(headers);
-  console.log(user);
   if(user === 'Authorization Error') {
-    console.log("Rejecting authorization error");
     reject('Forbidden 403');
   } else if (user === undefined) {
-    console.log('User was undefined');
     resolve({
       data: {
         success: false
-      }
+      },
+      status: 200
     });
   } else {
     return user;
@@ -62,18 +70,65 @@ module.exports = {
   get: jest.fn(function(url, headers) {
     console.log(url);
     const urlParts = url.split('/');
-    const query = urlParts.slice(3).join('/');
+    const queryParts = urlParts.slice(3);
+    const query = queryParts.slice(0, queryParts.length-1).join('/');
+    var parameterString = queryParts[queryParts.length-1];
+    var parameters = {};
+    if (parameterString.length != 0) {
+      if (parameterString[0] != '?') {
+        return Promise.reject("Bad parameters in url");
+      }
+      parameterString = parameterString.substring(1);
+      var parameterDefinitions = parameterString.split("&");
+      for (var p = 0; p < parameterDefinitions.length; p++) {
+        var equality = parameterDefinitions[p].split("=");
+        if (equality.length != 2) {
+          return Promise.reject("Bad parameters in url");
+        }
+        parameters[equality[0]] = equality[1];
+      }
+    }
     return new Promise(function(resolve, reject) {
-      if(query == 'verify/') {
+      if(query == 'verify') {
         const user = getUserFromHeadersPromise(headers.headers, resolve, reject);
-        console.log(user);
+        if (user == undefined) {
+          return;
+        }
         resolve({
           data: {
             current_semester: user.current_semester,
             success: true
-          }
+          },
+          status: 200
         });
-        console.log("I just resolved");
+      } else if(query == 'sync/roads') {
+        const user = getUserFromHeadersPromise(headers.headers, resolve, reject);
+        if (user == undefined) { return; }
+        const userRoads = roads[user.username];
+        if (parameters.id === undefined) {
+          var roadData = {};
+          for(var roadID in userRoads) {
+            roadData[roadID] = objectSlice(userRoads[roadID], ['changed', 'name', 'agent']);
+          }
+          resolve({
+            data: {
+              files: roadData,
+              success: true
+            },
+            status: 200
+          });
+        } else {
+          var roadRequested = userRoads[parameters.id];
+          console.log(roadRequested);
+          resolve({
+            data: {
+              file: roadRequested,
+              success: true
+            },
+            status: 200
+          })
+        }
+
       }
       else {
         reject('Unknown function');
@@ -104,6 +159,8 @@ module.exports = {
             changed: moment().format(DATE_FORMAT)
           }
         })
+      } else {
+        reject("Unknown function");
       }
     });
   })
