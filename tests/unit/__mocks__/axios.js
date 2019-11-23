@@ -1,14 +1,13 @@
 import moment from 'moment';
-const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
 import users from './../data/users';
 import roads from './../data/roads';
+const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
-
-function find(documents, values) {
-  return documents.filter(function(document) {
-    for(attribute in values) {
-      if(document[attribute] !== values[attribute]) {
+function find (documents, values) {
+  return documents.filter(function (document) {
+    for (attribute in values) {
+      if (document[attribute] !== values[attribute]) {
         return false;
       }
     }
@@ -16,23 +15,23 @@ function find(documents, values) {
   });
 }
 
-function findOne(documents, values) {
-  for(var d = 0; d < documents.length; d++) {
+function findOne (documents, values) {
+  for (var d = 0; d < documents.length; d++) {
     var matches = true;
-    for(attribute in values) {
-      if(documents[d][attribute] !== values[attribute]) {
+    for (attribute in values) {
+      if (documents[d][attribute] !== values[attribute]) {
         matches = false;
       }
     }
-    if(matches) {
+    if (matches) {
       return documents[d];
     }
   }
   return undefined;
 }
 
-function getUserFromHeaders(headers) {
-  if(headers.Authorization === undefined) {
+function getUserFromHeaders (headers) {
+  if (headers.Authorization === undefined) {
     return 'Authorization error';
   }
   const token = headers.Authorization.split('Bearer ')[1];
@@ -41,15 +40,15 @@ function getUserFromHeaders(headers) {
 }
 
 module.exports = {
-  get: jest.fn(function(url, headers) {
+  get: jest.fn(function (url, headers) {
     const urlParts = url.split('/');
     const query = urlParts.slice(3).join('/');
-    return new Promise(function(resolve, reject) {
-      if(query == 'verify/') {
+    return new Promise(function (resolve, reject) {
+      if (query == 'verify/') {
         const user = getUserFromHeaders(headers.headers);
-        if(user === 'Authorization Error') {
-          reject('Forbidden 403')
-        } else if(user === undefined) {
+        if (user === 'Authorization Error') {
+          reject('Forbidden 403');
+        } else if (user === undefined) {
           resolve({
             data: {
               success: false
@@ -68,17 +67,17 @@ module.exports = {
       }
     });
   }),
-  post: jest.fn(function(url, params, headers) {
+  post: jest.fn(function (url, params, headers) {
     const urlParts = url.split('/');
     const query = urlParts.slice(3).join('/');
     const user = getUserFromHeaders(headers.headers);
-    if(user === 'Authorization Error') {
+    if (user === 'Authorization Error') {
       return Promise.reject('Forbidden 403');
-    } else if(user === undefined) {
-      return Promise.resolve({ data: { success: false }});
+    } else if (user === undefined) {
+      return Promise.resolve({ data: { success: false } });
     }
-    return new Promise(function(resolve, reject) {
-      if(query === 'sync/sync_road/') {
+    return new Promise(function (resolve, reject) {
+      if (query === 'sync/sync_road/') {
         const username = user.username;
         const roadID = params.id;
         delete params.id;
@@ -91,8 +90,8 @@ module.exports = {
             result: 'update_remote',
             changed: moment().format(DATE_FORMAT)
           }
-        })
+        });
       }
     });
   })
-}
+};

@@ -1,10 +1,9 @@
 import moment from 'moment';
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
-
 export default {
-  "627816884": {
-    "45": {
+  '627816884': {
+    '45': {
       downloaded: moment().format(DATE_FORMAT),
       changed: moment().format(DATE_FORMAT),
       name: 'My First Road',
@@ -16,4 +15,4 @@ export default {
       }
     }
   }
-}
+};

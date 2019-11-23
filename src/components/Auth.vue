@@ -23,10 +23,10 @@
     <v-tooltip bottom :disabled="saveWarnings.length===0">
       <v-icon
         v-if="!currentlySaving && !gettingUserData"
+        id="save-icon"
         slot="activator"
         :color="saveColor"
         style="user-select: none;"
-        id="save-icon"
       >
         {{ saveIcon }}
       </v-icon>
@@ -165,7 +165,7 @@ export default {
         const tabs = JSON.parse(this.$cookies.get('tabs'));
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
-        if(tabs.length) {
+        if (tabs.length) {
           this.$cookies.set('tabs', JSON.stringify(tabs));
         } else {
           this.$cookies.remove('tabs');
@@ -536,7 +536,7 @@ export default {
           }
         } else {
           console.log('looking in cookies');
-          if(this.$cookies.isKey('tabs')) {
+          if (this.$cookies.isKey('tabs')) {
             console.log(this.$cookies.get('tabs'));
             console.log(this.$cookies.get('tabs').length);
           }
