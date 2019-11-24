@@ -99,7 +99,7 @@ export default {
     baseYear: function () {
       const today = new Date();
       const currentYear = today.getFullYear();
-      const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
+      const baseYear = (today.getMonth() >= 5) ? currentYear + 1 : currentYear;
       return baseYear - this.$store.getters.userYear;
     },
     currentSemester () {
