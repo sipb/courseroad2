@@ -1,4 +1,5 @@
 import Semester from '../../src/components/Semester.vue';
+import { PassThrough } from 'stream';
 
 Vue.use(Vuetify);
 const localVue = createLocalVue();
@@ -59,6 +60,7 @@ describe('Semester', () => {
     }
   });
   it('calculates semesterYear correctly', () => {
+    let a = true;
     for (let i = 0; i < 12; i++) {
       let month;
       if (i < 9) {
@@ -74,7 +76,9 @@ describe('Semester', () => {
             new Date('2014-' + month + '-14T11:01:58.135Z').valueOf()
           );
         const wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': j, 'roadID': 1, 'isOpen': true }, store, localVue });
-        wrapper.vm.baseYear;
+        if (wrapper.vm.baseYear === 'test') {
+            print('hi')
+        };
         if (Number(month) > 5 && Number(month) < 12) {
           if (j === 0) {
             expect(wrapper.vm.semesterYear).toEqual('');
