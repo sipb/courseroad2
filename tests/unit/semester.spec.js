@@ -52,7 +52,7 @@ describe('Semester', () => {
           new Date('2014-' + month + '-14T11:01:58.135Z').valueOf()
         ); // only works once, then Date.now() goes back to meaning now
       const wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': 1, 'roadID': 1, 'isOpen': true }, store, localVue });
-      if (Number(month) < 6 || Number(month) === 12) {
+      if (Number(month) < 6) {
         expect(wrapper.vm.baseYear).toEqual(2014);
       } else {
         expect(wrapper.vm.baseYear).toEqual(2015);
@@ -79,7 +79,7 @@ describe('Semester', () => {
         if (wrapper.vm.baseYear === 'test') {
             print('hi')
         };
-        if (Number(month) > 5 && Number(month) < 12) {
+        if (Number(month) > 5) {
           if (j === 0) {
             expect(wrapper.vm.semesterYear).toEqual('');
           } else if (j === 1) {
