@@ -180,6 +180,7 @@ export default {
     },
     logoutUser: function (event) {
       this.$cookies.remove('accessInfo');
+      localStorage.clear();
       this.loggedIn = false;
       this.accessInfo = undefined;
       window.location.reload();
