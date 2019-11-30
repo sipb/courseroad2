@@ -212,7 +212,7 @@ class FilterGroup {
   }
 
   matches (subject, active, inputs) {
-    if (!active.some((a)=>a)) {
+    if (!active.some((a) => a)) {
       return true;
     }
     const baseCombinationValue = !this.combine(true, false);
@@ -220,7 +220,7 @@ class FilterGroup {
     for (var f = 0; f < this.filters.length; f++) {
       if (active[f]) {
         isMatch = this.combine(isMatch, this.filters[f].matches(subject));
-        if(isMatch != baseCombinationValue) {
+        if (isMatch != baseCombinationValue) {
           return isMatch;
         }
       }
@@ -309,7 +309,7 @@ export default {
       const filteredSubjects = this.allSubjects.filter((subject) => {
         var matches = textFilter.matches(subject, { nameInput: this.nameInput });
         return matches && Object.keys(this.allFilters).every((filterGroup) => {
-            return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
+          return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
         });
       });
 
