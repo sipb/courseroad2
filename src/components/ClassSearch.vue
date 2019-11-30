@@ -106,7 +106,7 @@ class RegexFilter extends Filter {
   }
 
   setupInputs (inputs) {
-    if (this.requires != undefined) {
+    if (this.requires !== undefined) {
       var regexAddOn = inputs[this.requires];
       this.filter = RegexFilter.getRegexTestFunction(this.regex + regexAddOn);
     } else {
@@ -220,7 +220,7 @@ class FilterGroup {
     for (var f = 0; f < this.filters.length; f++) {
       if (active[f]) {
         isMatch = this.combine(isMatch, this.filters[f].matches(subject));
-        if (isMatch != baseCombinationValue) {
+        if (isMatch !== baseCombinationValue) {
           return isMatch;
         }
       }
