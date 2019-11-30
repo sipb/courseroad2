@@ -20,6 +20,7 @@ const store = new Vuex.Store({
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
+    loggedIn: false,
     roads: {
       '$defaultroad$': {
         downloaded: moment().format(DATE_FORMAT),
@@ -222,6 +223,9 @@ const store = new Vuex.Store({
     },
     setFullSubjectsInfoLoaded (state, isFull) {
       state.fullSubjectsInfoLoaded = isFull;
+    },
+    setLoggedIn (state, newLoggedIn) {
+      state.loggedIn = newLoggedIn;
     },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {

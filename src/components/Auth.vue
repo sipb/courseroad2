@@ -107,6 +107,7 @@ export default {
       }
     },
     loggedIn (newLoggedIn) {
+      this.$store.commit('setLoggedIn', newLoggedIn);
       if (newLoggedIn && this.$cookies.get('has_set_year') !== 'true') {
         const email = this.accessInfo.academic_id;
         const endPoint = email.indexOf('@');
@@ -179,6 +180,7 @@ export default {
     },
     logoutUser: function (event) {
       this.$cookies.remove('accessInfo');
+      localStorage.clear();
       this.loggedIn = false;
       this.accessInfo = undefined;
       window.location.reload();
@@ -211,7 +213,6 @@ export default {
         return Promise.reject(new Error('No auth information'));
       }
     },
-
     getSecure: function (link) {
       return this.doSecure(axios.get, link, false);
     },
