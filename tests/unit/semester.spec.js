@@ -17,11 +17,12 @@ describe('Semester', () => {
         genericCourses: [0, 1, 2],
         activeRoad: 'a',
         currentSemester: 1,
-        itemAdding: false,
-        addingFromCard: false
+        itemAdding: undefined,
+        addingFromCard: false,
+        year: 0,
       },
       getters: {
-        userYear: () => { return 0 }
+        userYear: (state) => { return state.year }
       },
       mutations: {
         addClass: () => {
@@ -33,34 +34,9 @@ describe('Semester', () => {
       }
     });
   });
-  it('is a Vue instance', () => {
-    const wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': 1, 'roadID': 1, 'isOpen': true }, store, localVue });
-    expect(wrapper.isVueInstance()).toBeTruthy();
-  });
-  it('calculates base year correctly', () => {
-    // probably I shouldn't actually test this because we might change how semesterYear is calculated
-    for (let i = 0; i < 12; i++) {
-      let month;
-      if (i < 9) {
-        month = '0' + String(i + 1);
-      } else {
-        month = String(i + 1);
-      };
-      jest
-        .spyOn(global.Date, 'now')
-        .mockImplementationOnce(() =>
-          new Date('2014-' + month + '-14T11:01:58.135Z').valueOf()
-        ); // only works once, then Date.now() goes back to meaning now
-      const wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': 1, 'roadID': 1, 'isOpen': true }, store, localVue });
-      if (Number(month) < 6) {
-        expect(wrapper.vm.baseYear).toEqual(2014);
-      } else {
-        expect(wrapper.vm.baseYear).toEqual(2015);
-      }
-    }
-  });
   it('calculates semesterYear correctly', () => {
     let a = true;
+    let wrapper;
     for (let i = 0; i < 12; i++) {
       let month;
       if (i < 9) {
@@ -75,11 +51,9 @@ describe('Semester', () => {
           .mockImplementationOnce(() =>
             new Date('2014-' + month + '-14T11:01:58.135Z').valueOf()
           );
-        const wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': j, 'roadID': 1, 'isOpen': true }, store, localVue });
-        if (wrapper.vm.baseYear === 'test') {
-            print('hi')
-        };
-        if (Number(month) > 5) {
+       wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': j, 'roadID': 1, 'isOpen': true }, store, localVue });
+       wrapper.vm.baseYear;
+        if (Number(month - 1) >= 5) {
           if (j === 0) {
             expect(wrapper.vm.semesterYear).toEqual('');
           } else if (j === 1) {
@@ -114,5 +88,143 @@ describe('Semester', () => {
         }
       }
     };
+  });
+  it('calculates noLongerOffered correctly', () => {
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    let index = 1;
+    store.state.year = 1;
+    let wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'spring-2013'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': false, 'source_semester': 'spring-2013'})).toEqual(false);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2013'})).toEqual(false);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2012'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'spring-2014'})).toEqual(false);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2014'})).toEqual(false);
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    index = 3;
+    store.state.year = 1
+    wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'spring-2013'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': false, 'source_semester': 'spring-2013'})).toEqual(false);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2013'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2012'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'spring-2014'})).toEqual(false);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2014'})).toEqual(false);
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    index = 4;
+    store.state.year = 1;
+    wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    store.state.year = 1;
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'spring-2013'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': false, 'source_semester': 'spring-2013'})).toEqual(false);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2013'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2012'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'spring-2014'})).toEqual(true);
+    expect(wrapper.vm.noLongerOffered({'is_historical': true, 'source_semester': 'fall-2014'})).toEqual(false);
+  });
+  it('calculates notCurrentlyOffered correctly', () => {
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    let index = 1;
+    store.state.year = 1;
+    let wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2012-2013'})).toEqual(false);
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2013-2014'})).toEqual(true);
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2014-2015'})).toEqual(false);
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    index = 2;
+    store.state.year = 1;
+    wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2012-2013'})).toEqual(false);
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2013-2014'})).toEqual(true);
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2014-2015'})).toEqual(false);
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    index = 3;
+    store.state.year = 1;
+    wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2012-2013'})).toEqual(false);
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2013-2014'})).toEqual(true);
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2014-2015'})).toEqual(false);
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    index = 4;
+    store.state.year = 1;
+    wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2012-2013'})).toEqual(false);
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2013-2014'})).toEqual(false);
+    expect(wrapper.vm.notCurrentlyOffered({'not_offered_year': '2014-2015'})).toEqual(true);
+  });
+  it('calculates isSameYear correctly', () => {
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    let index = 1;
+    store.state.currentSemester = 1;
+    let wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.isSameYear).toEqual(true);
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    index = 3;
+    store.state.currentSemester = 1;
+    wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.isSameYear).toEqual(true);
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    index = 4;
+    store.state.currentSemester = 1;
+    wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.isSameYear).toEqual(false);
+    jest
+          .spyOn(global.Date, 'now')
+          .mockImplementationOnce(() =>
+            new Date('2014-11-14T11:01:58.135Z').valueOf()
+          );
+    index = 1;
+    store.state.currentSemester = 4;
+    wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': index, 'roadID': 1, 'isOpen': true }, store, localVue });
+    expect(wrapper.vm.isSameYear).toEqual(false);
+  });
+  it('calculates offferedNow correctly', () => {
+    let wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': 1, 'roadID': 1, 'isOpen': true }, store, localVue });
+    store.state.addingFromCard = true;
+    expect(wrapper.vm.offeredNow).toEqual(false);
+    store.state.itemAdding = {'is_historical': true, 'source_semester': '2010-2011', 'not_offered_year': '2014-2015', 'offered_fall': true}
+    expect(wrapper.vm.offeredNow).toEqual(false);
+    store.state.itemAdding = {'is_historical': false, 'source_semester': '2010-2011', 'not_offered_year': '2010-2011', 'offered_fall': true}
+    expect(wrapper.vm.offeredNow).toEqual(true);
   });
 });

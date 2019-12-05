@@ -97,12 +97,9 @@ export default {
       return this.$store.state.activeRoad === this.roadID;
     },
     baseYear () {
-      //console.log('in baseYear');
-      // currently baseYear is 1 greater than the first year, not equal to it
       const today = new Date(Date.now());
       const currentYear = today.getFullYear();
-      const baseYear = (today.getMonth() + 1 >= 5) ? currentYear + 1 : currentYear;
-      //console.log(baseYear);
+      const baseYear = (today.getMonth() >= 5) ? currentYear + 1 : currentYear;
       return baseYear - this.$store.getters.userYear;
     },
     currentSemester () {
