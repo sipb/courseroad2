@@ -57,5 +57,3 @@ describe('Road', () => {
     expect(wrapper.vm.year).toBe(2);
   });
 });
-
-// to add: calculates year correctly from semester (or vice versa)
