@@ -166,8 +166,8 @@ export default {
         const tabs = this.$cookies.get('tabs').ids;
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
-        if(tabs.length) {
-          this.$cookies.set('tabs', {'ids': tabs});
+        if (tabs.length) {
+          this.$cookies.set('tabs', { 'ids': tabs });
         } else {
           this.$cookies.remove('tabs');
         }
@@ -204,7 +204,7 @@ export default {
             this.logoutUser();
             return Promise.reject(new Error('Token not valid'));
           }
-        }.bind(this)).catch(function(err) {
+        }.bind(this)).catch(function (err) {
           this.logoutUser();
           return Promise.reject(err);
         });
@@ -254,7 +254,7 @@ export default {
         if (roadData.data.file.contents.progressOverrides === undefined) {
           roadData.data.file.contents.progressOverrides = {};
         }
-        console.log("im gonna set a road");
+        console.log('im gonna set a road');
         console.log(roadData.data.file);
         _this.$store.commit('setRoad', {
           id: roadID,
@@ -535,20 +535,12 @@ export default {
             var tabs = this.$cookies.get('tabs').ids;
             if (tabs.indexOf(tabNum) === -1) {
               tabs.push(tabNum);
-              this.$cookies.set('tabs', {'ids': tabs});
+              this.$cookies.set('tabs', { 'ids': tabs });
             }
           } else {
-            this.$cookies.set('tabs', {'ids': [tabNum]});
+            this.$cookies.set('tabs', { 'ids': [tabNum] });
           }
         } else {
-<<<<<<< HEAD
-          console.log('looking in cookies');
-          if (this.$cookies.isKey('tabs')) {
-            console.log(this.$cookies.get('tabs'));
-            console.log(this.$cookies.get('tabs').length);
-          }
-=======
->>>>>>> test-auth
           // TODO: look into whether this = sign is acting correctly?
           if (this.$cookies.isKey('tabs') && (tabs = this.$cookies.get('tabs').ids)) {
             const maxTab = Math.max(...tabs);
@@ -556,11 +548,11 @@ export default {
             sessionStorage.tabID = newTab;
             this.tabID = newTab;
             tabs.push(maxTab + 1);
-            this.$cookies.set('tabs', {'ids': tabs});
+            this.$cookies.set('tabs', { 'ids': tabs });
           } else {
             sessionStorage.tabID = '1';
             this.tabID = '1';
-            this.$cookies.set('tabs', {'ids': [1]});
+            this.$cookies.set('tabs', { 'ids': [1] });
           }
         }
       }
