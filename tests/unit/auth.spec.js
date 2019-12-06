@@ -5,11 +5,14 @@ import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import VueCookies from 'vue-cookies';
 
-import users from './data/users';
 
-import $cookies from './__mocks__/cookies';
-library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
+
+import users from './data/users';
+import stores from './data/stores';
 const axios = require('axios');
+
+window.alert = jest.fn((text) => console.log(text));
+window.location.reload = jest.fn();
 
 jest.mock('axios');
 
@@ -37,6 +40,7 @@ const conflictInfo = {
   this_date: '2019-06-18T01:00:32+00:00'
 };
 
+<<<<<<< HEAD
 const storeCookies = new Vuex.Store({
   state: {
     cookiesAllowed: true
@@ -64,12 +68,24 @@ const storeBasic = new Vuex.Store({
           selectedSubjects: [[{ 'title': 'Introduction to Algorithms', 'id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 }, { 'title': 'Computation Structures', 'id': '6.004', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 }, { 'title': 'Principles of Chemical Science', 'id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 0 }], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
           progressOverrides: {}
         }
+=======
+const storeCookies = stores.constructNewStore({cookiesAllowed: true});
+const storeNoCookies = stores.constructNewStore({cookiesAllowed: false});
+const storeBasic = stores.constructNewStore({
+  activeRoad: "45",
+  cookiesAllowed: true,
+  roads: {
+    "45": {
+      downloaded: moment().format(DATE_FORMAT),
+      changed: moment().format(DATE_FORMAT),
+      name: 'My First Road',
+      agent: '',
+      contents: {
+        coursesOfStudy: ['girs'],
+        selectedSubjects: [[{ 'title': 'Introduction to Algorithms', 'id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 }, { 'title': 'Computation Structures', 'id': '6.004', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 }, { 'title': 'Principles of Chemical Science', 'id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 0 }], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+        progressOverrides: {}
+>>>>>>> test-auth
       }
-    }
-  },
-  mutations: {
-    allowCookies (state) {
-      state.cookiesAllowed = true;
     }
   }
 });
@@ -149,6 +165,7 @@ describe('Auth', () => {
     expect(saveIcon2.find('i').text()).toMatch('warning');
   });
   it('sets the correct tab IDs', () => {
+<<<<<<< HEAD
     const wrapper = shallowMount(Auth, { store: storeCookies, localVue });
 
     // Initialize tab ID with no existing tab IDs
@@ -198,10 +215,61 @@ describe('Auth', () => {
     expect(JSON.parse(wrapper.vm.$cookies.get('tabs'))).toEqual([9]);
 
     sessionStorage.removeItem('tabID');
+=======
+     const wrapper = shallowMount(Auth, { store: storeCookies, localVue, mocks: { $cookies } });
+
+     // Initialize tab ID with no existing tab IDs
+     wrapper.vm.setTabID();
+     expect(sessionStorage.tabID).toBe('1');
+     expect(wrapper.vm.tabID).toBe('1');
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual([1]);
+     sessionStorage.removeItem('tabID');
+
+     //Initialize tab ID with sequential existing tab IDs
+     const initialTabsSeq = [1, 2, 3, 4];
+     const expectedTabsSeq = initialTabsSeq.concat([5])
+     wrapper.vm.$cookies.set('tabs', {'ids': initialTabsSeq});
+     wrapper.vm.setTabID();
+     expect(sessionStorage.tabID).toBe('5');
+     expect(wrapper.vm.tabID).toBe('5');
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual(expectedTabsSeq);
+     sessionStorage.removeItem('tabID');
+
+     //Initialize tab ID with gap in tab IDs
+     const initialTabsGap = [1, 2, 4, 8];
+     const expectedTabsGap = initialTabsGap.concat([9]);
+     wrapper.vm.$cookies.set('tabs', {'ids': initialTabsGap});
+     wrapper.vm.setTabID();
+     expect(sessionStorage.tabID).toBe('9');
+     expect(wrapper.vm.tabID).toBe('9');
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual(expectedTabsGap);
+
+     //Tab ID taken from session storage
+     wrapper.setData({tabID: '27'});
+     wrapper.vm.setTabID();
+     expect(wrapper.vm.tabID).toBe('9');
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual(expectedTabsGap);
+
+     //Tab ID set in cookies if absent
+     wrapper.vm.$cookies.set('tabs', {'ids': initialTabsGap});
+     wrapper.setData({tabID: '27'});
+     wrapper.vm.setTabID();
+     expect(wrapper.vm.tabID).toBe('9');
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual(expectedTabsGap);
+
+     //Tab ID set in cookies if no cookie set
+     wrapper.vm.$cookies.remove('tabs');
+     wrapper.setData({tabID: '27'});
+     wrapper.vm.setTabID();
+     expect(wrapper.vm.tabID).toBe('9');
+     expect(wrapper.vm.$cookies.get('tabs').ids).toEqual([9]);
+
+     sessionStorage.removeItem('tabID');
+>>>>>>> test-auth
   });
   it('sends the correct tab ID when saving a road', () => {
-    console.log('final test');
-    $cookies.set('tabs', [1, 2, 4, 8]);
+    console.log("Im gonna do the last test now");
+    $cookies.set('tabs', {'ids': [1, 2, 4, 8]});
     $cookies.set('accessInfo', fakeAuth);
     const wrapper = shallowMount(Auth, { store: storeBasic, localVue, mocks: { $cookies } });
     wrapper.vm.saveRemote('45');
