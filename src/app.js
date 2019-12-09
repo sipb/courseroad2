@@ -35,9 +35,12 @@ var router = new VueRouter({
 
 VueCookies.config(Infinity);
 
+const vuetifyOptions = {};
+
 new Vue({
   el: '#app',
   router: router,
   render: h => h(App),
-  store
+  store,
+  vuetify: new Vuetify(vuetifyOptions)
 });
