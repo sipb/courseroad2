@@ -21,14 +21,16 @@
       <font-awesome-icon class="hidden-md-and-up" icon="sign-out-alt" />
     </v-btn>
     <v-tooltip bottom :disabled="saveWarnings.length===0">
-      <v-icon
-        v-if="!currentlySaving && !gettingUserData"
-        slot="activator"
-        :color="saveColor"
-        style="user-select: none;"
-      >
-        {{ saveIcon }}
-      </v-icon>
+      <template v-slot:activator="{ on }">
+        <v-icon
+          v-if="!currentlySaving && !gettingUserData"
+          :color="saveColor"
+          style="user-select: none;"
+          v-on="on"
+        >
+          {{ saveIcon }}
+        </v-icon>
+      </template>
       <div>
         <p v-for="saveWarning in saveWarnings" :key="saveWarning.name + saveWarning.error">
           {{ saveWarning.name }}: {{ saveWarning.error }}

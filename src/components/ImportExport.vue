@@ -9,10 +9,12 @@
       v-model="dialog"
       max-width="600"
     >
-      <v-btn slot="activator" class="collapse-button" outline color="primary">
-        <span class="hidden-sm-and-down">Import</span>
-        <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
-      </v-btn>
+      <template v-slot:activator="{ on }">
+        <v-btn class="collapse-button" outline color="primary" v-on="on">
+          <span class="hidden-sm-and-down">Import</span>
+          <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
+        </v-btn>
+      </template>
       <v-card>
         <v-btn icon flat style="float:right;" @click="dialog = false">
           <v-icon>close</v-icon>
