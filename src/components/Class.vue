@@ -47,7 +47,7 @@
     </v-hover>
     <v-dialog v-model="warningDialog" max-width="600">
       <v-card>
-        <v-btn icon flat style="float:right" @click="warningDialog = false">
+        <v-btn icon text style="float:right" @click="warningDialog = false">
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
@@ -62,7 +62,7 @@
           />
         </v-card-text>
         <v-card-actions style="justify-content: flex-end;">
-          <v-btn flat @click="warningDialog = false; $store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})">
+          <v-btn text @click="warningDialog = false; $store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})">
             Close
           </v-btn>
         </v-card-actions>

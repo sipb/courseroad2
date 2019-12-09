@@ -8,7 +8,7 @@
       <v-btn
         v-for="filter in filters"
         :key="filter.filterString"
-        flat
+        text
         :value="filter.filterString"
         @click="buttonClicked"
       >

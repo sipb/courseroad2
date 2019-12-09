@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <router-link to="/" style="color: inherit; text-decoration: none;">
-      <v-btn icon flat>
+      <v-btn icon text>
         <v-icon>arrow_back</v-icon>
       </v-btn>
     </router-link>

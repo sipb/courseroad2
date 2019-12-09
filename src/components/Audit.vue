@@ -51,7 +51,7 @@
 
     <v-dialog v-model="progressDialog" max-width="600">
       <v-card v-if="progressReq !== undefined">
-        <v-btn icon flat style="float:right" @click="progressDialog=false">
+        <v-btn icon text style="float:right" @click="progressDialog=false">
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
@@ -79,7 +79,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn flat @click="progressDialog=false; progressReq=undefined;">
+          <v-btn text @click="progressDialog=false; progressReq=undefined;">
             Cancel
           </v-btn>
           <v-btn color="primary" @click="updateManualProgress">
@@ -92,7 +92,7 @@
     <v-dialog v-model="viewDialog" max-width="600">
       <div v-if="dialogReq !== undefined">
         <v-card>
-          <v-btn icon flat style="float:right" @click="viewDialog=false">
+          <v-btn icon text style="float:right" @click="viewDialog=false">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title>{{ dialogReq["title"] }}</v-card-title>

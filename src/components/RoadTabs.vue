@@ -12,13 +12,13 @@
         @click="$store.commit('setActiveRoad', roadId)"
       >
         {{ roads[roadId].name }}
-        <v-btn v-show="roadId == tabRoad" icon flat @click="newRoadName = roads[roadId].name; editDialog = true;">
+        <v-btn v-show="roadId == tabRoad" icon text @click="newRoadName = roads[roadId].name; editDialog = true;">
           <v-icon>edit</v-icon>
         </v-btn>
       </v-tab>
       <v-dialog v-model="editDialog" max-width="600" @input="newRoadName = ''">
         <v-card>
-          <v-btn icon flat style="float:right" @click="editDialog = false">
+          <v-btn icon text style="float:right" @click="editDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title>Edit Road</v-card-title>
@@ -43,14 +43,14 @@
       </v-dialog>
       <v-dialog v-if="tabRoad in roads" v-model="deleteDialog" max-width="600">
         <v-card>
-          <v-btn icon flat style="float:right" @click="deleteDialog = false">
+          <v-btn icon text style="float:right" @click="deleteDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title>Permanently Delete {{ roads[tabRoad].name }}?</v-card-title>
           <v-card-text>This action cannot be undone.</v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn flat @click="deleteDialog = false; editDialog = true;">
+            <v-btn text @click="deleteDialog = false; editDialog = true;">
               Cancel
             </v-btn>
             <v-btn color="error" @click="deleteDialog = false; $emit('delete-road',tabRoad); newRoadName = ''">
@@ -61,7 +61,7 @@
       </v-dialog>
       <v-dialog v-model="addDialog" max-width="600" @input="newRoadName = ''">
         <v-card>
-          <v-btn icon flat style="float:right" @click="addDialog = false">
+          <v-btn icon text style="float:right" @click="addDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title>Create Road</v-card-title>
@@ -100,7 +100,7 @@
       </v-dialog>
     </v-tabs>
     <v-flex>
-      <v-btn type="submit" icon flat color="primary" @click="addDialog = true">
+      <v-btn type="submit" icon text color="primary" @click="addDialog = true">
         <v-icon>add</v-icon>
       </v-btn>
     </v-flex>

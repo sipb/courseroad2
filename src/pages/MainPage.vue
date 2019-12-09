@@ -171,7 +171,7 @@
               Looking for the old courseroad?  Visit the old website <a target="_blank" href="https://courseroad.mit.edu/old">here</a> and export your roads!
             </v-flex>
             <v-flex shrink>
-              <v-btn small icon flat class="ma-1" @click="dismissOld">
+              <v-btn small icon text class="ma-1" @click="dismissOld">
                 <v-icon>close</v-icon>
               </v-btn>
             </v-flex>

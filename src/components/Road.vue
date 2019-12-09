@@ -21,7 +21,7 @@
     />
     <v-dialog v-model="changeYearDialog" max-width="600">
       <v-card>
-        <v-btn icon flat style="float:right" @click="changeYearDialog = false">
+        <v-btn icon text style="float:right" @click="changeYearDialog = false">
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
@@ -35,7 +35,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn flat @click="changeYearDialog = false">
+          <v-btn text @click="changeYearDialog = false">
             Cancel
           </v-btn>
           <v-btn color="primary" @click="$emit('change-year',year); changeYearDialog = false;">

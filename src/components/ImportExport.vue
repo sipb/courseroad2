@@ -1,6 +1,6 @@
 <template>
   <v-layout row grow>
-    <v-btn class="collapse-button" outline color="primary" @click="exportRoad">
+    <v-btn class="collapse-button" outlined color="primary" @click="exportRoad">
       <span class="hidden-sm-and-down">Export</span>
       <font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" />
     </v-btn>
@@ -10,13 +10,13 @@
       max-width="600"
     >
       <template v-slot:activator="{ on }">
-        <v-btn class="collapse-button" outline color="primary" v-on="on">
+        <v-btn class="collapse-button" outlined color="primary" v-on="on">
           <span class="hidden-sm-and-down">Import</span>
           <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
         </v-btn>
       </template>
       <v-card>
-        <v-btn icon flat style="float:right;" @click="dialog = false">
+        <v-btn icon text style="float:right;" @click="dialog = false">
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title class="headline lighten-2" primary-title>
@@ -26,7 +26,7 @@
           <v-text-field
             v-if="dialog"
             v-model="roadtitle"
-            outline
+            outlined
             label="Road name"
             clearable
             autofocus
@@ -41,7 +41,7 @@
             label="Or copy/paste a road here"
             full-width
             single-line
-            outline
+            outlined
           />
 
           <v-spacer />
@@ -65,7 +65,7 @@
 
         <v-card-actions>
           <v-spacer />
-          <v-btn flat @click="dialog = false">
+          <v-btn text @click="dialog = false">
             Cancel
           </v-btn>
           <v-btn
