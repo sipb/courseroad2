@@ -42,6 +42,11 @@
             </v-hover>
           </template>
         </v-data-table>
+		<center>
+			<v-btn>
+				Create a Custom Class 				
+			</v-btn>
+		</center>
       </div>
     </div>
   </v-container>
