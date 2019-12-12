@@ -43,21 +43,9 @@
             </v-hover>
           </template>
         </v-data-table>
-		<center>
-			<v-btn 
-				color="green" 
-				class="white--text"
-				@click="viewDialog = true"
-			>
-				Create a Custom Class 				
-			</v-btn>
-		</center>
+		<custom-class></custom-class>
       </div>
     </div>
-	<custom-class
-		:viewDialog="viewDialog"
-	>
-	</custom-class>
   </v-container>
 </template>
 
@@ -112,7 +100,6 @@ export default {
   },
   data: function () {
     return {
-	  viewDialog: false,
       dragSemesterNum: -1,
       searchHeight: '',
       menuMargin: 20,
