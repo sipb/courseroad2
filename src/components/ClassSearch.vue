@@ -44,16 +44,25 @@
           </template>
         </v-data-table>
 		<center>
-			<v-btn>
+			<v-btn 
+				color="green" 
+				class="white--text"
+				@click="viewDialog = true"
+			>
 				Create a Custom Class 				
 			</v-btn>
 		</center>
       </div>
     </div>
+	<custom-class
+		:viewDialog="viewDialog"
+	>
+	</custom-class>
   </v-container>
 </template>
 
 <script>
+import CustomClass from './CustomClass.vue';
 import FilterSet from './FilterSet.vue';
 import $ from 'jquery';
 import Vue from 'vue';
@@ -92,7 +101,8 @@ var instructorFilter = new ArrayFilter('Instructor', 'Prof', RegexFilter, ['', '
 export default {
   name: 'ClassSearch',
   components: {
-    'filter-set': FilterSet
+	'filter-set': FilterSet,
+	'custom-class': CustomClass
   },
   props: {
     searchInput: {
@@ -102,6 +112,7 @@ export default {
   },
   data: function () {
     return {
+	  viewDialog: false,
       dragSemesterNum: -1,
       searchHeight: '',
       menuMargin: 20,
