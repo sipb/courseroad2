@@ -228,22 +228,8 @@ export default {
           roadData.data.file.changed = moment().format(DATE_FORMAT);
         }
 
-        // sanitize subject_id
-        const newss = roadData.data.file.contents.selectedSubjects.map((s) => {
-          if ('subject_id' in s) {
-            s.id = s.subject_id;
-            delete s.subject_id;
-          }
-          return s;
-        });
-        roadData.data.file.contents.selectedSubjects = newss;
+        _this.sanitizeRoad(roadData.data.file);
 
-        // convert selected subjects to more convenient format
-        roadData.data.file.contents.selectedSubjects = _this.getSimpleSelectedSubjects(roadData.data.file.contents.selectedSubjects);
-        // sanitize progressOverrides
-        if (roadData.data.file.contents.progressOverrides === undefined) {
-          roadData.data.file.contents.progressOverrides = {};
-        }
         _this.$store.commit('setRoad', {
           id: roadID,
           road: roadData.data.file,
@@ -252,6 +238,25 @@ export default {
         _this.gettingUserData = false;
         return roadData;
       });
+    },
+    sanitizeRoad: function(road) {
+      // sanitize subject_id
+      const newss = road.contents.selectedSubjects.map((s) => {
+        if ('subject_id' in s) {
+          s.id = s.subject_id;
+          delete s.subject_id;
+        }
+        return s;
+      });
+
+      road.contents.selectedSubjects = newss;
+
+      // convert selected subjects to more convenient format
+      road.contents.selectedSubjects = this.getSimpleSelectedSubjects(road.contents.selectedSubjects);
+      // sanitize progressOverrides
+      if (road.contents.progressOverrides === undefined) {
+        road.contents.progressOverrides = {};
+      }
     },
     getUserData: function () {
       this.gettingUserData = true;
@@ -392,6 +397,25 @@ export default {
             if (response.data.result === 'conflict') {
               const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
               this.data.$emit('conflict', conflictInfo);
+            } else if (response.data.result === 'update_local') {
+              alert('Server has more recent edits.  Overriding local road.  If this is unexpected, check that your computer clock is accurate.');
+
+              let updatedRoad = {
+                downloaded: moment().format(DATE_FORMAT),
+                changed: response.data.changed,
+                name: response.data.name,
+                agent: this.data.getAgent(),
+                contents: response.data.contents
+              }
+
+              this.data.sanitizeRoad(updatedRoad);
+
+              this.data.$store.commit('setRoad', {
+                id: this.oldid,
+                road: updatedRoad,
+                ignoreSet: false
+              });
+
             } else {
               this.data.$store.commit('setRoadProp', {
                 id: this.oldid,
