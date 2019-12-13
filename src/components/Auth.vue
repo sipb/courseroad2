@@ -391,6 +391,12 @@ export default {
             }
             if (response.data.result === 'conflict') {
               const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
+              this.data.$store.commit('setRoadProp', {
+                id: this.oldid,
+                prop: 'agent',
+                value: this.data.getAgent(),
+                ignoreSet: true
+              })
               this.data.$emit('conflict', conflictInfo);
             } else {
               this.data.$store.commit('setRoadProp', {
