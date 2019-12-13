@@ -123,19 +123,21 @@ export default {
         const email = this.accessInfo.academic_id;
         const endPoint = email.indexOf('@');
         const kerb = email.slice(0, endPoint);
-        axios.get('https://mit-people-v3.cloudhub.io/people/v3/people/' + kerb,
-          { headers: { 'client_id': '01fce9ed7f9d4d26939a68a4126add9b',
-            'client_secret': 'D4ce51aA6A32421DA9AddF4188b93255' } })
+        axios.get(process.env.APP_URL + '/cgi-bin/people.py?kerb=' + kerb)
           .then(response => {
-            // subtract 1 for zero-indexing
-            const year = response.data.item.affiliations[0].classYear - 1;
-            if (year === undefined) {
+            if (response.status !== 200) {
               console.log('Failed to find user year');
             } else {
-              this.changeSemester(year);
+              const year = response.data.year;
+              if (year === undefined) {
+                console.log('Failed to find user year');
+              } else {
+                this.changeSemester(year);
+                console.log('setting year to ' + year);
+              }
             }
           });
-      };
+      }
     }
   },
   mounted () {
