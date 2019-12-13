@@ -375,10 +375,13 @@ export default {
         this.saveLocal();
       }
     },
-    saveRemote: function (roadID) {
+    saveRemote: function (roadID, override) {
+      if (override === undefined) {
+        override = false;
+      }
       this.currentlySaving = true;
       this.saveWarnings = [];
-      const assignKeys = { override: false, agent: this.getAgent() };
+      const assignKeys = { override: override, agent: this.getAgent() };
       if (!roadID.includes('$')) {
         assignKeys.id = roadID;
       }
@@ -486,23 +489,24 @@ export default {
       return newRoadData;
     },
     updateRemote: function (roadID) {
-      const newRoad = { id: roadID, override: true, agent: this.getAgent() };
-      Object.assign(newRoad, this.roads[roadID]);
-      this.postSecure('/sync/sync_road/', newRoad)
-        .then(function (response) {
-          if (!response.data.success) {
-            this.saveWarnings.push({ error: response.data.error_msg || response.data.error, id: roadID, name: this.roads[roadID] });
-          }
-        });
+      this.saveRemote(roadID, true);
       this.$emit('resolve-conflict');
     },
 
     updateLocal: function (roadID) {
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false });
+      let remoteRoad = {
+        name: this.conflictInfo.other_name,
+        agent: this.conflictInfo.other_agent,
+        changed: this.conflictInfo.other_date,
+        contents: this.conflictInfo.other_contents,
+        downloaded: moment().format(DATE_FORMAT)
+      }
+      this.sanitizeRoad(remoteRoad);
+      this.$store.commit('setRoad', {
+        id: roadID,
+        road: remoteRoad,
+        ignoreSet: false
+      })
       this.$emit('resolve-conflict');
     },
 
