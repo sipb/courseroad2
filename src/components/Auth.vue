@@ -396,7 +396,7 @@ export default {
                 prop: 'agent',
                 value: this.data.getAgent(),
                 ignoreSet: true
-              })
+              });
               this.data.$emit('conflict', conflictInfo);
             } else {
               this.data.$store.commit('setRoadProp', {
