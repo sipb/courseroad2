@@ -239,7 +239,7 @@ export default {
         return roadData;
       });
     },
-    sanitizeRoad: function(road) {
+    sanitizeRoad: function (road) {
       // sanitize subject_id
       const newss = road.contents.selectedSubjects.map((s) => {
         if ('subject_id' in s) {
@@ -403,13 +403,13 @@ export default {
             } else if (response.data.result === 'update_local') {
               alert('Server has more recent edits.  Overriding local road.  If this is unexpected, check that your computer clock is accurate.');
 
-              let updatedRoad = {
+              const updatedRoad = {
                 downloaded: moment().format(DATE_FORMAT),
                 changed: response.data.changed,
                 name: response.data.name,
                 agent: this.data.getAgent(),
                 contents: response.data.contents
-              }
+              };
 
               this.data.sanitizeRoad(updatedRoad);
 
@@ -419,6 +419,7 @@ export default {
                 ignoreSet: false
               });
 
+              return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'same' });
             } else {
               this.data.$store.commit('setRoadProp', {
                 id: this.oldid,
@@ -494,19 +495,19 @@ export default {
     },
 
     updateLocal: function (roadID) {
-      let remoteRoad = {
+      const remoteRoad = {
         name: this.conflictInfo.other_name,
         agent: this.conflictInfo.other_agent,
         changed: this.conflictInfo.other_date,
         contents: this.conflictInfo.other_contents,
         downloaded: moment().format(DATE_FORMAT)
-      }
+      };
       this.sanitizeRoad(remoteRoad);
       this.$store.commit('setRoad', {
         id: roadID,
         road: remoteRoad,
         ignoreSet: false
-      })
+      });
       this.$emit('resolve-conflict');
     },
 
