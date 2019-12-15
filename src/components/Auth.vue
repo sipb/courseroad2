@@ -64,7 +64,18 @@ export default {
   name: 'Auth',
   components: {},
   mixins: [simpleSSMixin],
-  props: ['justLoaded', 'conflictInfo'],
+  props: {
+    justLoaded: {
+      type: Boolean,
+      required: true
+    },
+    conflictInfo: {
+      type: Object,
+      default: function () {
+        return {};
+      }
+    }
+  },
   data: function () {
     return {
       accessInfo: undefined,

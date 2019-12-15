@@ -63,7 +63,11 @@
 <script>
 export default {
   name: 'ConflictDialog',
-  props: ['conflictInfo'],
+  props: {
+    conflictInfo: {
+      type: Object
+    }
+  },
   data: function () {
     return {
       conflictDialog: false

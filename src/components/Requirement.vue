@@ -8,7 +8,7 @@
   >
     <v-layout row>
       <v-flex>
-        <div v-if="!leaf" style="display: inline;">
+        <div v-if="!isLeaf" style="display: inline;">
           <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
             {{ req["title-no-degree"] }}
           </span>
@@ -34,7 +34,7 @@
           <span v-if="'title' in req">| </span>
           <span style="text-transform: cursive">{{ req.req }}</span>
         </span>
-        <span v-if="req.max === 0 && leaf" style="font-style:italic">
+        <span v-if="req.max === 0 && isLeaf" style="font-style:italic">
           (optional)
         </span>
         <span
@@ -66,7 +66,16 @@
 <script>
 export default {
   name: 'Requirement',
-  props: ['req', 'leaf'],
+  props: {
+    req: {
+      type: Object,
+      required: true
+    },
+    isLeaf: {
+      type: Boolean,
+      required: true
+    }
+  },
   data: function () {
     return {
       open: [],
