@@ -92,7 +92,7 @@ export default {
           { name: 'Art', short: 'A', filterString: 'HASS-A' },
           { name: 'Social Science', short: 'S', filterString: 'HASS-S' },
           { name: 'Humanity', short: 'H', filterString: 'HASS-H' },
-          { name: 'Elective', short: 'E', filterString: 'HASS-E'}
+          { name: 'Elective', short: 'E', filterString: 'HASS-E' }
         ],
         ciInput: [
           { name: 'Any', short: 'Any', filterString: 'CI.+' },
