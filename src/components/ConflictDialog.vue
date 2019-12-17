@@ -66,7 +66,7 @@ export default {
   props: {
     conflictInfo: {
       type: Object,
-      default: function() {
+      default: function () {
         return undefined;
       }
     }
