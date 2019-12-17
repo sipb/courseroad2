@@ -65,7 +65,10 @@ export default {
   name: 'ConflictDialog',
   props: {
     conflictInfo: {
-      type: Object
+      type: Object,
+      default: function() {
+        return undefined;
+      }
     }
   },
   data: function () {
