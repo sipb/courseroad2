@@ -27,7 +27,8 @@ Vue.use(BrowserSupportPlugin);
 var routes = [
   { path: '/', redirect: '/road' },
   { path: '/about', component: About },
-  { path: '/road/:road?', component: MainPage }
+  { path: '/road/:road?', component: MainPage },
+  { path: '*', redirect: '/road' }
 ];
 
 var router = new VueRouter({
