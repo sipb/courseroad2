@@ -25,11 +25,13 @@ Vue.use(VueRouter);
 Vue.use(BrowserSupportPlugin);
 
 var routes = [
-  { path: '/', component: MainPage },
-  { path: '/about', component: About }
+  { path: '/', redirect: '/road' },
+  { path: '/about', component: About },
+  { path: '/road/:road?', component: MainPage }
 ];
 
 var router = new VueRouter({
+  mode: 'history',
   routes
 });
 

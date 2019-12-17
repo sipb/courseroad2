@@ -11,6 +11,7 @@ module.exports = (env) => {
       './src/app.js'
     ],
     devServer: {
+      historyApiFallback: true,
       hot: true,
       watchOptions: {
         poll: true
