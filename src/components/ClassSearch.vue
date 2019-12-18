@@ -6,6 +6,7 @@
       <filter-set v-model="chosenFilters.ci" :label="'CI'" :filters="allFilters.ci.filters" />
       <filter-set v-model="chosenFilters.level" :label="'Level'" :filters="allFilters.level.filters" />
       <filter-set v-model="chosenFilters.units" :label="'Units'" :filters="allFilters.units.filters" />
+      <filter-set v-model="chosenFilters.terms" :label="'Term'" :filters="allFilters.terms.filters" />
     </div>
     <div style="display: flex; flex: 1; min-height: 0px;">
       <div style="flex: 1; overflow: auto;">
@@ -201,6 +202,13 @@ class MathFilter extends Filter {
   }
 }
 
+class BooleanFilter extends Filter {
+  constructor (name, shortName, attributeNames, negated, mode) {
+    var match = (input) => input == !negated;
+    super(name, shortName, match, attributeNames, mode);
+  }
+}
+
 class FilterGroup {
   constructor (name, filters, combination) {
     this.name = name;
@@ -249,6 +257,10 @@ var units12 = new MathFilter('12', '12', [12, 12], true, ['total_units']);
 var units15 = new MathFilter('15', '15', [15, 15], true, ['total_units']);
 var units6To15 = new MathFilter('6-15', '6-15', [6, 15], true, ['total_units']);
 var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_units']);
+var termFall = new BooleanFilter('Fall', 'FA', ['offered_fall'], false);
+var termIAP = new BooleanFilter('IAP', 'IAP', ['offered_IAP'], false);
+var termSpring = new BooleanFilter('Spring', 'SP', ['offered_spring'], false);
+// var termSummer = new BooleanFilter('Summer', 'SU', ['offered_summer']);
 var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'nameInput', 'OR');
 
 export default {
@@ -274,14 +286,16 @@ export default {
         hass: [false, false, false, false],
         ci: [false, false, false],
         level: [false, false],
-        units: [false, false, false, false, false, false, false]
+        units: [false, false, false, false, false, false, false],
+        terms: [false, false, false]
       },
       allFilters: {
         girs: new FilterGroup('GIR', [girAny, girLab, girRest], 'OR'),
         hass: new FilterGroup('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity], 'OR'),
         ci: new FilterGroup('CI', [ciAny, ciH, ciHW, ciNone], 'OR'),
         level: new FilterGroup('Level', [levelUG, levelG], 'OR'),
-        units: new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR')
+        units: new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR'),
+        terms: new FilterGroup('Term', [termFall, termIAP, termSpring], 'OR')
       },
       rowsPerPageItems: [5, 10, 20, 50, { 'text': '$vuetify.dataIterator.rowsPerPageAll', 'value': -1 }],
       pagination: {
