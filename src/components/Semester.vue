@@ -291,12 +291,12 @@ export default {
       };
     },
     semesterName: function () {
-      const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Super Senior'];
+      const yearNames = ['1st', '2nd', '3rd', '4th', '5th'];
       if (this.index === 0) {
         return '';
       } else {
         const yearIndex = Math.floor((this.index - 1) / 3);
-        return yearNames[yearIndex];
+        return yearNames[yearIndex] + ' Year';
       }
     },
     semesterYear: function () {
