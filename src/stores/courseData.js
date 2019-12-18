@@ -267,6 +267,10 @@ const store = new Vuex.Store({
   actions: {
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
+
+      // condense all terms offered into one attribute
+      response.data.forEach((subject) => subject.offered_terms = `${+subject.offered_fall}${+subject.offered_IAP}${+subject.offered_spring}${+subject.offered_summer}`);
+
       commit('setSubjectsInfo', response.data);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
@@ -302,10 +306,11 @@ function getMatchingAttributes (gir, hass, ci) {
       offered_summer: accumObject.offered_summer || nextClass.offered_summer,
       offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
       offered_fall: accumObject.offered_fall || nextClass.offered_fall,
+      offered_terms: offered_terms || nextClass.offered_terms,
       in_class_hours: accumObject.in_class_hours + (nextClass.in_class_hours !== undefined ? nextClass.in_class_hours : 0),
       out_of_class_hours: accumObject.out_of_class_hours + (nextClass.out_of_class_hours !== undefined ? nextClass.out_of_class_hours : 0)
     };
-  }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, in_class_hours: 0, out_of_class_hours: 0 });
+  }, { offered_spring: false, offered_summer: false, offered_IAP: false, offered_fall: false, offered_terms: '0000', in_class_hours: 0, out_of_class_hours: 0 });
   totalObject.in_class_hours /= matchingClasses.length;
   totalObject.out_of_class_hours /= matchingClasses.length;
   return totalObject;

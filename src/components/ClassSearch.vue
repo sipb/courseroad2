@@ -6,6 +6,7 @@
       <filter-set v-model="chosenFilters.ciInput" :label="'CI'" :filters="allFilters.ciInput" />
       <filter-set v-model="chosenFilters.levelInput" :label="'Level'" :filters="allFilters.levelInput" />
       <filter-set v-model="chosenFilters.unitInput" :label="'Units'" :filters="allFilters.unitInput" />
+      <filter-set v-model="chosenFilters.termInput" :label="'Term'" :filters="allFilters.termInput" />
     </div>
     <h4> Search: {{ chosenFilters.nameInput }} </h4>
     <h4> Results: </h4>
@@ -76,7 +77,8 @@ export default {
         ciInput: [],
         // semesterInput: [],
         levelInput: [],
-        unitInput: []
+        unitInput: [],
+        termInput: []
       },
       // list of all filters
       // most are regex but unitInput tests math equations
@@ -112,6 +114,12 @@ export default {
           { name: '15', short: '15', filterString: '^15$' },
           { name: '6-15', short: '6-15', filterString: '^([7-9]|1[0-5])$' },
           { name: '>=15', short: '>15', filterString: '([2-9][0-9]|1[6-9])$' }
+        ],
+        termInput: [
+          { name: 'Fall', short: 'FA', filterString: '^1\w*' },
+          { name: 'IAP', short: 'IAP', filterString: '^.1\w*' },
+          { name: 'Spring', short: 'SP', filterString: '^..1\w*' }
+          // { name: 'Summer', short: 'SM', filterString: '^...1\w*' }
         ]
       },
       // modes to filter by across a filter group
@@ -161,7 +169,8 @@ export default {
         'hass_attribute': getRegexFuncs(this.chosenFilters.hassInput),
         'communication_requirement': getRegexFuncs(this.chosenFilters.ciInput),
         'level': getRegexFuncs(this.chosenFilters.levelInput),
-        'total_units': getRegexFuncs(this.chosenFilters.unitInput)
+        'total_units': getRegexFuncs(this.chosenFilters.unitInput),
+        'offered_terms': getRegexFuncs(this.chosenFilters.termInput)
       };
         // and or or function based on filter mode
       const filterAction = this.filterGroupModes[this.filterGroupMode];
