@@ -290,9 +290,9 @@ export default {
         expectedHours: expectedHours
       };
     },
-    semesterName: function() {
+    semesterName: function () {
       const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Super Senior'];
-      if (this.index == 0) {
+      if (this.index === 0) {
         return '';
       } else {
         const yearIndex = Math.floor((this.index - 1) / 3);
