@@ -8,10 +8,11 @@
     <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;">
       <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
-          <span style="width: 6em; display: inline-block;">
+          <span style="width: 12em; display: inline-block;">
             <b>
               <v-hover>
                 <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
+                  {{ semesterName }}
                   {{ semesterType }}
                   {{ semesterYear }}
                 </span>
@@ -288,6 +289,15 @@ export default {
         totalUnits: totalUnits,
         expectedHours: expectedHours
       };
+    },
+    semesterName: function() {
+      const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Super Senior'];
+      if (this.index == 0) {
+        return '';
+      } else {
+        const yearIndex = Math.floor((this.index - 1) / 3);
+        return yearNames[yearIndex];
+      }
     },
     semesterYear: function () {
       return this.index === 0
