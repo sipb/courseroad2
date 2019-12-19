@@ -407,6 +407,9 @@ export default {
                 ignoreSet: true
               });
               this.data.$emit('conflict', conflictInfo);
+
+              return Promise.resolve({ oldid: this.oldid, state: 'same' });
+
             } else if (response.data.result === 'update_local') {
               alert('Server has more recent edits.  Overriding local road.  If this is unexpected, check that your computer clock is accurate.');
 
