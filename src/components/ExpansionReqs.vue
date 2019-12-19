@@ -36,7 +36,7 @@
     <div v-if="open && nextReqs !== undefined" class="expanded-req">
       <ExpansionReqs
         :requirement="nextReqs"
-        :req-i-d="reqID + (doubleScroller ? '.' + whichScroll : '') + '.' + expansionIndex"
+        :req-i-d="reqID + (doubleScroller ? '.' + whichScroller : '') + '.' + expansionIndex"
         @close-expansion="closeMyExpansion"
         @click-subject="$emit('click-subject',$event)"
       />
@@ -59,8 +59,9 @@ export default {
     return {
       open: false,
       expansionIndex: 0,
-      nextReqs: undefined,
-      whichScroller: 0
+      whichScroller: 0,
+      scrollerClicked: undefined,
+      subjectClicked: undefined
     };
   },
   computed: {
@@ -71,6 +72,17 @@ export default {
         }, true);
       }
       return false;
+    },
+    nextReqs: function() {
+      if (!this.open) {
+        return undefined;
+      }
+
+      if (this.scrollerClicked !== undefined) {
+        return this.requirement.reqs[this.scrollerClicked].reqs[this.subjectClicked.index];
+      } else {
+        return this.requirement.reqs[this.subjectClicked.index];
+      }
     }
   },
   watch: {
@@ -80,6 +92,9 @@ export default {
   },
   methods: {
     clickSubject: function (subj, scroller) {
+      this.scrollerClicked = scroller;
+      this.subjectClicked = subj;
+
       let scrollPointID;
       let nextReqs;
       if (scroller !== undefined) {
@@ -89,10 +104,10 @@ export default {
         scrollPointID = this.reqID + '.' + subj.index;
         nextReqs = this.requirement.reqs[subj.index];
       }
+
       if (nextReqs.reqs !== undefined) {
         this.expansionIndex = subj.index;
         this.open = true;
-        this.nextReqs = nextReqs;
         Vue.nextTick(function () {
           const scrollPoint = $('#' + $.escapeSelector(scrollPointID));
           const topPoint = scrollPoint.offset().top;

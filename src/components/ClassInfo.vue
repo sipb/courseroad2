@@ -435,7 +435,6 @@ export default {
       }
 
       const rList = parseReqs(requirements);
-      console.log(rList);
       rList.topLevel = true;
       return rList;
     },
