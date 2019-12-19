@@ -389,8 +389,9 @@ export default {
       }
       const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
-      Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
-      const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
+      const roadToSend = {};
+      Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
+      const savePromise = this.postSecure('/sync/sync_road/', roadToSend)
         .then(function (response) {
           if (response.status !== 200) {
             return Promise.reject(new Error('Unable to save road ' + this.oldid));
@@ -401,7 +402,15 @@ export default {
             }
             if (response.data.result === 'conflict') {
               const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
+              this.data.$store.commit('setRoadProp', {
+                id: this.oldid,
+                prop: 'agent',
+                value: this.data.getAgent(),
+                ignoreSet: true
+              });
               this.data.$emit('conflict', conflictInfo);
+
+              return Promise.resolve({ oldid: this.oldid, state: 'same' });
             } else if (response.data.result === 'update_local') {
               alert('Server has more recent edits.  Overriding local road.  If this is unexpected, check that your computer clock is accurate.');
 
