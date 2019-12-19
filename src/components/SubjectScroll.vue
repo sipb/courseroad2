@@ -55,6 +55,6 @@ export default {
     color: white;
   }
   .lightened {
-    box-shadow: inset 0 0 8em 6em rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 0 8em 6em rgba(255, 255, 255, 0.45);
   }
 </style>
