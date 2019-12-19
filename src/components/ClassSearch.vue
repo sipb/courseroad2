@@ -204,7 +204,7 @@ class MathFilter extends Filter {
 
 class BooleanFilter extends Filter {
   constructor (name, shortName, attributeNames, negated, mode) {
-    var match = (input) => input == !negated;
+    var match = (input) => input === !negated;
     super(name, shortName, match, attributeNames, mode);
   }
 }
