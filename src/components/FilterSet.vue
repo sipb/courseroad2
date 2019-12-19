@@ -6,10 +6,10 @@
       @change="changeFilter"
     >
       <v-btn
-        v-for="filter in filters"
-        :key="filter.filterString"
+        v-for="(filter, index) in filters"
+        :key="filter.name"
         flat
-        :value="filter.filterString"
+        :value="index"
         @click="buttonClicked"
       >
         {{ filter.short }}
@@ -23,8 +23,9 @@ export default {
   name: 'FilterSet',
   props: ['value', 'label', 'filters'],
   methods: {
-    changeFilter (newValues) {
-      this.$emit('input', newValues);
+    changeFilter (selectionIndices) {
+      var filtersSelected = this.filters.map((f, i) => selectionIndices.indexOf(i) >= 0);
+      this.$emit('input', filtersSelected);
     },
     buttonClicked (event) {
       // Focus the search input in case user wants to start typing after
