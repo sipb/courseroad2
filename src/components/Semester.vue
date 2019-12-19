@@ -76,7 +76,7 @@
 <script>
 import Class from './Class.vue';
 import colorMixin from './../mixins/colorMixin.js';
-import reqFulfillment from './../mixins/reqFulfillment.js'
+import reqFulfillment from './../mixins/reqFulfillment.js';
 import schedule from './../mixins/schedule.js';
 
 export default {

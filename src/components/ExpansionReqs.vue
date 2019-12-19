@@ -73,7 +73,7 @@ export default {
       }
       return false;
     },
-    nextReqs: function() {
+    nextReqs: function () {
       if (!this.open) {
         return undefined;
       }

@@ -71,7 +71,7 @@ export default {
       // eslint-disable-next-line no-eval
       return eval(reqExpression);
     },
-    reqFulfilled: function(reqString, subjects) {
+    reqFulfilled: function (reqString, subjects) {
       const allIDs = subjects.map((s) => s.id);
       const _this = this;
       if (reqString.indexOf('\'\'') >= 0) {
@@ -89,4 +89,4 @@ export default {
       }
     }
   }
-}
+};

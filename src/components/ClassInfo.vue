@@ -265,7 +265,7 @@ export default {
         }
       });
     },
-    firstAppearance: function() {
+    firstAppearance: function () {
       const currentSubjects = this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects;
       const currentID = this.currentSubject.subject_id;
 
@@ -353,10 +353,10 @@ export default {
             if (onereq.indexOf("'") >= 0) {
               parsedReq.reqs.push({ subject_id: onereq.replace(/'/g, ''), title: '', fulfilled: false });
             } else {
-              let subRequirement = getClassInfo(onereq);
+              const subRequirement = getClassInfo(onereq);
               if (_this.firstAppearance >= -1) {
                 const allSemesterSubjects = _this.$store.state.roads[_this.$store.state.activeRoad].contents.selectedSubjects;
-                let allPreviousSubjects = _this.flatten(allSemesterSubjects.slice(0, _this.firstAppearance));
+                const allPreviousSubjects = _this.flatten(allSemesterSubjects.slice(0, _this.firstAppearance));
                 subRequirement.fulfilled = _this.reqFulfilled(onereq, allPreviousSubjects);
               } else {
                 subRequirement.fulfilled = true;

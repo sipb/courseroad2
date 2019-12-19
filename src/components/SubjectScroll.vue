@@ -25,7 +25,7 @@ export default {
   mixins: [colorMixin],
   props: ['subjects'],
   methods: {
-    shouldLighten: function(subject) {
+    shouldLighten: function (subject) {
       if (subject.fulfilled === true) {
         return 'lightened';
       } else {
