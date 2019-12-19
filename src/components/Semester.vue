@@ -84,7 +84,28 @@ export default {
     'class': Class
   },
   mixins: [colorMixin, schedule],
-  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen'],
+  props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
+    semesterSubjects: {
+      type: Array,
+      required: true
+    },
+    index: {
+      type: Number,
+      required: true
+    },
+    roadID: {
+      type: String,
+      required: true
+    },
+    isOpen: {
+      type: Boolean,
+      required: true
+    }
+  },
   data: function () {
     return {
       newYear: this.semesterYear,

@@ -21,7 +21,20 @@
 <script>
 export default {
   name: 'FilterSet',
-  props: ['value', 'label', 'filters'],
+  props: {
+    value: {
+      type: Array,
+      required: true
+    },
+    label: {
+      type: String,
+      required: true
+    },
+    filters: {
+      type: Array,
+      required: true
+    }
+  },
   methods: {
     changeFilter (selectionIndices) {
       var filtersSelected = this.filters.map((f, i) => selectionIndices.indexOf(i) >= 0);
