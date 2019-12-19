@@ -47,7 +47,7 @@
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for="req in roads[conflictInfo.id].contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
               <p id="selected-subjects-local">
-                Selected Subjects: <span v-for="(course, index) in roads[conflictInfo.id].contents.selectedSubjects.flat()" :key="JSON.stringify(course)" :class="colorSubject(index, 'local')"> {{ course.id }} </span>
+                Selected Subjects: <span v-for="(course, index) in flatten(roads[conflictInfo.id].contents.selectedSubjects)" :key="JSON.stringify(course)" :class="colorSubject(index, 'local')"> {{ course.id }} </span>
               </p>
             </v-card>
           </v-list>
@@ -85,7 +85,7 @@ export default {
       const remoteSubjects = this.renumberDuplicates(this.conflictInfo.other_contents.selectedSubjects.map(
         s => s.id + ' ' + s.semester
       ));
-      const localSubjects = this.renumberDuplicates(this.roads[this.conflictInfo.id].contents.selectedSubjects.flat().map(
+      const localSubjects = this.renumberDuplicates(this.flatten(this.roads[this.conflictInfo.id].contents.selectedSubjects).map(
         s => s.id + ' ' + s.semester
       ));
       let currentSubject;
