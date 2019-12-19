@@ -3,13 +3,15 @@
     <v-layout row overflow-x>
       <v-flex v-for="(subject,index) in subjects" :key="subject.subject_id">
         <v-card class="subject" @click="$emit('click-subject', {id:subject.subject_id,index:index})">
-          <div :class="courseColor(subject)" style="height:100%;">
-            <v-card-text class="cardtext pa-1">
-              <div><b>{{ subject.subject_id }}</b></div>
-              <p class="subject-title">
-                {{ subject.title }}
-              </p>
-            </v-card-text>
+          <div style = "height:100%;">
+            <div :class="[courseColor(subject), shouldLighten(subject)]" style="height:100%;">
+              <v-card-text class="cardtext pa-1">
+                <div><b>{{ subject.subject_id }}</b></div>
+                <p class="subject-title">
+                  {{ subject.title }}
+                </p>
+              </v-card-text>
+            </div>
           </div>
         </v-card>
       </v-flex>
@@ -23,7 +25,16 @@ import colorMixin from './../mixins/colorMixin.js';
 export default {
   name: 'SubjectScroll',
   mixins: [colorMixin],
-  props: ['subjects']
+  props: ['subjects'],
+  methods: {
+    shouldLighten: function(subject) {
+      if (subject.fulfilled === true) {
+        return 'lightened';
+      } else {
+        return '';
+      }
+    }
+  }
 };
 </script>
 <style scoped>
@@ -44,5 +55,8 @@ export default {
   }
   .cardtext {
     color: white;
+  }
+  .lightened {
+    box-shadow: inset 0 0 8em 6em rgba(255, 255, 255, 0.3);
   }
 </style>
