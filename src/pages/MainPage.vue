@@ -233,7 +233,7 @@ export default {
   data: function () {
     return {
       reqTrees: {},
-      reqList: [],
+      reqList: {},
       dragSemesterNum: -1,
       gettingUserData: false,
       cookieName: 'Default Cookie',

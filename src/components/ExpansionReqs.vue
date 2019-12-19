@@ -54,7 +54,16 @@ export default {
   components: {
     'subject-scroll': SubjectScroll
   },
-  props: ['requirement', 'reqID'],
+  props: {
+    requirement: {
+      type: Object,
+      required: true
+    },
+    reqID: {
+      type: String,
+      required: true
+    }
+  },
   data: function () {
     return {
       open: false,

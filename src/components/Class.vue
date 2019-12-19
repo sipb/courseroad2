@@ -77,7 +77,24 @@ import colorMixin from './../mixins/colorMixin.js';
 export default {
   name: 'Class',
   mixins: [colorMixin],
-  props: ['classIndex', 'classInfo', 'semesterIndex', 'warnings'],
+  props: {
+    classIndex: {
+      type: Number,
+      required: true
+    },
+    classInfo: {
+      type: [Object, String],
+      required: true
+    },
+    semesterIndex: {
+      type: Number,
+      required: true
+    },
+    warnings: {
+      type: Array,
+      required: true
+    }
+  },
   data () {
     return {
       warningDialog: false,
