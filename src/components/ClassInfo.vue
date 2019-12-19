@@ -177,7 +177,7 @@
               </h3>
               <expansion-reqs
                 :requirement="parsedPrereqs"
-                :req-i-d="'prereq0'"
+                :req-i-d="currentSubject.subject_id+'prereq0'"
                 @click-subject="clickRelatedSubject"
               />
             </div>
@@ -190,7 +190,7 @@
               </h3>
               <expansion-reqs
                 :requirement="parsedCoreqs"
-                :req-i-d="'coreq0'"
+                :req-i-d="currentSubject.subject_id+'coreq0'"
                 @click-subject="clickRelatedSubject"
               />
             </div>
@@ -249,7 +249,6 @@ export default {
         : { reqs: [] };
     },
     subjectsWithPrereq: function () {
-      console.log('This other computed property is running');
       const currentID = this.currentSubject.subject_id;
       const currentDept = currentID.substring(0, currentID.indexOf('.'));
       var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');

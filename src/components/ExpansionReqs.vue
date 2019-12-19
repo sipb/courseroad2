@@ -74,7 +74,7 @@ export default {
     }
   },
   watch: {
-    requirement: function (newReq, oldReq) {
+    reqID: function (newReq, oldReq) {
       this.open = false;
     }
   },
