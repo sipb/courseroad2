@@ -233,7 +233,7 @@ export default {
   data: function () {
     return {
       reqTrees: {},
-      reqList: {},
+      reqList: [],
       dragSemesterNum: -1,
       gettingUserData: false,
       cookieName: 'Default Cookie',
@@ -360,11 +360,9 @@ export default {
 
     axios.get(process.env.FIREROAD_URL + `/requirements/list_reqs/`)
       .then(response => {
-        const ordered = {};
-        Object.keys(response.data).sort().forEach(function (key) {
-          ordered[key] = response.data[key];
-        });
-        this.reqList = ordered;
+        this.reqList = Object.keys(response.data).map((m) => {
+          return Object.assign(response.data[m], { key: m})
+        }).sort();
       });
 
     // Update fulfillment for all majors on load
