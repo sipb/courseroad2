@@ -54,6 +54,7 @@
           <h3>Warnings for {{ classInfo.id }}</h3>
         </v-card-title>
         <v-card-text>
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <p v-for="warning in warnings" :key="warning" v-html="warning" />
           <v-switch
             v-model="shouldOverrideWarnings"
