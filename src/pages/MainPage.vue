@@ -361,7 +361,7 @@ export default {
     axios.get(process.env.FIREROAD_URL + `/requirements/list_reqs/`)
       .then(response => {
         this.reqList = Object.keys(response.data).map((m) => {
-          return Object.assign(response.data[m], { key: m})
+          return Object.assign(response.data[m], { key: m });
         }).sort();
       });
 

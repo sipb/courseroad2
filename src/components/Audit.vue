@@ -209,7 +209,6 @@ export default {
         else if (b.includes('major') || b.includes('minor')) return 1;
         else return a.localeCompare(b);
       });
-      console.log(courses);
       return courses;
     },
     selectedTrees: function () {
