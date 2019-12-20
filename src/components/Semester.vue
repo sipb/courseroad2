@@ -174,6 +174,9 @@ export default {
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
 
+          // WARNING: be careful with injecting info from the subject like this
+          //  -- if we ever take user input, it could lead to XSS attacks from custom classes
+          //  (but right now we only ever insert info from FireRoad subjects)
           if (this.noLongerOffered(subj)) {
             const lastSemester = subj.source_semester.split('-');
             subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ').');
