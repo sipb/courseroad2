@@ -56,7 +56,24 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'roadID', 'addingFromCard', 'dragSemesterNum'],
+  props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
+    roadID: {
+      type: String,
+      required: true
+    },
+    addingFromCard: {
+      type: Boolean,
+      required: true
+    },
+    dragSemesterNum: {
+      type: Number,
+      required: true
+    }
+  },
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;

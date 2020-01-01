@@ -233,7 +233,7 @@ export default {
   data: function () {
     return {
       reqTrees: {},
-      reqList: [],
+      reqList: {},
       dragSemesterNum: -1,
       gettingUserData: false,
       cookieName: 'Default Cookie',
@@ -339,7 +339,7 @@ export default {
     const today = new Date();
     const month = today.getMonth();
     this.$store.commit('setCurrentSemester', (month >= 4 && month <= 10) ? 1 : 3);
-    if (localStorage.courseRoadStore !== undefined && this.cookiesAllowed) {
+    if (localStorage.courseRoadStore !== undefined && this.cookiesAllowed && this.$store.state.loggedIn) {
       this.$store.commit('setFromLocalStorage', JSON.parse(localStorage.courseRoadStore));
     };
     const borders = $('.v-navigation-drawer__border');
@@ -375,7 +375,7 @@ export default {
     }.bind(this));
 
     window.addEventListener('beforeunload', () => {
-      if (this.cookiesAllowed) {
+      if (this.cookiesAllowed && this.$store.state.loggedIn) {
         const subjectsInfoNoDescriptions = this.$store.state.subjectsInfo.map(function (x) {
           x = { 'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap };
           return x;

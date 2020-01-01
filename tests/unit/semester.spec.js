@@ -50,7 +50,7 @@ describe('Semester', () => {
             new Date('2014-' + month + '-14T11:01:58.135Z').valueOf()
           );
         wrapper = mount(Semester, { stubs: { 'class': true }, propsData: { 'selectedSubjects': [1], 'semesterSubjects': [1], 'index': j, 'roadID': 1, 'isOpen': true }, store, localVue });
-        wrapper.vm.baseYear;
+        // wrapper.vm.baseYear;
         if (Number(month - 1) >= 5) {
           if (j === 0) {
             expect(wrapper.vm.semesterYear).toEqual('');

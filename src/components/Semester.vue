@@ -84,7 +84,28 @@ export default {
     'class': Class
   },
   mixins: [colorMixin, schedule],
-  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen'],
+  props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
+    semesterSubjects: {
+      type: Array,
+      required: true
+    },
+    index: {
+      type: Number,
+      required: true
+    },
+    roadID: {
+      type: String,
+      required: true
+    },
+    isOpen: {
+      type: Boolean,
+      required: true
+    }
+  },
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -153,6 +174,9 @@ export default {
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
 
+          // WARNING: be careful with injecting info from the subject like this
+          //  -- if we ever take user input, it could lead to XSS attacks from custom classes
+          //  (but right now we only ever insert info from FireRoad subjects)
           if (this.noLongerOffered(subj)) {
             const lastSemester = subj.source_semester.split('-');
             subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ').');

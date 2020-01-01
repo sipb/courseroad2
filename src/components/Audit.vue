@@ -42,7 +42,7 @@
       <template slot="label" slot-scope="{ item, leaf}">
         <requirement
           :req="item"
-          :leaf="leaf"
+          :is-leaf="leaf"
           @click.native="clickRequirement(item)"
           @click-info="reqInfo($event, item)"
         />
@@ -143,12 +143,24 @@ export default {
   components: {
     requirement: Requirement
   },
-  props: [
-    'selectedReqs',
-    'reqTrees',
-    'reqList',
-    'progressOverrides'
-  ],
+  props: {
+    selectedReqs: {
+      type: Array,
+      required: true
+    },
+    reqTrees: {
+      type: Object,
+      required: true
+    },
+    reqList: {
+      type: Object,
+      required: true
+    },
+    progressOverrides: {
+      type: Object,
+      required: true
+    }
+  },
   data: function () {
     return {
       tree: [],

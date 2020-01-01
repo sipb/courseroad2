@@ -65,7 +65,18 @@ export default {
   name: 'Auth',
   components: {},
   mixins: [simpleSSMixin],
-  props: ['justLoaded', 'conflictInfo'],
+  props: {
+    justLoaded: {
+      type: Boolean,
+      required: true
+    },
+    conflictInfo: {
+      type: Object,
+      default: function () {
+        return {};
+      }
+    }
+  },
   data: function () {
     return {
       accessInfo: undefined,
@@ -108,6 +119,7 @@ export default {
       }
     },
     loggedIn (newLoggedIn) {
+      this.$store.commit('setLoggedIn', newLoggedIn);
       if (newLoggedIn && this.$cookies.get('has_set_year') !== 'true') {
         const email = this.accessInfo.academic_id;
         const endPoint = email.indexOf('@');
@@ -186,6 +198,7 @@ export default {
     },
     logoutUser: function (event) {
       this.$cookies.remove('accessInfo');
+      localStorage.clear();
       this.loggedIn = false;
       this.accessInfo = undefined;
       window.location.reload();
@@ -221,7 +234,6 @@ export default {
         return Promise.reject(new Error('No auth information'));
       }
     },
-
     getSecure: function (link) {
       return this.doSecure(axios.get, link, false);
     },
@@ -238,24 +250,8 @@ export default {
           roadData.data.file.changed = moment().format(DATE_FORMAT);
         }
 
-        // sanitize subject_id
-        const newss = roadData.data.file.contents.selectedSubjects.map((s) => {
-          if ('subject_id' in s) {
-            s.id = s.subject_id;
-            delete s.subject_id;
-          }
-          return s;
-        });
-        roadData.data.file.contents.selectedSubjects = newss;
+        _this.sanitizeRoad(roadData.data.file);
 
-        // convert selected subjects to more convenient format
-        roadData.data.file.contents.selectedSubjects = _this.getSimpleSelectedSubjects(roadData.data.file.contents.selectedSubjects);
-        // sanitize progressOverrides
-        if (roadData.data.file.contents.progressOverrides === undefined) {
-          roadData.data.file.contents.progressOverrides = {};
-        }
-        console.log('im gonna set a road');
-        console.log(roadData.data.file);
         _this.$store.commit('setRoad', {
           id: roadID,
           road: roadData.data.file,
@@ -264,6 +260,25 @@ export default {
         _this.gettingUserData = false;
         return roadData;
       });
+    },
+    sanitizeRoad: function (road) {
+      // sanitize subject_id
+      const newss = road.contents.selectedSubjects.map((s) => {
+        if ('subject_id' in s) {
+          s.id = s.subject_id;
+          delete s.subject_id;
+        }
+        return s;
+      });
+
+      road.contents.selectedSubjects = newss;
+
+      // convert selected subjects to more convenient format
+      road.contents.selectedSubjects = this.getSimpleSelectedSubjects(road.contents.selectedSubjects);
+      // sanitize progressOverrides
+      if (road.contents.progressOverrides === undefined) {
+        road.contents.progressOverrides = {};
+      }
     },
     getUserData: function () {
       this.gettingUserData = true;
@@ -382,11 +397,14 @@ export default {
         this.saveLocal();
       }
     },
-    saveRemote: function (roadID) {
+    saveRemote: function (roadID, override) {
+      if (override === undefined) {
+        override = false;
+      }
       this.currentlySaving = true;
       this.saveWarnings = [];
-      const assignKeys = { override: false, agent: this.getAgent() };
-      if (!roadID.indexOf('$') >= 0) {
+      const assignKeys = { override: override, agent: this.getAgent() };
+      if (!roadID.includes('$')) {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
@@ -404,7 +422,35 @@ export default {
             }
             if (response.data.result === 'conflict') {
               const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
+              this.data.$store.commit('setRoadProp', {
+                id: this.oldid,
+                prop: 'agent',
+                value: this.data.getAgent(),
+                ignoreSet: true
+              });
               this.data.$emit('conflict', conflictInfo);
+
+              return Promise.resolve({ oldid: this.oldid, state: 'same' });
+            } else if (response.data.result === 'update_local') {
+              alert('Server has more recent edits.  Overriding local road.  If this is unexpected, check that your computer clock is accurate.');
+
+              const updatedRoad = {
+                downloaded: moment().format(DATE_FORMAT),
+                changed: response.data.changed,
+                name: response.data.name,
+                agent: this.data.getAgent(),
+                contents: response.data.contents
+              };
+
+              this.data.sanitizeRoad(updatedRoad);
+
+              this.data.$store.commit('setRoad', {
+                id: this.oldid,
+                road: updatedRoad,
+                ignoreSet: false
+              });
+
+              return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'same' });
             } else {
               this.data.$store.commit('setRoadProp', {
                 id: this.oldid,
@@ -475,23 +521,24 @@ export default {
       return newRoadData;
     },
     updateRemote: function (roadID) {
-      const newRoad = { id: roadID, override: true, agent: this.getAgent() };
-      Object.assign(newRoad, this.roads[roadID]);
-      this.postSecure('/sync/sync_road/', newRoad)
-        .then(function (response) {
-          if (!response.data.success) {
-            this.saveWarnings.push({ error: response.data.error_msg || response.data.error, id: roadID, name: this.roads[roadID] });
-          }
-        });
+      this.saveRemote(roadID, true);
       this.$emit('resolve-conflict');
     },
 
     updateLocal: function (roadID) {
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false });
+      const remoteRoad = {
+        name: this.conflictInfo.other_name,
+        agent: this.conflictInfo.other_agent,
+        changed: this.conflictInfo.other_date,
+        contents: this.conflictInfo.other_contents,
+        downloaded: moment().format(DATE_FORMAT)
+      };
+      this.sanitizeRoad(remoteRoad);
+      this.$store.commit('setRoad', {
+        id: roadID,
+        road: remoteRoad,
+        ignoreSet: false
+      });
       this.$emit('resolve-conflict');
     },
 
