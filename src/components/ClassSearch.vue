@@ -42,8 +42,12 @@
               </tr>
             </v-hover>
           </template>
+          <template slot="footer">
+              <td :colspan="2">
+                <custom-class></custom-class>
+              </td>
+          </template>
         </v-data-table>
-		<custom-class></custom-class>
       </div>
     </div>
   </v-container>
