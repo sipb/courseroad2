@@ -25,12 +25,18 @@
                       <v-text-field label="Out-of-Class Hours" class="mx-3"></v-text-field>
                     </div>
                     <v-card-text class="px-0"><h3>Color</h3></v-card-text>
-                    <v-btn-toggle v-model="colorChosen" width="100%" group mandatory>
-                      <v-btn color="red"></v-btn>
-                      <v-btn color="blue"></v-btn>
-                      <v-btn color="green"></v-btn>
-                      <v-btn color="purple"></v-btn>
-                    </v-btn-toggle>
+                    <center>
+                      <v-btn-toggle v-model="colorChosen" mandatory>
+                        <v-btn class="px-4 mr-2" color="orange" fab></v-btn>
+                        <v-btn class="px-4 mx-2" color="red" fab></v-btn>
+                        <v-btn class="px-4 mx-2" color="pink" fab></v-btn>
+                        <v-btn class="px-4 mx-2" color="purple" fab></v-btn>
+                        <v-btn class="px-4 mx-2" color="blue" fab></v-btn>
+                        <v-btn class="px-4 mx-2" color="green" fab></v-btn>
+                        <v-btn class="px-4 mx-2" color="brown" fab></v-btn>
+                        <v-btn class="px-4 ml-2" color="grey" fab></v-btn>
+                      </v-btn-toggle>
+                    </center>
                   </div>
                   <v-card-actions>
                     <v-spacer />
