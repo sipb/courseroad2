@@ -43,9 +43,9 @@
             </v-hover>
           </template>
           <template slot="footer">
-              <td :colspan="2">
-                <custom-class></custom-class>
-              </td>
+            <td :colspan="2">
+              <custom-class />
+            </td>
           </template>
         </v-data-table>
       </div>
