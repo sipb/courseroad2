@@ -2,7 +2,7 @@
   <v-card>
     <center>
       <v-btn class="white--text" color="green" @click="viewDialog = true">
-        Create a Custom Activity				
+        Create a Custom Activity
       </v-btn>
     </center>
     <v-dialog v-model="viewDialog" max-width="600">
@@ -14,16 +14,18 @@
           <h2>Custom Activities</h2>
         </v-card-title>
         <v-select class="px-3" label="Edit an Existing Custom Activity" />
-        <v-form>
+        <v-form ref="form" lazy-validation>
           <div class="px-3">
-            <v-text-field label="Short Title" counter=8 required />
-            <v-text-field label="Full Title" required />
+            <v-text-field label="Short Title" counter="8" required :rules="[v => v.length <= 8 || 'Title must be less than 8 characters']" />
+            <v-text-field label="Full Title" required :rules="v => v || 'Input is Required'" />
+
             <v-card-text class="px-0"><h3>Units/Hours</h3></v-card-text>
             <div class="d-flex">
-              <v-text-field label="Units" class="mx-3" />
-              <v-text-field label="In-Class Hours" class="mx-3" />
-              <v-text-field label="Out-of-Class Hours" class="mx-3" />
+              <v-text-field label="Units" class="mx-3" type="number" />
+              <v-text-field label="In-Class Hours" class="mx-3" type="number" />
+              <v-text-field label="Out-of-Class Hours" class="mx-3" type="number" />
             </div>
+
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
             <center>
               <v-btn-toggle v-model="colorChosen" mandatory>
@@ -38,9 +40,9 @@
               </v-btn-toggle>
             </center>
           </div>
-          <v-card-actions>
+          <v-card-actions class="mt-2">
             <v-spacer />
-            <v-btn color="green" class="white--text">
+            <v-btn color="green" class="white--text" @click="validate">
               Add Class
             </v-btn>
           </v-card-actions>
@@ -58,6 +60,13 @@ export default {
       viewDialog: false,
       colorChosen: undefined
     };
+  },
+  methods: {
+    validate () {
+      if (this.$refs.form.validate()) {
+        // TODO Send to store results of form to create custom class
+      }
+    }
   }
 };
 </script>
