@@ -43,9 +43,9 @@ const conflictInfo = {
   this_date: '2019-06-18T01:00:32+00:00'
 };
 
-const storeCookies = stores.constructNewStore({cookiesAllowed: true});
-const storeNoCookies = stores.constructNewStore({cookiesAllowed: false});
-const storeBasic = stores.constructNewStore({
+const storeCookies = stores.newStoreGenerator({cookiesAllowed: true});
+const storeNoCookies = stores.newStoreGenerator({cookiesAllowed: false});
+const storeBasic = stores.newStoreGenerator({
   activeRoad: "45",
   cookiesAllowed: true,
   roads: {
@@ -62,7 +62,7 @@ const storeBasic = stores.constructNewStore({
     }
   }
 })
-const storeBlank = stores.constructBaseStore();
+const storeBlank = stores.baseStoreGenerator();
 
 describe('Auth', () => {
   afterEach(() => {
@@ -122,7 +122,7 @@ describe('Auth', () => {
     expect(wrapper2.vm.roads).toMatchObject(store2.state.roads);
   });
   it('displays the save button correctly', () => {
-    const wrapper1 = mount(Auth, { store: storeNoCookies, localVue });
+    const wrapper1 = mount(Auth, { store: storeNoCookies(), localVue });
     const saveIcon1 = wrapper1.find('#save-icon');
     expect(saveIcon1.classes('gray--text')).toBe(true);
     expect(saveIcon1.find("i").text()).toMatch("save");
@@ -130,7 +130,7 @@ describe('Auth', () => {
     expect(saveIcon1.classes('primary--text')).toBe(true);
     expect(saveIcon1.find("i").text()).toMatch("save");
 
-    const wrapper2 = mount(Auth, { store: storeCookies, localVue });
+    const wrapper2 = mount(Auth, { store: storeCookies(), localVue });
     const saveIcon2 = wrapper2.find('#save-icon');
     expect(saveIcon2.classes('primary--text')).toBe(true);
     expect(saveIcon2.find("i").text()).toMatch("save");
@@ -139,7 +139,7 @@ describe('Auth', () => {
     expect(saveIcon2.find("i").text()).toMatch("warning");
   });
   it('sets the correct tab IDs', () => {
-     const wrapper = shallowMount(Auth, { store: storeCookies, localVue, mocks: { $cookies } });
+     const wrapper = shallowMount(Auth, { store: storeCookies(), localVue, mocks: { $cookies } });
 
      // Initialize tab ID with no existing tab IDs
      wrapper.vm.setTabID();
@@ -192,10 +192,10 @@ describe('Auth', () => {
   it('sends the correct tab ID when saving a road', () => {
     $cookies.set('tabs', {'ids': [1, 2, 4, 8]});
     $cookies.set('accessInfo', fakeAuth);
-    const wrapper = shallowMount(Auth, { store: storeBlank, localVue , mocks: { $cookies }});
+    const wrapper = shallowMount(Auth, { store: storeBlank(), localVue , mocks: { $cookies }});
     wrapper.vm.saveRemote('$defaultroad$');
     const saveCall = axios.post.mock.calls[0];
     const saveParams = saveCall[1];
     expect(saveParams.agent).toEqual(expect.stringContaining('Tab 9'));
-  })
+  });
 })

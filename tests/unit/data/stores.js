@@ -9,6 +9,12 @@ Vue.use(Vuex);
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
 export default {
+  createStoreGenerator(storeConstructor, data) {
+    const storeGenerator = function() {
+      return storeConstructor(data);
+    }
+    return storeGenerator;
+  },
   constructBaseStore(data) {
     var state = cloneDeep(baseState);
     var storeObject = Object.assign({ state }, baseFunctions);
@@ -28,6 +34,12 @@ export default {
     var state = cloneDeep(baseState);
     var storeObject = Object.assign({ state }, baseFunctions);
     return new Vuex.Store(storeObject);
+  },
+  baseStoreGenerator(data) {
+    return this.createStoreGenerator(this.constructBaseStore, data);
+  },
+  newStoreGenerator(data) {
+    return this.createStoreGenerator(this.constructNewStore, data);
   }
 }
 
