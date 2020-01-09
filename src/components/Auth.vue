@@ -234,7 +234,6 @@ export default {
       const _this = this;
       this.gettingUserData = true;
       return this.getSecure('/sync/roads/?id=' + roadID).then(function (roadData) {
-        console.log(roadData.data.file.contents);
         if (roadData.status === 200 && roadData.data.success) {
           roadData.data.file.downloaded = moment().format(DATE_FORMAT);
           roadData.data.file.changed = moment().format(DATE_FORMAT);
@@ -256,8 +255,6 @@ export default {
         if (roadData.data.file.contents.progressOverrides === undefined) {
           roadData.data.file.contents.progressOverrides = {};
         }
-        console.log("im gonna set a road");
-        console.log(roadData.data.file);
         _this.$store.commit('setRoad', {
           id: roadID,
           road: roadData.data.file,
@@ -388,7 +385,7 @@ export default {
       this.currentlySaving = true;
       this.saveWarnings = [];
       const assignKeys = { override: false, agent: this.getAgent() };
-      if (!roadID.indexOf('$') >= 0) {
+      if (!(roadID.indexOf('$') >= 0)) {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.roads[roadID].contents.selectedSubjects.flat();

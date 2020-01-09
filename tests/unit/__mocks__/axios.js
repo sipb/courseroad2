@@ -4,8 +4,6 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 import users from './../data/users';
 import roads from './../data/roads';
 
-console.log(roads);
-
 function find(documents, values) {
   return documents.filter(function(document) {
     for(var attribute in values) {
@@ -68,7 +66,7 @@ function getUserFromHeadersPromise(headers, resolve, reject) {
 
 module.exports = {
   get: jest.fn(function(url, headers) {
-    console.log(url);
+    console.log("get " + url);
     const urlParts = url.split('/');
     const queryParts = urlParts.slice(3);
     const query = queryParts.slice(0, queryParts.length-1).join('/');
@@ -119,7 +117,7 @@ module.exports = {
           });
         } else {
           var roadRequested = userRoads[parameters.id];
-          console.log(roadRequested);
+          // console.log(roadRequested);
           resolve({
             data: {
               file: roadRequested,
@@ -136,6 +134,7 @@ module.exports = {
     });
   }),
   post: jest.fn(function(url, params, headers) {
+    console.log("post " + url);
     const urlParts = url.split('/');
     const query = urlParts.slice(3).join('/');
     const user = getUserFromHeaders(headers.headers);
@@ -148,17 +147,38 @@ module.exports = {
       if(query === 'sync/sync_road/') {
         const username = user.username;
         const roadID = params.id;
-        delete params.id;
         delete params.override;
-        Object.assign(roads[username][roadID], params);
-        resolve({
-          status: 200,
-          data: {
-            success: true,
-            result: 'update_remote',
-            changed: moment().format(DATE_FORMAT)
-          }
-        })
+        if (roadID !== undefined) {
+          delete params.id;
+          //so it's syncing road 45, which doesn't exist on the server
+          //probably just a test suite problem, need to sync everything up
+          //with the existing roads in the database
+          //probably change the store creator
+          //also if you sync one that doesn't exist yet shouldn't it just create it
+          Object.assign(roads[username][roadID], params);
+          console.log("done assigning");
+          resolve({
+            status: 200,
+            data: {
+              success: true,
+              result: 'update_remote',
+              changed: moment().format(DATE_FORMAT)
+            }
+          });
+        } else {
+          const newID = Math.max(...Object.keys(roads[username]).map((key) => parseInt(key)),0) + 1;
+          roads[username][newID] = params;
+          resolve({
+            status: 200,
+            data: {
+              success: true,
+              result: 'update_remote',
+              changed: moment().format(DATE_FORMAT),
+              id: newID
+            }
+          })
+        }
+
       } else {
         reject("Unknown function");
       }
