@@ -26,6 +26,11 @@
               <v-text-field label="Out-of-Class Hours" class="mx-3" type="number" />
             </div>
 
+            <v-card-text class="px-0"><h3>Schedule</h3></v-card-text>
+            <center>
+                <v-btn>Add Schedule</v-btn>
+            </center>
+            
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
             <center>
               <v-btn-toggle v-model="colorChosen" mandatory>
