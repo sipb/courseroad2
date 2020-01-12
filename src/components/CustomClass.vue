@@ -30,18 +30,18 @@
             <center>
                 <v-btn>Add Schedule</v-btn>
             </center>
-            
+
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
             <center>
               <v-btn-toggle v-model="colorChosen" mandatory>
-                <v-btn class="px-4 mr-2" color="orange" fab />
-                <v-btn class="px-4 mx-2" color="red" fab />
-                <v-btn class="px-4 mx-2" color="pink" fab />
-                <v-btn class="px-4 mx-2" color="purple" fab />
-                <v-btn class="px-4 mx-2" color="blue" fab />
-                <v-btn class="px-4 mx-2" color="green" fab />
-                <v-btn class="px-4 mx-2" color="brown" fab />
-                <v-btn class="px-4 ml-2" color="grey" fab />
+                <v-btn class="px-4 mr-2" color="#B55757" :value="'#B55757'" fab />
+                <v-btn class="px-4 mx-2" color="#DE4343" :value="'#DE4343'" fab />
+                <v-btn class="px-4 mx-2" color="#DE9043" :value="'#DE9043'" fab />
+                <v-btn class="px-4 mx-2" color="#DE43DE" :value="'#DE43DE'" fab />
+                <v-btn class="px-4 mx-2" color="#5786B5" :value="'#5786B5'" fab />
+                <v-btn class="px-4 mx-2" color="#8657B5" :value="'#8657B5'" fab />
+                <v-btn class="px-4 mx-2" color="#16B516" :value="'#16B516'" fab />
+                <v-btn class="px-4 ml-2" color="#737373" :value="'#737373'" fab />
               </v-btn-toggle>
             </center>
           </div>
