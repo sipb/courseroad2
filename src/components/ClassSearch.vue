@@ -93,8 +93,8 @@ var instructorFilter = new ArrayFilter('Instructor', 'Prof', RegexFilter, ['', '
 export default {
   name: 'ClassSearch',
   components: {
-	'filter-set': FilterSet,
-	'custom-class': CustomClass
+    'filter-set': FilterSet,
+    'custom-class': CustomClass
   },
   props: {
     searchInput: {
