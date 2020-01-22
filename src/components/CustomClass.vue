@@ -16,19 +16,19 @@
         <v-select class="px-3" label="Edit an Existing Custom Activity" />
         <v-form ref="form" lazy-validation>
           <div class="px-3">
-            <v-text-field v-model="form.shortTitle" label="Short Title" counter="8" required :rules="formRules.shortTitleRule" />
-            <v-text-field v-model="form.fullTitle" label="Full Title" required :rules="formRules.fullTitleRule" />
+            <v-text-field v-model="form.values.shortTitle" label="Short Title" counter="8" required :rules="form.rules.shortTitleRule" />
+            <v-text-field v-model="form.values.fullTitle" label="Full Title" required :rules="form.rules.fullTitleRule" />
 
             <v-card-text class="px-0"><h3>Units/Hours</h3></v-card-text>
             <div class="d-flex">
-              <v-text-field v-model="form.units" label="Units" class="mx-3" type="number" :rules="formRules.numberFormRule"/>
-              <v-text-field v-model="form.inClassHours" label="In-Class Hours" class="mx-3" type="number" :rules="formRules.numberFormRule" />
-              <v-text-field v-model="form.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" :rules="formRules.numberFormRule" />
+              <v-text-field v-model="form.values.units" label="Units" class="mx-3" type="number" :rules="form.rules.numberFormRule"/>
+              <v-text-field v-model="form.values.inClassHours" label="In-Class Hours" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
+              <v-text-field v-model="form.values.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
             </div>
 
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
             <center>
-              <v-btn-toggle v-model="form.colorChosen" mandatory>
+              <v-btn-toggle v-model="form.values.colorChosen" mandatory>
                 <v-btn class="px-4 mr-2" color="#B55757" :value="'#B55757'" fab />
                 <v-btn class="px-4 mx-2" color="#DE4343" :value="'#DE4343'" fab />
                 <v-btn class="px-4 mx-2" color="#DE9043" :value="'#DE9043'" fab />
@@ -59,18 +59,21 @@ export default {
     return {
       viewDialog: false,
       form: {
-        shortTitle: undefined,
-        fullTitle: undefined,
-        units: undefined,
-        inClassHours: undefined,
-        outOfClassHours: undefined,
-        colorChosen: undefined
-      },
-      formRules: {
-        shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters'],
-        fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required'],
-        numberFormRule: [v => this.numberFormRule(v) || 'Input must not be negative.']
+        values: {
+          shortTitle: undefined,
+          fullTitle: undefined,
+          units: undefined,
+          inClassHours: undefined,
+          outOfClassHours: undefined,
+          colorChosen: undefined
+        },
+        rules: {
+          shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters'],
+          fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required'],
+          numberFormRule: [v => this.numberFormRule(v) || 'Input must not be negative.']
+        }
       }
+
     };
   },
   methods: {
