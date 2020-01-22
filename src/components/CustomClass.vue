@@ -16,19 +16,19 @@
         <v-select class="px-3" label="Edit an Existing Custom Activity" />
         <v-form ref="form" lazy-validation>
           <div class="px-3">
-            <v-text-field label="Short Title" counter="8" required :rules="[v => v != null && v.length <= 8 || 'Title must be less than 8 characters']" />
-            <v-text-field label="Full Title" required :rules="[v => v != null && v.length > 0 || 'Input is Required']" />
+            <v-text-field v-model="form.shortTitle" label="Short Title" counter="8" required :rules="[v => v != null && v.length <= 8 || 'Title must be less than 8 characters']" />
+            <v-text-field v-model="form.fullTitle" label="Full Title" required :rules="[v => v != null && v.length > 0 || 'Input is Required']" />
 
             <v-card-text class="px-0"><h3>Units/Hours</h3></v-card-text>
             <div class="d-flex">
-              <v-text-field label="Units" class="mx-3" type="number" />
-              <v-text-field label="In-Class Hours" class="mx-3" type="number" />
-              <v-text-field label="Out-of-Class Hours" class="mx-3" type="number" />
+              <v-text-field v-model="form.units" label="Units" class="mx-3" type="number" />
+              <v-text-field v-model="form.inClassHours" label="In-Class Hours" class="mx-3" type="number" />
+              <v-text-field v-model="form.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" />
             </div>
 
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
             <center>
-              <v-btn-toggle v-model="colorChosen" mandatory>
+              <v-btn-toggle v-model="form.colorChosen" mandatory>
                 <v-btn class="px-4 mr-2" color="#B55757" :value="'#B55757'" fab />
                 <v-btn class="px-4 mx-2" color="#DE4343" :value="'#DE4343'" fab />
                 <v-btn class="px-4 mx-2" color="#DE9043" :value="'#DE9043'" fab />
@@ -58,7 +58,14 @@ export default {
   data: function () {
     return {
       viewDialog: false,
-      colorChosen: undefined
+      form: {
+        shortTitle: undefined,
+        fullTitle: undefined,
+        units: undefined,
+        inClassHours: undefined,
+        outOfClassHours: undefined,
+        colorChosen: undefined
+      }
     };
   },
   methods: {
