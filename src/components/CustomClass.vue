@@ -16,14 +16,14 @@
         <v-select class="px-3" label="Edit an Existing Custom Activity" />
         <v-form ref="form" lazy-validation>
           <div class="px-3">
-            <v-text-field v-model="form.shortTitle" label="Short Title" counter="8" required :rules="[v => v != null && v.length <= 8 || 'Title must be less than 8 characters']" />
-            <v-text-field v-model="form.fullTitle" label="Full Title" required :rules="[v => v != null && v.length > 0 || 'Input is Required']" />
+            <v-text-field v-model="form.shortTitle" label="Short Title" counter="8" required :rules="formRules.shortTitleRule" />
+            <v-text-field v-model="form.fullTitle" label="Full Title" required :rules="formRules.fullTitleRule" />
 
             <v-card-text class="px-0"><h3>Units/Hours</h3></v-card-text>
             <div class="d-flex">
-              <v-text-field v-model="form.units" label="Units" class="mx-3" type="number" />
-              <v-text-field v-model="form.inClassHours" label="In-Class Hours" class="mx-3" type="number" />
-              <v-text-field v-model="form.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" />
+              <v-text-field v-model="form.units" label="Units" class="mx-3" type="number" :rules="formRules.numberFormRule"/>
+              <v-text-field v-model="form.inClassHours" label="In-Class Hours" class="mx-3" type="number" :rules="formRules.numberFormRule" />
+              <v-text-field v-model="form.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" :rules="formRules.numberFormRule" />
             </div>
 
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
@@ -65,6 +65,11 @@ export default {
         inClassHours: undefined,
         outOfClassHours: undefined,
         colorChosen: undefined
+      },
+      formRules: {
+        shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters'],
+        fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required'],
+        numberFormRule: [v => this.numberFormRule(v) || 'Input must not be negative.']
       }
     };
   },
@@ -72,6 +77,13 @@ export default {
     validate () {
       if (this.$refs.form.validate()) {
         // TODO Send to store results of form to create custom class
+      }
+    },
+    numberFormRule (value) {
+      if (value !== undefined && value.length > 0) {
+        return value.charAt(0) !== '-';
+      } else {
+        return true;
       }
     }
   }
