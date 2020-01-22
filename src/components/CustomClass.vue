@@ -16,8 +16,8 @@
         <v-select class="px-3" label="Edit an Existing Custom Activity" />
         <v-form ref="form" lazy-validation>
           <div class="px-3">
-            <v-text-field label="Short Title" counter="8" required :rules="[v => v.length <= 8 || 'Title must be less than 8 characters']" />
-            <v-text-field label="Full Title" required :rules="v => v || 'Input is Required'" />
+            <v-text-field label="Short Title" counter="8" required :rules="[v => v != null && v.length <= 8 || 'Title must be less than 8 characters']" />
+            <v-text-field label="Full Title" required :rules="[v => v != null && v.length > 0 || 'Input is Required']" />
 
             <v-card-text class="px-0"><h3>Units/Hours</h3></v-card-text>
             <div class="d-flex">
