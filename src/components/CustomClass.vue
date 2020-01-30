@@ -13,7 +13,7 @@
         <v-card-title>
           <h2>Custom Activities</h2>
         </v-card-title>
-        <v-select class="px-3" label="Edit an Existing Custom Activity" />
+        <v-select v-model="customClasses" class="px-3" label="Edit an Existing Custom Activity" />
         <v-form ref="form" lazy-validation>
           <div class="px-3">
             <v-text-field v-model="form.values.shortTitle" label="Short Title" counter="8" required :rules="form.rules.shortTitleRule" />
@@ -68,7 +68,7 @@ export default {
           colorChosen: undefined
         },
         rules: {
-          shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters'],
+          shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters', v => v !== undefined && v.length > 0 || 'Input is Required'],
           fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required'],
           numberFormRule: [v => this.numberFormRule(v) || 'Input must not be negative.']
         }
@@ -77,17 +77,26 @@ export default {
     };
   },
   methods: {
-    validate () {
+    addCustomClass: function () {
+      
+    },
+    validate: function () {
       if (this.$refs.form.validate()) {
         // TODO Send to store results of form to create custom class
       }
     },
-    numberFormRule (value) {
+    numberFormRule: function (value) {
+      // TODO Fix number Form rules. Multiple '---' give no error and a single/multiple '.' give none as well.
       if (value !== undefined && value.length > 0) {
         return value.charAt(0) !== '-';
       } else {
         return true;
       }
+    }
+  },
+  computed: {
+    customClasses: function () {
+      return this.$store.state.roads[this.$store.state.activeRoad].contents.customClasses;
     }
   }
 };
