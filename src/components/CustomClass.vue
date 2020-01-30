@@ -78,11 +78,20 @@ export default {
   },
   methods: {
     addCustomClass: function () {
-      
+      const newClass = {
+        id: this.form.values.shortTitle,
+        title: this.form.values.fullTitle,
+        units: this.form.values.units,
+        in_class_hours: this.form.values.inClassHours,
+        out_of_class_hours: this.form.values.outOfClassHours,
+        custom_color: this.form.values.colorChosen
+      };
+      this.$store.commit('addCustomClass', newClass);
     },
     validate: function () {
       if (this.$refs.form.validate()) {
         // TODO Send to store results of form to create custom class
+        this.addCustomClass();
       }
     },
     numberFormRule: function (value) {
