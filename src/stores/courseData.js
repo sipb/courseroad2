@@ -29,7 +29,8 @@ const store = new Vuex.Store({
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: Array.from(Array(16), () => []),
-          progressOverrides: {}
+          progressOverrides: {},
+          customClasses: []
         }
       }
     },
@@ -53,6 +54,9 @@ const store = new Vuex.Store({
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    addCustomClass (state, newClass) {
+      state.roads[state.activeRoad].contents.customClasses.push(newClass);
     },
     addFromCard (state, classItem) {
       state.addingFromCard = true;
