@@ -21,9 +21,9 @@
 
             <v-card-text class="px-0"><h3>Units/Hours</h3></v-card-text>
             <div class="d-flex">
-              <v-text-field v-model="form.values.units" label="Units" class="mx-3" type="number" :rules="form.rules.numberFormRule"/>
-              <v-text-field v-model="form.values.inClassHours" label="In-Class Hours" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
-              <v-text-field v-model="form.values.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
+              <v-text-field v-model="form.values.units" label="Units" class="mx-3" type="number" />
+              <v-text-field v-model="form.values.inClassHours" label="In-Class Hours" class="mx-3" type="number" />
+              <v-text-field v-model="form.values.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" />
             </div>
 
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
@@ -69,8 +69,7 @@ export default {
         },
         rules: {
           shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters', v => v !== undefined && v.length > 0 || 'Input is Required'],
-          fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required'],
-          numberFormRule: [v => this.numberFormRule(v) || 'Invalid Input.']
+          fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required']
         }
       }
 
@@ -98,11 +97,6 @@ export default {
         // TODO Send to store results of form to create custom class
         this.addCustomClass();
       }
-    },
-    numberFormRule: function (value) {
-      // TODO Fix number Form rules. Multiple '---' give no error and a single/multiple '.' give none as well.
-      const regex = RegExp('^$|^-?\\d*.?\\d+$');
-      return regex.test(value);
     }
   }
 };
