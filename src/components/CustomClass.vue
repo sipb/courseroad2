@@ -76,6 +76,11 @@ export default {
 
     };
   },
+  computed: {
+    customClasses: function () {
+      return this.$store.state.roads[this.$store.state.activeRoad].contents.customClasses;
+    }
+  },
   methods: {
     addCustomClass: function () {
       const newClass = {
@@ -96,13 +101,8 @@ export default {
     },
     numberFormRule: function (value) {
       // TODO Fix number Form rules. Multiple '---' give no error and a single/multiple '.' give none as well.
-      const regex = RegExp('^-?\\d*.?\\d+$');
+      const regex = RegExp('^$|^-?\\d*.?\\d+$');
       return regex.test(value);
-    }
-  },
-  computed: {
-    customClasses: function () {
-      return this.$store.state.roads[this.$store.state.activeRoad].contents.customClasses;
     }
   }
 };
