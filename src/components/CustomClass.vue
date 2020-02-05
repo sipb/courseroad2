@@ -69,7 +69,8 @@ export default {
         },
         rules: {
           shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters', v => v !== undefined && v.length > 0 || 'Input is Required'],
-          fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required']
+          fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required'],
+          numberFormRule: [v => this.numberFormRule(v) || 'Negative Number is Invalid']
         }
       }
 
@@ -97,6 +98,10 @@ export default {
         // TODO Send to store results of form to create custom class
         this.addCustomClass();
       }
+    },
+    numberFormRule: function (value) {
+      const regex = new RegExp('(?!-).*');
+      return regex.test(value);
     }
   }
 };
