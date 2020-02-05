@@ -13,7 +13,7 @@
         <v-card-title>
           <h2>Custom Activities</h2>
         </v-card-title>
-        <v-select v-model="customClasses" class="px-3" label="Edit an Existing Custom Activity" />
+        <v-select class="px-3" label="Edit an Existing Custom Activity" :items="customClasses" return-object />
         <v-form ref="form" lazy-validation>
           <div class="px-3">
             <v-text-field v-model="form.values.shortTitle" label="Short Title" counter="8" required :rules="form.rules.shortTitleRule" />
@@ -83,12 +83,12 @@ export default {
   methods: {
     addCustomClass: function () {
       const newClass = {
-        id: this.form.values.shortTitle,
-        title: this.form.values.fullTitle,
-        units: this.form.values.units,
-        in_class_hours: this.form.values.inClassHours,
-        out_of_class_hours: this.form.values.outOfClassHours,
-        custom_color: this.form.values.colorChosen
+        'id': this.form.values.shortTitle,
+        'title': this.form.values.fullTitle,
+        'units': this.form.values.units,
+        'in_class_hours': this.form.values.inClassHours,
+        'out_of_class_hours': this.form.values.outOfClassHours,
+        'custom_color': this.form.values.colorChosen
       };
       this.$store.commit('addCustomClass', newClass);
     },
