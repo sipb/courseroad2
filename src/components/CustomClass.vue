@@ -70,7 +70,7 @@ export default {
         rules: {
           shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters', v => v !== undefined && v.length > 0 || 'Input is Required'],
           fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required'],
-          numberFormRule: [v => this.numberFormRule(v) || 'Input must not be negative.']
+          numberFormRule: [v => this.numberFormRule(v) || 'Invalid Input.']
         }
       }
 
@@ -96,11 +96,8 @@ export default {
     },
     numberFormRule: function (value) {
       // TODO Fix number Form rules. Multiple '---' give no error and a single/multiple '.' give none as well.
-      if (value !== undefined && value.length > 0) {
-        return value.charAt(0) !== '-';
-      } else {
-        return true;
-      }
+      const regex = RegExp('^-?\\d*.?\\d+$');
+      return regex.test(value);
     }
   },
   computed: {
