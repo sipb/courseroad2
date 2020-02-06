@@ -291,7 +291,7 @@ export default {
       };
     },
     semesterName: function () {
-      const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Fifth year'];
+      const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Fifth Year'];
       if (this.index === 0) {
         return '';
       } else {
