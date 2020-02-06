@@ -194,7 +194,9 @@ export default {
     },
     logoutUser: function (event) {
       this.$cookies.remove('accessInfo');
-      this.$cookies.set('hasLoggedIn', false);
+      if (this.cookiesAllowed) {
+        this.$cookies.set('hasLoggedIn', false);
+      }
       localStorage.clear();
       this.loggedIn = false;
       this.accessInfo = undefined;
