@@ -353,7 +353,7 @@ export default {
             if (onereq.indexOf("'") >= 0) {
               parsedReq.reqs.push({ subject_id: onereq.replace(/'/g, ''), title: '', fulfilled: false });
             } else {
-              const subRequirement = getClassInfo(onereq);
+              const subRequirement = Object.assign({}, getClassInfo(onereq));
               if (_this.firstAppearance >= -1) {
                 const allSemesterSubjects = _this.$store.state.roads[_this.$store.state.activeRoad].contents.selectedSubjects;
                 const allPreviousSubjects = _this.flatten(allSemesterSubjects.slice(0, _this.firstAppearance));
@@ -361,7 +361,7 @@ export default {
               } else {
                 subRequirement.fulfilled = true;
               }
-              parsedReq.reqs.push(getClassInfo(onereq));
+              parsedReq.reqs.push(subRequirement);
             }
           } else {
             parsedReq.reqs.push(parseReqs(onereq));
