@@ -123,9 +123,12 @@
       <p class="px-4">
         <ul style="display: inline-block;">
           <li>Nate Foss (npfoss)</li>
+          <li>Alice Nguyen (mwnguyen)</li>
+          <li>Miriam Rittenberg (mrittenb)</li>
+          <li>Timmy Xiao (mitimmy)</li>
+          <li>Maximo Machado (maximo)</li>
           <li>Georgia Shay (gshay)</li>
-          <li>Michael Nguyen (mwnguyen)</li>
-          <li>Sophie Mori (ksmori)</li>
+          <li>Amani Toussaint (amanit)</li>
         </ul>
       </p>
       <h3 class="px-4">
@@ -133,7 +136,8 @@
       </h3>
       <p class="px-4">
         <ul style="display: inline-block;">
-          <li>Danny Ben-David</li>
+          <li>Sophie Mori (ksmori)</li>
+          <li>Danny Ben-David (dannybd)</li>
         </ul>
       </p>
       <p class="px-4">
