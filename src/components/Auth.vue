@@ -190,9 +190,15 @@ export default {
   methods: {
     loginUser: function (event) {
       window.location.href = `${process.env.FIREROAD_URL}/login/?redirect=${process.env.APP_URL}`;
+      if (this.cookiesAllowed) {
+        this.$cookies.set('hasLoggedIn', true);
+      }
     },
     logoutUser: function (event) {
       this.$cookies.remove('accessInfo');
+      if (this.cookiesAllowed) {
+        this.$cookies.set('hasLoggedIn', false);
+      }
       localStorage.clear();
       this.loggedIn = false;
       this.accessInfo = undefined;
@@ -379,6 +385,8 @@ export default {
         const code = queryObject['code'];
         window.history.pushState('CourseRoad Home', 'CourseRoad Home', './#' + this.activeRoad);
         this.getAuthorizationToken(code);
+      } else if (this.$cookies.get('hasLoggedIn') === 'true' && !this.loggedIn) {
+        this.loginUser();
       }
     },
     save: function (roadID) {
