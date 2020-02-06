@@ -41,7 +41,8 @@
         "Vuex": "readonly",
         "Vuetify": "readonly",
         "VueRouter": "readonly",
-        "VueCookies": "readonly"
+        "VueCookies": "readonly",
+        "BrowserSupportPlugin": "readonly"
       }
     }
   ]

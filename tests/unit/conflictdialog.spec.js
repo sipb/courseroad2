@@ -2,6 +2,7 @@ import moment from 'moment';
 import ConflictDialog from '../../src/components/ConflictDialog.vue';
 
 Vue.use(Vuetify);
+Vue.use(BrowserSupportPlugin);
 const localVue = createLocalVue();
 localVue.use(Vuex);
 

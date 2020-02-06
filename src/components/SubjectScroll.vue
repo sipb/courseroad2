@@ -23,7 +23,12 @@ import colorMixin from './../mixins/colorMixin.js';
 export default {
   name: 'SubjectScroll',
   mixins: [colorMixin],
-  props: ['subjects'],
+  props: {
+    subjects: {
+      type: Array,
+      required: true
+    }
+  },
   methods: {
     shouldLighten: function (subject) {
       if (subject.fulfilled === true) {

@@ -8,12 +8,13 @@
     <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;">
       <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
-          <span style="width: 6em; display: inline-block;">
+          <span style="width: 12em; display: inline-block;">
             <b>
               <v-hover>
                 <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
+                  {{ semesterName }}
                   {{ semesterType }}
-                  {{ semesterYear }}
+                  <span v-if="index>0">{{ "'" + semesterYear.toString().substring(2) }}</span>
                 </span>
               </v-hover>
             </b>
@@ -85,7 +86,28 @@ export default {
     'class': Class
   },
   mixins: [colorMixin, schedule, reqFulfillment],
-  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen'],
+  props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
+    semesterSubjects: {
+      type: Array,
+      required: true
+    },
+    index: {
+      type: Number,
+      required: true
+    },
+    roadID: {
+      type: String,
+      required: true
+    },
+    isOpen: {
+      type: Boolean,
+      required: true
+    }
+  },
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -154,6 +176,9 @@ export default {
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
 
+          // WARNING: be careful with injecting info from the subject like this
+          //  -- if we ever take user input, it could lead to XSS attacks from custom classes
+          //  (but right now we only ever insert info from FireRoad subjects)
           if (this.noLongerOffered(subj)) {
             const lastSemester = subj.source_semester.split('-');
             subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ').');
@@ -289,6 +314,15 @@ export default {
         totalUnits: totalUnits,
         expectedHours: expectedHours
       };
+    },
+    semesterName: function () {
+      const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Fifth Year'];
+      if (this.index === 0) {
+        return '';
+      } else {
+        const yearIndex = Math.floor((this.index - 1) / 3);
+        return yearNames[yearIndex];
+      }
     },
     semesterYear: function () {
       return this.index === 0
