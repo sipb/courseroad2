@@ -14,7 +14,7 @@
                 <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
                   {{ semesterName }}
                   {{ semesterType }}
-                  {{ semesterYear }}
+                  <span v-if="index>0">{{ "'" + semesterYear.toString().substring(2) }}</span>
                 </span>
               </v-hover>
             </b>
@@ -291,12 +291,12 @@ export default {
       };
     },
     semesterName: function () {
-      const yearNames = ['1st', '2nd', '3rd', '4th', '5th'];
+      const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Fifth year'];
       if (this.index === 0) {
         return '';
       } else {
         const yearIndex = Math.floor((this.index - 1) / 3);
-        return yearNames[yearIndex] + ' Year';
+        return yearNames[yearIndex];
       }
     },
     semesterYear: function () {
