@@ -413,18 +413,92 @@ export default {
       }
       return false;
     },
+    convertReqToID: function (category) {
+      // takes in a string like "Comparative Media Studies" or "philosophy" and outputs something that matches
+      // a class ID like "CMS" or /24\.[0-8]/
+      if (category.indexOf('"') === 0) {
+        category = category.slice(1);
+      }
+      if (category.indexOf('"') === category.length - 1) {
+        category = category.slice(0, -1);
+      }
+      let idCategory = '';
+      if (category === 'Comparative' || category === 'CMS' || category === 'Comparative Media Studies') {
+        idCategory = 'CMS';
+      } else if (category === 'Literature') {
+        idCategory = '21L';
+      } else if (category === 'film' || category === 'Film') {
+        idCategory = /film/i;
+      } else if (category === 'philosophy') {
+        // check if it's 900 up or not
+        idCategory = /24\.[0-8]/;
+      } else if (category === 'Anthropology') {
+        idCategory = '21A';
+      } else if (category === 'Brain' || category === 'Cognitive Sciences') {
+        idCategory = /^9./;
+      } else if (category === 'History') {
+        idCategory = '21H';
+      } else {
+        idCategory = 'something else';
+        // this should probably create a message asking us to add it
+      }
+      return idCategory;
+    },
+    checkForReq: function (allIDs, idCategory, numRequired) {
+      // checks whether there are numRequired matches for idCategory in allIDs
+      let satisfied = 'false';
+      let numMatches = 0;
+      for (let i = 0; i < allIDs.length; i++) {
+        if (allIDs[i].search(idCategory) >= 0) {
+          numMatches += 1;
+        }
+      }
+      if (numMatches >= numRequired) {
+        satisfied = 'true';
+      }
+      return satisfied;
+    },
     reqFulfilled: function (reqString, subjects) {
       const allIDs = subjects.map((s) => s.id);
       reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',');
       const splitReq = reqString.split(/(,|\(|\)|\/)/);
       const _this = this;
+      let skipNumber;
       for (let i = 0; i < splitReq.length; i++) {
-        if (splitReq[i].indexOf('"') >= 0) {
+        if (i === skipNumber) {
+        }
+        if (splitReq[i].indexOf('"') >= 0 && i !== skipNumber) {
           // Set strings (like "permission of instructor") automatically to false
           // If required as an alternative to other prereqs, will not affect fulfillment
           // If the string is a required prereq, it must be manually dismissed
-          splitReq[i] = 'false';
-        } else if ('()/, '.indexOf(splitReq[i]) < 0) {
+          // If the string is "One subject in X", check for any subject with X in their ID
+          // TODO: this doesn't treat 'Two subjects in Literature / History' or 'Film / Music' correctly
+          const req = splitReq[i];
+          let idCategory;
+          let numRequired;
+          // the 'ne subject' is on purpose because some say 'One' and some say 'one'
+          if (req.indexOf('ne subject in') >= 0 || req.indexOf('wo subjects in') >= 0) {
+            if (req.indexOf('ne subject in') >= 0) {
+              numRequired = 1;
+            } else {
+              numRequired = 2;
+            }
+            if (splitReq.length > i + 2 && splitReq[i + 1] === '/' && (splitReq[i + 2] === '"Comparative Media Studies"' || splitReq[i + 2] === '"History"' || splitReq[i + 2] === '"Cognitive Sciences"')) {
+              skipNumber = i + 2;
+              idCategory = this.convertReqToID(splitReq[i + 2]);
+              splitReq[i + 2] = this.checkForReq(allIDs, idCategory, numRequired);
+            }
+            const category = req.split(' ')[3];
+            idCategory = this.convertReqToID(category);
+            splitReq[i] = this.checkForReq(allIDs, idCategory, numRequired);
+            if (idCategory.toString() === '/film/i') {
+              const allTitles = subjects.map((s) => s.title);
+              splitReq[i] = this.checkForReq(allTitles, idCategory, numRequired);
+            }
+          } else {
+            splitReq[i] = 'false';
+          }
+        } else if ('()/, '.indexOf(splitReq[i]) < 0 && i !== skipNumber) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
           } else {
