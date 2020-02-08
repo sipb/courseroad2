@@ -20,7 +20,15 @@
           <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
         </div>
         <span v-else>
-          <span v-if="'title' in req">{{ req.title }}</span>
+          <v-hover>
+            <span
+              v-if="'title' in req"
+              slot-scope="{ hover }"
+              :class="{ 'elevation-3': hover }"
+              style="cursor: grab">
+              {{ req.title }}
+            </span>
+          </v-hover>
         </span>
         <span v-if="!req['plain-string']">
           <span v-if="!('title' in req) && 'req' in req">
