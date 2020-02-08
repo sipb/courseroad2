@@ -71,22 +71,5 @@ export default {
       // eslint-disable-next-line no-eval
       return eval(reqExpression);
     },
-    reqFulfilled: function (reqString, subjects) {
-      const allIDs = subjects.map((s) => s.id);
-      const _this = this;
-      if (reqString.indexOf('\'\'') >= 0) {
-        // Set strings (like "permission of instructor") automatically to false
-        // If required as an alternative to other prereqs, will not affect fulfillment
-        // If the string is a required prereq, it must be manually dismissed
-        return false;
-      } else {
-        if (allIDs.indexOf(reqString) >= 0) {
-          return true;
-        } else {
-          const anyClassSatisfies = subjects.some((s) => _this.classSatisfies(reqString, s.id, allIDs));
-          return anyClassSatisfies;
-        }
-      }
-    }
   }
 };

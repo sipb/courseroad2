@@ -357,7 +357,7 @@ export default {
                   this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects
                     .slice(0, this.firstAppearance)
                 );
-                subRequirement.fulfilled = this.reqFulfilled(onereq, allPreviousSubjects);
+                subRequirement.fulfilled = this.reqsFulfilled(onereq, allPreviousSubjects);
               } else {
                 subRequirement.fulfilled = true;
               }
