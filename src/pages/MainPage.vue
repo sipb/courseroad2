@@ -62,6 +62,7 @@
           @click.native="clickSearch($event); $event.stopPropagation();"
           @input="typeSearch"
           @keydown.esc="searchOpen = false"
+          @keyup.enter="$refs.searchMenu.openFirstClass"
         />
       </v-layout>
     </v-toolbar>
