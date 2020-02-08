@@ -12,7 +12,7 @@
             <b>
               <v-hover>
                 <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
-                  {{ semesterName }}
+                  {{ semesterYearName }}
                   {{ semesterType }}
                   <span v-if="index>0">{{ "'" + semesterYear.toString().substring(2) }}</span>
                 </span>
@@ -314,7 +314,7 @@ export default {
         expectedHours: expectedHours
       };
     },
-    semesterName: function () {
+    semesterYearName: function () {
       const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Fifth Year'];
       if (this.index === 0) {
         return '';
