@@ -28,6 +28,7 @@
             label="Road name"
             clearable
             autofocus
+            @keyup.enter="importRoad"
           />
 
           <v-spacer />
