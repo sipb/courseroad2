@@ -70,6 +70,6 @@ export default {
       // i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
       // eslint-disable-next-line no-eval
       return eval(reqExpression);
-    },
+    }
   }
 };
