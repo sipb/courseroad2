@@ -40,7 +40,20 @@
         </v-icon>
       </template>
       <template slot="label" slot-scope="{ item, leaf}">
+        <v-hover v-if="leaf">
+          <requirement
+            slot-scope="{ hover }"
+            :class="{ 'elevation-3': hover }"
+            draggable="true"
+            style="cursor: grab; margin: 4px;"
+            :req="item"
+            :is-leaf="leaf"
+            @click.native="clickRequirement(item)"
+            @click-info="reqInfo($event, item)"
+          />
+        </v-hover>
         <requirement
+          v-else
           :req="item"
           :is-leaf="leaf"
           @click.native="clickRequirement(item)"
