@@ -33,9 +33,9 @@
       </div>
     </div>
     <subject-scroll v-else :subjects="requirement.reqs" @click-subject="clickSubject" />
-    <div v-if="open && nextReqs !== undefined" class="expanded-req">
+    <div v-if="open && getNextReqs !== undefined" class="expanded-req">
       <ExpansionReqs
-        :requirement="nextReqs"
+        :requirement="getNextReqs"
         :req-i-d="reqID + (doubleScroller ? '.' + whichScroller : '') + '.' + expansionIndex"
         @close-expansion="closeMyExpansion"
         @click-subject="$emit('click-subject',$event)"
@@ -82,7 +82,7 @@ export default {
       }
       return false;
     },
-    nextReqs: function () {
+    getNextReqs: function () {
       if (!this.open) {
         return undefined;
       }
