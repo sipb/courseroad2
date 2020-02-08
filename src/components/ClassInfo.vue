@@ -291,8 +291,6 @@ export default {
     parseRequirements: function (requirements) {
       // TODO: a way to make this more ETU?
       // remove spaces after commas and slashes
-      const _this = this;
-
       requirements = requirements.replace(/([,/])\s+/g, '$1');
       function getParenGroup (str) {
         if (str[0] === '(') {
@@ -339,7 +337,7 @@ export default {
 
       const getClassInfo = this.classInfo;
 
-      function parseReqs (reqString) {
+      const parseReqs = (reqString) => {
         const parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false, fulfilled: false };
         let onereq;
         let connectionType;
@@ -354,10 +352,10 @@ export default {
               parsedReq.reqs.push({ subject_id: onereq.replace(/'/g, ''), title: '', fulfilled: false });
             } else {
               const subRequirement = Object.assign({}, getClassInfo(onereq));
-              if (_this.firstAppearance >= -1) {
-                const allSemesterSubjects = _this.$store.state.roads[_this.$store.state.activeRoad].contents.selectedSubjects;
-                const allPreviousSubjects = _this.flatten(allSemesterSubjects.slice(0, _this.firstAppearance));
-                subRequirement.fulfilled = _this.reqFulfilled(onereq, allPreviousSubjects);
+              if (this.firstAppearance >= -1) {
+                const allSemesterSubjects = this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects;
+                const allPreviousSubjects = this.flatten(allSemesterSubjects.slice(0, this.firstAppearance));
+                subRequirement.fulfilled = this.reqFulfilled(onereq, allPreviousSubjects);
               } else {
                 subRequirement.fulfilled = true;
               }
@@ -432,7 +430,7 @@ export default {
         }
 
         return parsedReq;
-      }
+      };
 
       const rList = parseReqs(requirements);
       rList.topLevel = true;
