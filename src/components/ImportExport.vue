@@ -155,6 +155,10 @@ export default {
       document.body.removeChild(element);
     },
     importRoad: function (event) {
+      if (this.otherRoadHasName(this.roadtitle)) {
+        return;
+      }
+
       let fail = false;
       // check for legal input
       if (this.inputtext === '' || this.roadtitle === '') {
