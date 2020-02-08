@@ -353,8 +353,10 @@ export default {
             } else {
               const subRequirement = Object.assign({}, getClassInfo(onereq));
               if (this.firstAppearance >= -1) {
-                const allSemesterSubjects = this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects;
-                const allPreviousSubjects = this.flatten(allSemesterSubjects.slice(0, this.firstAppearance));
+                const allPreviousSubjects = this.flatten(
+                  this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects
+                    .slice(0, this.firstAppearance)
+                );
                 subRequirement.fulfilled = this.reqFulfilled(onereq, allPreviousSubjects);
               } else {
                 subRequirement.fulfilled = true;
