@@ -81,7 +81,7 @@ class Filter {
 }
 
 class RegexFilter extends Filter {
-  constructor (name, shortName, regex, attributeNames, requires, mode) {
+  constructor (name, shortName, attributeNames, regex, requires, mode) {
     var testFunction = RegexFilter.getRegexTestFunction(regex);
     super(name, shortName, testFunction, attributeNames, mode);
     this.regex = regex;
@@ -189,7 +189,7 @@ class RegexFilter extends Filter {
 }
 
 class MathFilter extends Filter {
-  constructor (name, shortName, range, inclusive, attributeNames, mode) {
+  constructor (name, shortName, attributeNames, range, inclusive, mode) {
     var comparator = function (input) {
       if ((range[0] === undefined || input > range[0]) && (range[1] === undefined || input < range[1])) {
         return true;
@@ -206,6 +206,33 @@ class BooleanFilter extends Filter {
   constructor (name, shortName, attributeNames, negated, mode) {
     var match = (input) => input === !negated;
     super(name, shortName, match, attributeNames, mode);
+  }
+}
+
+class ArrayFilter extends Filter {
+  constructor (name, shortName, attributeNames, subfilterType, subfilterArguments, mode) {
+    var subfilter = new subfilterType(name, shortName, attributeNames, ...subfilterArguments, mode)
+    var comparator = subfilter.filter
+    super(name, shortName, comparator, attributeNames, mode);
+    this.subfilter = subfilter
+  }
+  matches (subject) {
+    // starting value of true for and, false for or
+    var isMatch = !this.combine(true, false);
+    // check each attribute for a match
+    for (var a = 0; a < this.attributes.length; a++) {
+      var attribute = this.attributes[a];
+      //console.log(subject[attribute]);
+      if (Array.isArray(subject[attribute])) {
+        isMatch = this.combine(isMatch, this.subfilter.filter(...subject[attribute]));
+      } else {
+        isMatch = false;
+      }
+    }
+    return isMatch;
+  }
+  setupInputs (inputs) {
+    this.subfilter.setupInputs(inputs);
   }
 }
 
@@ -237,30 +264,31 @@ class FilterGroup {
   }
 }
 
-var girAny = new RegexFilter('GIR:Any', 'Any', '.+', ['gir_attribute']);
-var girLab = new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
-var girRest = new RegexFilter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attribute']);
-var hassAny = new RegexFilter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
-var hassArt = new RegexFilter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
-var hassSocialScience = new RegexFilter('HASS-S', 'S', 'HASS-S', ['hass_attribute']);
-var hassHumanity = new RegexFilter('HASS-H', 'H', 'HASS-H', ['hass_attribute']);
-var ciAny = new RegexFilter('CI:Any', 'Any', 'CI.+', ['communication_requirement']);
-var ciH = new RegexFilter('CI-H', 'CI-H', 'CI-H', ['communication_requirement']);
-var ciHW = new RegexFilter('CI-HW', 'CI-HW', 'CI-HW', ['communication_requirement']);
-var ciNone = new RegexFilter('Not CI', 'None', '^(?!CI)', ['communication_requirement']);
-var levelUG = new RegexFilter('Undergraduate', 'UG', 'U', ['level']);
-var levelG = new RegexFilter('Graduate', 'G', 'G', ['level']);
+var girAny = new RegexFilter('GIR:Any', 'Any', ['gir_attribute'], '.+');
+var girLab = new RegexFilter('GIR:Lab', 'Lab', ['gir_attribute'], '.*(LAB|LAB2).*');
+var girRest = new RegexFilter('GIR:REST', 'REST', ['gir_attribute'], '.*(REST|RST2).*');
+var hassAny = new RegexFilter('HASS:Any', 'Any', ['hass_attribute'], 'HASS');
+var hassArt = new RegexFilter('HASS-A', 'A', ['hass_attribute'], 'HASS-A');
+var hassSocialScience = new RegexFilter('HASS-S', 'S', ['hass_attribute'], 'HASS-S');
+var hassHumanity = new RegexFilter('HASS-H', 'H', ['hass_attribute'], 'HASS-H');
+var ciAny = new RegexFilter('CI:Any', 'Any', ['communication_requirement'], 'CI.+');
+var ciH = new RegexFilter('CI-H', 'CI-H', ['communication_requirement'], 'CI-H');
+var ciHW = new RegexFilter('CI-HW', 'CI-HW', ['communication_requirement'], 'CI-HW');
+var ciNone = new RegexFilter('Not CI', 'None', ['communication_requirement'], '^(?!CI)');
+var levelUG = new RegexFilter('Undergraduate', 'UG', ['level'], 'U');
+var levelG = new RegexFilter('Graduate', 'G', ['level'], 'G');
 var unitsLt6 = new MathFilter('<6', '<6', [undefined, 6], false, ['total_units']);
-var units6 = new MathFilter('6', '6', [6, 6], true, ['total_units']);
-var units9 = new MathFilter('9', '9', [9, 9], true, ['total_units']);
-var units12 = new MathFilter('12', '12', [12, 12], true, ['total_units']);
-var units15 = new MathFilter('15', '15', [15, 15], true, ['total_units']);
-var units6To15 = new MathFilter('6-15', '6-15', [6, 15], true, ['total_units']);
-var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_units']);
+var units6 = new MathFilter('6', '6', ['total_units'], [6, 6], true);
+var units9 = new MathFilter('9', '9', ['total_units'], [9, 9], true);
+var units12 = new MathFilter('12', '12', ['total_units'], [12, 12], true);
+var units15 = new MathFilter('15', '15', ['total_units'], [15, 15], true);
+var units6To15 = new MathFilter('6-15', '6-15', ['total_units'], [6, 15], true);
+var unitsGte15 = new MathFilter('>15', '>15', ['total_units'], [15, undefined], false);
 var termFall = new BooleanFilter('Fall', 'FA', ['offered_fall'], false);
 var termIAP = new BooleanFilter('IAP', 'IAP', ['offered_IAP'], false);
 var termSpring = new BooleanFilter('Spring', 'SP', ['offered_spring'], false);
-var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'nameInput', 'OR');
+var instructorFilter = new ArrayFilter('Instructor', 'Prof', ['instructors'], RegexFilter, ['', 'nameInput'], 'OR');
+var textFilter = new RegexFilter('Subject ID', 'ID', ['subject_id', 'title'], '', 'nameInput', 'OR');
 
 export default {
   name: 'ClassSearch',
@@ -317,10 +345,11 @@ export default {
       }
 
       textFilter.setupInputs({ nameInput: this.nameInput });
+      instructorFilter.setupInputs({ nameInput: this.nameInput });
 
       // Filter subjects that match all filter sets and the text filter
       const filteredSubjects = this.allSubjects.filter((subject) => {
-        var matches = textFilter.matches(subject, { nameInput: this.nameInput });
+        var matches = textFilter.matches(subject) || instructorFilter.matches(subject);
         return matches && Object.keys(this.allFilters).every((filterGroup) => {
           return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
         });
