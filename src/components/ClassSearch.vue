@@ -210,11 +210,11 @@ class BooleanFilter extends Filter {
 }
 
 class ArrayFilter extends Filter {
-  constructor (name, shortName, attributeNames, subfilterType, subfilterArguments, mode) {
-    var subfilter = new subfilterType(name, shortName, attributeNames, ...subfilterArguments, mode)
-    var comparator = subfilter.filter
+  constructor (name, shortName, attributeNames, SubfilterType, subfilterArguments, mode) {
+    var subfilter = new SubfilterType(name, shortName, attributeNames, ...subfilterArguments, mode);
+    var comparator = subfilter.filter;
     super(name, shortName, comparator, attributeNames, mode);
-    this.subfilter = subfilter
+    this.subfilter = subfilter;
   }
   matches (subject) {
     // starting value of true for and, false for or
@@ -222,7 +222,6 @@ class ArrayFilter extends Filter {
     // check each attribute for a match
     for (var a = 0; a < this.attributes.length; a++) {
       var attribute = this.attributes[a];
-      //console.log(subject[attribute]);
       if (Array.isArray(subject[attribute])) {
         isMatch = this.combine(isMatch, this.subfilter.filter(...subject[attribute]));
       } else {
