@@ -252,6 +252,9 @@ export default {
           road: roadData.data.file,
           ignoreSet: true
         });
+
+        _this.$store.commit('setRetrieved', roadID);
+
         _this.gettingUserData = false;
         return roadData;
       });

@@ -137,6 +137,18 @@ export default {
   watch: {
     activeRoad: function (newRoad, oldRoad) {
       this.tabRoad = this.activeRoad;
+    },
+    '$store.state.unretrieved': function (unretrieved) {
+      if (this.addDialog && this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) === -1) {
+        this.$emit('add-road',
+          this.newRoadName,
+          this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
+          this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
+          Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
+        );
+        this.addDialog = false;
+        this.newRoadName = '';
+      }
     }
   },
   methods: {
@@ -149,16 +161,22 @@ export default {
     createRoad: function () {
       if (!this.duplicateRoad) {
         this.$emit('add-road', this.newRoadName);
+        this.addDialog = false;
+        this.newRoadName = '';
       } else if (this.duplicateRoadSource in this.roads) {
-        this.$emit('add-road',
-          this.newRoadName,
-          this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
-          this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
-          Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
-        );
+        if (this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) >= 0) {
+          this.$emit('retrieve', this.duplicateRoadSource);
+        } else {
+          this.addDialog = false;
+          this.newRoadName = '';
+          this.$emit('add-road',
+            this.newRoadName,
+            this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
+            this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
+            Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
+          );
+        }
       }
-      this.addDialog = false;
-      this.newRoadName = '';
     }
   }
 };

@@ -35,6 +35,7 @@
         slot="extension"
         @delete-road="$refs.authcomponent.deleteRoad($event)"
         @add-road="addRoad(...arguments)"
+        @retrieve="$refs.authcomponent.retrieveRoad($event)"
       />
 
       <import-export
