@@ -231,7 +231,7 @@ export default {
     },
     otherRoadHasName: function (roadName) {
       const otherRoadNames = Object.keys(this.roads).filter(function (road) {
-        return this.roads[road].name === roadName;
+        return this.roads[road].name.toLowerCase() === roadName.toLowerCase();
       }.bind(this));
       return otherRoadNames.length > 0;
     }
