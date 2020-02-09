@@ -48,6 +48,10 @@
         />
       </template>
     </v-treeview>
+    
+    <a v-if="isCourse6" href="http://eecsappsrv.mit.edu/students/">
+      Course 6 Student Portal (Audit)
+    </a>
 
     <v-dialog v-model="progressDialog" max-width="600">
       <v-card v-if="progressReq !== undefined">
@@ -186,6 +190,9 @@ export default {
           this.$store.commit('addReq', newReq);
         }
       }
+    },
+    isCourse6: function(){
+      return this.selectedTrees.some(course => course['short-title'].charAt(0) == '6');
     },
     getCourses: function () {
       const list = this.reqList;
