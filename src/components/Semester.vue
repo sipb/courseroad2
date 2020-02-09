@@ -22,7 +22,48 @@
           <span style="min-width: 4.5em; display: inline-block;">
             Units: {{ semesterInformation.totalUnits }}
           </span>
-          Hours: {{ semesterInformation.expectedHours.toFixed(1) }}
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <span v-on="on">Hours: {{ semesterInformation.totalExpectedHours.toFixed(1) }}</span>
+            </template>
+            <div>
+              <table v-if="semesterSubjects.length" border="1">
+                <tr>
+                  <th v-if="semesterInformation.anyClassInSingleQuarter" rowspan="2">
+                    Quarter 1 <br>
+                    <span style="font-weight:normal">{{ semesterInformation.totalExpectedHoursQuarter1.toFixed(1) }}h </span>
+                  </th>
+                  <th>Class</th>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
+                    {{ subj.id }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Hours</th>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
+                    {{ subj.hours.toFixed(1) }}h
+                  </td>
+                </tr>
+                <tr v-if="semesterInformation.anyClassInSingleQuarter">
+                  <th rowspan="2">
+                    Quarter 2 <br>
+                    <span style="font-weight:normal">{{ semesterInformation.totalExpectedHoursQuarter2.toFixed(1) }}h </span>
+                  </th>
+                  <th>Class</th>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
+                    {{ subj.id }}
+                  </td>
+                </tr>
+                <tr v-if="semesterInformation.anyClassInSingleQuarter">
+                  <th>Hours</th>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
+                    {{ subj.hours.toFixed(1) }}h
+                  </td>
+                </tr>
+              </table>
+              <span v-else>No Classes</span>
+            </div>
+          </v-tooltip>
         </v-flex>
         <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
           <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.id+'-'+subjindex+'-'+index" xs3>
@@ -297,21 +338,35 @@ export default {
         tu = isNaN(tu) ? 0 : tu;
         return units + tu;
       }, 0);
-      const totalExpectedHours = function (hours, subj) {
-        let eh = subj.in_class_hours + subj.out_of_class_hours;
-        eh = isNaN(eh) ? subj.total_units : eh;
-        eh = isNaN(eh) ? 0 : eh;
-        return hours + eh;
+      const expectedHours = function (subj) {
+        let hours = subj.in_class_hours + subj.out_of_class_hours;
+        hours = isNaN(hours) ? subj.total_units : hours;
+        hours = isNaN(hours) ? 0 : hours;
+        return {
+          hours: hours,
+          id: subj.subject_id
+        };
+      };
+      const sumExpectedHours = function (hours, subj) {
+        return hours + subj.hours;
       };
       const isInQuarter = function (subj, quarter) {
         return subj.quarter_information === undefined || parseInt(subj.quarter_information.split(',')[0]) === quarter;
       };
-      const expectedHoursQuarter1 = classesInfo.filter((s) => isInQuarter(s, 0)).reduce(totalExpectedHours, 0);
-      const expectedHoursQuarter2 = classesInfo.filter((s) => isInQuarter(s, 1)).reduce(totalExpectedHours, 0);
-      const expectedHours = Math.max(expectedHoursQuarter1, expectedHoursQuarter2);
+      const expectedHoursQuarter1 = classesInfo.filter((s) => isInQuarter(s, 0)).map(expectedHours);
+      const totalExpectedHoursQuarter1 = expectedHoursQuarter1.reduce(sumExpectedHours, 0);
+      const expectedHoursQuarter2 = classesInfo.filter((s) => isInQuarter(s, 1)).map(expectedHours);
+      const totalExpectedHoursQuarter2 = expectedHoursQuarter2.reduce(sumExpectedHours, 0);
+      const totalExpectedHours = Math.max(totalExpectedHoursQuarter1, totalExpectedHoursQuarter2);
+      const anyClassInSingleQuarter = classesInfo.some((s) => s.quarter_information !== undefined);
       return {
-        totalUnits: totalUnits,
-        expectedHours: expectedHours
+        totalUnits,
+        totalExpectedHours,
+        anyClassInSingleQuarter,
+        expectedHoursQuarter1,
+        expectedHoursQuarter2,
+        totalExpectedHoursQuarter1,
+        totalExpectedHoursQuarter2
       };
     },
     semesterYearName: function () {
