@@ -3,6 +3,7 @@
     <v-tabs
       v-model="tabRoad"
       show-arrows
+      color="blue lighten-5"
     >
       <v-tabs-slider />
       <v-tab
@@ -10,8 +11,10 @@
         :key="roadId"
         :href="`#${roadId}`"
         @click="$store.commit('setActiveRoad', roadId)"
+        class="blue lighten-5 elevation-1"
+        active-class="primary lighten-2 elevation-5"
       >
-        {{ roads[roadId].name }}
+        <span>{{ roads[roadId].name }}</span>
         <v-btn v-show="roadId == tabRoad" icon flat @click="newRoadName = roads[roadId].name; editDialog = true;">
           <v-icon>edit</v-icon>
         </v-btn>
