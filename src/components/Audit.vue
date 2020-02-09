@@ -45,7 +45,6 @@
             slot-scope="{ hover }"
             :class="{ 'elevation-3 grey lighten-3': hover }"
             :style="(leaf ? 'cursor: grab' : 'cursor:pointer')"
-            draggable="true"
             :req="item"
             :is-leaf="leaf"
             @click.native="clickRequirement(item)"
