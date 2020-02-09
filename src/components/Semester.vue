@@ -28,7 +28,7 @@
             </template>
             <div>
               <table v-if="semesterSubjects.length" border="1">
-                <tr>
+                <tr v-if="semesterInformation.expectedHoursQuarter1.length">
                   <th v-if="semesterInformation.anyClassInSingleQuarter" rowspan="2">
                     Quarter 1 <br>
                     <span style="font-weight:normal">{{ semesterInformation.totalExpectedHoursQuarter1.toFixed(1) }}h </span>
@@ -38,13 +38,13 @@
                     {{ subj.id }}
                   </td>
                 </tr>
-                <tr>
+                <tr v-if="semesterInformation.expectedHoursQuarter1.length">
                   <th>Hours</th>
                   <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
                     {{ subj.hours.toFixed(1) }}h
                   </td>
                 </tr>
-                <tr v-if="semesterInformation.anyClassInSingleQuarter">
+                <tr v-if="semesterInformation.anyClassInSingleQuarter && semesterInformation.expectedHoursQuarter2.length">
                   <th rowspan="2">
                     Quarter 2 <br>
                     <span style="font-weight:normal">{{ semesterInformation.totalExpectedHoursQuarter2.toFixed(1) }}h </span>
@@ -54,7 +54,7 @@
                     {{ subj.id }}
                   </td>
                 </tr>
-                <tr v-if="semesterInformation.anyClassInSingleQuarter">
+                <tr v-if="semesterInformation.anyClassInSingleQuarter && semesterInformation.expectedHoursQuarter2.length">
                   <th>Hours</th>
                   <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
                     {{ subj.hours.toFixed(1) }}h
