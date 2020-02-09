@@ -290,7 +290,7 @@ export default {
             this.saveRemote(this.newRoads[i]);
           }
           const fileKeys = Object.keys(files);
-          for (var i = 0; i < fileKeys.length; i++) {
+          for (i = 0; i < fileKeys.length; i++) {
             const blankRoad = {
               downloaded: moment().format(DATE_FORMAT),
               changed: files[fileKeys[i]].changed,
