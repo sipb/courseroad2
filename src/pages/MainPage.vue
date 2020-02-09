@@ -295,6 +295,8 @@ export default {
           _this.$store.commit('setRetrieved', newRoad);
         });
       } else if (newRoad !== '') {
+        // Reset fulfillmentNeeded so that new Roads still call FireRoad to check fulfillment.
+        this.$store.commit('resetFulfillmentNeeded');
         this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
       if (newRoad !== '') {
