@@ -48,7 +48,7 @@
         />
       </template>
     </v-treeview>
-    
+
     <a v-if="isCourse6" href="http://eecsappsrv.mit.edu/students/">
       Course 6 Student Portal (Audit)
     </a>
@@ -191,8 +191,8 @@ export default {
         }
       }
     },
-    isCourse6: function(){
-      return this.selectedTrees.some(course => course['short-title'].charAt(0) == '6');
+    isCourse6: function () {
+      return this.selectedTrees.some(course => course['short-title'].charAt(0) === '6');
     },
     getCourses: function () {
       const list = this.reqList;
