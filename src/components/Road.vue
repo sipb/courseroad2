@@ -91,6 +91,19 @@ export default {
         this.$emit('change-year', newYear);
       }
     }
+  },
+  watch: {
+    visibleList: function (newVisibleList) {
+      if (this.$store.state.cookiesAllowed) {
+        this.$cookies.set('visibleList', JSON.stringify(newVisibleList));
+      }
+    }
+  },
+  mounted () {
+    if (this.$store.state.cookiesAllowed) {
+      const visibleList = JSON.parse(this.$cookies.get('visibleList'));
+      this.visibleList = visibleList;
+    };
   }
 };
 </script>
