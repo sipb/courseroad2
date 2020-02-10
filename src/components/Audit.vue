@@ -192,7 +192,7 @@ export default {
       }
     },
     isCourse6: function () {
-      return this.selectedTrees.some(course => course['short-title'].charAt(0) === '6');
+      return this.selectedTrees.some(course => this.majorIs6(course));
     },
     getCourses: function () {
       const list = this.reqList;
@@ -241,6 +241,12 @@ export default {
       return req.fulfilled && (req.req !== undefined || req.sat_courses.length > 0)
         ? 'color: #00b300;'
         : '';
+    },
+    majorIs6: function (course) {
+      console.log(course);
+      const major = course['short-title'].slice(0, 3);
+      console.log(major);
+      return ['6-1', '6-2', '6-3', '6-7', '6-14', '6', '6-P'].includes(major);
     },
     reqInfo: function (event, req) {
       event.preventDefault();
