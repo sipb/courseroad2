@@ -243,10 +243,14 @@ export default {
         : '';
     },
     majorIs6: function (course) {
-      console.log(course);
-      const major = course['short-title'].slice(0, 3);
-      console.log(major);
-      return ['6-1', '6-2', '6-3', '6-7', '6-14', '6', '6-P'].includes(major);
+      // checks if a course is one of the ones that the course 6 audit page works for
+      // if statement needed because otherwise it gives an error if the courses haven't loaded yet
+      if (course['short-title']) {
+        const major = course['short-title'].slice(0, 3);
+        return ['6-1', '6-2', '6-3', '6-7', '6-14', '6', '6-P'].includes(major);
+      } else {
+        return false;
+      }
     },
     reqInfo: function (event, req) {
       event.preventDefault();
