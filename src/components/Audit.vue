@@ -50,7 +50,7 @@
     </v-treeview>
 
     <a v-if="isCourse6" href="http://eecsappsrv.mit.edu/students/">
-      Course 6 Student Portal (Audit)
+      Course 6 Student Portal (+Audit)
     </a>
 
     <v-dialog v-model="progressDialog" max-width="600">
