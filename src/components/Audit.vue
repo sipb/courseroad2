@@ -153,7 +153,7 @@ export default {
       required: true
     },
     reqList: {
-      type: Object,
+      type: Array,
       required: true
     },
     progressOverrides: {
@@ -188,8 +188,7 @@ export default {
       }
     },
     getCourses: function () {
-      const list = this.reqList;
-      const courses = Object.keys(list).map(x => Object.assign(list[x], { key: x }));
+      const courses = this.reqList.slice(0);
       const sortKey = 'medium-title';
       // NOTE: brute force way sorting the courses given the fields we have
       courses.sort(function (c1, c2) {
