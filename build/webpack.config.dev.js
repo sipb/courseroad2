@@ -55,6 +55,9 @@ module.exports = (env) => {
         }
       ]
     },
+    output: {
+      publicPath: env.APP_URL.indexOf('dev') !== -1 ? '/dev/' : '/'
+    },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new VueLoaderPlugin(),

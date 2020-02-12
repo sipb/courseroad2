@@ -32,6 +32,7 @@ var routes = [
 ];
 
 var router = new VueRouter({
+  base: process.env.APP_URL.indexOf('dev') !== -1 ? '/dev/' : '/',
   mode: 'history',
   routes
 });
