@@ -56,7 +56,7 @@
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
-                Make sure you have given this road a name, and uploaded/pasted a valid '.road' file.
+                Make sure you have given this road a unique name, and uploaded/pasted a valid '.road' file.
               </v-card-text>
             </v-card>
           </v-flex>
@@ -155,13 +155,12 @@ export default {
       document.body.removeChild(element);
     },
     importRoad: function (event) {
-      if (this.otherRoadHasName(this.roadtitle)) {
-        return;
-      }
-
       let fail = false;
       // check for legal input
-      if (this.inputtext === '' || this.roadtitle === '') {
+      if (this.inputtext === '' ||
+          this.roadtitle === '' ||
+          this.otherRoadHasName(this.roadtitle)
+      ) {
         fail = true;
       }
 
