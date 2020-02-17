@@ -26,30 +26,32 @@
       open-on-click
       :activatable="false"
     >
-      <template slot="prepend" slot-scope="{ item }">
-        <v-icon
-          v-if="!('reqs' in item)"
-          :style="fulfilledIcon(item)"
-          @click="clickRequirement(item)"
-        >
-          {{ item['plain-string'] ?
-            (item["list-id"] in progressOverrides ?
-              (item.fulfilled ? "assignment_turned_in" : "assignment") :
-              "assignment_late" ) :
-            item.fulfilled ? "done" : "remove" }}
-        </v-icon>
-      </template>
       <template slot="label" slot-scope="{ item, leaf}">
         <v-hover :disabled="!leaf">
-          <requirement
+          <div
             slot-scope="{ hover }"
             :class="{ 'elevation-3 grey lighten-3': hover }"
             :style="(leaf ? 'cursor: grab' : 'cursor:pointer')"
-            :req="item"
-            :is-leaf="leaf"
-            @click.native="clickRequirement(item)"
-            @click-info="reqInfo($event, item)"
-          />
+          >
+            <v-icon
+              v-if="!('reqs' in item)"
+              class="appendLeft"
+              :style="fulfilledIcon(item)"
+              @click="clickRequirement(item)"
+            >
+              {{ item['plain-string'] ?
+                (item["list-id"] in progressOverrides ?
+                  (item.fulfilled ? "assignment_turned_in" : "assignment") :
+                  "assignment_late" ) :
+                item.fulfilled ? "done" : "remove" }}
+            </v-icon>
+            <requirement
+              :req="item"
+              :is-leaf="leaf"
+              @click.native="clickRequirement(item)"
+              @click-info="reqInfo($event, item)"
+            />
+          </div>
         </v-hover>
       </template>
     </v-treeview>
@@ -325,6 +327,9 @@ export default {
 </script>
 
 <style scoped>
+.appendLeft {
+  float:left;
+}
 .percentage-bar {
   background: linear-gradient(
     90deg,
