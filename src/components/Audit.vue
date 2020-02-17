@@ -40,17 +40,12 @@
         </v-icon>
       </template>
       <template slot="label" slot-scope="{ item, leaf}">
-        <v-hover :disabled="!leaf">
-          <requirement
-            slot-scope="{ hover }"
-            :class="{ 'elevation-3 grey lighten-3': hover }"
-            :style="(leaf ? 'cursor: grab' : 'cursor:pointer')"
-            :req="item"
-            :is-leaf="leaf"
-            @click.native="clickRequirement(item)"
-            @click-info="reqInfo($event, item)"
-          />
-        </v-hover>
+        <requirement
+          :req="item"
+          :is-leaf="leaf"
+          @click.native="clickRequirement(item)"
+          @click-info="reqInfo($event, item)"
+        />
       </template>
     </v-treeview>
 

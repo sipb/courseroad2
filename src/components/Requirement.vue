@@ -1,66 +1,75 @@
 <template>
-  <div
+  <v-hover
     class="requirement"
-    :draggable="canDrag"
-    @dragstart="dragStart"
-    @mouseover="hoveringOver = true"
-    @mouseleave="hoveringOver = false"
-  >
-    <v-layout row>
-      <v-flex>
-        <div v-if="!isLeaf" style="display: inline;">
-          <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
-            {{ req["title-no-degree"] }}
+    :disabled="!(isLeaf && canDrag)"
+    >
+    <div
+      :draggable="canDrag"
+      slot-scope="{ hover }"
+      :class="{ 'elevation-3 grey lighten-3': hover }"
+      :style="(isLeaf && canDrag ? 'cursor: grab' : 'cursor:pointer')"
+      @dragstart="dragStart"
+      @mouseover="hoveringOver = true"
+      @mouseleave="hoveringOver = false"
+    >
+      <v-layout
+        row
+      >
+        <v-flex>
+          <div v-if="!isLeaf" style="display: inline;">
+            <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
+              {{ req["title-no-degree"] }}
+            </span>
+            <span v-else-if="'medium-title' in req && req['medium-title'] != ''">{{ req['medium-title'] }}</span>
+            <span v-else-if="'short-title' in req && req['short-title'] != ''">
+              {{ req['short-title'] }}
+            </span>
+            <span v-else-if="'title' in req">{{ req["title"] }}</span>
+            <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
+          </div>
+          <span v-else>
+            <span v-if="'title' in req"> {{ req.title }} </span>
           </span>
-          <span v-else-if="'medium-title' in req && req['medium-title'] != ''">{{ req['medium-title'] }}</span>
-          <span v-else-if="'short-title' in req && req['short-title'] != ''">
-            {{ req['short-title'] }}
-          </span>
-          <span v-else-if="'title' in req">{{ req["title"] }}</span>
-          <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
-        </div>
-        <span v-else>
-          <span v-if="'title' in req"> {{ req.title }} </span>
-        </span>
-        <span v-if="!req['plain-string']">
-          <span v-if="!('title' in req) && 'req' in req">
-            <span :class="reqFulfilled">{{ req.req }}</span>
-            <span v-if="'threshold-desc' in req" style="font-style:italic">
-              ({{ req['threshold-desc'] }})
+          <span v-if="!req['plain-string']">
+            <span v-if="!('title' in req) && 'req' in req">
+              <span :class="reqFulfilled">{{ req.req }}</span>
+              <span v-if="'threshold-desc' in req" style="font-style:italic">
+                ({{ req['threshold-desc'] }})
+              </span>
             </span>
           </span>
-        </span>
-        <span v-else>
-          <span v-if="'title' in req">| </span>
-          <span style="text-transform: cursive">{{ req.req }}</span>
-        </span>
-        <span v-if="req.max === 0 && isLeaf" style="font-style:italic">
-          (optional)
-        </span>
-        <span
-          v-if="hoveringOver
-            && ('reqs' in req || 'threshold' in req)
-            && 'percent_fulfilled' in req
-            && req.percent_fulfilled !== 'N/A'"
-          :style="'float: right; color: '+percentageTextColor"
-        >
-          &nbsp;{{ req.percent_fulfilled }}%
-          <v-icon
-            v-if="'reqs' in req && hoveringOver"
-            style="padding-left: 0.2em; padding-right: 0em;"
-            small
-            :color="iconColor"
-            @mouseover="iconHover = true"
-            @mouseleave="iconHover = false"
-            @click.stop="$emit('click-info', $event)"
+          <span v-else>
+            <span v-if="'title' in req">| </span>
+            <span style="text-transform: cursive">{{ req.req }}</span>
+          </span>
+          <span v-if="req.max === 0 && isLeaf" style="font-style:italic">
+            (optional)
+          </span>
+          <span
+            v-if="hoveringOver
+              && ('reqs' in req || 'threshold' in req)
+              && 'percent_fulfilled' in req
+              && req.percent_fulfilled !== 'N/A'"
+            :style="'float: right; color: '+percentageTextColor"
           >
-            info
-          </v-icon>
-        </span>
-        <div :class="percentage_bar" :style="percentage" />
-      </v-flex>
-    </v-layout>
-  </div>
+            &nbsp;{{ req.percent_fulfilled }}%
+            <v-icon
+              v-if="'reqs' in req && hoveringOver"
+              style="padding-left: 0.2em; padding-right: 0em;"
+              small
+              :color="iconColor"
+              @mouseover="iconHover = true"
+              @mouseleave="iconHover = false"
+              @click.stop="$emit('click-info', $event)"
+            >
+              info
+            </v-icon>
+          </span>
+          <div :class="percentage_bar" :style="percentage" />
+        </v-flex>
+      </v-layout>
+    </div>
+  </v-hover>
 </template>
 
 <script>
