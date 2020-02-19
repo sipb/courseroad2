@@ -48,9 +48,9 @@
         />
       </template>
     </v-treeview>
-    
+
     <p v-if="isCourse6">
-      <br/>
+      <br>
       <a href="http://eecsappsrv.mit.edu/students/">
         Course 6 Student Portal (+Audit)
       </a>
