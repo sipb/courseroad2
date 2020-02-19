@@ -65,8 +65,7 @@ export default {
           const req = splitReq[i];
           let idCategory;
           let numRequired;
-          // the 'ne subject' is on purpose because some say 'One' and some say 'one'
-          if (req.indexOf('ne subject in') >= 0 || req.indexOf('wo subjects in') >= 0) {
+          if (req.toLowerCase().indexOf('one subject in') >= 0) {
             if (req.indexOf('ne subject in') >= 0) {
               numRequired = 1;
             } else {
@@ -121,7 +120,7 @@ export default {
         idCategory = /CMS/;
       } else if (category === 'Literature') {
         idCategory = /21L/;
-      } else if (category === 'film' || category === 'Film') {
+      } else if (/film/i.test(category)) {
         idCategory = /film/i;
       } else if (category === 'philosophy') {
         // below 900 is Linguistics
