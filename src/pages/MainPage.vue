@@ -298,7 +298,7 @@ export default {
         this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
       if (newRoad !== '') {
-        window.history.pushState({}, this.roads[newRoad].name, './#/#road' + newRoad);
+        this.$router.push({ path: `/road/${newRoad}` });
       }
     },
     cookiesAllowed: function (newCA) {
@@ -324,6 +324,9 @@ export default {
         }
       },
       deep: true
+    },
+    $route () {
+      this.setActiveRoad();
     }
   },
   created () {
@@ -351,10 +354,6 @@ export default {
       const scrollPosition = scrollers.scrollLeft();
       borders.css({ top: 0, left: scrollWidth - 1 + scrollPosition });
     });
-
-    $(window).on('hashchange', function () {
-      this.setActiveRoad();
-    }.bind(this));
 
     this.setActiveRoad();
 
@@ -424,15 +423,14 @@ export default {
       }
     },
     setActiveRoad: function () {
-      const roadHash = window.location.hash;
-      if (roadHash.length && roadHash.substring(0, 7) === '#/#road') {
-        const roadRequested = roadHash.substring(7);
+      if (this.roads.hasOwnProperty(this.$route.params.road)) {
+        const roadRequested = this.$route.params.road;
         if (roadRequested in this.roads) {
-          this.$store.commit('setActiveRoad', roadHash.substring(7));
+          this.$store.commit('setActiveRoad', roadRequested);
           return true;
         }
       }
-      window.location.hash = '#/#road' + this.activeRoad;
+      this.$router.push({ path: `/road/${this.activeRoad}` });
       return false;
     },
     addRoad: function (roadName, cos = ['girs'], ss = Array.from(Array(16), () => []), overrides = {}) {
