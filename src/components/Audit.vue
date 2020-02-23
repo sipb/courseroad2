@@ -329,6 +329,8 @@ export default {
 <style scoped>
 .appendLeft {
   float:left;
+  position:relative;
+  bottom: 3px;
 }
 .percentage-bar {
   background: linear-gradient(
