@@ -27,11 +27,11 @@
       :activatable="false"
     >
       <template slot="label" slot-scope="{ item, leaf}">
-        <v-hover :disabled="!leaf">
+        <v-hover :disabled="!leaf || !canDrag(item)">
           <div
             slot-scope="{ hover }"
             :class="{ 'elevation-3 grey lighten-3': hover }"
-            :style="(leaf ? 'cursor: grab' : 'cursor:pointer')"
+            :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor:pointer')"
           >
             <v-icon
               v-if="!('reqs' in item)"
@@ -145,8 +145,10 @@
 
 <script>
 import Requirement from './Requirement.vue';
+import classInfoMixin from './../mixins/classInfo.js';
 export default {
   name: 'Audit',
+  mixins: [classInfoMixin],
   components: {
     requirement: Requirement
   },
