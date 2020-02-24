@@ -65,8 +65,9 @@ export default {
           const req = splitReq[i];
           let idCategory;
           let numRequired;
-          if (req.toLowerCase().indexOf('one subject in') >= 0) {
-            if (req.indexOf('ne subject in') >= 0) {
+          const lowercaseReq = req.toLowerCase();
+          if (lowercaseReq.indexOf('one subject in') >= 0 || lowercaseReq.indexOf('two subjects in') >= 0) {
+            if (lowercaseReq.indexOf('one subject in') >= 0) {
               numRequired = 1;
             } else {
               numRequired = 2;
