@@ -119,7 +119,7 @@ export default {
   },
   methods: {
     dragStart: function (event) {
-      let usedInfo = this.classInfo;
+      let usedInfo = this.classInfo(this.req);
       if (usedInfo === undefined) {
         usedInfo = { id: this.req.req };
       }
