@@ -1,4 +1,6 @@
-#!/bin/bash
+if [ $SHELL = "/bin/zsh" ]; then
+  source ~/.zshrc
+fi
 # To run this script you must have 'aklog' written in ~/.bash_environment
 # (or the environment file for whatever shell you use)
 # and 'sipb' and 'athena' written in ~/.xlog (both of these files should be in your athena locker).
@@ -13,30 +15,38 @@ if [ "$1" = "prod" ]; then
   echo -n "You are about to deploy to the production site, are you sure? (y/n)? "
   read answer
   if [ "$answer" != "${answer#[Yy]}" ]; then
-    echo "Checking for OpenAFS on this system"
-    if which aklog; then
-      echo "OpenAFS detected, using OpenAFS for deployment"
-      kinit -f -l 1h $2
-      aklog sipb
+    echo "Checking for AFS on this system"
+    if which aklog &>/dev/null; then
+      echo "AFS detected, using AFS for deployment"
+      if which kdo &>/dev/null; then
+	echo "Using kdo"
+        kdo $2 aklog sipb
+      else
+	kinit -f -l 1h $2
+	aklog sipb
+      fi
       rsync --delete --progress --checksum -r dist/* /afs/sipb.mit.edu/project/courseroad/web_scripts/courseroad/
-      kdestroy
     else
-      echo "Could not locate OpenAFS, using SSH for deployment"
+      echo "Could not locate AFS, using SSH for deployment"
       scp -r dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/
     fi
   else
     echo "Cancelled"
   fi
-elif [ "$1" == "dev" ]; then
-  echo "Checking for OpenAFS on this system"
-  if which aklog; then
-    echo "OpenAFS detected, using OpenAFS for deployment"
-    kinit -f -l 1h $2
-    aklog sipb
+elif [ "$1" = "dev" ]; then
+  echo "Checking for AFS on this system"
+  if which aklog &>/dev/null; then
+    echo "AFS detected, using AFS for deployment"
+    if which kdo &>/dev/null; then
+      echo "Using kdo"
+      kdo $2 aklog sipb
+    else
+      kinit -f -l 1h $2
+      aklog sipb
+    fi
     rsync --delete --progress --checksum -r dist/* /afs/sipb.mit.edu/project/courseroad/web_scripts/courseroad/dev/
-    kdestroy
   else
-    echo "Could not locate OpenAFS, using SSH for deployment"
+    echo "Could not locate AFS, using SSH for deployment"
     scp -r dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/dev/
   fi
 else
