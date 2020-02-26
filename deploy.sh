@@ -25,10 +25,10 @@ if [ "$1" = "prod" ]; then
 	kinit -f -l 1h $2
 	aklog sipb
       fi
-      rsync --delete --progress --checksum -r dist/* /afs/sipb.mit.edu/project/courseroad/web_scripts/courseroad/
+      rsync --delete --progress --checksum -r deploy/development/.htaccess dist/* /afs/sipb.mit.edu/project/courseroad/web_scripts/courseroad/
     else
       echo "Could not locate AFS, using SSH for deployment"
-      scp -r dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/
+      scp -r deploy/development/.htaccess dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/
     fi
   else
     echo "Cancelled"
@@ -44,10 +44,10 @@ elif [ "$1" = "dev" ]; then
       kinit -f -l 1h $2
       aklog sipb
     fi
-    rsync --delete --progress --checksum -r dist/* /afs/sipb.mit.edu/project/courseroad/web_scripts/courseroad/dev/
+    rsync --delete --progress --checksum -r deploy/development/.htaccess dist/* /afs/sipb.mit.edu/project/courseroad/web_scripts/courseroad/dev/
   else
     echo "Could not locate AFS, using SSH for deployment"
-    scp -r dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/dev/
+    scp -r deploy/development/.htaccess dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/dev/
   fi
 else
   echo "Invalid build location"
