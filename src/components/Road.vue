@@ -95,13 +95,13 @@ export default {
   watch: {
     visibleList: function (newVisibleList) {
       if (this.$store.state.cookiesAllowed) {
-        this.$cookies.set('visibleList', JSON.stringify(newVisibleList));
+        this.$cookies.set('visibleList' + this.roadID, JSON.stringify(newVisibleList));
       }
     }
   },
   mounted () {
-    if (this.$store.state.cookiesAllowed) {
-      const visibleList = JSON.parse(this.$cookies.get('visibleList'));
+    const visibleList = JSON.parse(this.$cookies.get('visibleList' + this.roadID));
+    if (this.$store.state.cookiesAllowed && visibleList) {
       this.visibleList = visibleList;
     };
   }
