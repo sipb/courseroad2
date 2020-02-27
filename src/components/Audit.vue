@@ -42,12 +42,19 @@
       <template slot="label" slot-scope="{ item, leaf}">
         <requirement
           :req="item"
-          :leaf="leaf"
+          :is-leaf="leaf"
           @click.native="clickRequirement(item)"
           @click-info="reqInfo($event, item)"
         />
       </template>
     </v-treeview>
+
+    <p v-if="isCourse6">
+      <br>
+      <a href="http://eecsappsrv.mit.edu/students/">
+        Course 6 Student Portal (+Audit)
+      </a>
+    </p>
 
     <v-dialog v-model="progressDialog" max-width="600">
       <v-card v-if="progressReq !== undefined">
@@ -143,12 +150,24 @@ export default {
   components: {
     requirement: Requirement
   },
-  props: [
-    'selectedReqs',
-    'reqTrees',
-    'reqList',
-    'progressOverrides'
-  ],
+  props: {
+    selectedReqs: {
+      type: Array,
+      required: true
+    },
+    reqTrees: {
+      type: Object,
+      required: true
+    },
+    reqList: {
+      type: Array,
+      required: true
+    },
+    progressOverrides: {
+      type: Object,
+      required: true
+    }
+  },
   data: function () {
     return {
       tree: [],
@@ -175,9 +194,20 @@ export default {
         }
       }
     },
+    isCourse6: function () {
+      return this.selectedTrees.some(course => {
+        // checks if a course is one of the ones that the course 6 audit page works for
+        // if statement needed because otherwise it gives an error if the courses haven't loaded yet
+        if (course['short-title']) {
+          const major = course['short-title'].slice(0, 3);
+          return ['6-1', '6-2', '6-3', '6-7', '6-14', '6', '6-P'].includes(major);
+        } else {
+          return false;
+        }
+      });
+    },
     getCourses: function () {
-      const list = this.reqList;
-      const courses = Object.keys(list).map(x => Object.assign(list[x], { key: x }));
+      const courses = this.reqList.slice(0);
       const sortKey = 'medium-title';
       // NOTE: brute force way sorting the courses given the fields we have
       courses.sort(function (c1, c2) {

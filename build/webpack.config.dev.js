@@ -3,14 +3,15 @@ const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+
 module.exports = (env) => {
   return {
-    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     entry: [
       '@babel/polyfill',
       './src/app.js'
     ],
     devServer: {
+      historyApiFallback: true,
       hot: true,
       watchOptions: {
         poll: true
@@ -54,6 +55,9 @@ module.exports = (env) => {
         }
       ]
     },
+    output: {
+      publicPath: env.APP_URL.indexOf('dev') !== -1 ? '/dev/' : '/'
+    },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new VueLoaderPlugin(),
@@ -66,8 +70,7 @@ module.exports = (env) => {
         filename: 'css/app.css'
       }),
       new webpack.DefinePlugin({ 'process.env.APP_URL': JSON.stringify(env.APP_URL) }),
-      new webpack.DefinePlugin({ 'process.env.FIREROAD_URL': JSON.stringify(env.FIREROAD_URL) }),
-      new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) })
+      new webpack.DefinePlugin({ 'process.env.FIREROAD_URL': JSON.stringify(env.FIREROAD_URL) })
     ]
   }
 }
