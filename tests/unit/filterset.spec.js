@@ -3,8 +3,65 @@ import {  FilterGroup, Filter, RegexFilter,
           MathFilter, BooleanFilter } from '../../src/utilities/filters.js';
 
 const localVue = createLocalVue();
+Vue.use(Vuetify);
+
 
 describe('Filter Set', () => {
+  it('emits an event when filter buttons are pressed', () => {
+    const propsData = {
+      value: [false, false, false],
+      label: 'test',
+      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
+                new Filter('Test 2', '2', ()=>{}, ['attr']),
+                new Filter('Test 3', '3', ()=>{}, ['attr'])]
+    }
+
+    // Add fake search input so it is not null when it tries to focus on it
+    const fakeSearchInput = document.createElement("input");
+    fakeSearchInput.id = 'searchInputTF';
+    document.body.appendChild(fakeSearchInput);
+
+    const wrapper = mount(FilterSet, { localVue, propsData, attachToDocument: true});
+
+    const buttons = wrapper.findAll('.v-btn');
+    const button0 = wrapper.find('.v-btn[value="0"]');
+    const button2 = wrapper.find('.v-btn[value="2"]');
+
+    // Click some buttons and check output
+    expect(buttons.length).toBe(3);
+    button0.trigger('click');
+    expect(wrapper.emitted().input[0][0]).toEqual([true, false, false]);
+    button2.trigger('click');
+    expect(wrapper.emitted().input[1][0]).toEqual([true, false, true]);
+    wrapper.destroy();
+  });
+
+  it('returns focus to searchbar after filter buttons are pressed', () => {
+    const propsData = {
+      value: [false, false, false],
+      label: 'test',
+      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
+                new Filter('Test 2', '2', ()=>{}, ['attr']),
+                new Filter('Test 3', '3', ()=>{}, ['attr'])]
+    }
+
+    // Construct fake search input with correct ID
+    const fakeSearchInput = document.createElement("input");
+    fakeSearchInput.id = 'searchInputTF';
+    document.body.appendChild(fakeSearchInput);
+
+    const wrapper = mount(FilterSet, { localVue, propsData, attachToDocument: true});
+
+    // Click some button
+    const button = wrapper.findAll('.v-btn').at(0);
+    button.trigger('click');
+
+    // Make sure search input still has focus
+    expect(document.activeElement).toEqual(fakeSearchInput);
+
+    wrapper.destroy();
+  })
+  
   /*
   Testing strategy for changeFilter
   partition on filters: length = 0, length > 0
