@@ -1,27 +1,25 @@
 import FilterSet from '../../src/components/FilterSet.vue';
-import {  FilterGroup, Filter, RegexFilter,
-          MathFilter, BooleanFilter } from '../../src/utilities/filters.js';
+import { Filter } from '../../src/utilities/filters.js';
 
 const localVue = createLocalVue();
 Vue.use(Vuetify);
-
 
 describe('Filter Set', () => {
   it('emits an event when filter buttons are pressed', () => {
     const propsData = {
       value: [false, false, false],
       label: 'test',
-      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
-                new Filter('Test 2', '2', ()=>{}, ['attr']),
-                new Filter('Test 3', '3', ()=>{}, ['attr'])]
-    }
+      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
+        new Filter('Test 2', '2', () => {}, ['attr']),
+        new Filter('Test 3', '3', () => {}, ['attr'])]
+    };
 
     // Add fake search input so it is not null when it tries to focus on it
-    const fakeSearchInput = document.createElement("input");
+    const fakeSearchInput = document.createElement('input');
     fakeSearchInput.id = 'searchInputTF';
     document.body.appendChild(fakeSearchInput);
 
-    const wrapper = mount(FilterSet, { localVue, propsData, attachToDocument: true});
+    const wrapper = mount(FilterSet, { localVue, propsData, attachToDocument: true });
 
     const buttons = wrapper.findAll('.v-btn');
     const button0 = wrapper.find('.v-btn[value="0"]');
@@ -40,17 +38,17 @@ describe('Filter Set', () => {
     const propsData = {
       value: [false, false, false],
       label: 'test',
-      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
-                new Filter('Test 2', '2', ()=>{}, ['attr']),
-                new Filter('Test 3', '3', ()=>{}, ['attr'])]
-    }
+      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
+        new Filter('Test 2', '2', () => {}, ['attr']),
+        new Filter('Test 3', '3', () => {}, ['attr'])]
+    };
 
     // Construct fake search input with correct ID
-    const fakeSearchInput = document.createElement("input");
+    const fakeSearchInput = document.createElement('input');
     fakeSearchInput.id = 'searchInputTF';
     document.body.appendChild(fakeSearchInput);
 
-    const wrapper = mount(FilterSet, { localVue, propsData, attachToDocument: true});
+    const wrapper = mount(FilterSet, { localVue, propsData, attachToDocument: true });
 
     // Click some button
     const button = wrapper.findAll('.v-btn').at(0);
@@ -60,8 +58,8 @@ describe('Filter Set', () => {
     expect(document.activeElement).toEqual(fakeSearchInput);
 
     wrapper.destroy();
-  })
-  
+  });
+
   /*
   Testing strategy for changeFilter
   partition on filters: length = 0, length > 0
@@ -81,7 +79,7 @@ describe('Filter Set', () => {
       value: [],
       label: 'test',
       filters: []
-    }
+    };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([]);
 
@@ -98,10 +96,10 @@ describe('Filter Set', () => {
     const propsData = {
       value: [false, false, false],
       label: 'test',
-      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
-                new Filter('Test 2', '2', ()=>{}, ['attr']),
-                new Filter('Test 3', '3', ()=>{}, ['attr'])]
-    }
+      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
+        new Filter('Test 2', '2', () => {}, ['attr']),
+        new Filter('Test 3', '3', () => {}, ['attr'])]
+    };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([]);
 
@@ -118,12 +116,12 @@ describe('Filter Set', () => {
     const propsData = {
       value: [false, false, false, false, false],
       label: 'test',
-      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
-                new Filter('Test 2', '2', ()=>{}, ['attr']),
-                new Filter('Test 3', '3', ()=>{}, ['attr']),
-                new Filter('Test 4', '4', ()=>{}, ['attr']),
-                new Filter('Test 5', '5', ()=>{}, ['attr'])]
-    }
+      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
+        new Filter('Test 2', '2', () => {}, ['attr']),
+        new Filter('Test 3', '3', () => {}, ['attr']),
+        new Filter('Test 4', '4', () => {}, ['attr']),
+        new Filter('Test 5', '5', () => {}, ['attr'])]
+    };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([2, 3, 4]);
 
@@ -140,13 +138,13 @@ describe('Filter Set', () => {
     const propsData = {
       value: [false, false, false, false, false, false],
       label: 'test',
-      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
-                new Filter('Test 2', '2', ()=>{}, ['attr']),
-                new Filter('Test 3', '3', ()=>{}, ['attr']),
-                new Filter('Test 4', '4', ()=>{}, ['attr']),
-                new Filter('Test 5', '5', ()=>{}, ['attr']),
-                new Filter('Test 6', '6', ()=>{}, ['attr'])]
-    }
+      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
+        new Filter('Test 2', '2', () => {}, ['attr']),
+        new Filter('Test 3', '3', () => {}, ['attr']),
+        new Filter('Test 4', '4', () => {}, ['attr']),
+        new Filter('Test 5', '5', () => {}, ['attr']),
+        new Filter('Test 6', '6', () => {}, ['attr'])]
+    };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([2, 4, 1, 3]);
 
@@ -163,12 +161,12 @@ describe('Filter Set', () => {
     const propsData = {
       value: [false, false, false, false, false],
       label: 'test',
-      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
-                new Filter('Test 2', '2', ()=>{}, ['attr']),
-                new Filter('Test 3', '3', ()=>{}, ['attr']),
-                new Filter('Test 4', '4', ()=>{}, ['attr']),
-                new Filter('Test 5', '5', ()=>{}, ['attr'])]
-    }
+      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
+        new Filter('Test 2', '2', () => {}, ['attr']),
+        new Filter('Test 3', '3', () => {}, ['attr']),
+        new Filter('Test 4', '4', () => {}, ['attr']),
+        new Filter('Test 5', '5', () => {}, ['attr'])]
+    };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([0, 2, 3]);
 
@@ -185,13 +183,13 @@ describe('Filter Set', () => {
     const propsData = {
       value: [false, false, false, false, false, false],
       label: 'test',
-      filters: [new Filter('Test 1', '1', ()=>{}, ['attr']),
-                new Filter('Test 2', '2', ()=>{}, ['attr']),
-                new Filter('Test 3', '3', ()=>{}, ['attr']),
-                new Filter('Test 4', '4', ()=>{}, ['attr']),
-                new Filter('Test 5', '5', ()=>{}, ['attr']),
-                new Filter('Test 6', '6', ()=>{}, ['attr'])]
-    }
+      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
+        new Filter('Test 2', '2', () => {}, ['attr']),
+        new Filter('Test 3', '3', () => {}, ['attr']),
+        new Filter('Test 4', '4', () => {}, ['attr']),
+        new Filter('Test 5', '5', () => {}, ['attr']),
+        new Filter('Test 6', '6', () => {}, ['attr'])]
+    };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([4, 0, 2, 5]);
 

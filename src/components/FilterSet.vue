@@ -36,7 +36,7 @@ export default {
     }
   },
   methods: {
-    /*selectionIndices : a list of the indices of selected filters
+    /* selectionIndices : a list of the indices of selected filters
 
     produces an array of booleans filtersSelected, such that for
     0 <= i < filters.length, filtersSelected[i] is true iff
