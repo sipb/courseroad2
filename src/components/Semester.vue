@@ -26,6 +26,30 @@
             <template v-slot:activator="{ on }">
               <span v-on="on">Hours: {{ semesterInformation.totalExpectedHours.toFixed(1) }}</span>
             </template>
+            <template>
+              <v-data-table
+                :headers="semesterInformation.headers"
+                :items="semesterInformation.table"
+                hide-actions
+                hide-headers
+                disable-initial-sort
+                no-data-text="No classes"
+                dense
+              >
+                <template slot="items" slot-scope="props">
+                  <tr>
+                    <td v-for="property in semesterInformation.headers">
+                      <span v-if = "property.value === 'quarter'">
+                        <b>{{ props.item[property.value] }}</b>
+                      </span>
+                      <span v-else>
+                        {{ props.item[property.value]}}
+                      </span>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </template>
             <div>
               <table v-if="semesterSubjects.length" border="1">
                 <tr v-if="semesterInformation.expectedHoursQuarter1.length">
@@ -359,6 +383,47 @@ export default {
       const totalExpectedHoursQuarter2 = expectedHoursQuarter2.reduce(sumExpectedHours, 0);
       const totalExpectedHours = Math.max(totalExpectedHoursQuarter1, totalExpectedHoursQuarter2);
       const anyClassInSingleQuarter = classesInfo.some((s) => s.quarter_information !== undefined);
+      const maxNumberOfClasses = Math.max(expectedHoursQuarter1.length, expectedHoursQuarter2.length);
+
+      let headers = [];
+      if (anyClassInSingleQuarter) {
+        headers.push({ text: 'Quarter', value: 'quarter' });
+      }
+      headers.push({ text: 'Header', value: 'header' });
+      for (var i = 0; i < maxNumberOfClasses; i++) {
+        headers.push({ text: 'Class ' + i, value: 'class-' + i });
+      }
+
+      let table = [];
+      if (expectedHoursQuarter1.length) {
+        let ids = { header: 'Class', quarter: 'Quarter 1' };
+        let hours = { header: 'Hours', quarter: totalExpectedHoursQuarter1.toFixed(1) + 'h' };
+        for (var i = 0; i < expectedHoursQuarter1.length; i++) {
+          ids['class-'+i] = expectedHoursQuarter1[i].id;
+          hours['class-'+i] = expectedHoursQuarter1[i].hours.toFixed(1) + 'h';
+        }
+        for (var i = expectedHoursQuarter1.length; i < maxNumberOfClasses; i++) {
+          ids['class-'+i] = '';
+          hours['class-i'+i] = '';
+        }
+        table.push(ids);
+        table.push(hours);
+      }
+      if (expectedHoursQuarter2.length && anyClassInSingleQuarter) {
+        let ids = { header: 'Class', quarter: 'Quarter 2' };
+        let hours = { header: 'Hours', quarter: totalExpectedHoursQuarter2.toFixed(1) + 'h' };
+        for (var i = 0; i < expectedHoursQuarter2.length; i++) {
+          ids['class-'+i] = expectedHoursQuarter2[i].id;
+          hours['class-'+i] = expectedHoursQuarter2[i].hours.toFixed(1) + 'h';
+        }
+        for (var i = expectedHoursQuarter2.length; i < maxNumberOfClasses; i++) {
+          ids['class-'+i] = '';
+          hours['class-'+i] = '';
+        }
+        table.push(ids);
+        table.push(hours);
+      }
+
       return {
         totalUnits,
         totalExpectedHours,
@@ -366,7 +431,9 @@ export default {
         expectedHoursQuarter1,
         expectedHoursQuarter2,
         totalExpectedHoursQuarter1,
-        totalExpectedHoursQuarter2
+        totalExpectedHoursQuarter2,
+        headers,
+        table
       };
     },
     semesterYearName: function () {
