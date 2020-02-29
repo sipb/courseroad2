@@ -167,14 +167,14 @@ export default {
         if (this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) >= 0) {
           this.$emit('retrieve', this.duplicateRoadSource);
         } else {
-          this.addDialog = false;
-          this.newRoadName = '';
           this.$emit('add-road',
             this.newRoadName,
             this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
             this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
             Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
           );
+          this.addDialog = false;
+          this.newRoadName = '';
         }
       }
     }
