@@ -410,6 +410,11 @@ export default {
     },
     viewClassInfo: function (item) {
       this.$store.commit('pushClassStack', item.item.subject_id);
+    },
+    openFirstClass: function () {
+      if (this.autocomplete.length > 0) {
+        this.$store.commit('pushClassStack', this.autocomplete[0].subject_id);
+      }
     }
   }
 };

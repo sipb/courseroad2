@@ -72,7 +72,7 @@
           <h3>{{ capitalize(progressReq.threshold.criterion) }} Completed: {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}</h3>
           <v-layout row justify-start style="width: 70%; margin: auto;">
             <v-flex shrink style="width: 3em; margin-right: 1em;">
-              <v-text-field v-model="newManualProgress" type="number" />
+              <v-text-field v-model="newManualProgress" type="number" @keyup.enter="updateManualProgress" />
             </v-flex>
             <v-flex>
               <v-slider
