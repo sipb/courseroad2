@@ -23,7 +23,7 @@
           </v-btn>
           <v-card-title>Edit Road</v-card-title>
           <v-card-text>
-            <v-text-field v-if="editDialog" v-model="newRoadName" autofocus label="Road Name" />
+            <v-text-field v-if="editDialog" v-model="newRoadName" autofocus label="Road Name" @keyup.enter="renameRoad" />
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -34,7 +34,7 @@
             <v-btn
               color="primary"
               :disabled="otherRoadHasName(tabRoad, newRoadName)"
-              @click="$store.commit('setRoadName', {id: tabRoad, name: newRoadName}); editDialog = false; newRoadName = ''"
+              @click="renameRoad"
             >
               Submit
             </v-btn>
@@ -158,6 +158,11 @@ export default {
         );
       }
       this.addDialog = false;
+      this.newRoadName = '';
+    },
+    renameRoad: function () {
+      this.$store.commit('setRoadName', { id: this.tabRoad, name: this.newRoadName });
+      this.editDialog = false;
       this.newRoadName = '';
     }
   }
