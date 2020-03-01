@@ -31,7 +31,7 @@
           <div
             slot-scope="{ hover }"
             :class="{ 'elevation-3 grey lighten-3': hover }"
-            :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor:pointer')"
+            :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
           >
             <v-icon
               v-if="!('reqs' in item)"
@@ -148,10 +148,10 @@ import Requirement from './Requirement.vue';
 import classInfoMixin from './../mixins/classInfo.js';
 export default {
   name: 'Audit',
-  mixins: [classInfoMixin],
   components: {
     requirement: Requirement
   },
+  mixins: [classInfoMixin],
   props: {
     selectedReqs: {
       type: Array,
@@ -330,8 +330,8 @@ export default {
 
 <style scoped>
 .appendLeft {
-  float:left;
-  position:relative;
+  float: left;
+  position: relative;
   bottom: 3px;
 }
 .percentage-bar {
