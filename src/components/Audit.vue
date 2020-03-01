@@ -26,26 +26,33 @@
       open-on-click
       :activatable="false"
     >
-      <template slot="prepend" slot-scope="{ item }">
-        <v-icon
-          v-if="!('reqs' in item)"
-          :style="fulfilledIcon(item)"
-          @click="clickRequirement(item)"
-        >
-          {{ item['plain-string'] ?
-            (item["list-id"] in progressOverrides ?
-              (item.fulfilled ? "assignment_turned_in" : "assignment") :
-              "assignment_late" ) :
-            item.fulfilled ? "done" : "remove" }}
-        </v-icon>
-      </template>
       <template slot="label" slot-scope="{ item, leaf}">
-        <requirement
-          :req="item"
-          :is-leaf="leaf"
-          @click.native="clickRequirement(item)"
-          @click-info="reqInfo($event, item)"
-        />
+        <v-hover :disabled="!leaf || !canDrag(item)">
+          <div
+            slot-scope="{ hover }"
+            :class="{ 'elevation-3 grey lighten-3': hover }"
+            :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
+          >
+            <v-icon
+              v-if="!('reqs' in item)"
+              class="appendLeft"
+              :style="fulfilledIcon(item)"
+              @click="clickRequirement(item)"
+            >
+              {{ item['plain-string'] ?
+                (item["list-id"] in progressOverrides ?
+                  (item.fulfilled ? "assignment_turned_in" : "assignment") :
+                  "assignment_late" ) :
+                item.fulfilled ? "done" : "remove" }}
+            </v-icon>
+            <requirement
+              :req="item"
+              :is-leaf="leaf"
+              @click.native="clickRequirement(item)"
+              @click-info="reqInfo($event, item)"
+            />
+          </div>
+        </v-hover>
       </template>
     </v-treeview>
 
@@ -145,11 +152,13 @@
 
 <script>
 import Requirement from './Requirement.vue';
+import classInfoMixin from './../mixins/classInfo.js';
 export default {
   name: 'Audit',
   components: {
     requirement: Requirement
   },
+  mixins: [classInfoMixin],
   props: {
     selectedReqs: {
       type: Array,
@@ -338,6 +347,11 @@ export default {
 </script>
 
 <style scoped>
+.appendLeft {
+  float: left;
+  position: relative;
+  bottom: 3px;
+}
 .percentage-bar {
   background: linear-gradient(
     90deg,
