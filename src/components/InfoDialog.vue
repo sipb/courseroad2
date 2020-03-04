@@ -78,7 +78,13 @@ export default {
   computed: {
     activeProgressAssertions: {
       get: function () {
-        return this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.dialogReq.uniqueKey]['substitutions'];
+        const dialogReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.dialogReq.uniqueKey];
+        // Checks if unique key in progressAssert, if it is, searches for substitution key
+        if (dialogReqPA === undefined) {
+          return dialogReqPA;
+        } else {
+          return dialogReqPA['substitutions'];
+        }
       },
       set: function (newReqs) {
         this.$store.commit('setProgressAssertions', { uniqueKey: this.dialogReq.uniqueKey, newReqs: newReqs });
