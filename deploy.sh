@@ -10,12 +10,12 @@ if [ "$1" = "prod" ]; then
   echo -n "You are about to deploy to the production site, are you sure? (y/n)? "
   read answer
   if [ "$answer" != "${answer#[Yy]}" ] ;then
-    scp -r dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/
+    scp -r cgi-bin/ dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/
   else
     echo cancelled
   fi
 elif [ "$1" = "dev" ]; then
-    scp -r dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/dev/
+    scp -r cgi-bin/ dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/dev/
 else
   echo "Invalid build location"
 fi
