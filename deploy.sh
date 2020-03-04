@@ -1,3 +1,4 @@
+#!/bin/bash
 # To run this script you must have *in your athena locker*:
 # - 'aklog' written in ~/.bash_environment (or the environment file for whatever shell you use)
 # - 'sipb' and 'athena' written in ~/.xlog.
