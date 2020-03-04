@@ -36,7 +36,7 @@ class Filter {
   /*
   Test if a particular subject matches the filter
 
-  subject: a subject object
+  subject: a subject object, must contain all attributes in this.attributes
   returns: true if the attributes of the subject return true when passed through
             the filter function; if mode is OR any attribute in attributes can
             match, otherwise all attributes must match
