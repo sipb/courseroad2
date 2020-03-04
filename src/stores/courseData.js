@@ -105,7 +105,7 @@ const store = new Vuex.Store({
       Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
     },
     setProgressAssertions (state, { uniqueKey, newReqs }) {
-      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, newReqs);
+      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
     },
     setUnretrieved (state, roadIDs) {
       state.unretrieved = roadIDs;

@@ -78,7 +78,7 @@ export default {
   computed: {
     activeProgressAssertions: {
       get: function () {
-        return this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.dialogReq.uniqueKey];
+        return this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.dialogReq.uniqueKey]['substitutions'];
       },
       set: function (newReqs) {
         this.$store.commit('setProgressAssertions', { uniqueKey: this.dialogReq.uniqueKey, newReqs: newReqs });
