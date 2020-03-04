@@ -443,7 +443,7 @@ export default {
         coursesOfStudy: cos,
         selectedSubjects: ss,
         progressOverrides: overrides,
-        petitionedReqs: {}
+        progressAssertions: {}
       };
       const newRoad = {
         downloaded: moment().format(DATE_FORMAT),

@@ -28,7 +28,7 @@
             <b>Petition this Requirement:</b>
           </v-card-text>
           <v-autocomplete
-            v-model="activePetitionedReqs"
+            v-model="activeProgressAssertions"
             menu-props="lazy"
             :items="removeSharedCourses(selectedSubjects.flat(), dialogReq['sat_courses']).sort(sortCourses)"
             item-text="id"
@@ -76,12 +76,12 @@ export default {
     };
   },
   computed: {
-    activePetitionedReqs: {
+    activeProgressAssertions: {
       get: function () {
-        return this.$store.state.roads[this.$store.state.activeRoad].contents.petitionedReqs[this.dialogReq.uniqueKey];
+        return this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.dialogReq.uniqueKey];
       },
       set: function (newReqs) {
-        this.$store.commit('setPetitionedReqs', { uniqueKey: this.dialogReq.uniqueKey, newReqs: newReqs });
+        this.$store.commit('setProgressAssertions', { uniqueKey: this.dialogReq.uniqueKey, newReqs: newReqs });
       }
     }
   },
