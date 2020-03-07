@@ -75,7 +75,7 @@ var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_un
 var termFall = new BooleanFilter('Fall', 'FA', ['offered_fall'], false);
 var termIAP = new BooleanFilter('IAP', 'IAP', ['offered_IAP'], false);
 var termSpring = new BooleanFilter('Spring', 'SP', ['offered_spring'], false);
-var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'nameInput', 'OR');
+var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'OR', 'nameInput');
 
 export default {
   name: 'ClassSearch',

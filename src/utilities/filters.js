@@ -61,7 +61,7 @@ class RegexFilter extends Filter {
   regex: a regex string that the subject's attributes must match
   requires: input which is required to adjust the regex
   */
-  constructor (name, shortName, regex, attributeNames, requires, mode) {
+  constructor (name, shortName, regex, attributeNames, mode, requires) {
     var testFunction = RegexFilter.getRegexTestFunction(regex);
     super(name, shortName, testFunction, attributeNames, mode);
     this.regex = regex;
