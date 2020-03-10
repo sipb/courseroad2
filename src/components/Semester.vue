@@ -26,36 +26,47 @@
             <template v-slot:activator="{ on }">
               <span v-on="on">Hours: {{ semesterInformation.totalExpectedHours.toFixed(1) }}</span>
             </template>
-            <div>
+            <div id="tooltipTable">
               <table v-if="semesterSubjects.length" border="1">
                 <tr v-if="semesterInformation.expectedHoursQuarter1.length">
                   <th v-if="semesterInformation.anyClassInSingleQuarter" rowspan="2">
                     Quarter 1 <br>
                     <span style="font-weight:normal">{{ semesterInformation.totalExpectedHoursQuarter1.toFixed(1) }}h </span>
                   </th>
-                  <th>Class</th>
+                  <th class="rightbar">
+                    Class
+                  </th>
                   <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
-                    {{ subj.id }}
+                    <b>{{ subj.id }}</b>
                   </td>
                 </tr>
                 <tr v-if="semesterInformation.expectedHoursQuarter1.length">
-                  <th>Hours</th>
+                  <th class="rightbar">
+                    Hours
+                  </th>
                   <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
                     {{ subj.hours.toFixed(1) }}h
                   </td>
                 </tr>
-                <tr v-if="semesterInformation.anyClassInSingleQuarter && semesterInformation.expectedHoursQuarter2.length">
+                <tr
+                  v-if="semesterInformation.anyClassInSingleQuarter && semesterInformation.expectedHoursQuarter2.length"
+                  class="topbar"
+                >
                   <th rowspan="2">
                     Quarter 2 <br>
                     <span style="font-weight:normal">{{ semesterInformation.totalExpectedHoursQuarter2.toFixed(1) }}h </span>
                   </th>
-                  <th>Class</th>
+                  <th class="rightbar">
+                    Class
+                  </th>
                   <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
-                    {{ subj.id }}
+                    <b>{{ subj.id }}</b>
                   </td>
                 </tr>
                 <tr v-if="semesterInformation.anyClassInSingleQuarter && semesterInformation.expectedHoursQuarter2.length">
-                  <th>Hours</th>
+                  <th class="rightbar">
+                    Hours
+                  </th>
                   <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
                     {{ subj.hours.toFixed(1) }}h
                   </td>
@@ -553,5 +564,22 @@ export default {
     overflow: hidden;
     white-space: nowrap;
     color: white;
+  }
+  /* tooltip table styling */
+  #tooltipTable table {
+    border-collapse: collapse;
+    margin: 0;
+  }
+  #tooltipTable table , #tooltipTable th, #tooltipTable td {
+    border: 3px solid grey;
+  }
+  #tooltipTable th, #tooltipTable td {
+    padding: 0.4em;
+  }
+  #tooltipTable .rightbar {
+    border-right-width: 5px;
+  }
+  #tooltipTable .topbar th, #tooltipTable .topbar td {
+    border-top-width: 5px;
   }
 </style>
