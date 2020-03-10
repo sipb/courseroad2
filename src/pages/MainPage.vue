@@ -164,21 +164,8 @@
       @click.native="$event.stopPropagation()"
     />
 
-    <v-footer v-if="!dismissedAndroidWarning || !dismissedCookies" fixed style="height: unset;">
+    <v-footer v-if="!dismissedCookies" fixed style="height: unset;">
       <v-layout column>
-        <v-flex v-if="!dismissedAndroidWarning" class="red accent-1 py-1 px-2">
-          <v-layout row align-center>
-            <v-flex>
-              Warning: Some users have reported strange interactions between CourseRoad and the FireRoad Android app. If you use FireRoad on Android, please backup your roads by exporting them until we have fixed this bug.
-            </v-flex>
-            <v-flex shrink>
-              <v-btn small icon flat class="ma-1" @click="dismissOld">
-                <v-icon>close</v-icon>
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-divider v-if="!dismissedAndroidWarning && !dismissedCookies" />
         <v-flex v-if="!dismissedCookies" class="lime accent-3 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
