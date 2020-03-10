@@ -27,11 +27,13 @@
               <span v-on="on">Hours: {{ semesterInformation.totalExpectedHours.toFixed(1) }}</span>
             </template>
             <div id="tooltipTable">
-              <table v-if="semesterSubjects.length" border="1">
+              <table v-if="semesterSubjects.length">
                 <tr v-if="semesterInformation.expectedHoursQuarter1.length">
                   <th v-if="semesterInformation.anyClassInSingleQuarter" rowspan="2">
                     Quarter 1 <br>
-                    <span style="font-weight:normal">{{ semesterInformation.totalExpectedHoursQuarter1.toFixed(1) }}h </span>
+                    <span style="font-weight: normal">
+                      {{ semesterInformation.totalExpectedHoursQuarter1.toFixed(1) }}h
+                    </span>
                   </th>
                   <th class="rightbar">
                     Class
@@ -54,7 +56,9 @@
                 >
                   <th rowspan="2">
                     Quarter 2 <br>
-                    <span style="font-weight:normal">{{ semesterInformation.totalExpectedHoursQuarter2.toFixed(1) }}h </span>
+                    <span style="font-weight: normal">
+                      {{ semesterInformation.totalExpectedHoursQuarter2.toFixed(1) }}h
+                    </span>
                   </th>
                   <th class="rightbar">
                     Class
