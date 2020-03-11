@@ -72,9 +72,9 @@ var units12 = new MathFilter('12', '12', [12, 12], true, ['total_units']);
 var units15 = new MathFilter('15', '15', [15, 15], true, ['total_units']);
 var units6To15 = new MathFilter('6-15', '6-15', [6, 15], true, ['total_units']);
 var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_units']);
-var termFall = new BooleanFilter('Fall', 'FA', ['offered_fall'], false);
-var termIAP = new BooleanFilter('IAP', 'IAP', ['offered_IAP'], false);
-var termSpring = new BooleanFilter('Spring', 'SP', ['offered_spring'], false);
+var termFall = new BooleanFilter('Fall', 'FA', false, ['offered_fall']);
+var termIAP = new BooleanFilter('IAP', 'IAP', false, ['offered_IAP']);
+var termSpring = new BooleanFilter('Spring', 'SP', false, ['offered_spring']);
 var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'OR', 'nameInput');
 
 export default {

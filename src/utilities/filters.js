@@ -245,7 +245,7 @@ class BooleanFilter extends Filter {
   negated: true if the filter should pass attributes are false, false if it
           should pass values which are true
   */
-  constructor (name, shortName, attributeNames, negated, mode) {
+  constructor (name, shortName, negated, attributeNames, mode) {
     var match = (input) => input === !negated;
     super(name, shortName, match, attributeNames, mode);
   }
