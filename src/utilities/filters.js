@@ -279,9 +279,9 @@ class FilterGroup {
   inputs: object which contains keys of the required values for all filters
           in the group
 
-  returns: true if the subject matches the filters in the group; if the mode is
-          OR then it only needs to match one filter, if the mode is AND it
-          must match all filters
+  returns: true if the subject matches the active filters in the group; if the
+          mode is OR then it only needs to match one filter, if the mode is AND
+          it must match all filters; returns true if no filters are active
   */
   matches (subject, active, inputs) {
     if (!active.some((a) => a)) {
