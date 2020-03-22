@@ -32,7 +32,6 @@
             menu-props="lazy"
             :items="removeSharedCourses(selectedSubjects.flat(), dialogReq['sat_courses']).sort(sortCourses)"
             item-text="id"
-            return-object
             label="Select Class"
             no-data-text="No Courses Found"
             chips
@@ -88,6 +87,11 @@ export default {
       },
       set: function (newReqs) {
         this.$store.commit('setProgressAssertions', { uniqueKey: this.dialogReq.uniqueKey, newReqs: newReqs });
+      }
+    },
+    progressAssertions: {
+      get: function () {
+        return this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions;
       }
     }
   },

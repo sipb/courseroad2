@@ -106,6 +106,7 @@ const store = new Vuex.Store({
     },
     setProgressAssertions (state, { uniqueKey, newReqs }) {
       Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setUnretrieved (state, roadIDs) {
       state.unretrieved = roadIDs;
