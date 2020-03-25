@@ -82,21 +82,38 @@ class RegexFilter extends Filter {
   }
 
   /*
+  Constructs a regex from a given string
+
+  regex: a (potentially valid) regex string
+  returns: a regex which is either represented by the given string, or by the
+           given string as a literal if a regex cannot be constructed from it
+  */
+  static constructRegex(regex) {
+    try {
+      return new RegExp(regex, 'i');
+    } catch (e) {
+      // If a regex cannot be constructed, default to matching the literal
+      return new RegExp(RegexFilter.escapeRegex(regex), 'i');
+    }
+  }
+
+  /*
   Constructs a function to test strings against a given regex
 
   regex: a (potentially valid) regex string
+  addon: a (potentially valid) regex addon string, undefined for no add-on
   returns: a function which will return true if a given string matches the regex
           and false otherwise.  If the regex is not valid it will be escaped
           and matched literally.
   */
-  static getRegexTestFunction (regex) {
-    var regexObject;
-    try {
-      regexObject = new RegExp(regex, 'i');
-    } catch (e) {
-      // If a regex cannot be constructed, default to matching the literal
-      regexObject = new RegExp(RegexFilter.escapeRegex(regex), 'i');
+  static getRegexTestFunction (regex, addon) {
+    let regexObject = RegexFilter.constructRegex(regex);
+
+    if (addon !== undefined) {
+      let addonObject = RegexFilter.constructRegex(addon);
+      regexObject = new RegExp(regexObject.source + addonObject.source, 'i');
     }
+
     // Regex test function only works when bound to the regex object
     return regexObject.test.bind(regexObject);
   }
@@ -112,7 +129,7 @@ class RegexFilter extends Filter {
   setupInputs (inputs) {
     if (this.requires !== undefined) {
       var regexAddOn = inputs[this.requires];
-      this.filter = RegexFilter.getRegexTestFunction(this.regex + regexAddOn);
+      this.filter = RegexFilter.getRegexTestFunction(this.regex, regexAddOn);
     } else {
       this.filter = this.originalFilter;
     }
@@ -189,7 +206,7 @@ class RegexFilter extends Filter {
       return priorityFuncs
         .sort((a, b) => applicationOrder.indexOf(a) - applicationOrder.indexOf(b))
         .reduce((acc, func) => (priorityFunctions[func])(acc), regex);
-    }).map(RegexFilter.getRegexTestFunction);
+    }).map((r) => RegexFilter.getRegexTestFunction(r));
 
     // Set member variable to use in future prioritization checks
     this.priorities = priorities;

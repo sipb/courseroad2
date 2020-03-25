@@ -90,7 +90,6 @@ describe('RegexFilter', () => {
   it('passes matching subject with inputs set up using invalid regex', () => {
     const r = new RegexFilter('test', 't', 'h.t', ['a'], 'OR', 'hi');
     r.setupInputs({ hi: '\\' });
-    console.log("\\");
     expect(r.matches({ a: 'hat\\coat' })).toBe(true);
   });
 
