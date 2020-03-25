@@ -88,7 +88,7 @@ class RegexFilter extends Filter {
   returns: a regex which is either represented by the given string, or by the
            given string as a literal if a regex cannot be constructed from it
   */
-  static constructRegex(regex) {
+  static constructRegex (regex) {
     try {
       return new RegExp(regex, 'i');
     } catch (e) {
@@ -110,7 +110,7 @@ class RegexFilter extends Filter {
     let regexObject = RegexFilter.constructRegex(regex);
 
     if (addon !== undefined) {
-      let addonObject = RegexFilter.constructRegex(addon);
+      const addonObject = RegexFilter.constructRegex(addon);
       regexObject = new RegExp(regexObject.source + addonObject.source, 'i');
     }
 

@@ -54,7 +54,7 @@ describe('RegexFilter', () => {
   it('passes matching subject with empty requires set up with invalid regex', () => {
     const r = new RegexFilter('test', 't', 'ab', ['a']);
     r.setupInputs({ in: '[' });
-    expect(r.matches({a: 'abc'})).toBe(true);
+    expect(r.matches({ a: 'abc' })).toBe(true);
   });
 
   // covers
@@ -71,8 +71,8 @@ describe('RegexFilter', () => {
   // setupInputs: requires undefined, invalid regex
   it('fails non-matching subjects with empty requires set up with invalid regex', () => {
     const r = new RegexFilter('test', 't', 'a\\db', ['a']);
-    r.setupInputs({ in: '(g'})
-    expect(r.matches({ a: 'acbd'})).toBe(false);
+    r.setupInputs({ in: '(g' });
+    expect(r.matches({ a: 'acbd' })).toBe(false);
   });
 
   // covers
@@ -107,8 +107,8 @@ describe('RegexFilter', () => {
   // setupInputs: requires defined, invalid regex
   it('fails non-matching subjects with inputs set up using invalid regex', () => {
     const r = new RegexFilter('test', 'r', 'ch.+s\\s+', ['a'], 'OR', 'x');
-    r.setupInputs({ x: '+8'});
-    expect(r.matches({ a: 'choices 78'})).toBe(false);
+    r.setupInputs({ x: '+8' });
+    expect(r.matches({ a: 'choices 78' })).toBe(false);
   });
 
   // covers
