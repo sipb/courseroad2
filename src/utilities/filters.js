@@ -173,7 +173,7 @@ class RegexFilter extends Filter {
       var arrayWithPriority = regexPriorities.map((funcNames) => funcNames.concat([priorityOrder[p]]));
 
       regexPriorities.push(...arrayWithPriority);
-      let priorityIndices = indexMap.map((i) => i + indexMap.length);
+      const priorityIndices = indexMap.map((i) => i + indexMap.length);
 
       // If this priority is prioritized, give it higher ranks (later indices)
       if (isPrioritized) {
