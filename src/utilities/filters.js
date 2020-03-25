@@ -138,6 +138,7 @@ class RegexFilter extends Filter {
     var atStart = function (regex) {
       return '^' + regex;
     };
+
     var asLiteral = function (regex) {
       return RegexFilter.escapeRegex(regex);
     };
@@ -163,6 +164,7 @@ class RegexFilter extends Filter {
     // Create list of different combinations of functions to apply
     // Prioritized functions last; which priority to consider first by priority order
     var regexPriorities = [[]];
+    let indexMap = [0];
 
     priorityOrder.reverse();
     for (var p = 0; p < priorityOrder.length; p++) {
@@ -170,12 +172,15 @@ class RegexFilter extends Filter {
       // Create two lists; one with priority applied, the other without
       var arrayWithPriority = regexPriorities.map((funcNames) => funcNames.concat([priorityOrder[p]]));
 
-      // If this priority is prioritized, put it last
+      regexPriorities.push(...arrayWithPriority);
+      let priorityIndices = indexMap.map((i) => i + indexMap.length);
+
+      // If this priority is prioritized, give it higher ranks (later indices)
       if (isPrioritized) {
-        regexPriorities.push(...arrayWithPriority);
+        indexMap.push(...priorityIndices);
       } else {
-        arrayWithPriority.push(...regexPriorities);
-        regexPriorities = arrayWithPriority;
+        priorityIndices.push(...indexMap);
+        indexMap = priorityIndices;
       }
     }
 
@@ -188,6 +193,7 @@ class RegexFilter extends Filter {
 
     // Set member variable to use in future prioritization checks
     this.priorities = priorities;
+    this.priorityIndexMap = indexMap;
   }
 
   /*
@@ -208,6 +214,14 @@ class RegexFilter extends Filter {
       var matches = this.priorities.map((test) => test(subject[this.attributes[a]]));
       orders.push(matches.lastIndexOf(true));
     }
+
+    orders = orders.map((order) => {
+      if (order === -1) {
+        return -1;
+      } else {
+        return this.priorityIndexMap[order];
+      }
+    });
 
     // Get largest sort priority of all the matching attributes
     return Math.max(...orders);
