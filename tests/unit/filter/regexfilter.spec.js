@@ -16,6 +16,7 @@ describe('RegexFilter', () => {
     partition on inputs: setup, not set up
   setupInputs(inputs):
     partition on this.requires: undefined, defined
+    partition on input: valid regex, invalid regex
   setupVariants(inputs, priorityDirections, priorityOrder):
     partition on this.requires: undefined, defined
     partition on # priorities: = 0, = 1, > 1
@@ -40,7 +41,7 @@ describe('RegexFilter', () => {
 
   // covers
   // matches: result=true, inputs set up
-  // setupInputs: requires undefined
+  // setupInputs: requires undefined, valid regex
   it('passes matching subjects with empty requires set up', () => {
     const r = new RegexFilter('test', 't', 'n[^n]{2,3}n', ['a']);
     r.setupInputs({ input: 'value', a: 'x' });
@@ -48,8 +49,17 @@ describe('RegexFilter', () => {
   });
 
   // covers
+  // matches: result=true, inputs set up
+  // setupInputs: requires undefined, invalid regex
+  it('passes matching subject with empty requires set up with invalid regex', () => {
+    const r = new RegexFilter('test', 't', 'ab', ['a']);
+    r.setupInputs({ in: '[' });
+    expect(r.matches({a: 'abc'})).toBe(true);
+  });
+
+  // covers
   // matches: result=false, inputs set up
-  // setupInputs: requires undefined
+  // setupInputs: requires undefined, valid regex
   it('fails non-matching subjects with empty requires set up', () => {
     const r = new RegexFilter('test', 't', 'x\\d{3}x', ['a']);
     r.setupInputs({ a: 'hi', b: 5 });
@@ -57,8 +67,17 @@ describe('RegexFilter', () => {
   });
 
   // covers
+  // matches: result=false, inputs set up
+  // setupInputs: requires undefined, invalid regex
+  it('fails non-matching subjects with empty requires set up with invalid regex', () => {
+    const r = new RegexFilter('test', 't', 'a\\db', ['a']);
+    r.setupInputs({ in: '(g'})
+    expect(r.matches({ a: 'acbd'})).toBe(false);
+  });
+
+  // covers
   // matches: result=true, inputs set up
-  // setupInputs: requires defined
+  // setupInputs: requires defined, valid regex
   it('passes matching subjects with inputs set up', () => {
     const r = new RegexFilter('test', 't', '20\\d\\d-05-', ['a'], 'OR', 'day');
     r.setupInputs({ month: 6, day: 24 });
@@ -66,12 +85,31 @@ describe('RegexFilter', () => {
   });
 
   // covers
+  // matches: result=true, inputs set up
+  // setupInputs: requires defined, invalid regex
+  it('passes matching subject with inputs set up using invalid regex', () => {
+    const r = new RegexFilter('test', 't', 'h.t', ['a'], 'OR', 'hi');
+    r.setupInputs({ hi: '\\' });
+    console.log("\\");
+    expect(r.matches({ a: 'hat\\coat' })).toBe(true);
+  });
+
+  // covers
   // matches: result=false, inputs set up
-  // setupInputs: requires defined
+  // setupInputs: requires defined, valid regex
   it('fails non-matching subjects with inputs set up', () => {
     const r = new RegexFilter('test', 't', 'i like \\d+ ', ['a'], 'OR', 'pets');
     r.setupInputs({ random: 1, pets: 'cats' });
     expect(r.matches({ a: 'i like 7 ' })).toBe(false);
+  });
+
+  // covers
+  // matches: result=false, inputs set up
+  // setupInputs: requires defined, invalid regex
+  it('fails non-matching subjects with inputs set up using invalid regex', () => {
+    const r = new RegexFilter('test', 'r', 'ch.+s\\s+', ['a'], 'OR', 'x');
+    r.setupInputs({ x: '+8'});
+    expect(r.matches({ a: 'choices 78'})).toBe(false);
   });
 
   // covers
