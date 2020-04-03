@@ -1,8 +1,10 @@
 'use strict'
 const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
+const { resolve } = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const cgi = require('cgi')
 
 module.exports = (env) => {
   return {
@@ -15,6 +17,13 @@ module.exports = (env) => {
       hot: true,
       watchOptions: {
         poll: true
+      },
+      before: function (app, server, compiler) {
+        // Before handing all other dev server requests, check if the route is to the People API middleware and pass
+        // it to the CGI handler.
+        app.get('/cgi-bin/people.py', function (req, res) {
+          cgi(resolve(__dirname, '..', 'cgi-bin', 'people.py'))(req, res)
+        })
       }
     },
     module: {
