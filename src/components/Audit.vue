@@ -26,28 +26,42 @@
       open-on-click
       :activatable="false"
     >
-      <template slot="prepend" slot-scope="{ item }">
-        <v-icon
-          v-if="!('reqs' in item)"
-          :style="fulfilledIcon(item)"
-          @click="clickRequirement(item)"
-        >
-          {{ item['plain-string'] ?
-            (item["list-id"] in progressOverrides ?
-              (item.fulfilled ? "assignment_turned_in" : "assignment") :
-              "assignment_late" ) :
-            item.fulfilled ? "done" : "remove" }}
-        </v-icon>
-      </template>
       <template slot="label" slot-scope="{ item, leaf}">
-        <requirement
-          :req="item"
-          :is-leaf="leaf"
-          @click.native="clickRequirement(item)"
-          @click-info="reqInfo($event, item)"
-        />
+        <v-hover :disabled="!leaf || !canDrag(item)">
+          <div
+            slot-scope="{ hover }"
+            :class="{ 'elevation-3 grey lighten-3': hover }"
+            :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
+          >
+            <v-icon
+              v-if="!('reqs' in item)"
+              class="appendLeft"
+              :style="fulfilledIcon(item)"
+              @click="clickRequirement(item)"
+            >
+              {{ item['plain-string'] ?
+                (item["list-id"] in progressOverrides ?
+                  (item.fulfilled ? "assignment_turned_in" : "assignment") :
+                  "assignment_late" ) :
+                item.fulfilled ? "done" : "remove" }}
+            </v-icon>
+            <requirement
+              :req="item"
+              :is-leaf="leaf"
+              @click.native="clickRequirement(item)"
+              @click-info="reqInfo($event, item)"
+            />
+          </div>
+        </v-hover>
       </template>
     </v-treeview>
+
+    <p v-if="isCourse6">
+      <br>
+      <a href="http://eecsappsrv.mit.edu/students/">
+        Course 6 Student Portal (+Audit)
+      </a>
+    </p>
 
     <v-dialog v-model="progressDialog" max-width="600">
       <v-card v-if="progressReq !== undefined">
@@ -65,7 +79,7 @@
           <h3>{{ capitalize(progressReq.threshold.criterion) }} Completed: {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}</h3>
           <v-layout row justify-start style="width: 70%; margin: auto;">
             <v-flex shrink style="width: 3em; margin-right: 1em;">
-              <v-text-field v-model="newManualProgress" type="number" />
+              <v-text-field v-model="newManualProgress" type="number" @keyup.enter="updateManualProgress" />
             </v-flex>
             <v-flex>
               <v-slider
@@ -138,11 +152,13 @@
 
 <script>
 import Requirement from './Requirement.vue';
+import classInfoMixin from './../mixins/classInfo.js';
 export default {
   name: 'Audit',
   components: {
     requirement: Requirement
   },
+  mixins: [classInfoMixin],
   props: {
     selectedReqs: {
       type: Array,
@@ -153,7 +169,7 @@ export default {
       required: true
     },
     reqList: {
-      type: Object,
+      type: Array,
       required: true
     },
     progressOverrides: {
@@ -187,9 +203,20 @@ export default {
         }
       }
     },
+    isCourse6: function () {
+      return this.selectedTrees.some(course => {
+        // checks if a course is one of the ones that the course 6 audit page works for
+        // if statement needed because otherwise it gives an error if the courses haven't loaded yet
+        if (course['short-title']) {
+          const major = course['short-title'].slice(0, 3);
+          return ['6-1', '6-2', '6-3', '6-7', '6-14', '6', '6-P'].includes(major);
+        } else {
+          return false;
+        }
+      });
+    },
     getCourses: function () {
-      const list = this.reqList;
-      const courses = Object.keys(list).map(x => Object.assign(list[x], { key: x }));
+      const courses = this.reqList.slice(0);
       const sortKey = 'medium-title';
       // NOTE: brute force way sorting the courses given the fields we have
       courses.sort(function (c1, c2) {
@@ -320,6 +347,11 @@ export default {
 </script>
 
 <style scoped>
+.appendLeft {
+  float: left;
+  position: relative;
+  bottom: 3px;
+}
 .percentage-bar {
   background: linear-gradient(
     90deg,

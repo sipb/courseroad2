@@ -13,6 +13,7 @@ module.exports = (env) => {
       './src/app.js'
     ],
     devServer: {
+      historyApiFallback: true,
       hot: true,
       watchOptions: {
         poll: true
@@ -62,6 +63,9 @@ module.exports = (env) => {
           use: 'babel-loader'
         }
       ]
+    },
+    output: {
+      publicPath: env.APP_URL.indexOf('dev') !== -1 ? '/dev/' : '/'
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
