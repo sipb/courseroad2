@@ -308,7 +308,6 @@ export default {
       return this.$store.state.genericCourses.concat(this.$store.state.subjectsInfo);
     },
     autocomplete: function () {
-      console.log("Autocomplete running with " + this.nameInput);
       // Only display subjects if you are filtering by something
       let returnAny = this.nameInput.length > 0;
       for (const filterName in this.chosenFilters) {

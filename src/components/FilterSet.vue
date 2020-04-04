@@ -8,6 +8,7 @@
       <v-btn
         v-for="(filter, index) in filters"
         :key="filter.name"
+        :id="cssID(filter.name)"
         flat
         :value="index"
         @click="buttonClicked"
@@ -44,6 +45,9 @@ export default {
       // Focus the search input in case user wants to start typing after
       // selecting a filter
       document.getElementById('searchInputTF').focus();
+    },
+    cssID (name) {
+      return 'filter-' + name.replace(/[~!@$%^&*()+=,./';:"?><\[\]\\{}|`#]/gi, '-')
     }
   }
 };
