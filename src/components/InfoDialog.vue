@@ -30,7 +30,7 @@
           <v-autocomplete
             v-model="activeProgressAssertions"
             menu-props="lazy"
-            :items="removeSharedCourses(selectedSubjects.flat(), dialogReq['sat_courses']).sort(sortCourses)"
+            :items="(selectedSubjects.flat()).sort(sortCourses)"
             item-text="id"
             label="Select Class"
             no-data-text="No Courses Found"
@@ -77,7 +77,8 @@ export default {
   computed: {
     activeProgressAssertions: {
       get: function () {
-        const dialogReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.dialogReq.uniqueKey];
+        const parsedDialogReq = this.dialogReq.uniqueKey.split('-')[1]; // Removes index from req key ex. "0-girs" to "girs"
+        const dialogReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[parsedDialogReq];
         // Checks if unique key in progressAssert, if it is, searches for substitution key
         if (dialogReqPA === undefined) {
           return dialogReqPA;
