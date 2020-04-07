@@ -30,7 +30,7 @@
           <v-autocomplete
             v-model="activeProgressAssertions"
             menu-props="lazy"
-            :items="(selectedSubjects.flat()).sort(sortCourses)"
+            :items="removeSharedCourses(selectedSubjects.flat(), dialogReq['sat_courses']).sort(sortCourses)"
             item-text="id"
             label="Select Class"
             no-data-text="No Courses Found"
@@ -133,7 +133,7 @@ export default {
       });
     },
     sortCourses: function (courseOne, courseTwo) {
-      // Sorts courses into major order. With courses with letters within the id it will be ordered based on semester placed in.
+      // Key function to sort courses into major order. With courses with letters within the id it will be ordered based on semester placed in.
       const courseOneId = courseOne.id;
       const courseTwoId = courseTwo.id;
       if (isNaN(parseFloat(courseOneId)) && isNaN(parseFloat(courseTwoId))) {
