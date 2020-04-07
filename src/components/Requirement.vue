@@ -21,6 +21,20 @@
         </div>
         <span v-else>
           <span v-if="'title' in req">{{ req.title }}</span>
+          <span
+            v-if="hoveringOver"
+            style="float:right"
+          >
+            <v-icon
+              style="padding-left: 0.2em; padding-right: 0em;"
+              small
+              :color="petitionColor"
+              @mouseover="petitionHover = true"
+              @mouseleave="petitionHover = false"
+            >
+              post_add
+            </v-icon>
+          </span>
         </span>
         <span v-if="!req['plain-string']">
           <span v-if="!('title' in req) && 'req' in req">
@@ -71,7 +85,8 @@ export default {
     return {
       open: [],
       hoveringOver: false,
-      iconHover: false
+      iconHover: false,
+      petitionHover: false
     };
   },
   computed: {
@@ -92,6 +107,9 @@ export default {
     },
     iconColor: function () {
       return this.iconHover ? 'info' : 'grey';
+    },
+    petitionColor: function () {
+      return this.petitionHover ? 'info' : 'grey';
     },
     canDrag: function () {
       return this.classInfo !== undefined ||
