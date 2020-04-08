@@ -33,7 +33,7 @@
             <v-icon style="margin: 4px" small @click="$store.commit('removeClass', {classInfo: classInfo, classIndex: classIndex}); $event.stopPropagation();">
               cancel
             </v-icon>
-            <v-card-text ref="title" v-line-clamp:20="3" class="card-text">
+            <v-card-text ref="title" class="card-text">
               <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ shortenedTitle }}
             </v-card-text>
           </div>
