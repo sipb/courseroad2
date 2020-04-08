@@ -33,8 +33,8 @@
             <v-icon style="margin: 4px" small @click="$store.commit('removeClass', {classInfo: classInfo, classIndex: classIndex}); $event.stopPropagation();">
               cancel
             </v-icon>
-            <v-card-text class="card-text" ref="title" v-line-clamp:20="3">
-            	<span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ shortenedTitle }}
+            <v-card-text ref="title" v-line-clamp:20="3" class="card-text">
+              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ shortenedTitle }}
             </v-card-text>
           </div>
         </v-card>
@@ -74,11 +74,8 @@
 
 <script>
 import colorMixin from './../mixins/colorMixin.js';
-import Vue from 'vue';
-import lineClamp from 'vue-line-clamp';
-import {abbreviations} from './../utils/abbreviations.js';
+import { abbreviations } from './../utils/abbreviations.js';
 
-Vue.use(lineClamp, {});
 const abbrevChar = '.';
 
 export default {
@@ -105,8 +102,25 @@ export default {
   data () {
     return {
       warningDialog: false,
-	  shouldOverrideWarnings: this.classInfo.overrideWarnings
+      shouldOverrideWarnings: this.classInfo.overrideWarnings
     };
+  },
+  computed: {
+    shortenedTitle: function () {
+      var title = this.classInfo.title.split(/([^A-Za-z])/);// Keep separators
+      var words = [];
+      for (const word of title) {
+        const lookup = word.toLowerCase();
+        const abbr = abbreviations[lookup];
+        if (abbr) {
+          // Match capitalization
+          words.push(word.charAt(0) === lookup.charAt(0) ? abbr : abbr.charAt(0).toUpperCase() + abbr.slice(1) + abbrevChar);
+        } else {
+          words.push(word);
+        }
+      }
+      return words.join('');
+    }
   },
   methods: {
     dragStart: function (event) {
@@ -125,25 +139,7 @@ export default {
     },
     cardClass: function (classInfo) {
       return `classbox ${this.courseColor(classInfo)}`;
-	}
-  },
-  computed: {
-    shortenedTitle: function(){
-      var title = this.classInfo.title.split(/([^A-Za-z])/);//Keep separators
-      var words = [];
-      for(const word of title){
-        let lookup = word.toLowerCase();
-        let abbr = abbreviations[lookup];
-        if(abbr){
-          //Match capitalization
-          words.push(word.charAt(0) === lookup.charAt(0) ? abbr : abbr.charAt(0).toUpperCase() + abbr.slice(1) + abbrevChar);
-        }
-        else{
-          words.push(word);
-        }
-	  }
-	  return words.join('');
-	}
+    }
   }
 };
 </script>
