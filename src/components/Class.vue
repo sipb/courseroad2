@@ -38,11 +38,11 @@
             </v-card-text>
           </div>
         </v-card>
-        <!--<v-btn v-if="warnings.length>0&&(!classInfo.overrideWarnings||hover)" slot="badge" icon @click="warningDialog = true">
+        <v-btn v-if="warnings.length>0&&(!classInfo.overrideWarnings||hover)" slot="badge" icon @click="warningDialog = true">
           <v-icon medium>
             warning
           </v-icon>
-        </v-btn>-->
+        </v-btn>
       </v-badge>
     </v-hover>
     <v-dialog v-model="warningDialog" max-width="600">
@@ -151,13 +151,13 @@ export default {
     padding: 0;
     margin: .2em .4em 0em .2em;
     height: 100%;
+    overflow: hidden;
   }
 
   .classbox {
     display: flex;
     align-items: flex-start;
     height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
-    overflow: hidden;
     padding: .2em .4em .4em .2em;
     /* Multi-line truncation is not a supported feature of CSS right now.
        Optimally, we would have multi-line truncation within the cards, but
