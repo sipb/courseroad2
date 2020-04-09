@@ -98,20 +98,26 @@
       @update:dialog-req="dialogReq = $event"
     />
 
-    <v-dialog v-model="petitionDialog">
-      <v-card />
-    </v-dialog>
+    <petition-dialog
+      :selected-subjects="selectedSubjects"
+      :view-petition-dialog="viewPetitionDialog"
+      :petition-req="petitionReq"
+      @update:petiion-dialog="viewPetitionDialog = $event"
+      @update:dialog-req="petitionReq = $event"
+    />
   </v-flex>
 </template>
 
 <script>
 import Requirement from './Requirement.vue';
 import InfoDialog from './InfoDialog.vue';
+import PetitionDialog from './PetionDialog.vue';
 export default {
   name: 'Audit',
   components: {
     requirement: Requirement,
-    infoDialog: InfoDialog
+    infoDialog: InfoDialog,
+    petitionDialog: PetitionDialog
   },
   props: [
     'selectedReqs',
@@ -127,7 +133,7 @@ export default {
       dialogReq: undefined,
       progressDialog: false,
       progressReq: undefined,
-      petitionDialog: false,
+      viewPetitionDialog: false,
       petitionReq: undefined,
       newManualProgress: 0,
       isEditing: false
