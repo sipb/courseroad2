@@ -45,6 +45,7 @@
           :leaf="leaf"
           @click.native="clickRequirement(item)"
           @click-info="reqInfo($event, item)"
+          @click-petition="reqPetition($event, item)"
         />
       </template>
     </v-treeview>
@@ -96,6 +97,10 @@
       @update:view-dialog="viewDialog = $event"
       @update:dialog-req="dialogReq = $event"
     />
+
+    <v-dialog v-model="petitionDialog">
+      <v-card />
+    </v-dialog>
   </v-flex>
 </template>
 
@@ -122,8 +127,10 @@ export default {
       dialogReq: undefined,
       progressDialog: false,
       progressReq: undefined,
+      petitionDialog: false,
+      petitionReq: undefined,
       newManualProgress: 0,
-      isEditing: false,
+      isEditing: false
     };
   },
   computed: {
@@ -195,6 +202,12 @@ export default {
       event.stopPropagation();
       this.viewDialog = true;
       this.dialogReq = req;
+    },
+    reqPetition: function (event, req) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.petitionDialog = true;
+      this.petitionReq = req;
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {

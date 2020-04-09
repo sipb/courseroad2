@@ -31,6 +31,7 @@
               :color="petitionColor"
               @mouseover="petitionHover = true"
               @mouseleave="petitionHover = false"
+              @click.stop="$emit('click-petition', $event)"
             >
               post_add
             </v-icon>
