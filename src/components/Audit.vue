@@ -99,7 +99,17 @@
     />
 
     <v-dialog v-model="petitionDialog">
-      <v-card />
+      <v-card>
+        <div v-if="petitionReq !== undefined">
+          <v-btn icon flat style="float:right" @click="petitionDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-card-title v-if="'title' in petitionReq">{{petitionReq["title"]}}</v-card-title>
+          <v-card-title v-else> 
+            {{ petitionReq["req"] }}
+          </v-card-title>
+        </div>
+      </v-card>
     </v-dialog>
   </v-flex>
 </template>
