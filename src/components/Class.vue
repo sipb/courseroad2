@@ -74,12 +74,7 @@
 
 <script>
 import colorMixin from './../mixins/colorMixin.js';
-import Vue from 'vue';
-import lineClamp from 'vue-line-clamp';
-import {abbreviations} from './../utils/abbreviations.js';
-
-Vue.use(lineClamp, {});
-const abbrevChar = '.';
+import { abbreviations, nonAbbreviator } from './../utils/abbreviations.js';
 
 export default {
   name: 'Class',
@@ -105,8 +100,30 @@ export default {
   data () {
     return {
       warningDialog: false,
-	  shouldOverrideWarnings: this.classInfo.overrideWarnings
+      shouldOverrideWarnings: this.classInfo.overrideWarnings
     };
+  },
+  computed: {
+    shortenedTitle: function () {
+      var title = this.classInfo.title.split(/([^A-Za-z])/);// Keep separators
+      var words = [];
+      for (const word of title) {
+        const lookup = word.toLowerCase();
+        var abbr = abbreviations[lookup];
+        if (abbr) {
+          var abbrevChar = '.';
+          if (abbr.startsWith(nonAbbreviator)) {
+            abbr = abbr.substring(nonAbbreviator.length);
+            abbrevChar = '';
+          }
+          // Match capitalization
+          words.push((word.charAt(0) === lookup.charAt(0) ? abbr : abbr.charAt(0).toUpperCase() + abbr.slice(1)) + abbrevChar);
+        } else {
+          words.push(word);
+        }
+      }
+      return words.join('');
+    }
   },
   methods: {
     dragStart: function (event) {
@@ -125,25 +142,7 @@ export default {
     },
     cardClass: function (classInfo) {
       return `classbox ${this.courseColor(classInfo)}`;
-	}
-  },
-  computed: {
-    shortenedTitle: function(){
-      var title = this.classInfo.title.split(/([^A-Za-z])/);//Keep separators
-      var words = [];
-      for(const word of title){
-        let lookup = word.toLowerCase();
-        let abbr = abbreviations[lookup];
-        if(abbr){
-          //Match capitalization
-          words.push(word.charAt(0) === lookup.charAt(0) ? abbr : abbr.charAt(0).toUpperCase() + abbr.slice(1) + abbrevChar);
-        }
-        else{
-          words.push(word);
-        }
-	  }
-	  return words.join('');
-	}
+    }
   }
 };
 </script>
@@ -155,14 +154,14 @@ export default {
     padding: 0;
     margin: .2em .4em 0em .2em;
     height: 100%;
+    overflow: hidden;
   }
 
   .classbox {
     display: flex;
     align-items: flex-start;
     height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
-    overflow: hidden;
-    padding: .2em .4em .4em .2em;
+    padding: .2em .4em .5em .2em;
     /* Multi-line truncation is not a supported feature of CSS right now.
        Optimally, we would have multi-line truncation within the cards, but
        currently extra words are clipped.
