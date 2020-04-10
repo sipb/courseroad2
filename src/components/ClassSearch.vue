@@ -50,7 +50,7 @@
 import FilterSet from './FilterSet.vue';
 import $ from 'jquery';
 import Vue from 'vue';
-import { FilterGroup, RegexFilter, MathFilter, BooleanFilter } from './../utilities/filters.js';
+import { FilterGroup, RegexFilter, MathFilter, BooleanFilter } from '../utilities/filters.js';
 
 var girAny = new RegexFilter('GIR:Any', 'Any', '.+', ['gir_attribute']);
 var girLab = new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
