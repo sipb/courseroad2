@@ -14,7 +14,6 @@
   },
   "main": "index.js",
   "dependencies": {
-    "acorn": "^7.1.1",
     "axios": "^0.19.2",
     "cgi": "^0.3.1",
     "jquery": "^3.4.1",
