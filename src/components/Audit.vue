@@ -98,16 +98,34 @@
       @update:dialog-req="dialogReq = $event"
     />
 
-    <v-dialog v-model="petitionDialog">
+    <v-dialog v-model="petitionDialog" max-width="600">
       <v-card>
         <div v-if="petitionReq !== undefined">
           <v-btn icon flat style="float:right" @click="petitionDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
-          <v-card-title v-if="'title' in petitionReq">{{petitionReq["title"]}}</v-card-title>
-          <v-card-title v-else> 
-            {{ petitionReq["req"] }}
+          <v-card-title v-if="'title' in petitionReq">
+            <h2> Petition {{ petitionReq["title"] }} </h2>
           </v-card-title>
+          <v-card-title v-else>
+            <h2> Petition {{ petitionReq["req"] }} </h2>
+          </v-card-title>
+          <v-select
+            :items="selectedSubjects.flat()"
+            item-text="id"
+            label="Select Class"
+            no-data-text="No Courses Found"
+            style="padding-left: 5%; padding-right: 5%; padding-bottom: 5px;"
+          />
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="success">
+              Substitute Requirement
+            </v-btn>
+            <v-btn color="error">
+              Remove Requirement
+            </v-btn>
+          </v-card-actions>
         </div>
       </v-card>
     </v-dialog>
