@@ -38,11 +38,11 @@
             </v-card-text>
           </div>
         </v-card>
-        <!--<v-btn v-if="warnings.length>0&&(!classInfo.overrideWarnings||hover)" slot="badge" icon @click="warningDialog = true">
+        <v-btn v-if="warnings.length>0&&(!classInfo.overrideWarnings||hover)" slot="badge" icon @click="warningDialog = true">
           <v-icon medium>
             warning
           </v-icon>
-        </v-btn>-->
+        </v-btn>
       </v-badge>
     </v-hover>
     <v-dialog v-model="warningDialog" max-width="600">
