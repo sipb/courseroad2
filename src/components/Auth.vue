@@ -279,9 +279,6 @@ export default {
     },
     getUserData: function () {
       this.gettingUserData = true;
-      for (var i = 0; i < this.newRoads.length; i++) {
-        this.saveRemote(this.newRoads[i]);
-      }
       this.getSecure('/sync/roads/')
         .then(function (response) {
           if (response.status === 200 && response.data.success) {
@@ -291,8 +288,11 @@ export default {
           }
         }).then(function (files) {
           this.renumberRoads(files);
+          for (var i = 0; i < this.newRoads.length; i++) {
+            this.saveRemote(this.newRoads[i]);
+          }
           const fileKeys = Object.keys(files);
-          for (var i = 0; i < fileKeys.length; i++) {
+          for (i = 0; i < fileKeys.length; i++) {
             const blankRoad = {
               downloaded: moment().format(DATE_FORMAT),
               changed: files[fileKeys[i]].changed,
