@@ -105,8 +105,7 @@ const store = new Vuex.Store({
       Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
     },
     setProgressAssertions (state, { uniqueKey, newReqs }) {
-      const parsedUniqueKey = uniqueKey.split('-')[1]; // Removes index from req key ex. "0-girs" to "girs"
-      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, parsedUniqueKey, { 'substitutions': newReqs });
+      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setUnretrieved (state, roadIDs) {

@@ -110,16 +110,27 @@
           <v-card-title v-else>
             <h2> Petition {{ petitionReq["req"] }} </h2>
           </v-card-title>
+          <v-card-text style="padding-left: 5%; padding-right: 5%;">
+            Requirement Petitioned by:
+            <div v-for="course in reqProgressAssertions" :key="course">
+              {{ course }}
+            </div>
+          </v-card-text>
           <v-select
+            v-model="petitionSelectCourses"
             :items="selectedSubjects.flat()"
             item-text="id"
-            label="Select Class"
+            label="Select Courses to Petition with:"
             no-data-text="No Courses Found"
+            multiple
             style="padding-left: 5%; padding-right: 5%; padding-bottom: 5px;"
           />
           <v-card-actions>
             <v-spacer />
-            <v-btn color="success">
+            <v-btn
+              color="success"
+              @click="submitPetitionSelect()"
+            >
               Substitute Requirement
             </v-btn>
             <v-btn color="error">
@@ -157,6 +168,7 @@ export default {
       progressReq: undefined,
       petitionDialog: false,
       petitionReq: undefined,
+      petitionSelectCourses: [],
       newManualProgress: 0,
       isEditing: false
     };
@@ -217,6 +229,17 @@ export default {
           };
         }
       }, this);
+    },
+    reqProgressAssertions: {
+      get: function () {
+        const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
+        // Checks if unique key in progressAssert, if it is, searches for substitution key
+        if (petitionReqPA !== undefined) {
+          return petitionReqPA['substitutions'];
+        } else {
+          return undefined;
+        }
+      }
     }
   },
   methods: {
@@ -298,6 +321,10 @@ export default {
       this.progressDialog = false;
       this.newManualProgress = 0;
     },
+    submitPetitionSelect: function () {
+      this.$store.commit('setProgressAssertions', { uniqueKey: this.petitionReq['list-id'], newReqs: this.petitionSelectCourses });
+      this.petitionSelectCourses = [];
+    }
   }
 };
 </script>
