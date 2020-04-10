@@ -33,8 +33,8 @@
             <v-icon style="margin: 4px" small @click="$store.commit('removeClass', {classInfo: classInfo, classIndex: classIndex}); $event.stopPropagation();">
               cancel
             </v-icon>
-            <v-card-text class="card-text" ref="title" v-line-clamp:20="3">
-            	<span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ shortenedTitle }}
+            <v-card-text ref="title" v-line-clamp:20="3" class="card-text">
+              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ useShortenedTitle ? shortenedTitle : classInfo.title }}
             </v-card-text>
           </div>
         </v-card>
@@ -75,6 +75,10 @@
 <script>
 import colorMixin from './../mixins/colorMixin.js';
 import { abbreviations, nonAbbreviator } from './../utils/abbreviations.js';
+import Vue from 'vue';
+import VueLineClamp from './../utils/vue-line-clamp.js';
+
+Vue.use(VueLineClamp);
 
 export default {
   name: 'Class',
@@ -100,7 +104,8 @@ export default {
   data () {
     return {
       warningDialog: false,
-      shouldOverrideWarnings: this.classInfo.overrideWarnings
+      shouldOverrideWarnings: this.classInfo.overrideWarnings,
+      useShortenedTitle: false
     };
   },
   computed: {
