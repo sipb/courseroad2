@@ -244,6 +244,7 @@ var hassAny = new RegexFilter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
 var hassArt = new RegexFilter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
 var hassSocialScience = new RegexFilter('HASS-S', 'S', 'HASS-S', ['hass_attribute']);
 var hassHumanity = new RegexFilter('HASS-H', 'H', 'HASS-H', ['hass_attribute']);
+var hassElective = new RegexFilter('HASS-E', 'E', 'HASS-E', ['hass_attribute']);
 var ciAny = new RegexFilter('CI:Any', 'Any', 'CI.+', ['communication_requirement']);
 var ciH = new RegexFilter('CI-H', 'CI-H', 'CI-H', ['communication_requirement']);
 var ciHW = new RegexFilter('CI-HW', 'CI-HW', 'CI-HW', ['communication_requirement']);
@@ -282,7 +283,7 @@ export default {
       nameInput: '',
       chosenFilters: {
         girs: [false, false, false],
-        hass: [false, false, false, false],
+        hass: [false, false, false, false, false],
         ci: [false, false, false],
         level: [false, false],
         units: [false, false, false, false, false, false, false],
@@ -290,7 +291,7 @@ export default {
       },
       allFilters: {
         girs: new FilterGroup('GIR', [girAny, girLab, girRest], 'OR'),
-        hass: new FilterGroup('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity], 'OR'),
+        hass: new FilterGroup('HASS', [hassAny, hassArt, hassSocialScience, hassHumanity, hassElective], 'OR'),
         ci: new FilterGroup('CI', [ciAny, ciH, ciHW, ciNone], 'OR'),
         level: new FilterGroup('Level', [levelUG, levelG], 'OR'),
         units: new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR'),
@@ -410,6 +411,11 @@ export default {
     },
     viewClassInfo: function (item) {
       this.$store.commit('pushClassStack', item.item.subject_id);
+    },
+    openFirstClass: function () {
+      if (this.autocomplete.length > 0) {
+        this.$store.commit('pushClassStack', this.autocomplete[0].subject_id);
+      }
     }
   }
 };
