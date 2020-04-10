@@ -140,14 +140,7 @@ export default {
     },
     '$store.state.unretrieved': function (unretrieved) {
       if (this.addDialog && this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) === -1) {
-        this.$emit('add-road',
-          this.newRoadName,
-          this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
-          this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
-          Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
-        );
-        this.addDialog = false;
-        this.newRoadName = '';
+        this.addRoadFromDuplicate();
       }
     }
   },
@@ -167,16 +160,19 @@ export default {
         if (this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) >= 0) {
           this.$emit('retrieve', this.duplicateRoadSource);
         } else {
-          this.$emit('add-road',
-            this.newRoadName,
-            this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
-            this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
-            Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
-          );
-          this.addDialog = false;
-          this.newRoadName = '';
+          this.addRoadFromDuplicate();
         }
       }
+    },
+    addRoadFromDuplicate: function() {
+      this.$emit('add-road',
+        this.newRoadName,
+        this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
+        this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
+        Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
+      );
+      this.addDialog = false;
+      this.newRoadName = '';
     }
   }
 };
