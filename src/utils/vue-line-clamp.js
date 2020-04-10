@@ -1,4 +1,4 @@
-//Credit to https://github.com/AndyDyer/vue-line-clamp/tree/add-options-change-fallback-logic
+// Credit to https://github.com/AndyDyer/vue-line-clamp/tree/add-options-change-fallback-logic
 const currentValueProp = 'vLineClampValue';
 
 function defaultFallbackFunc (el, bindings, vNode) {
@@ -23,14 +23,14 @@ function defaultFallbackFunc (el, bindings, vNode) {
   if (el.scrollHeight > el.offsetHeight) vNode.context.$data.useShortenedTitle = true;
 }
 
-const truncateText = function(el, bindings, vNode) {
-  let lines = parseInt(bindings.value);
+const truncateText = function (el, bindings, vNode) {
+  const lines = parseInt(bindings.value);
   if (isNaN(lines)) {
     console.error('Parameter for vue-line-clamp must be a number');
     return;
   } else if (lines !== el[currentValueProp]) {
     el[currentValueProp] = lines;
-    el.style.webkitLineClamp = lines ? lines : '';
+    el.style.webkitLineClamp = lines || '';
   }
   if (el.scrollHeight > el.offsetHeight) vNode.context.$data.useShortenedTitle = true;
 };
@@ -71,7 +71,7 @@ const VueLineClamp = {
 
     Vue.directive('line-clamp', {
       currentValue: 0,
-      bind(el) {
+      bind (el) {
         if (!options.importCss) {
           el.style.cssText += styles;
         } else {
