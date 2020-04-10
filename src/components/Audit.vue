@@ -131,10 +131,15 @@
               color="success"
               @click="submitPetitionSelect()"
             >
-              Substitute Requirement
+              Petition Requirement
             </v-btn>
-            <v-btn color="error">
-              Remove Requirement
+            <v-btn
+              color="error"
+            >
+              Reset Petition
+            </v-btn>
+            <v-btn color="primary">
+              Ignore Requirement
             </v-btn>
           </v-card-actions>
         </div>
