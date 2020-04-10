@@ -13,6 +13,7 @@ const infoCard = document.createElement('div');
 infoCard.id = 'classInfoCard';
 document.body.appendChild(infoCard);
 
+
 function expectSearchResults (wrapper, subjects) {
   const cells = wrapper.find('.v-datatable').find('tbody').findAll('tr');
   expect(cells.length).toBe(subjects.length);
