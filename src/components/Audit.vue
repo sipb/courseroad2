@@ -97,6 +97,50 @@
       @update:view-dialog="viewDialog = $event"
       @update:dialog-req="dialogReq = $event"
     />
+    <v-dialog v-model="viewDialog" max-width="600">
+      <div v-if="dialogReq !== undefined">
+        <v-card>
+          <v-btn icon flat style="float:right" @click="viewDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-card-title>{{ dialogReq["title"] }}</v-card-title>
+          <v-card-text v-if="'url' in dialogReq">
+            <a target="_blank" :href="dialogReq['url']">Link to the real, up to date requirements</a>
+          </v-card-text>
+          <v-card-text v-if="'desc' in dialogReq">
+            {{ dialogReq["desc"] }}
+          </v-card-text>
+          <v-card-text>
+            <div
+              class="percentage-bar p-block"
+              :style="percentage(dialogReq)"
+            >
+              {{ dialogReq["percent_fulfilled"] }}% fulfilled
+            </div>
+          </v-card-text>
+          <v-card-text v-if="'req' in dialogReq">
+            {{ dialogReq["req"] }}
+          </v-card-text>
+          <v-card-text>
+            <b>Satisfying courses:</b>
+            <div v-for="course in dialogReq['sat_courses']" :key="course">
+              {{ course }}
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              v-if="'title-no-degree' in dialogReq"
+              color="error"
+              @click="deleteReq(dialogReq); viewDialog = false;"
+            >
+              <v-icon>delete</v-icon>
+              Remove Requirement
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </div>
+    </v-dialog>
 
     <v-dialog v-model="petitionDialog" max-width="600">
       <v-card>
@@ -154,12 +198,10 @@
 
 <script>
 import Requirement from './Requirement.vue';
-import InfoDialog from './InfoDialog.vue';
 export default {
   name: 'Audit',
   components: {
-    requirement: Requirement,
-    infoDialog: InfoDialog
+    requirement: Requirement
   },
   props: [
     'selectedReqs',
@@ -330,6 +372,19 @@ export default {
       this.progressDialog = false;
       this.newManualProgress = 0;
     },
+    percentage: function (req) {
+      const pfulfilled = req.percent_fulfilled;
+      const pcolor = req.fulfilled
+        ? '#00b300'
+        : req.percent_fulfilled > 15
+          ? '#efce15'
+          : '#ef8214';
+      return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: #fff`;
+    },
+    deleteReq: function (req) {
+      const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
+      this.$store.commit('removeReq', reqName);
+    },
     submitPetition: function () {
       this.$store.commit('setPASubstitutions', { uniqueKey: this.petitionReq['list-id'], newReqs: this.petitionSelectCourses });
       this.petitionSelectCourses = [];
@@ -347,6 +402,20 @@ export default {
 <style scoped>
 .terminal {
   cursor: default;
+}
+.percentage-bar {
+  background: linear-gradient(
+    90deg,
+    var(--bar-color) var(--percent),
+    var(--bg-color) var(--percent)
+  );
+}
+.p-block {
+  height: 30px;
+  border: 1px solid gray;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 </style>
 <style>
