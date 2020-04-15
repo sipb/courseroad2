@@ -129,12 +129,13 @@
             <v-spacer />
             <v-btn
               color="success"
-              @click="submitPetitionSelect()"
+              @click="submitPetition()"
             >
               Petition Requirement
             </v-btn>
             <v-btn
               color="error"
+              @click="clearPetition()"
             >
               Reset Petition
             </v-btn>
@@ -326,9 +327,12 @@ export default {
       this.progressDialog = false;
       this.newManualProgress = 0;
     },
-    submitPetitionSelect: function () {
+    submitPetition: function () {
       this.$store.commit('setProgressAssertions', { uniqueKey: this.petitionReq['list-id'], newReqs: this.petitionSelectCourses });
       this.petitionSelectCourses = [];
+    },
+    clearPetition: function () {
+      this.$store.commit('removeProgressAssertion', this.petitionReq['list-id']);
     }
   }
 };

@@ -212,6 +212,10 @@ const store = new Vuex.Store({
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
       state.fulfillmentNeeded = 'none';
     },
+    removeProgressAssertion (state, uniqueKey) {
+      Vue.delete(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey);
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
     resetID (state, { oldid, newid }) {
       newid = newid.toString();
       Vue.set(state.roads, newid, state.roads[oldid]);
