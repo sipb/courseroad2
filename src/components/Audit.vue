@@ -101,7 +101,7 @@
     <v-dialog v-model="petitionDialog" max-width="600">
       <v-card>
         <div v-if="petitionReq !== undefined">
-          <v-btn icon flat style="float:right" @click="petitionDialog = false">
+          <v-btn icon flat style="float:right" @click="petitionDialog = false; petitionReq = undefined;">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title v-if="'title' in petitionReq">

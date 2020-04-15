@@ -20,7 +20,19 @@
           <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
         </div>
         <span v-else>
-          <span v-if="'title' in req">{{ req.title }}</span>
+          <span v-if="'title' in req">
+            {{ req.title }}
+            <div
+              v-if="req['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions"
+              style="display:inline-block"
+            >
+              <v-icon
+                small
+              >
+                local_parking
+              </v-icon>
+            </div>
+          </span>
           <span
             v-if="hoveringOver"
             style="float:right"
@@ -42,6 +54,11 @@
             <span :class="reqFulfilled">{{ req.req }}</span>
             <span v-if="'threshold-desc' in req" style="font-style:italic">
               ({{ req['threshold-desc'] }})
+            </span>
+            <span v-if="req['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions">
+              <v-icon small>
+                local_parking
+              </v-icon>
             </span>
           </span>
         </span>
