@@ -90,13 +90,6 @@
       </v-card>
     </v-dialog>
 
-    <info-dialog
-      :selected-subjects="selectedSubjects"
-      :view-dialog="viewDialog"
-      :dialog-req="dialogReq"
-      @update:view-dialog="viewDialog = $event"
-      @update:dialog-req="dialogReq = $event"
-    />
     <v-dialog v-model="viewDialog" max-width="600">
       <div v-if="dialogReq !== undefined">
         <v-card>
@@ -154,7 +147,7 @@
           <v-card-title v-else>
             <h2> Petition {{ petitionReq["req"] }} </h2>
           </v-card-title>
-          <v-card-text style="padding-left: 5%; padding-right: 5%;">
+          <v-card-text v-if="reqProgressAssertions !== undefined" style="padding-left: 5%; padding-right: 5%;">
             Requirement Petitioned by:
             <div v-for="course in reqProgressAssertions" :key="course">
               {{ course }}
@@ -167,6 +160,7 @@
             label="Select Courses to Petition with:"
             no-data-text="No Courses Found"
             multiple
+            chips
             style="padding-left: 5%; padding-right: 5%; padding-bottom: 5px;"
           />
           <v-card-actions>
@@ -178,16 +172,16 @@
               Petition Requirement
             </v-btn>
             <v-btn
-              color="error"
-              @click="clearPetition()"
-            >
-              Reset Petition
-            </v-btn>
-            <v-btn
               color="primary"
               @click="ignorePetition()"
             >
               Ignore Requirement
+            </v-btn>
+            <v-btn
+              color="error"
+              @click="clearPetition()"
+            >
+              Reset Petition
             </v-btn>
           </v-card-actions>
         </div>
@@ -285,7 +279,7 @@ export default {
       get: function () {
         const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
         // Checks if unique key in progressAssert, if it is, searches for substitution key
-        if (petitionReqPA !== undefined) {
+        if (petitionReqPA === undefined) {
           return petitionReqPA['substitutions'];
         } else {
           return undefined;
