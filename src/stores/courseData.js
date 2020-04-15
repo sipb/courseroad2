@@ -104,8 +104,12 @@ const store = new Vuex.Store({
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
       Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
     },
-    setProgressAssertions (state, { uniqueKey, newReqs }) {
+    setPASubstitutions (state, { uniqueKey, newReqs }) {
       Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    setPAIgnore (state, uniqueKey) {
+      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': true });
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setUnretrieved (state, roadIDs) {
