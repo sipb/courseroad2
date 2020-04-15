@@ -161,21 +161,21 @@
             no-data-text="No Courses Found"
             multiple
             chips
-            style="padding-left: 5%; padding-right: 5%; padding-bottom: 5px;"
+            style="padding-left: 5%; padding-right: 5%;"
           />
-          <v-card-actions>
+          <v-card-actions style="padding-right: 5%;">
             <v-spacer />
             <v-btn
               color="success"
               @click="submitPetition()"
             >
-              Petition Requirement
+              Petition
             </v-btn>
             <v-btn
               color="primary"
               @click="ignorePetition()"
             >
-              Ignore Requirement
+              Ignore
             </v-btn>
             <v-btn
               color="error"
@@ -279,7 +279,7 @@ export default {
       get: function () {
         const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
         // Checks if unique key in progressAssert, if it is, searches for substitution key
-        if (petitionReqPA === undefined) {
+        if (petitionReqPA !== undefined) {
           return petitionReqPA['substitutions'];
         } else {
           return undefined;
