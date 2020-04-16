@@ -316,7 +316,7 @@ export default {
           }
           this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
           // Set list of unretrieved roads to all but first road ID
-          this.$store.commit('setUnretrieved', fileKeys.slice(1));
+          this.$store.commit('setUnretrieved', fileKeys);
           if (fileKeys.length) {
             return this.retrieveRoad(fileKeys[0]);
           }
