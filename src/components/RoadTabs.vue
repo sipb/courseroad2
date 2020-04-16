@@ -164,7 +164,7 @@ export default {
         }
       }
     },
-    addRoadFromDuplicate: function() {
+    addRoadFromDuplicate: function () {
       this.$emit('add-road',
         this.newRoadName,
         this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
