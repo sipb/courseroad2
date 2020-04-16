@@ -110,7 +110,9 @@ const store = new Vuex.Store({
     setRetrieved (state, roadID) {
       // Remove from unretrieved list when a road is retrieved
       const roadIDIndex = state.unretrieved.indexOf(roadID);
-      state.unretrieved.splice(roadIDIndex, 1);
+      if (roadIDIndex >= 0) {
+        state.unretrieved.splice(roadIDIndex, 1);
+      }
     },
     parseGenericCourses (state) {
       const girAttributes = {
