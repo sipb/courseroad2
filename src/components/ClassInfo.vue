@@ -158,7 +158,7 @@
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
-            <p v-html="currentSubject.description" />
+            <p> {{ currentSubject.description }} </p>
             <p v-if="currentSubject.url !== undefined">
               <a target="_blank" :href="currentSubject.url">View in course catalog</a>
             </p>
@@ -177,7 +177,7 @@
               </h3>
               <expansion-reqs
                 :requirement="parsedPrereqs"
-                :req-i-d="'prereq0'"
+                :req-i-d="currentSubject.subject_id+'prereq0'"
                 @click-subject="clickRelatedSubject"
               />
             </div>
@@ -190,7 +190,7 @@
               </h3>
               <expansion-reqs
                 :requirement="parsedCoreqs"
-                :req-i-d="'coreq0'"
+                :req-i-d="currentSubject.subject_id+'coreq0'"
                 @click-subject="clickRelatedSubject"
               />
             </div>
@@ -215,6 +215,7 @@ import SubjectScroll from '../components/SubjectScroll.vue';
 import ExpansionReqs from '../components/ExpansionReqs.vue';
 import colorMixin from './../mixins/colorMixin.js';
 import schedule from './../mixins/schedule.js';
+import reqFulfillment from './../mixins/reqFulfillment.js';
 
 export default {
   name: 'ClassInfo',
@@ -222,7 +223,7 @@ export default {
     'subject-scroll': SubjectScroll,
     'expansion-reqs': ExpansionReqs
   },
-  mixins: [colorMixin, schedule],
+  mixins: [colorMixin, schedule, reqFulfillment],
   data: function () { return {} },
   computed: {
     addingFromCard () {
@@ -263,6 +264,16 @@ export default {
           return 0;
         }
       });
+    },
+    firstAppearance: function () {
+      const currentSubjects = this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects;
+      const currentID = this.currentSubject.subject_id;
+
+      const subjectInSemesters = currentSubjects.map((semesterSubjects) => {
+        return semesterSubjects.map((subj) => subj.id).indexOf(currentID) >= 0;
+      });
+
+      return subjectInSemesters.indexOf(true);
     }
   },
   methods: {
@@ -303,6 +314,7 @@ export default {
           return undefined;
         }
       }
+
       function getNextReq (reqString) {
         if (reqString[0] === '(') {
           return getParenGroup(reqString);
@@ -318,12 +330,15 @@ export default {
           }
         }
       }
+
       function isBaseReq (req) {
         return /[/(),]/g.exec(req) === null;
       }
+
       const getClassInfo = this.classInfo;
-      function parseReqs (reqString) {
-        const parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false };
+
+      const parseReqs = (reqString) => {
+        const parsedReq = { reqs: [], subject_id: '', connectionType: '', title: '', expansionDesc: '', topLevel: false, fulfilled: false };
         let onereq;
         let connectionType;
         let nextConnectionType;
@@ -334,19 +349,33 @@ export default {
           }
           if (isBaseReq(onereq)) {
             if (onereq.indexOf("'") >= 0) {
-              parsedReq.reqs.push({ subject_id: onereq.replace(/'/g, ''), title: '' });
+              parsedReq.reqs.push({ subject_id: onereq.replace(/'/g, ''), title: '', fulfilled: false });
             } else {
-              parsedReq.reqs.push(getClassInfo(onereq));
+              const subRequirement = Object.assign({}, getClassInfo(onereq));
+              if (this.firstAppearance >= -1) {
+                const allPreviousSubjects = this.flatten(
+                  this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects
+                    .slice(0, this.firstAppearance)
+                );
+                subRequirement.fulfilled = this.reqsFulfilled(onereq, allPreviousSubjects);
+              } else {
+                subRequirement.fulfilled = true;
+              }
+              parsedReq.reqs.push(subRequirement);
             }
           } else {
             parsedReq.reqs.push(parseReqs(onereq));
           }
         }
+
         if (connectionType === '/') {
           parsedReq.connectionType = 'any';
+          parsedReq.fulfilled = parsedReq.reqs.some((req) => req.fulfilled);
         } else if (connectionType === ',') {
           parsedReq.connectionType = 'all';
+          parsedReq.fulfilled = parsedReq.reqs.every((req) => req.fulfilled);
         }
+
         function sortOrder (req) {
           if (req.reqs !== undefined) {
             return 0;
@@ -370,6 +399,7 @@ export default {
             return req.subject_id + ' ' + req.title;
           }
         }
+
         if (parsedReq.reqs.length === 2) {
           if (parsedReq.connectionType === 'any') {
             parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
@@ -390,7 +420,9 @@ export default {
             parsedReq.expansionDesc = 'Select all:';
           }
         }
+
         const connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
+
         if (connectionMatch !== null) {
           const connectionIndex = connectionMatch.index;
           const firstPart = parsedReq.subject_id.substring(0, connectionIndex).replace(/\s/g, '');
@@ -398,8 +430,10 @@ export default {
           parsedReq.subject_id = firstPart;
           parsedReq.title = secondPart + ' ' + parsedReq.title;
         }
+
         return parsedReq;
-      }
+      };
+
       const rList = parseReqs(requirements);
       rList.topLevel = true;
       return rList;

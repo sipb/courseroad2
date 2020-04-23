@@ -64,7 +64,18 @@ export default {
   name: 'Auth',
   components: {},
   mixins: [simpleSSMixin],
-  props: ['justLoaded', 'conflictInfo'],
+  props: {
+    justLoaded: {
+      type: Boolean,
+      required: true
+    },
+    conflictInfo: {
+      type: Object,
+      default: function () {
+        return {};
+      }
+    }
+  },
   data: function () {
     return {
       accessInfo: undefined,
@@ -107,23 +118,26 @@ export default {
       }
     },
     loggedIn (newLoggedIn) {
+      this.$store.commit('setLoggedIn', newLoggedIn);
       if (newLoggedIn && this.$cookies.get('has_set_year') !== 'true') {
         const email = this.accessInfo.academic_id;
         const endPoint = email.indexOf('@');
         const kerb = email.slice(0, endPoint);
-        axios.get('https://mit-people-v3.cloudhub.io/people/v3/people/' + kerb,
-          { headers: { 'client_id': '01fce9ed7f9d4d26939a68a4126add9b',
-            'client_secret': 'D4ce51aA6A32421DA9AddF4188b93255' } })
+        axios.get(process.env.APP_URL + '/cgi-bin/people.py?kerb=' + kerb)
           .then(response => {
-            // subtract 1 for zero-indexing
-            const year = response.data.item.affiliations[0].classYear - 1;
-            if (year === undefined) {
+            if (response.status !== 200) {
               console.log('Failed to find user year');
             } else {
-              this.changeSemester(year);
+              const year = response.data.year;
+              if (year === undefined) {
+                console.log('Failed to find user year');
+              } else {
+                this.changeSemester(year);
+                console.log('setting year to ' + year);
+              }
             }
           });
-      };
+      }
     }
   },
   mounted () {
@@ -179,9 +193,16 @@ export default {
   methods: {
     loginUser: function (event) {
       window.location.href = `${process.env.FIREROAD_URL}/login/?redirect=${process.env.APP_URL}`;
+      if (this.cookiesAllowed) {
+        this.$cookies.set('hasLoggedIn', true);
+      }
     },
     logoutUser: function (event) {
       this.$cookies.remove('accessInfo');
+      if (this.cookiesAllowed) {
+        this.$cookies.set('hasLoggedIn', false);
+      }
+      localStorage.clear();
       this.loggedIn = false;
       this.accessInfo = undefined;
       window.location.reload();
@@ -214,7 +235,6 @@ export default {
         return Promise.reject(new Error('No auth information'));
       }
     },
-
     getSecure: function (link) {
       return this.doSecure(axios.get, link, false);
     },
@@ -230,25 +250,8 @@ export default {
           roadData.data.file.changed = moment().format(DATE_FORMAT);
         }
 
-        // sanitize subject_id
-        const newss = roadData.data.file.contents.selectedSubjects.map((s) => {
-          if ('subject_id' in s) {
-            s.id = s.subject_id;
-            delete s.subject_id;
-          }
-          return s;
-        });
-        roadData.data.file.contents.selectedSubjects = newss;
+        _this.sanitizeRoad(roadData.data.file);
 
-        // convert selected subjects to more convenient format
-        roadData.data.file.contents.selectedSubjects = _this.getSimpleSelectedSubjects(roadData.data.file.contents.selectedSubjects);
-        // sanitize progressOverrides
-        if (roadData.data.file.contents.progressOverrides === undefined) {
-          roadData.data.file.contents.progressOverrides = {};
-        }
-        if (roadData.data.file.contents.progressAssertions === undefined) {
-          roadData.data.file.contents.progressAssertions = {};
-        }
         _this.$store.commit('setRoad', {
           id: roadID,
           road: roadData.data.file,
@@ -258,11 +261,27 @@ export default {
         return roadData;
       });
     },
+    sanitizeRoad: function (road) {
+      // sanitize subject_id
+      const newss = road.contents.selectedSubjects.map((s) => {
+        if ('subject_id' in s) {
+          s.id = s.subject_id;
+          delete s.subject_id;
+        }
+        return s;
+      });
+
+      road.contents.selectedSubjects = newss;
+
+      // convert selected subjects to more convenient format
+      road.contents.selectedSubjects = this.getSimpleSelectedSubjects(road.contents.selectedSubjects);
+      // sanitize progressOverrides
+      if (road.contents.progressOverrides === undefined) {
+        road.contents.progressOverrides = {};
+      }
+    },
     getUserData: function () {
       this.gettingUserData = true;
-      for (var i = 0; i < this.newRoads.length; i++) {
-        this.saveRemote(this.newRoads[i]);
-      }
       this.getSecure('/sync/roads/')
         .then(function (response) {
           if (response.status === 200 && response.data.success) {
@@ -272,8 +291,11 @@ export default {
           }
         }).then(function (files) {
           this.renumberRoads(files);
+          for (var i = 0; i < this.newRoads.length; i++) {
+            this.saveRemote(this.newRoads[i]);
+          }
           const fileKeys = Object.keys(files);
-          for (var i = 0; i < fileKeys.length; i++) {
+          for (i = 0; i < fileKeys.length; i++) {
             const blankRoad = {
               downloaded: moment().format(DATE_FORMAT),
               changed: files[fileKeys[i]].changed,
@@ -367,6 +389,8 @@ export default {
         const code = queryObject['code'];
         window.history.pushState('CourseRoad Home', 'CourseRoad Home', './#' + this.activeRoad);
         this.getAuthorizationToken(code);
+      } else if (this.$cookies.get('hasLoggedIn') === 'true' && !this.loggedIn) {
+        this.loginUser();
       }
     },
     save: function (roadID) {
@@ -376,17 +400,21 @@ export default {
         this.saveLocal();
       }
     },
-    saveRemote: function (roadID) {
+    saveRemote: function (roadID, override) {
+      if (override === undefined) {
+        override = false;
+      }
       this.currentlySaving = true;
       this.saveWarnings = [];
-      const assignKeys = { override: false, agent: this.getAgent() };
+      const assignKeys = { override: override, agent: this.getAgent() };
       if (!roadID.includes('$')) {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
-      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: {}, progressAssertions: {} }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
-      Object.assign(assignKeys, this.roads[roadID], { contents: formattedRoadContents });
-      const savePromise = this.postSecure('/sync/sync_road/', assignKeys)
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [], progressAssertions: {} }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
+      const roadToSend = {};
+      Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
+      const savePromise = this.postSecure('/sync/sync_road/', roadToSend)
         .then(function (response) {
           if (response.status !== 200) {
             return Promise.reject(new Error('Unable to save road ' + this.oldid));
@@ -397,7 +425,35 @@ export default {
             }
             if (response.data.result === 'conflict') {
               const conflictInfo = { id: this.oldid, other_name: response.data.other_name, other_agent: response.data.other_agent, other_date: response.data.other_date, other_contents: response.data.other_contents, this_agent: response.data.this_agent, this_date: response.data.this_date };
+              this.data.$store.commit('setRoadProp', {
+                id: this.oldid,
+                prop: 'agent',
+                value: this.data.getAgent(),
+                ignoreSet: true
+              });
               this.data.$emit('conflict', conflictInfo);
+
+              return Promise.resolve({ oldid: this.oldid, state: 'same' });
+            } else if (response.data.result === 'update_local') {
+              alert('Server has more recent edits.  Overriding local road.  If this is unexpected, check that your computer clock is accurate.');
+
+              const updatedRoad = {
+                downloaded: moment().format(DATE_FORMAT),
+                changed: response.data.changed,
+                name: response.data.name,
+                agent: this.data.getAgent(),
+                contents: response.data.contents
+              };
+
+              this.data.sanitizeRoad(updatedRoad);
+
+              this.data.$store.commit('setRoad', {
+                id: this.oldid,
+                road: updatedRoad,
+                ignoreSet: false
+              });
+
+              return Promise.resolve({ oldid: this.oldid, newid: response.data.id, state: 'same' });
             } else {
               this.data.$store.commit('setRoadProp', {
                 id: this.oldid,
@@ -468,23 +524,24 @@ export default {
       return newRoadData;
     },
     updateRemote: function (roadID) {
-      const newRoad = { id: roadID, override: true, agent: this.getAgent() };
-      Object.assign(newRoad, this.roads[roadID]);
-      this.postSecure('/sync/sync_road/', newRoad)
-        .then(function (response) {
-          if (!response.data.success) {
-            this.saveWarnings.push({ error: response.data.error_msg || response.data.error, id: roadID, name: this.roads[roadID] });
-          }
-        });
+      this.saveRemote(roadID, true);
       this.$emit('resolve-conflict');
     },
 
     updateLocal: function (roadID) {
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'name', value: this.conflictInfo.other_name, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'agent', value: this.conflictInfo.other_agent, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'changed', value: this.conflictInfo.other_date, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'contents', value: this.conflictInfo.other_contents, ignoreSet: false });
-      this.$store.commit('setRoadProp', { id: roadID, prop: 'downloaded', value: moment().format(DATE_FORMAT), ignoreSet: false });
+      const remoteRoad = {
+        name: this.conflictInfo.other_name,
+        agent: this.conflictInfo.other_agent,
+        changed: this.conflictInfo.other_date,
+        contents: this.conflictInfo.other_contents,
+        downloaded: moment().format(DATE_FORMAT)
+      };
+      this.sanitizeRoad(remoteRoad);
+      this.$store.commit('setRoad', {
+        id: roadID,
+        road: remoteRoad,
+        ignoreSet: false
+      });
       this.$emit('resolve-conflict');
     },
 

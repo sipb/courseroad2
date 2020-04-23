@@ -1,14 +1,14 @@
 <template>
   <div
     class="requirement"
-    :draggable="canDrag"
+    :draggable="canDrag(req)"
     @dragstart="dragStart"
     @mouseover="hoveringOver = true"
     @mouseleave="hoveringOver = false"
   >
     <v-layout row>
       <v-flex>
-        <div v-if="!leaf" style="display: inline;">
+        <div v-if="!isLeaf" style="display: inline;">
           <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
             {{ req["title-no-degree"] }}
           </span>
@@ -66,7 +66,7 @@
           <span v-if="'title' in req">| </span>
           <span style="text-transform: cursive">{{ req.req }}</span>
         </span>
-        <span v-if="req.max === 0 && leaf" style="font-style:italic">
+        <span v-if="req.max === 0 && isLeaf" style="font-style:italic">
           (optional)
         </span>
         <span
@@ -96,9 +96,21 @@
 </template>
 
 <script>
+import classInfoMixin from './../mixins/classInfo.js';
+
 export default {
   name: 'Requirement',
-  props: ['req', 'leaf'],
+  mixins: [classInfoMixin],
+  props: {
+    req: {
+      type: Object,
+      required: true
+    },
+    isLeaf: {
+      type: Boolean,
+      required: true
+    }
+  },
   data: function () {
     return {
       open: [],
@@ -108,21 +120,6 @@ export default {
     };
   },
   computed: {
-    classInfo: function () {
-      if ('req' in this.req) {
-        if (this.req.req in this.$store.state.subjectsIndex) {
-          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[this.req.req]];
-        }
-        let attributeReq = this.req.req;
-        if (attributeReq.indexOf('GIR:') === 0) {
-          attributeReq = attributeReq.substring(4);
-        }
-        if (attributeReq in this.$store.state.genericIndex) {
-          return this.$store.state.genericCourses[this.$store.state.genericIndex[attributeReq]];
-        }
-      }
-      return undefined;
-    },
     iconColor: function () {
       return this.iconHover ? 'info' : 'grey';
     },
@@ -162,7 +159,7 @@ export default {
   },
   methods: {
     dragStart: function (event) {
-      let usedInfo = this.classInfo;
+      let usedInfo = this.classInfo(this.req);
       if (usedInfo === undefined) {
         usedInfo = { id: this.req.req };
       }

@@ -20,6 +20,7 @@ const store = new Vuex.Store({
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
+    loggedIn: false,
     roads: {
       '$defaultroad$': {
         downloaded: moment().format(DATE_FORMAT),
@@ -53,7 +54,7 @@ const store = new Vuex.Store({
   mutations: {
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
     },
     addFromCard (state, classItem) {
       state.addingFromCard = true;
@@ -62,7 +63,6 @@ const store = new Vuex.Store({
     addReq (state, event) {
       state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
-      Vue.set(state.roads, state.activeRoad, state.roads[state.activeRoad]);
       state.fulfillmentNeeded = event;
     },
     allowCookies (state) {
@@ -98,11 +98,11 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(classIndex, 1);
       currentClass.semester = semester;
       state.roads[state.activeRoad].contents.selectedSubjects[semester].push(currentClass);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
     },
     overrideWarnings (state, payload) {
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
-      Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
+      state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex].overrideWarnings = payload.override;
     },
     setPASubstitutions (state, { uniqueKey, newReqs }) {
       Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
@@ -136,7 +136,8 @@ const store = new Vuex.Store({
       const hassAttributes = {
         'HASS-A': ['HASS Arts', 'ha'],
         'HASS-S': ['HASS Social Sciences', 'hs'],
-        'HASS-H': ['Hass Humanities', 'hh']
+        'HASS-H': ['HASS Humanities', 'hh'],
+        'HASS-E': ['HASS Elective', 'ht']
       };
       const ciAttributes = {
         'CI-H': ['Communication Intensive', 'hc'],
@@ -208,12 +209,12 @@ const store = new Vuex.Store({
     },
     removeClass (state, { classInfo, classIndex }) {
       state.roads[state.activeRoad].contents.selectedSubjects[classInfo.semester].splice(classIndex, 1);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
     },
     removeReq (state, event) {
       const reqIndex = state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
       state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       state.fulfillmentNeeded = 'none';
     },
     removeProgressAssertion (state, uniqueKey) {
@@ -235,6 +236,9 @@ const store = new Vuex.Store({
     },
     setFullSubjectsInfoLoaded (state, isFull) {
       state.fullSubjectsInfoLoaded = isFull;
+    },
+    setLoggedIn (state, newLoggedIn) {
+      state.loggedIn = newLoggedIn;
     },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
@@ -258,8 +262,8 @@ const store = new Vuex.Store({
       state.roads = roads;
     },
     setRoadName (state, { id, name }) {
-      Vue.set(state.roads[id], 'name', name);
-      Vue.set(state.roads[id], 'changed', moment().format(DATE_FORMAT));
+      state.roads[id].name = name;
+      state.roads[id].changed = moment().format(DATE_FORMAT);
     },
     setSubjectsInfo (state, data) {
       state.subjectsInfo = data;
@@ -269,7 +273,7 @@ const store = new Vuex.Store({
     },
     updateProgress (state, progress) {
       Vue.set(state.roads[state.activeRoad].contents.progressOverrides, progress.listID, progress.progress);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
     },
     setFromLocalStorage (state, localStore) {
       store.replaceState(localStore);

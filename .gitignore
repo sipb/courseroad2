@@ -108,3 +108,6 @@ public
 
 # TernJS port file
 .tern-port
+
+# Credentials for the MIT People API
+credentials.ini

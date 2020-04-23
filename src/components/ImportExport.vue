@@ -28,6 +28,7 @@
             label="Road name"
             clearable
             autofocus
+            @keyup.enter="importRoad"
           />
 
           <v-spacer />
@@ -55,7 +56,7 @@
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
-                Make sure you have given this road a name, and uploaded/pasted a valid '.road' file.
+                Make sure you have given this road a unique name, and uploaded/pasted a valid '.road' file.
               </v-card-text>
             </v-card>
           </v-flex>
@@ -157,7 +158,10 @@ export default {
     importRoad: function (event) {
       let fail = false;
       // check for legal input
-      if (this.inputtext === '' || this.roadtitle === '') {
+      if (this.inputtext === '' ||
+          this.roadtitle === '' ||
+          this.otherRoadHasName(this.roadtitle)
+      ) {
         fail = true;
       }
 
@@ -232,7 +236,7 @@ export default {
     },
     otherRoadHasName: function (roadName) {
       const otherRoadNames = Object.keys(this.roads).filter(function (road) {
-        return this.roads[road].name === roadName;
+        return this.roads[road].name.toLowerCase() === roadName.toLowerCase();
       }.bind(this));
       return otherRoadNames.length > 0;
     }

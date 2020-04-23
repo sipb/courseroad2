@@ -55,7 +55,24 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'roadID', 'addingFromCard', 'dragSemesterNum'],
+  props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
+    roadID: {
+      type: String,
+      required: true
+    },
+    addingFromCard: {
+      type: Boolean,
+      required: true
+    },
+    dragSemesterNum: {
+      type: Number,
+      required: true
+    }
+  },
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;
@@ -74,6 +91,19 @@ export default {
         this.$emit('change-year', newYear);
       }
     }
+  },
+  watch: {
+    visibleList: function (newVisibleList) {
+      if (this.$store.state.cookiesAllowed) {
+        this.$cookies.set('visibleList' + this.roadID, JSON.stringify(newVisibleList));
+      }
+    }
+  },
+  mounted () {
+    const visibleList = JSON.parse(this.$cookies.get('visibleList' + this.roadID));
+    if (this.$store.state.cookiesAllowed && visibleList) {
+      this.visibleList = visibleList;
+    };
   }
 };
 </script>
