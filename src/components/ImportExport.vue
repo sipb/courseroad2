@@ -134,7 +134,6 @@ export default {
   },
   methods: {
     exportRoad: function (event) {
-      
       const filename = this.roads[this.activeRoad].name + '.road';
 
       const roadSubjects = this.flatten(this.roads[this.activeRoad].contents.selectedSubjects);

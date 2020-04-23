@@ -82,7 +82,7 @@
                 check_box
               </v-icon>
               <h3 style="display: inline;">
-                C o u r s e R o a d 
+                C o u r s e R o a d
               </h3>
             </v-flex>
             <v-flex>
