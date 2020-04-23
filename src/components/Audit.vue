@@ -214,6 +214,10 @@ export default {
   },
   mixins: [classInfoMixin],
   props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
     selectedReqs: {
       type: Array,
       required: true
