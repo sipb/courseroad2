@@ -126,10 +126,6 @@ export default {
     petitionColor: function () {
       return this.petitionHover ? 'info' : 'grey';
     },
-    canDrag: function () {
-      return this.classInfo !== undefined ||
-        ('req' in this.req && (Object.keys(this.$store.state.subjectsIndex).length === 0));
-    },
     reqFulfilled: function () {
       return {
         fulfilled: !!this.req.fulfilled

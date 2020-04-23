@@ -50,6 +50,7 @@
               :is-leaf="leaf"
               @click.native="clickRequirement(item)"
               @click-info="reqInfo($event, item)"
+              @click-petition="reqPetition($event, item)"
             />
           </div>
         </v-hover>
