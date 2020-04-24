@@ -50,10 +50,15 @@ describe('ClassInfo', () => {
           '5.111': 1,
           '8.02': 3,
           '18.01': 2,
-          '7,013': 0
+          '7.013': 0
         },
         genericIndex: {},
         classInfoStack: ['5.111', '7.013', '8.02']
+      },
+      mutations: {
+        popClassStack (state) {
+          state.classInfoStack.pop();
+        }
       }
     });
     const wrapper = mount(ClassInfo, { store, localVue });
