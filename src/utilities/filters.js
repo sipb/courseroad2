@@ -61,7 +61,7 @@ class RegexFilter extends Filter {
   regex: a regex string that the subject's attributes must match
   requires: input which is required to adjust the regex
   */
-  constructor (name, shortName, attributeNames, regex, requires, mode) {
+  constructor (name, shortName, regex, requires, attributeNames, mode) {
     var testFunction = RegexFilter.getRegexTestFunction(regex);
     super(name, shortName, testFunction, attributeNames, mode);
     this.regex = regex;
@@ -336,8 +336,8 @@ class ArrayFilter extends Filter {
   /*
   Constructs a filter which tests if any of the elements of an attribute of an array matches the subfilter.
   */
-  constructor (name, shortName, attributeNames, SubfilterType, subfilterArguments, mode) {
-    var subfilter = new SubfilterType(name, shortName, attributeNames, ...subfilterArguments, mode);
+  constructor (name, shortName, SubfilterType, subfilterArguments, attributeNames, mode) {
+    var subfilter = new SubfilterType(name, shortName, ...subfilterArguments, attributeNames, mode);
     var comparator = subfilter.filter;
     super(name, shortName, comparator, attributeNames, mode);
     this.subfilter = subfilter;

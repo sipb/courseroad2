@@ -76,8 +76,8 @@ var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_un
 var termFall = new BooleanFilter('Fall', 'FA', false, ['offered_fall']);
 var termIAP = new BooleanFilter('IAP', 'IAP', false, ['offered_IAP']);
 var termSpring = new BooleanFilter('Spring', 'SP', false, ['offered_spring']);
-var textFilter = new RegexFilter('Subject ID', 'ID', ['subject_id', 'title'], '', 'nameInput', 'OR');
-var instructorFilter = new ArrayFilter('Instructor', 'Prof', ['instructors'], RegexFilter, ['', 'nameInput'], 'OR');
+var textFilter = new RegexFilter('Subject ID', 'ID', '', 'nameInput', ['subject_id', 'title'], 'OR');
+var instructorFilter = new ArrayFilter('Instructor', 'Prof', RegexFilter, ['', 'nameInput'], ['instructors'], 'OR');
 
 export default {
   name: 'ClassSearch',
