@@ -279,6 +279,10 @@ export default {
       if (road.contents.progressOverrides === undefined) {
         road.contents.progressOverrides = {};
       }
+      // sanitize progressAssertions
+      if (road.contents.progressAssertions === undefined) {
+        road.contents.progressAssertions = {};
+      }
     },
     getUserData: function () {
       this.gettingUserData = true;
