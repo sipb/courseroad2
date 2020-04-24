@@ -61,7 +61,7 @@ class RegexFilter extends Filter {
   regex: a regex string that the subject's attributes must match
   requires: input which is required to adjust the regex
   */
-  constructor (name, shortName, regex, attributeNames, mode, requires) {
+  constructor (name, shortName, attributeNames, regex, requires, mode) {
     var testFunction = RegexFilter.getRegexTestFunction(regex);
     super(name, shortName, testFunction, attributeNames, mode);
     this.regex = regex;
@@ -332,4 +332,33 @@ class FilterGroup {
   }
 }
 
-export { FilterGroup, Filter, RegexFilter, MathFilter, BooleanFilter };
+class ArrayFilter extends Filter {
+  /*
+  Constructs a filter which tests if any of the elements of an attribute of an array matches the subfilter.
+  */
+  constructor (name, shortName, attributeNames, SubfilterType, subfilterArguments, mode) {
+    var subfilter = new SubfilterType(name, shortName, attributeNames, ...subfilterArguments, mode);
+    var comparator = subfilter.filter;
+    super(name, shortName, comparator, attributeNames, mode);
+    this.subfilter = subfilter;
+  }
+  matches (subject) {
+    // starting value of true for and, false for or
+    var isMatch = !this.combine(true, false);
+    // check each attribute for a match
+    for (var a = 0; a < this.attributes.length; a++) {
+      var attribute = this.attributes[a];
+      if (Array.isArray(subject[attribute])) {
+        isMatch = this.combine(isMatch, this.subfilter.filter(subject[attribute]));
+      } else {
+        isMatch = false;
+      }
+    }
+    return isMatch;
+  }
+  setupInputs (inputs) {
+    this.subfilter.setupInputs(inputs);
+  }
+}
+
+export { FilterGroup, Filter, RegexFilter, MathFilter, BooleanFilter, ArrayFilter };

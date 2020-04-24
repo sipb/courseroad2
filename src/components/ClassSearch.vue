@@ -50,7 +50,7 @@
 import FilterSet from './FilterSet.vue';
 import $ from 'jquery';
 import Vue from 'vue';
-import { FilterGroup, RegexFilter, MathFilter, BooleanFilter } from './../utilities/filters.js';
+import { FilterGroup, RegexFilter, MathFilter, BooleanFilter, ArrayFilter } from '../utilities/filters.js';
 
 var girAny = new RegexFilter('GIR:Any', 'Any', '.+', ['gir_attribute']);
 var girLab = new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
@@ -76,7 +76,8 @@ var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_un
 var termFall = new BooleanFilter('Fall', 'FA', false, ['offered_fall']);
 var termIAP = new BooleanFilter('IAP', 'IAP', false, ['offered_IAP']);
 var termSpring = new BooleanFilter('Spring', 'SP', false, ['offered_spring']);
-var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'OR', 'nameInput');
+var textFilter = new RegexFilter('Subject ID', 'ID', ['subject_id', 'title'], '', 'nameInput', 'OR');
+var instructorFilter = new ArrayFilter('Instructor', 'Prof', ['instructors'], RegexFilter, ['', 'nameInput'], 'OR');
 
 export default {
   name: 'ClassSearch',
@@ -133,10 +134,11 @@ export default {
       }
 
       textFilter.setupInputs({ nameInput: this.nameInput });
+      instructorFilter.setupInputs({ nameInput: this.nameInput });
 
       // Filter subjects that match all filter sets and the text filter
       const filteredSubjects = this.allSubjects.filter((subject) => {
-        var matches = textFilter.matches(subject, { nameInput: this.nameInput });
+        var matches = textFilter.matches(subject) || instructorFilter.matches(subject);
         return matches && Object.keys(this.allFilters).every((filterGroup) => {
           return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
         });
