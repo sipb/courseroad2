@@ -81,4 +81,53 @@ describe('ClassInfo', () => {
     expect(cardBody.text()).toEqual(expect.stringContaining('Chemistry'));
     expect(card.contains('#class_info_back_btn')).toBe(false);
   });
+
+  /*
+  Testing strategy for currentSubject
+
+  classInfoStack size: = 1, > 1
+  */
+  it('correctly identifies current subject with one class on stack', () => {
+    const store = new Vuex.Store({
+      state: {
+        genericCourses: [],
+        subjectsInfo: [{ title: 'Organic Chemistry', subject_id: '5.43' },
+                       { title: 'Corporate Boards', subject_id: '15.709' },
+                       { title: 'Immunology' , subject_id: '20.630' }],
+        subjectsIndex: {
+          '5.43': 0,
+          '15.709': 1,
+          '20.630': 2
+        },
+        genericIndex: {},
+        classInfoStack: ['20.630']
+      }
+    });
+    const wrapper = shallowMount(ClassInfo, { store, localVue });
+    const correctSubject = { title: 'Immunology', subject_id: '20.630' };
+    expect(wrapper.vm.currentSubject).toEqual(correctSubject);
+  });
+
+  it('correctly identifies current subject with multiple classes on stack', () => {
+    const store = new Vuex.Store({
+      state: {
+        genericCourses: [],
+        subjectsInfo: [{ title: 'Organic Chemistry', subject_id: '5.43' },
+                       { title: 'Corporate Boards', subject_id: '15.709' },
+                       { title: 'Immunology' , subject_id: '20.630' }],
+        subjectsIndex: {
+          '5.43': 0,
+          '15.709': 1,
+          '20.630': 2
+        },
+        genericIndex: {},
+        classInfoStack: ['20.630', '5.403', '15.709']
+      }
+    });
+    const wrapper = shallowMount(ClassInfo, { store, localVue });
+    const correctSubject =  { title: 'Corporate Boards', subject_id: '15.709' };
+    expect(wrapper.vm.currentSubject).toEqual(correctSubject);
+  });
+
+  
 });
