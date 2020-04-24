@@ -98,6 +98,6 @@ function testFilter (FilterType, args, matching, nonmatching) {
 }
 
 testFilter(Filter, [(x) => x === 7], [7], [4, 6, 13, 'cat', 'dog']);
-testFilter(RegexFilter, ['^ca.+'], ['cat', 'car', 'camera', 'cab', 'candid'], ['arcade', 'ca', 'coat', 'orca', 'act']);
+testFilter(RegexFilter, ['^ca.+', ''], ['cat', 'car', 'camera', 'cab', 'candid'], ['arcade', 'ca', 'coat', 'orca', 'act']);
 testFilter(MathFilter, [[4, 8], false], [5, 6, 7, 6.5], [4, 8, 9, 10, 2]);
 testFilter(BooleanFilter, [false], [true], [false]);
