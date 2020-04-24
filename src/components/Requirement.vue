@@ -1,7 +1,7 @@
 <template>
   <div
     class="requirement"
-    :draggable="canDrag"
+    :draggable="canDrag(req)"
     @dragstart="dragStart"
     @mouseover="hoveringOver = true"
     @mouseleave="hoveringOver = false"
@@ -20,7 +20,7 @@
           <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
         </div>
         <span v-else>
-          <span v-if="'title' in req">{{ req.title }}</span>
+          <span v-if="'title' in req"> {{ req.title }} </span>
         </span>
         <span v-if="!req['plain-string']">
           <span v-if="!('title' in req) && 'req' in req">
@@ -64,8 +64,11 @@
 </template>
 
 <script>
+import classInfoMixin from './../mixins/classInfo.js';
+
 export default {
   name: 'Requirement',
+  mixins: [classInfoMixin],
   props: {
     req: {
       type: Object,
@@ -84,27 +87,8 @@ export default {
     };
   },
   computed: {
-    classInfo: function () {
-      if ('req' in this.req) {
-        if (this.req.req in this.$store.state.subjectsIndex) {
-          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[this.req.req]];
-        }
-        let attributeReq = this.req.req;
-        if (attributeReq.indexOf('GIR:') === 0) {
-          attributeReq = attributeReq.substring(4);
-        }
-        if (attributeReq in this.$store.state.genericIndex) {
-          return this.$store.state.genericCourses[this.$store.state.genericIndex[attributeReq]];
-        }
-      }
-      return undefined;
-    },
     iconColor: function () {
       return this.iconHover ? 'info' : 'grey';
-    },
-    canDrag: function () {
-      return this.classInfo !== undefined ||
-        ('req' in this.req && (Object.keys(this.$store.state.subjectsIndex).length === 0));
     },
     reqFulfilled: function () {
       return {
@@ -135,7 +119,7 @@ export default {
   },
   methods: {
     dragStart: function (event) {
-      let usedInfo = this.classInfo;
+      let usedInfo = this.classInfo(this.req);
       if (usedInfo === undefined) {
         usedInfo = { id: this.req.req };
       }

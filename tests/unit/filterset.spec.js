@@ -27,7 +27,6 @@ describe('Filter Set', () => {
 
     // Click some buttons and check output
     expect(buttons.length).toBe(3);
-
     button0.trigger('click');
     expect(wrapper.emitted().input[0][0]).toEqual([true, false, false]);
     button2.trigger('click');
