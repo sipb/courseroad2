@@ -16,7 +16,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "cgi": "^0.3.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "material-design-icons-iconfont": "^4.0.5",
     "moment": "^2.24.0",
     "typeface-roboto": "0.0.54",
