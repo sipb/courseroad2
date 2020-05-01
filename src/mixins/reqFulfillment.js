@@ -51,13 +51,49 @@ export default {
       reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',');
       const splitReq = reqString.split(/(,|\(|\)|\/)/);
       const _this = this;
+      let skipNumber;
       for (let i = 0; i < splitReq.length; i++) {
-        if (splitReq[i].indexOf('"') >= 0) {
-          // Set strings (like "permission of instructor") automatically to false
+        if (splitReq[i].indexOf('"') >= 0 && i !== skipNumber) {
+          // if the requirement is a string instead of a class ID:
+          // If the string is "One subject in X", check for any subject with X in their ID
+          // things that are still not handled correctly:
+          // 21M.283 doesn't work correctly because film / music
+          // 24.280, 21L.709, 21L.715, 21L.S96, 21L.S97 don't work because we don't keep the count between i's
+          // Set other strings (like "permission of instructor") automatically to false
           // If required as an alternative to other prereqs, will not affect fulfillment
           // If the string is a required prereq, it must be manually dismissed
-          splitReq[i] = 'false';
-        } else if ('()/, '.indexOf(splitReq[i]) < 0) {
+          const req = splitReq[i];
+          let idCategory;
+          let numRequired;
+          const lowercaseReq = req.toLowerCase();
+          if (lowercaseReq.indexOf('one subject in') >= 0 || lowercaseReq.indexOf('two subjects in') >= 0) {
+            if (lowercaseReq.indexOf('one subject in') >= 0) {
+              numRequired = 1;
+            } else {
+              numRequired = 2;
+            }
+            // because "one subject in CMS / History" should be (one subject in CMS || one subject in History) not (one subject in CMS) || History
+            const orcheck = splitReq[i + 1] === '/' && (splitReq[i + 2] === '"Comparative Media Studies"' || splitReq[i + 2] === '"History"');
+            // because FireRoad treats "Brain and Cognitive Sciences" as (Brain) && (Cognitive Sciences) instead of (Brain and Cognitive Sciences)
+            const andcheck = splitReq[i + 1] === ',' && splitReq[i + 2] === '"Cognitive Sciences"';
+            if (splitReq.length > i + 2 && (orcheck || andcheck)) {
+              skipNumber = i + 2;
+              idCategory = this.convertReqToID(splitReq[i + 2]);
+              splitReq[i + 2] = this.checkForNumRequired(allIDs, idCategory, numRequired);
+            }
+            // sometimes the string is 'two subjects in X' and sometimes it is 'any other two subjects in X'
+            const parts = req.split(' ');
+            const category = req.split(' ')[parts.indexOf('in') + 1];
+            idCategory = this.convertReqToID(category);
+            splitReq[i] = this.checkForNumRequired(allIDs, idCategory, numRequired);
+            if (idCategory.toString() === '/film/i') {
+              const allTitles = subjects.map((s) => s.title);
+              splitReq[i] = this.checkForNumRequired(allTitles, idCategory, numRequired);
+            }
+          } else {
+            splitReq[i] = 'false';
+          }
+        } else if ('()/, '.indexOf(splitReq[i]) < 0 && i !== skipNumber) {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
           } else {
@@ -70,6 +106,51 @@ export default {
       // i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
       // eslint-disable-next-line no-eval
       return eval(reqExpression);
+    },
+    convertReqToID: function (category) {
+      // takes in a string like "Comparative Media Studies" or "philosophy" and outputs something that matches
+      // a class ID like /CMS/ or /24\.[0-8]/
+      if (category.indexOf('"') === 0) {
+        category = category.slice(1);
+      }
+      if (category.indexOf('"') === category.length - 1) {
+        category = category.slice(0, -1);
+      }
+      let idCategory = '';
+      if (category === 'Comparative' || category === 'CMS' || category === 'Comparative Media Studies') {
+        idCategory = /CMS/;
+      } else if (category === 'Literature') {
+        idCategory = /21L/;
+      } else if (/film/i.test(category)) {
+        idCategory = /film/i;
+      } else if (category === 'philosophy') {
+        // below 900 is Linguistics
+        idCategory = /24\.[0-8]/;
+      } else if (category === 'Anthropology') {
+        idCategory = /21A/;
+      } else if (category === 'Brain' || category === 'Cognitive Sciences' || category === 'Cognitive') {
+        idCategory = /^9\./;
+      } else if (category === 'History') {
+        idCategory = /21H/;
+      } else {
+        idCategory = 'do not match anything';
+        // maybe this should create a message asking us to add it
+      }
+      return idCategory;
+    },
+    checkForNumRequired: function (allIDs, idCategory, numRequired) {
+      // checks whether there are numRequired matches for idCategory in allIDs
+      let satisfied = 'false';
+      let numMatches = 0;
+      for (let i = 0; i < allIDs.length; i++) {
+        if (allIDs[i].search(idCategory) >= 0) {
+          numMatches += 1;
+        }
+      }
+      if (numMatches >= numRequired) {
+        satisfied = 'true';
+      }
+      return satisfied;
     }
   }
 };
