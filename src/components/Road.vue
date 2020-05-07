@@ -92,11 +92,6 @@ export default {
       hideIAP: hideIAP
     };
   },
-  methods: {
-    setHideIAPOption : function(option) {
-      this.$cookies.set('hideIAP', option);
-    }
-  },
   computed: {
     year: {
       get: function () {
@@ -119,6 +114,11 @@ export default {
     if (this.$store.state.cookiesAllowed && visibleList) {
       this.visibleList = visibleList;
     };
+  },
+  methods: {
+    setHideIAPOption: function (option) {
+      this.$cookies.set('hideIAP', option);
+    }
   }
 };
 </script>

@@ -1,10 +1,10 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content
+    v-if="hideIap ? semesterType !== 'IAP' : true"
     :id="'road_'+roadID+'_semester_' + index"
     dropzone="copy"
     @dragover.native.prevent
-    v-if="hideIap ? semesterType !== 'IAP' : true"
   >
     <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;">
       <v-layout row align-center style="user-select: none;">
