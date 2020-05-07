@@ -17,6 +17,7 @@
       :is-open="visibleList[index-1]"
       :adding-from-card="addingFromCard"
       :dragging-over="dragSemesterNum===index-1"
+      :hide-iap="hideIAP"
       @open-change-year-dialog="changeYearDialog = true"
     />
     <v-dialog v-model="changeYearDialog" max-width="600">
@@ -85,7 +86,8 @@ export default {
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
-      numSems: numSemesters
+      numSems: numSemesters,
+      hideIAP: false
     };
   },
   computed: {
