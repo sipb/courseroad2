@@ -139,7 +139,7 @@
             <v-btn
               v-if="'title-no-degree' in dialogReq"
               color="error"
-              @click="deleteReq(dialogReq); viewDialog = false;"
+              @click="deleteReq(dialogReq); viewDialog = false; dialogReq = undefined"
             >
               <v-icon>delete</v-icon>
               Remove Requirement
@@ -245,8 +245,7 @@ export default {
       petitionDialog: false,
       petitionReq: undefined,
       petitionSelectCourses: [],
-      newManualProgress: 0,
-      isEditing: false
+      newManualProgress: 0
     };
   },
   computed: {
