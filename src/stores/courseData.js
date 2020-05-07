@@ -108,8 +108,13 @@ const store = new Vuex.Store({
       Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
-    setPAIgnore (state, uniqueKey) {
-      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': true });
+    setPAIgnore (state, { uniqueKey, isIgnored }) {
+      const progressAssertion = state.roads[state.activeRoad].contents.progressAssertions[uniqueKey];
+      if (progressAssertion === undefined) {
+        Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': isIgnored });
+      } else {
+        progressAssertion['ignore'] = isIgnored;
+      }
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setUnretrieved (state, roadIDs) {

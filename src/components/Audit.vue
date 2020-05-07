@@ -428,7 +428,7 @@ export default {
       this.$store.commit('removeProgressAssertion', this.petitionReq['list-id']);
     },
     ignorePetition: function () {
-      this.$store.commit('setPAIgnore', this.petitionReq['list-id']);
+      this.$store.commit('setPAIgnore', { uniqueKey: this.petitionReq['list-id'], isIgnored: true });
     }
   }
 };
