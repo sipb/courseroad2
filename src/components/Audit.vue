@@ -178,18 +178,16 @@
             style="padding-left: 5%; padding-right: 5%;"
           />
           <v-card-actions style="padding-right: 5%;">
+            <v-checkbox
+              v-model="reqPAIgnore"
+              label="Ignore"
+            />
             <v-spacer />
             <v-btn
               color="success"
               @click="submitPetition()"
             >
               Petition
-            </v-btn>
-            <v-btn
-              color="primary"
-              @click="ignorePetition()"
-            >
-              Ignore
             </v-btn>
             <v-btn
               color="error"
@@ -325,6 +323,19 @@ export default {
         } else {
           return undefined;
         }
+      }
+    },
+    reqPAIgnore: {
+      get: function () {
+        const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
+        if (petitionReqPA !== undefined) {
+          return petitionReqPA['ignore'];
+        } else {
+          return undefined;
+        }
+      },
+      set: function (ignoreVal) {
+        this.$store.commit('setPAIgnore', { uniqueKey: this.petitionReq['list-id'], isIgnored: ignoreVal });
       }
     }
   },
