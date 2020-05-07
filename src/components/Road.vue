@@ -25,12 +25,18 @@
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
-          <h1>I am a...</h1>
+          <h1>Road Settings</h1>
         </v-card-title>
         <v-card-text>
           <v-select
             v-model="year"
             :items="[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
+            label="I am a..."
+            outlined
+          />
+          <v-switch
+            v-model="hideIAP"
+            label="Hide IAP"
           />
         </v-card-text>
         <v-card-actions>
