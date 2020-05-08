@@ -161,9 +161,9 @@
           <v-card-title v-else>
             <h2> Petition {{ petitionReq["req"] }} </h2>
           </v-card-title>
-          <v-card-text v-if="reqProgressAssertions !== undefined" style="padding-left: 5%; padding-right: 5%;">
+          <v-card-text v-if="reqPASubstitution !== undefined" style="padding-left: 5%; padding-right: 5%;">
             Requirement Petitioned by:
-            <div v-for="course in reqProgressAssertions" :key="course">
+            <div v-for="course in reqPASubstitution" :key="course">
               {{ course }}
             </div>
           </v-card-text>
@@ -314,7 +314,7 @@ export default {
         }
       }, this);
     },
-    reqProgressAssertions: {
+    reqPASubstitution: {
       get: function () {
         const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
         // Checks if unique key in progressAssert, if it is, searches for substitution key
