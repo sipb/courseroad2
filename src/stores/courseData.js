@@ -110,10 +110,18 @@ const store = new Vuex.Store({
     },
     setPAIgnore (state, { uniqueKey, isIgnored }) {
       const progressAssertion = state.roads[state.activeRoad].contents.progressAssertions[uniqueKey];
-      if (progressAssertion === undefined) {
-        Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': isIgnored });
+      if (isIgnored === true) {
+        if (progressAssertion === undefined) {
+          Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': isIgnored });
+        } else {
+          progressAssertion['ignore'] = isIgnored;
+        }
       } else {
-        progressAssertion['ignore'] = isIgnored;
+        if (progressAssertion['substitutions'] === undefined) {
+          this.commit('removeProgressAssertion', uniqueKey);
+        } else {
+          Vue.delete(progressAssertion, 'ignore');
+        }
       }
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },

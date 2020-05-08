@@ -161,7 +161,7 @@
           <v-card-title v-else>
             <h2> Petition {{ petitionReq["req"] }} </h2>
           </v-card-title>
-          <v-card-text v-if="reqPASubstitution !== undefined" style="padding-left: 5%; padding-right: 5%;">
+          <v-card-text v-if="reqPASubstitution !== undefined" class="petition-padding">
             Requirement Petitioned by:
             <div v-for="course in reqPASubstitution" :key="course">
               {{ course }}
@@ -169,28 +169,31 @@
           </v-card-text>
           <v-select
             v-model="petitionSelectCourses"
+            :disabled="reqPAIgnore"
             :items="selectedSubjects.flat()"
             item-text="id"
             label="Select Courses to Petition with:"
             no-data-text="No Courses Found"
             multiple
             chips
-            style="padding-left: 5%; padding-right: 5%;"
+            class="petition-padding"
           />
-          <v-card-actions style="padding-right: 5%;">
+          <v-card-actions class="petition-padding">
             <v-checkbox
               v-model="reqPAIgnore"
-              label="Ignore"
+              label="Ignore Petition"
             />
             <v-spacer />
             <v-btn
               color="success"
+              :disabled="reqPAIgnore || petitionSelectCourses.length === 0"
               @click="submitPetition()"
             >
               Petition
             </v-btn>
             <v-btn
               color="error"
+              :disabled="reqPAIgnore"
               @click="clearPetition()"
             >
               Reset Petition
@@ -461,6 +464,10 @@ export default {
   padding-left: 5px;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+.petition-padding {
+  padding-left: 5%;
+  padding-right: 5%;
 }
 </style>
 <style>
