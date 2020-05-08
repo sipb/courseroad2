@@ -331,7 +331,7 @@ export default {
         if (petitionReqPA !== undefined) {
           return petitionReqPA['ignore'];
         } else {
-          return undefined;
+          return false; // So checkbox properly updates when resetPetition is used
         }
       },
       set: function (ignoreVal) {
@@ -437,9 +437,6 @@ export default {
     },
     clearPetition: function () {
       this.$store.commit('removeProgressAssertion', this.petitionReq['list-id']);
-    },
-    ignorePetition: function () {
-      this.$store.commit('setPAIgnore', { uniqueKey: this.petitionReq['list-id'], isIgnored: true });
     }
   }
 };

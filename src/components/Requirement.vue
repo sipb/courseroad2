@@ -26,9 +26,7 @@
               v-if="req['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions"
               style="display:inline-block"
             >
-              <v-icon
-                small
-              >
+              <v-icon small>
                 local_parking
               </v-icon>
             </div>
