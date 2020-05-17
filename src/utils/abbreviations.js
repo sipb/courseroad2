@@ -1,13 +1,13 @@
-// Abbreviations starting with '|' don't receive a delimeter (eg. '.') after them
-const nonAbbreviator = '|';
-const abbreviations = {
-  'and': nonAbbreviator + '&',
-  'i': nonAbbreviator + '1',
-  'ii': nonAbbreviator + '2',
-  'iii': nonAbbreviator + '3',
-  'iv': nonAbbreviator + '4',
-  'v': nonAbbreviator + '5',
-  'vi': nonAbbreviator + '6',
+const notPunctuated = { // No delimiter ('i' not 'i.')
+  'and': '&',
+  'i': '1',
+  'ii': '2',
+  'iii': '3',
+  'iv': '4',
+  'v': '5',
+  'vi': '6'
+};
+const punctuated = { // Delimeter ('comp.', not 'comp')
   'undergraduate': 'undergrad',
   'computer': 'comp',
   'special': 'spec',
@@ -311,4 +311,4 @@ const abbreviations = {
   'company': 'comp'
 };
 
-export { abbreviations, nonAbbreviator };
+export { punctuated, notPunctuated };

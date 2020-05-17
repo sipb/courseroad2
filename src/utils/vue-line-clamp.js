@@ -20,7 +20,7 @@ function defaultFallbackFunc (el, bindings, vNode) {
   } else {
     el.style.maxHeight = el.style.overflowX = '';
   }
-  if (el.scrollHeight > el.offsetHeight) vNode.context.$data.useShortenedTitle = true;
+  if (el.scrollHeight > el.offsetHeight) vNode.context.$data.textTruncated = true;
 }
 
 const truncateText = function (el, bindings, vNode) {
@@ -32,7 +32,7 @@ const truncateText = function (el, bindings, vNode) {
     el[currentValueProp] = lines;
     el.style.webkitLineClamp = lines || '';
   }
-  if (el.scrollHeight > el.offsetHeight) vNode.context.$data.useShortenedTitle = true;
+  if (el.scrollHeight > el.offsetHeight) vNode.context.$data.textTruncated = true;
 };
 
 const VueLineClamp = {

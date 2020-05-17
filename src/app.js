@@ -7,6 +7,7 @@ import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
 import VueCookies from 'vue-cookies';
 import './css/app.css';
+import VueLineClamp from './utils/vue-line-clamp.js';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
@@ -22,6 +23,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(Vuetify);
 Vue.use(VueCookies);
 Vue.use(VueRouter);
+Vue.use(VueLineClamp);
 Vue.use(BrowserSupportPlugin);
 
 var routes = [

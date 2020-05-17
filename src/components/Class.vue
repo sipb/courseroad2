@@ -34,7 +34,7 @@
               cancel
             </v-icon>
             <v-card-text ref="title" v-line-clamp:20="3" class="card-text">
-              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ useShortenedTitle ? shortenedTitle : classInfo.title }}
+              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ useShortenedTitle && textTruncated ? shortenedTitle : classInfo.title }}
             </v-card-text>
           </div>
         </v-card>
@@ -74,11 +74,7 @@
 
 <script>
 import colorMixin from './../mixins/colorMixin.js';
-import { abbreviations, nonAbbreviator } from './../utils/abbreviations.js';
-import Vue from 'vue';
-import VueLineClamp from './../utils/vue-line-clamp.js';
-
-Vue.use(VueLineClamp);
+import * as abbreviations from './../utils/abbreviations.js';
 
 export default {
   name: 'Class',
@@ -105,29 +101,26 @@ export default {
     return {
       warningDialog: false,
       shouldOverrideWarnings: this.classInfo.overrideWarnings,
-      useShortenedTitle: false
+      useShortenedTitle: true, // Set to false to never shorten titles
+      textTruncated: false // Changed to true by VueLineClamp if title is too long
     };
   },
   computed: {
     shortenedTitle: function () {
       var title = this.classInfo.title.split(/([^A-Za-z])/);// Keep separators
-      var words = [];
+      var shortTitle = '';
       for (const word of title) {
         const lookup = word.toLowerCase();
-        var abbr = abbreviations[lookup];
+        const abbr = abbreviations.punctuated[lookup] || abbreviations.notPunctuated[lookup];
         if (abbr) {
-          var abbrevChar = '.';
-          if (abbr.startsWith(nonAbbreviator)) {
-            abbr = abbr.substring(nonAbbreviator.length);
-            abbrevChar = '';
-          }
+          const abbrevChar = lookup in abbreviations.punctuated ? '.' : '';
           // Match capitalization
-          words.push((word.charAt(0) === lookup.charAt(0) ? abbr : abbr.charAt(0).toUpperCase() + abbr.slice(1)) + abbrevChar);
+          shortTitle += (word.charAt(0) === lookup.charAt(0) ? abbr : abbr.charAt(0).toUpperCase() + abbr.slice(1)) + abbrevChar;
         } else {
-          words.push(word);
+          shortTitle += word;
         }
       }
-      return words.join('');
+      return shortTitle;
     }
   },
   methods: {
@@ -167,11 +160,6 @@ export default {
     align-items: flex-start;
     height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
     padding: .2em .4em .5em .2em;
-    /* Multi-line truncation is not a supported feature of CSS right now.
-       Optimally, we would have multi-line truncation within the cards, but
-       currently extra words are clipped.
-    text-overflow: ellipsis;
-    white-space: nowrap; */
   }
 
   .placeholder {
