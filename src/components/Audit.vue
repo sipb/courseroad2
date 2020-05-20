@@ -30,7 +30,7 @@
         <v-hover :disabled="!leaf || !canDrag(item)">
           <div
             slot-scope="{ hover }"
-            :class="{ 'elevation-3 grey lighten-3': hover }"
+            :class="{ 'elevation-3': hover, 'yellow lighten-3': item['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions}"
             :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
           >
             <v-icon
