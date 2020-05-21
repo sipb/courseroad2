@@ -26,8 +26,14 @@
               v-if="req['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions"
               style="display:inline-block"
             >
-              <v-icon small>
+              <v-icon
+                v-if="!('ignore' in $store.state.roads[$store.state.activeRoad].contents.progressAssertions[req['list-id']])" 
+                small
+              >
                 local_parking
+              </v-icon>
+              <v-icon v-else small>
+                not_interested
               </v-icon>
             </div>
           </span>
@@ -54,8 +60,14 @@
               ({{ req['threshold-desc'] }})
             </span>
             <span v-if="req['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions">
-              <v-icon small>
+              <v-icon
+                v-if="!('ignore' in $store.state.roads[$store.state.activeRoad].contents.progressAssertions[req['list-id']])" 
+                small
+              >
                 local_parking
+              </v-icon>
+              <v-icon v-else small>
+                not_interested
               </v-icon>
             </span>
           </span>
