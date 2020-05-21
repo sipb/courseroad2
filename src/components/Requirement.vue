@@ -27,7 +27,7 @@
               style="display:inline-block"
             >
               <v-icon
-                v-if="!('ignore' in $store.state.roads[$store.state.activeRoad].contents.progressAssertions[req['list-id']])" 
+                v-if="!('ignore' in $store.state.roads[$store.state.activeRoad].contents.progressAssertions[req['list-id']])"
                 small
               >
                 local_parking
@@ -61,7 +61,7 @@
             </span>
             <span v-if="req['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions">
               <v-icon
-                v-if="!('ignore' in $store.state.roads[$store.state.activeRoad].contents.progressAssertions[req['list-id']])" 
+                v-if="!('ignore' in $store.state.roads[$store.state.activeRoad].contents.progressAssertions[req['list-id']])"
                 small
               >
                 local_parking
