@@ -56,10 +56,10 @@
       </template>
     </v-treeview>
 
-    <p v-if="isCourse6">
-      <br>
-      <a href="http://eecsappsrv.mit.edu/students/">
-        Course 6 Student Portal (+Audit)
+    <br>
+    <p v-for="courseLink in getCourseLinks(selectedReqs)" :key="courseLink.link">
+      <a :href="courseLink.link">
+        {{ courseLink.text }}
       </a>
     </p>
 
@@ -153,12 +153,13 @@
 <script>
 import Requirement from './Requirement.vue';
 import classInfoMixin from './../mixins/classInfo.js';
+import courseLinksMixin from './../mixins/courseLinks.js';
 export default {
   name: 'Audit',
   components: {
     requirement: Requirement
   },
-  mixins: [classInfoMixin],
+  mixins: [classInfoMixin, courseLinksMixin],
   props: {
     selectedReqs: {
       type: Array,
@@ -202,18 +203,6 @@ export default {
           this.$store.commit('addReq', newReq);
         }
       }
-    },
-    isCourse6: function () {
-      return this.selectedTrees.some(course => {
-        // checks if a course is one of the ones that the course 6 audit page works for
-        // if statement needed because otherwise it gives an error if the courses haven't loaded yet
-        if (course['short-title']) {
-          const major = course['short-title'].slice(0, 3);
-          return ['6-1', '6-2', '6-3', '6-7', '6-14', '6', '6-P'].includes(major);
-        } else {
-          return false;
-        }
-      });
     },
     getCourses: function () {
       const courses = this.reqList.slice(0);
