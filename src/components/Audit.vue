@@ -57,7 +57,7 @@
     </v-treeview>
 
     <br>
-    <p v-for="courseLink in getCourseLinks(selectedReqs)">
+    <p v-for="courseLink in getCourseLinks(selectedReqs)" :key="courseLink.link">
       <a :href="courseLink.link">
         {{ courseLink.text }}
       </a>
@@ -153,7 +153,7 @@
 <script>
 import Requirement from './Requirement.vue';
 import classInfoMixin from './../mixins/classInfo.js';
-import courseLinksMixin from './../mixins/courseLinks.js'
+import courseLinksMixin from './../mixins/courseLinks.js';
 export default {
   name: 'Audit',
   components: {

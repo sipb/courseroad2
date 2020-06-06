@@ -1,5 +1,5 @@
 export default {
-  data: function() {
+  data: function () {
     return {
       courseLinks: [
         {
@@ -8,7 +8,7 @@ export default {
           text: 'Course 6 Student Portal (+Audit)'
         },
         {
-          courses: ['neetLM-CB', 'neetLM-IE', 'neetLM-TE', 'neetLM-SB', 'neetLM-MDE'],
+          courses: ['neetLM-CB', 'neetLM-IE', 'neetLM-TE', 'neetLM-SB', 'neetLM-MDE', 'neetLM'],
           link: 'https://neet.mit.edu/threads/lm',
           text: 'NEET Living Machines Website'
         },
@@ -33,18 +33,18 @@ export default {
           text: 'NEET Renewable Energy Machines'
         }
       ]
-    }
+    };
   },
   methods: {
-    getCourseLinks: function(selectedReqs) {
+    getCourseLinks: function (selectedReqs) {
       const links = [];
-      for (const {courses, link, text} of this.courseLinks) {
+      for (const { courses, link, text } of this.courseLinks) {
         if (selectedReqs.some((course) => courses.includes(course))) {
           links.push({ link, text });
         }
       }
-      console.log(links)
+      console.log(links);
       return links;
     }
   }
-}
+};
