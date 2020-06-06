@@ -204,18 +204,6 @@ export default {
         }
       }
     },
-    isCourse6: function () {
-      return this.selectedTrees.some(course => {
-        // checks if a course is one of the ones that the course 6 audit page works for
-        // if statement needed because otherwise it gives an error if the courses haven't loaded yet
-        if (course['short-title']) {
-          const major = course['short-title'].slice(0, 3);
-          return ['6-1', '6-2', '6-3', '6-7', '6-14', '6', '6-P'].includes(major);
-        } else {
-          return false;
-        }
-      });
-    },
     getCourses: function () {
       const courses = this.reqList.slice(0);
       const sortKey = 'medium-title';
