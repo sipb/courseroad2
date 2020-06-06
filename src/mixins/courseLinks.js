@@ -43,7 +43,6 @@ export default {
           links.push({ link, text });
         }
       }
-      console.log(links);
       return links;
     }
   }
