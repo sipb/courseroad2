@@ -56,10 +56,10 @@
       </template>
     </v-treeview>
 
-    <p v-if="isCourse6">
-      <br>
-      <a href="http://eecsappsrv.mit.edu/students/">
-        Course 6 Student Portal (+Audit)
+    <br>
+    <p v-for="courseLink in getCourseLinks(selectedReqs)">
+      <a :href="courseLink.link">
+        {{ courseLink.text }}
       </a>
     </p>
 
@@ -153,12 +153,13 @@
 <script>
 import Requirement from './Requirement.vue';
 import classInfoMixin from './../mixins/classInfo.js';
+import courseLinksMixin from './../mixins/courseLinks.js'
 export default {
   name: 'Audit',
   components: {
     requirement: Requirement
   },
-  mixins: [classInfoMixin],
+  mixins: [classInfoMixin, courseLinksMixin],
   props: {
     selectedReqs: {
       type: Array,
