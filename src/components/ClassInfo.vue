@@ -118,6 +118,15 @@
                   </span>
                 </td>
               </tr>
+              <tr v-if="currentSubject.schedule !== undefined">
+                <td><b>Virtual?</b></td>
+                <td v-if="currentSubject.schedule.includes('VIRTUAL')">
+                  Yes
+                </td>
+                <td v-else>
+                  No
+                </td>
+              </tr>
               <tr v-if="currentSubject.instructors !== undefined">
                 <td><b>Instructor</b></td>
                 <td>
