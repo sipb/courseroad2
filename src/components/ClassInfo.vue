@@ -118,13 +118,16 @@
                   </span>
                 </td>
               </tr>
-              <tr v-if="currentSubject.schedule !== undefined">
+              <tr v-if="currentSubject.virtual_status !== undefined">
                 <td><b>Virtual?</b></td>
-                <td v-if="currentSubject.schedule.includes('VIRTUAL')">
-                  Yes
+                <td v-if="currentSubject.virtual_status === 'Virtual/In-Person'">
+                  Partly Virtual
+                </td>
+                <td v-else-if="currentSubject.virtual_status === 'In-Person'">
+                  No
                 </td>
                 <td v-else>
-                  No
+                  Yes
                 </td>
               </tr>
               <tr v-if="currentSubject.instructors !== undefined">

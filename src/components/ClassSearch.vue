@@ -59,8 +59,9 @@ var girRest = new RegexFilter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attri
 var hassAny = new RegexFilter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
 var hassArt = new RegexFilter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
 var hassSocialScience = new RegexFilter('HASS-S', 'S', 'HASS-S', ['hass_attribute']);
-var virtual = new RegexFilter('Virtual', 'Y', '^([^,]*,VIRTUAL[^,]*)+$', ['schedule']);
-var notVirtual = new RegexFilter('In Person', 'N', ',[^V]', ['schedule']);
+var virtual = new RegexFilter('Virtual', 'Y', '^Virtual$', ['virtual_status']);
+var notVirtual = new RegexFilter('In Person', 'N', '^In-Person$', ['virtual_status']);
+var partlyVirtual = new RegexFilter('Partly Virtual', 'B', '^Virtual/In-Person$', ['virtual_status']);
 var hassHumanity = new RegexFilter('HASS-H', 'H', 'HASS-H', ['hass_attribute']);
 var hassElective = new RegexFilter('HASS-E', 'E', 'HASS-E', ['hass_attribute']);
 var ciAny = new RegexFilter('CI:Any', 'Any', 'CI.+', ['communication_requirement']);
@@ -106,7 +107,7 @@ export default {
         level: [false, false],
         units: [false, false, false, false, false, false, false],
         terms: [false, false, false],
-        virtual: [false, false]
+        virtual: [false, false, false]
       },
       allFilters: {
         girs: new FilterGroup('GIR', [girAny, girLab, girRest], 'OR'),
@@ -115,7 +116,7 @@ export default {
         level: new FilterGroup('Level', [levelUG, levelG], 'OR'),
         units: new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR'),
         terms: new FilterGroup('Term', [termFall, termIAP, termSpring], 'OR'),
-        virtual: new FilterGroup('Virtual?', [virtual, notVirtual], 'OR')
+        virtual: new FilterGroup('Virtual?', [virtual, notVirtual, partlyVirtual], 'OR')
       },
       rowsPerPageItems: [5, 10, 20, 50, { 'text': '$vuetify.dataIterator.rowsPerPageAll', 'value': -1 }],
       pagination: {
