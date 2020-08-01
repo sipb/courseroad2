@@ -119,7 +119,7 @@
                 </td>
               </tr>
               <tr v-if="currentSubject.virtual_status !== undefined">
-                <td><b>Virtual?</b></td>
+                <td><b>Virtual</b></td>
                 <td v-if="currentSubject.virtual_status === 'Virtual/In-Person'">
                   Partly Virtual
                 </td>
