@@ -33,7 +33,7 @@
                 local_parking
               </v-icon>
               <v-icon v-else small>
-                not_interested
+                highlight_off
               </v-icon>
             </div>
           </span>
@@ -67,7 +67,7 @@
                 local_parking
               </v-icon>
               <v-icon v-else small>
-                not_interested
+                highlight_off
               </v-icon>
             </span>
           </span>
@@ -195,4 +195,5 @@ export default {
       var(--bg-color) var(--percent)
     );
   }
+  
 </style>
