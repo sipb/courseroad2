@@ -30,7 +30,7 @@
         <v-hover :disabled="!leaf || !canDrag(item)">
           <div
             slot-scope="{ hover }"
-            :class="{ 'elevation-3': hover, 'yellow lighten-3': item['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions}"
+            :class="{ 'elevation-3': hover, 'yellow lighten-3': isPetitioned(item), 'grey lighten-2': isIgnored(item)}"
             :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
           >
             <v-icon
@@ -440,6 +440,20 @@ export default {
     },
     clearPetition: function () {
       this.$store.commit('removeProgressAssertion', this.petitionReq['list-id']);
+    },
+    isPetitioned: function (req) {
+      if (req['list-id'] in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions) {
+        return !('ignore' in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[req['list-id']]);
+      } else {
+        return false;
+      }
+    },
+    isIgnored: function (req) {
+      if (req['list-id'] in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions) {
+        return 'ignore' in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[req['list-id']];
+      } else {
+        return false;
+      }
     }
   }
 };

@@ -195,5 +195,4 @@ export default {
       var(--bg-color) var(--percent)
     );
   }
-  
 </style>
