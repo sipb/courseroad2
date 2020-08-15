@@ -7,6 +7,7 @@
       <filter-set v-model="chosenFilters.level" :label="'Level'" :filters="allFilters.level.filters" />
       <filter-set v-model="chosenFilters.units" :label="'Units'" :filters="allFilters.units.filters" />
       <filter-set v-model="chosenFilters.terms" :label="'Term'" :filters="allFilters.terms.filters" />
+      <filter-set v-model="chosenFilters.virtual" :label="'Virtual'" :filters="allFilters.virtual.filters" />
     </div>
     <div style="display: flex; flex: 1; min-height: 0px;">
       <div style="flex: 1; overflow: auto;">
@@ -58,6 +59,9 @@ var girRest = new RegexFilter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attri
 var hassAny = new RegexFilter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
 var hassArt = new RegexFilter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
 var hassSocialScience = new RegexFilter('HASS-S', 'S', 'HASS-S', ['hass_attribute']);
+var virtual = new RegexFilter('Virtual', 'Y', '^Virtual$', ['virtual_status']);
+var notVirtual = new RegexFilter('In Person', 'N', '^In-Person$', ['virtual_status']);
+var partlyVirtual = new RegexFilter('Partly Virtual', 'Both', '^Virtual/In-Person$', ['virtual_status']);
 var hassHumanity = new RegexFilter('HASS-H', 'H', 'HASS-H', ['hass_attribute']);
 var hassElective = new RegexFilter('HASS-E', 'E', 'HASS-E', ['hass_attribute']);
 var ciAny = new RegexFilter('CI:Any', 'Any', 'CI.+', ['communication_requirement']);
@@ -102,7 +106,8 @@ export default {
         ci: [false, false, false],
         level: [false, false],
         units: [false, false, false, false, false, false, false],
-        terms: [false, false, false]
+        terms: [false, false, false],
+        virtual: [false, false, false]
       },
       allFilters: {
         girs: new FilterGroup('GIR', [girAny, girLab, girRest], 'OR'),
@@ -110,7 +115,8 @@ export default {
         ci: new FilterGroup('CI', [ciAny, ciH, ciHW, ciNone], 'OR'),
         level: new FilterGroup('Level', [levelUG, levelG], 'OR'),
         units: new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR'),
-        terms: new FilterGroup('Term', [termFall, termIAP, termSpring], 'OR')
+        terms: new FilterGroup('Term', [termFall, termIAP, termSpring], 'OR'),
+        virtual: new FilterGroup('Virtual', [virtual, notVirtual, partlyVirtual], 'OR')
       },
       rowsPerPageItems: [5, 10, 20, 50, { 'text': '$vuetify.dataIterator.rowsPerPageAll', 'value': -1 }],
       pagination: {
