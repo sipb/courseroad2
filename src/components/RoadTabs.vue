@@ -1,5 +1,5 @@
 <template>
-  <v-layout row>
+  <v-row>
     <v-tabs
       v-model="tabRoad"
       show-arrows
@@ -74,11 +74,11 @@
               @keyup.enter="
                 if (validRoadName) createRoad()"
             />
-            <v-layout row>
-              <v-flex xs6>
+            <v-row>
+              <v-col cols="6">
                 <v-switch v-model="duplicateRoad" label="Duplicate existing" />
-              </v-flex>
-              <v-flex>
+              </v-col>
+              <v-col>
                 <v-select v-model="duplicateRoadSource" :disabled="!duplicateRoad" :items="Object.keys(roads)">
                   <template slot="item" slot-scope="{item}">
                     {{ roads[item].name }}
@@ -87,8 +87,8 @@
                     {{ roads[item].name }}
                   </template>
                 </v-select>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -99,12 +99,12 @@
         </v-card>
       </v-dialog>
     </v-tabs>
-    <v-flex>
+    <v-col>
       <v-btn type="submit" icon text color="primary" @click="addDialog = true">
         <v-icon>add</v-icon>
       </v-btn>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

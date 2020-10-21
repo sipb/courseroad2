@@ -12,12 +12,12 @@
     <div style="display: flex; flex: 1; min-height: 0px;">
       <div style="flex: 1; overflow: auto;">
         <v-data-table
-          :items="autocomplete"
-          :rows-per-page-items="rowsPerPageItems"
+          :item="autocomplete"
+          :items-per-page-items="rowsPerPageItems"
           :pagination.sync="pagination"
           :no-data-text="'No results'"
-          :rows-per-page-text="'Results per page:\xa0'"
-          :hide-headers="true"
+          :items-per-page-text="'Results per page:\xa0'"
+          :hide-default-header="true"
         >
           <template slot="items" slot-scope="props">
             <v-hover>

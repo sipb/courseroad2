@@ -1,13 +1,12 @@
-<!-- direct from the Vuetify website: this is the proper nesting: v-container » v-layout » v-flex (» v-card) -->
 <template>
   <v-app
     id="app-wrapper"
   >
     <v-dialog v-model="showMobile" fullscreen>
       <v-card height="100%">
-        <v-container fill-height>
-          <v-layout column>
-            <v-flex grow>
+        <v-container class="fill-height">
+          <v-row class="flex-column">
+            <v-col class="grow">
               <v-card-title primary-title>
                 <h1 style="font-size: 3em;">
                   Hello there!
@@ -19,18 +18,18 @@
                   the FireRoad app instead, available on Android and iOS.
                 </p>
               </v-card-text>
-            </v-flex>
-            <v-flex shrink style="justify-content: center;">
+            </v-col>
+            <v-col class="shrink" style="justify-content: center;">
               <v-btn style="width: 100%; margin: 0 0 10% 0;" :href="appLink" color="info">
                 <v-icon>vertical_align_bottom</v-icon> Download
               </v-btn><br>
               <a href="#" style="font-size: 1.25em; display: block; text-align: center;" @click="showMobile = false">No thanks, take me to the desktop site.</a>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card>
     </v-dialog>
-    <v-toolbar fixed app dense class="elevation-2">
+    <v-app-bar fixed class="elevation-2">
       <road-tabs
         slot="extension"
         @delete-road="$refs.authcomponent.deleteRoad($event)"
@@ -50,7 +49,7 @@
         @resolve-conflict="resolveConflict"
       />
 
-      <v-layout justify-end>
+      <v-row justify="end">
         <v-text-field
           id="searchInputTF"
           v-model="searchInput"
@@ -65,8 +64,8 @@
           @keydown.esc="searchOpen = false"
           @keyup.enter="$refs.searchMenu.openFirstClass"
         />
-      </v-layout>
-    </v-toolbar>
+      </v-row>
+    </v-app-bar>
 
     <v-navigation-drawer
       id="left-panel"
@@ -75,23 +74,23 @@
       class="side-panel elevation-2 scroller"
       app
     >
-      <v-container fill-height style="padding: 0;">
-        <v-layout fill-height column>
-          <v-layout shrink style="padding: 14px; padding-bottom: 0;" row align-center>
-            <v-flex shrink class="blue-grey lighten-5" style="user-select: none; color: inherit; text-decoration: none; border-radius: 2px; padding: 6px 8px; display: inline-block;">
+      <v-container class="fill-height" style="padding: 0;">
+        <v-row class="fill-height flex-column">
+          <v-row class="shrink" style="padding: 5px 50px 5px 50px; padding-bottom: 0;" align="center">
+            <v-row class="blue-grey lighten-5 shrink" style="user-select: none; color: inherit; text-decoration: none; border-radius: 2px; padding: 6px 8px; display: inline-block;">
               <v-icon size="1.3em" color="#00b300">
                 check_box
               </v-icon>
               <h3 style="display: inline;">
                 C o u r s e R o a d
               </h3>
-            </v-flex>
-            <v-flex>
+            </v-row>
+            <v-col>
               <router-link to="/about" style="float: right;">
                 About
               </router-link>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
           <audit
             v-if="activeRoad !== ''"
             :req-trees="reqTrees"
@@ -100,7 +99,7 @@
             :req-list="reqList"
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
           />
-          <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+          <v-col class="shrink" style="padding: 14px; padding-bottom: 0;">
             <p>
               <b>Warning:</b> This is an unofficial tool that may not accurately
               reflect degree progress. Please view the
@@ -114,8 +113,8 @@
               <a target="_blank" href="https://fireroad.mit.edu/requirements/">here</a> or
               send an email to <a target="_blank" href="mailto:courseroad@mit.edu">courseroad@mit.edu</a>.
             </p>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
       </v-container>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
@@ -166,27 +165,27 @@
     />
 
     <v-footer v-if="!dismissedCookies" fixed style="height: unset;">
-      <v-layout column>
-        <v-flex v-if="!dismissedCookies" class="lime accent-3 py-1 px-2">
-          <v-layout row align-center>
-            <v-flex>
+      <v-row class="flex-column">
+        <v-col v-if="!dismissedCookies" class="lime accent-3 py-1 px-2">
+          <v-row align="center">
+            <v-col>
               This website uses cookies and session storage to store your data and login token, and important features like saving roads will not work without them.
               <span v-if="cookiesAllowed === undefined">By continuing to use this website or clicking "I accept", you consent to the use of cookies.</span>
               <span v-if="cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
-            </v-flex>
-            <v-flex shrink>
+            </v-col>
+            <v-col class="shrink">
               <v-btn small depressed color="primary" class="ma-1" @click="$store.commit('allowCookies'); dismissCookies();">
                 I accept
               </v-btn>
-            </v-flex>
-            <v-flex shrink>
+            </v-col>
+            <v-col class="shrink">
               <v-btn small depressed class="ma-1" @click="disallowCookies">
                 Opt out
               </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-footer>
   </v-app>
 </template>

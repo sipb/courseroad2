@@ -1,5 +1,5 @@
 <template>
-  <v-layout row grow>
+  <v-row class="grow">
     <v-btn class="collapse-button" outlined color="primary" @click="exportRoad">
       <span class="hidden-sm-and-down">Export</span>
       <font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" />
@@ -9,12 +9,10 @@
       v-model="dialog"
       max-width="600"
     >
-      <template v-slot:activator="{ on }">
-        <v-btn class="collapse-button" outlined color="primary" v-on="on">
-          <span class="hidden-sm-and-down">Import</span>
-          <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
-        </v-btn>
-      </template>
+      <v-btn slot="activator" class="collapse-button" outlined color="primary">
+        <span class="hidden-sm-and-down">Import</span>
+        <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
+      </v-btn>
       <v-card>
         <v-btn icon text style="float:right;" @click="dialog = false">
           <v-icon>close</v-icon>
@@ -46,22 +44,22 @@
           />
 
           <v-spacer />
-          <v-flex v-if="otherRoadHasName(roadtitle)">
+          <v-col v-if="otherRoadHasName(roadtitle)">
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
                 There's already a road with this name.
               </v-card-text>
             </v-card>
-          </v-flex>
-          <v-flex v-if="badinput">
+          </v-col>
+          <v-col v-if="badinput">
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
                 Make sure you have given this road a unique name, and uploaded/pasted a valid '.road' file.
               </v-card-text>
             </v-card>
-          </v-flex>
+          </v-col>
         </v-card-text>
 
         <v-card-actions>
@@ -79,7 +77,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

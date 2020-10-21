@@ -1,7 +1,7 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
 
-  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;">
+  <v-col style="padding: 0px 18px 0px 18px; overflow: auto;">
     <div style="display: flex; align-content: space-between; margin: 12px 0px;">
       <v-autocomplete
         v-model="changeReqs"
@@ -77,19 +77,19 @@
             manually enter how many of these requirements you have completed for your degree.
           </p>
           <h3>{{ capitalize(progressReq.threshold.criterion) }} Completed: {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}</h3>
-          <v-layout row justify-start style="width: 70%; margin: auto;">
-            <v-flex shrink style="width: 3em; margin-right: 1em;">
+          <v-row justify="start" style="width: 70%; margin: auto;">
+            <v-col class="shrink" style="width: 3em; margin-right: 1em;">
               <v-text-field v-model="newManualProgress" type="number" @keyup.enter="updateManualProgress" />
-            </v-flex>
-            <v-flex>
+            </v-col>
+            <v-col>
               <v-slider
                 v-model="newManualProgress"
                 :max="progressReq.threshold.cutoff"
                 :min="0"
                 :step="1"
               />
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -147,7 +147,7 @@
         </v-card>
       </div>
     </v-dialog>
-  </v-flex>
+  </v-col>
 </template>
 
 <script>

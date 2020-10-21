@@ -1,6 +1,6 @@
 <template>
-  <v-layout>
-    <v-flex>
+  <v-row>
+    <v-col>
       <v-card
         id="classInfoCard"
         class="class-info-card"
@@ -10,7 +10,7 @@
         min-width="23em"
       >
         <v-card-title :class="['card-header',courseColor(currentSubject)]">
-          <v-flex style="display: flex; flex-direction: row; align-items: center;">
+          <v-col style="display: flex; flex-direction: row; align-items: center;">
             <div style="padding: 0; margin: 0; display: block;">
               <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$store.commit('popClassStack')">
                 <v-icon>navigate_before</v-icon>
@@ -26,12 +26,12 @@
                 </v-icon>
               </v-btn>
             </div>
-          </v-flex>
+          </v-col>
         </v-card-title>
 
         <v-card-text class="card-body">
           <div id="cardBody" class="card-body-container">
-            <v-layout row>
+            <v-row>
               <div style="padding: 0 0 0.5em 0;">
                 <h3>{{ currentSubject.title }}</h3>
               </div>
@@ -56,7 +56,7 @@
               >
                 <v-icon>block</v-icon>
               </v-btn>
-            </v-layout>
+            </v-row>
             <h4 v-if="currentSubject.is_historical">
               <v-icon small>
                 warning
@@ -217,8 +217,8 @@
           </div>
         </v-card-text>
       </v-card>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

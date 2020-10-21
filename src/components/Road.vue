@@ -1,7 +1,7 @@
 <template>
   <!-- more on expansion panels (and more examples): https://vuetifyjs.com/en/components/expansion-panels -->
   <!-- this is the example I copied: https://vuetifyjs.com/en/components/expansion-panels#expand -->
-  <v-expansion-panel
+  <v-expansion-panels
     v-model="visibleList"
     expand
   >
@@ -44,7 +44,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <script>

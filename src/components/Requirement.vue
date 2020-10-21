@@ -6,8 +6,8 @@
     @mouseover="hoveringOver = true"
     @mouseleave="hoveringOver = false"
   >
-    <v-layout row>
-      <v-flex>
+    <v-row>
+      <v-col>
         <div v-if="!isLeaf" style="display: inline;">
           <span v-if="'title-no-degree' in req && req['title-no-degree'] !=''">
             {{ req["title-no-degree"] }}
@@ -58,8 +58,8 @@
           </v-icon>
         </span>
         <div :class="percentage_bar" :style="percentage" />
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
