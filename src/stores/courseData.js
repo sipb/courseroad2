@@ -30,7 +30,8 @@ const store = new Vuex.Store({
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: Array.from(Array(16), () => []),
-          progressOverrides: {}
+          progressOverrides: {},
+          progressAssertions: {}
         }
       }
     },
@@ -102,6 +103,27 @@ const store = new Vuex.Store({
     overrideWarnings (state, payload) {
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
       state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex].overrideWarnings = payload.override;
+    },
+    setPASubstitutions (state, { uniqueKey, newReqs }) {
+      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    setPAIgnore (state, { uniqueKey, isIgnored }) {
+      const progressAssertion = state.roads[state.activeRoad].contents.progressAssertions[uniqueKey];
+      if (isIgnored === true) {
+        if (progressAssertion === undefined) {
+          Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': isIgnored });
+        } else {
+          progressAssertion['ignore'] = isIgnored;
+        }
+      } else {
+        if (progressAssertion['substitutions'] === undefined) {
+          this.commit('removeProgressAssertion', uniqueKey);
+        } else {
+          Vue.delete(progressAssertion, 'ignore');
+        }
+      }
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setUnretrieved (state, roadIDs) {
       state.unretrieved = roadIDs;
@@ -209,6 +231,10 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       state.fulfillmentNeeded = 'none';
+    },
+    removeProgressAssertion (state, uniqueKey) {
+      Vue.delete(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey);
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     resetID (state, { oldid, newid }) {
       newid = newid.toString();

@@ -427,7 +427,8 @@ export default {
       const newContents = {
         coursesOfStudy: cos,
         selectedSubjects: ss,
-        progressOverrides: overrides
+        progressOverrides: overrides,
+        progressAssertions: {}
       };
       const newRoad = {
         downloaded: moment().format(DATE_FORMAT),
