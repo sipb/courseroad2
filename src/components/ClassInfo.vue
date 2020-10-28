@@ -179,6 +179,10 @@
                 View Course Evaluations
               </a>
             </p>
+            <div v-if="currentSubject.joint_subjects !== undefined">
+              <h3>Joint Subjects</h3>
+              <subject-scroll :subjects="currentSubject.joint_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
+            </div>
             <div v-if="currentSubject.equivalent_subjects !== undefined">
               <h3>Equivalent Subjects</h3>
               <subject-scroll :subjects="currentSubject.equivalent_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
