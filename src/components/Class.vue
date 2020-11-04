@@ -57,10 +57,10 @@
           <!-- eslint-disable-next-line vue/no-v-html -->
           <p v-for="warning in warnings" :key="warning" v-html="warning" />
           <v-switch
-            @change="$store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})"
             v-model="shouldOverrideWarnings"
             label="Override warnings"
             color="orange darken-3"
+            @change="$store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})"
           />
         </v-card-text>
         <v-card-actions style="justify-content: flex-end;">
