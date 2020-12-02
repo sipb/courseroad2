@@ -263,7 +263,16 @@ export default {
     subjectsWithPrereq: function () {
       const currentID = this.currentSubject.subject_id;
       const currentDept = currentID.substring(0, currentID.indexOf('.'));
-      var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+
+      var thisGIRAttr = this.currentSubject.gir_attribute;
+
+      if(thisGIRAttr == undefined){
+        var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+      } else { //Expression taken directly from above, but modified for GIRs
+        var thisGIRAttr = "GIR:"+thisGIRAttr
+        var filteredCurrentID = currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + '(' + thisGIRAttr + '|' + filteredCurrentID + ')' + '(?![\\da-zA-Z])' );
+      }
       return this.$store.state.subjectsInfo.filter(function (s) {
         return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
       }).sort(function (s1, s2) {
