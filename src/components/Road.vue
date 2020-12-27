@@ -17,7 +17,7 @@
       :is-open="visibleList[index-1]"
       :adding-from-card="addingFromCard"
       :dragging-over="dragSemesterNum===index-1"
-      :hide-iap="hideIAP === 'true'"
+      :hide-iap="hideIAP"
       @open-change-year-dialog="changeYearDialog = true"
     />
     <v-dialog v-model="changeYearDialog" max-width="600">
@@ -84,7 +84,7 @@ export default {
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;
-    const hideIAP = this.$cookies.isKey('hideIAP') ? this.$cookies.get('hideIAP') : false;
+    const hideIAP = localStorage.hideIAP === 'true';
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     setHideIAPOption: function (option) {
-      this.$cookies.set('hideIAP', option);
+      localStorage.hideIAP = option;
     }
   }
 };

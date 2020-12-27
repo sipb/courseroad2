@@ -1,7 +1,7 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content
-    v-if="hideIap ? semesterType !== 'IAP' : true"
+    v-if="!hideIap || semesterType !== 'IAP'"
     :id="'road_'+roadID+'_semester_' + index"
     dropzone="copy"
     @dragover.native.prevent
