@@ -21,6 +21,7 @@ const store = new Vuex.Store({
     genericIndex: {},
     itemAdding: undefined,
     loggedIn: false,
+    hideIAP: localStorage.hideIAP === 'true',
     roads: {
       '$defaultroad$': {
         downloaded: moment().format(DATE_FORMAT),
@@ -49,6 +50,9 @@ const store = new Vuex.Store({
   getters: {
     userYear (state) {
       return Math.floor((state.currentSemester - 1) / 3);
+    },
+    hideIAP: state => {
+      return state.hideIAP;
     }
   },
   mutations: {
@@ -254,6 +258,10 @@ const store = new Vuex.Store({
     },
     setLoggedIn (state, newLoggedIn) {
       state.loggedIn = newLoggedIn;
+    },
+    setHideIAP: (state, value) => {
+      state.hideIAP = value;
+      localStorage.hideIAP = value;
     },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
