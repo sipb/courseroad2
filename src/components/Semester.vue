@@ -12,7 +12,7 @@
           <span style="width: 12em; display: inline-block;">
             <b>
               <v-hover>
-                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
+                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openRoadSettingsDialog">
                   {{ semesterYearName }}
                   {{ semesterType }}
                   <span v-if="index>0">{{ "'" + semesterYear.toString().substring(2) }}</span>
@@ -412,9 +412,9 @@ export default {
     }
   },
   methods: {
-    openChangeYearDialog: function (event) {
+    openRoadSettingsDialog: function (event) {
       event.stopPropagation();
-      this.$emit('open-change-year-dialog');
+      this.$emit('open-road-settings-dialog');
     },
     noLongerOffered: function (course) {
       if (course.is_historical) {
