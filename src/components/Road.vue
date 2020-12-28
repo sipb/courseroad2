@@ -86,7 +86,7 @@ export default {
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       openRoadSettings: false,
-      numSems: numSemesters,
+      numSems: numSemesters
     };
   },
   computed: {
@@ -99,7 +99,7 @@ export default {
       }
     },
     hideIAP: {
-      get: function() {
+      get: function () {
         return this.$store.getters.hideIAP;
       },
       set: function (value) {
@@ -119,6 +119,6 @@ export default {
     if (this.$store.state.cookiesAllowed && visibleList) {
       this.visibleList = visibleList;
     };
-  },
+  }
 };
 </script>

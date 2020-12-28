@@ -21,7 +21,7 @@ const store = new Vuex.Store({
     genericIndex: {},
     itemAdding: undefined,
     loggedIn: false,
-    hideIAP: localStorage.hideIAP == "true",
+    hideIAP: localStorage.hideIAP === 'true',
     roads: {
       '$defaultroad$': {
         downloaded: moment().format(DATE_FORMAT),
