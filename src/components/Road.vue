@@ -38,7 +38,6 @@
           <v-switch
             v-model="hideIAP"
             label="Hide IAP"
-            @change="setHideIAPOption"
           />
         </v-card-text>
         <v-card-actions>
@@ -84,12 +83,10 @@ export default {
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;
-    const hideIAP = localStorage.hideIAP === 'true';
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
       changeYearDialog: false,
       numSems: numSemesters,
-      hideIAP: hideIAP
     };
   },
   computed: {
@@ -99,6 +96,14 @@ export default {
       },
       set: function (newYear) {
         this.$emit('change-year', newYear);
+      }
+    },
+    hideIAP: {
+      get: function() {
+        return this.$store.getters.hideIAP;
+      },
+      set: function (value) {
+        this.$store.commit('setHideIAP', value);
       }
     }
   },
@@ -115,10 +120,5 @@ export default {
       this.visibleList = visibleList;
     };
   },
-  methods: {
-    setHideIAPOption: function (option) {
-      localStorage.hideIAP = option;
-    }
-  }
 };
 </script>
