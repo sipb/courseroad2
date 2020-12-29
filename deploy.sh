@@ -34,7 +34,7 @@ if [ "$1" = "prod" ]; then
     else
       echo "Could not locate AFS, using SSH for deployment"
       # this is what happens without any fancy setup
-      scp -r deploy/production/.htaccess dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/
+      scp -r deploy/production/.htaccess dist/* cgi-bin/ $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/
     fi
   else
     echo "Cancelled"
@@ -54,7 +54,7 @@ elif [ "$1" = "dev" ]; then
   else
     echo "Could not locate AFS, using SSH for deployment"
     # this is what happens without any fancy setup
-    scp -r deploy/development/.htaccess dist/* $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/dev/
+    scp -r deploy/development/.htaccess dist/* cgi-bin/ $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/dev/
   fi
 else
   echo "Invalid build location"

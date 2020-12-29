@@ -26,33 +26,41 @@
       open-on-click
       :activatable="false"
     >
-      <template slot="prepend" slot-scope="{ item }">
-        <v-icon
-          v-if="!('reqs' in item)"
-          :style="fulfilledIcon(item)"
-          @click="clickRequirement(item)"
-        >
-          {{ item['plain-string'] ?
-            (item["list-id"] in progressOverrides ?
-              (item.fulfilled ? "assignment_turned_in" : "assignment") :
-              "assignment_late" ) :
-            item.fulfilled ? "done" : "remove" }}
-        </v-icon>
-      </template>
       <template slot="label" slot-scope="{ item, leaf}">
-        <requirement
-          :req="item"
-          :is-leaf="leaf"
-          @click.native="clickRequirement(item)"
-          @click-info="reqInfo($event, item)"
-        />
+        <v-hover :disabled="!leaf || !canDrag(item)">
+          <div
+            slot-scope="{ hover }"
+            :class="{ 'elevation-3': hover, 'yellow lighten-3': isPetitioned(item), 'grey lighten-2': isIgnored(item)}"
+            :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
+          >
+            <v-icon
+              v-if="!('reqs' in item)"
+              class="appendLeft"
+              :style="fulfilledIcon(item)"
+              @click="clickRequirement(item)"
+            >
+              {{ item['plain-string'] ?
+                (item["list-id"] in progressOverrides ?
+                  (item.fulfilled ? "assignment_turned_in" : "assignment") :
+                  "assignment_late" ) :
+                item.fulfilled ? "done" : "remove" }}
+            </v-icon>
+            <requirement
+              :req="item"
+              :is-leaf="leaf"
+              @click.native="clickRequirement(item)"
+              @click-info="reqInfo($event, item)"
+              @click-petition="reqPetition($event, item)"
+            />
+          </div>
+        </v-hover>
       </template>
     </v-treeview>
 
-    <p v-if="isCourse6">
-      <br>
-      <a href="http://eecsappsrv.mit.edu/students/">
-        Course 6 Student Portal (+Audit)
+    <br>
+    <p v-for="courseLink in getCourseLinks(selectedReqs)" :key="courseLink.link">
+      <a :href="courseLink.link">
+        {{ courseLink.text }}
       </a>
     </p>
 
@@ -72,7 +80,7 @@
           <h3>{{ capitalize(progressReq.threshold.criterion) }} Completed: {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}</h3>
           <v-layout row justify-start style="width: 70%; margin: auto;">
             <v-flex shrink style="width: 3em; margin-right: 1em;">
-              <v-text-field v-model="newManualProgress" type="number" />
+              <v-text-field v-model="newManualProgress" type="number" @keyup.enter="updateManualProgress" />
             </v-flex>
             <v-flex>
               <v-slider
@@ -99,7 +107,7 @@
     <v-dialog v-model="viewDialog" max-width="600">
       <div v-if="dialogReq !== undefined">
         <v-card>
-          <v-btn icon flat style="float:right" @click="viewDialog=false">
+          <v-btn icon flat style="float:right" @click="viewDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title>{{ dialogReq["title"] }}</v-card-title>
@@ -121,7 +129,7 @@
             {{ dialogReq["req"] }}
           </v-card-text>
           <v-card-text>
-            <b>Satisfying courses</b>
+            <b>Satisfying courses:</b>
             <div v-for="course in dialogReq['sat_courses']" :key="course">
               {{ course }}
             </div>
@@ -131,7 +139,7 @@
             <v-btn
               v-if="'title-no-degree' in dialogReq"
               color="error"
-              @click="deleteReq(dialogReq); viewDialog=false; dialogReq=undefined;"
+              @click="deleteReq(dialogReq); viewDialog = false; dialogReq = undefined"
             >
               <v-icon>delete</v-icon>
               Remove Requirement
@@ -140,17 +148,78 @@
         </v-card>
       </div>
     </v-dialog>
+
+    <v-dialog v-model="petitionDialog" max-width="600">
+      <v-card>
+        <div v-if="petitionReq !== undefined">
+          <v-btn icon flat style="float:right" @click="petitionDialog = false; petitionReq = undefined;">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-card-title v-if="'title' in petitionReq">
+            <h2> Petition {{ petitionReq["title"] }} </h2>
+          </v-card-title>
+          <v-card-title v-else>
+            <h2> Petition {{ petitionReq["req"] }} </h2>
+          </v-card-title>
+          <v-card-text v-if="reqPASubstitution !== undefined" class="petition-padding">
+            Requirement Petitioned by:
+            <div v-for="course in reqPASubstitution" :key="course">
+              {{ course }}
+            </div>
+          </v-card-text>
+          <v-select
+            v-model="petitionSelectCourses"
+            :disabled="reqPAIgnore"
+            :items="selectedSubjects.flat()"
+            item-text="id"
+            label="Select Courses to Petition with:"
+            no-data-text="No Courses Found"
+            multiple
+            chips
+            class="petition-padding"
+          />
+          <v-card-actions class="petition-padding">
+            <v-checkbox
+              v-model="reqPAIgnore"
+              label="Ignore Petition"
+            />
+            <v-spacer />
+            <v-btn
+              color="success"
+              :disabled="reqPAIgnore || petitionSelectCourses.length === 0"
+              @click="submitPetition()"
+            >
+              Petition
+            </v-btn>
+            <v-btn
+              color="error"
+              :disabled="reqPAIgnore"
+              @click="clearPetition()"
+            >
+              Reset Petition
+            </v-btn>
+          </v-card-actions>
+        </div>
+      </v-card>
+    </v-dialog>
   </v-flex>
 </template>
 
 <script>
 import Requirement from './Requirement.vue';
+import classInfoMixin from './../mixins/classInfo.js';
+import courseLinksMixin from './../mixins/courseLinks.js';
 export default {
   name: 'Audit',
   components: {
     requirement: Requirement
   },
+  mixins: [classInfoMixin, courseLinksMixin],
   props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
     selectedReqs: {
       type: Array,
       required: true
@@ -175,6 +244,9 @@ export default {
       dialogReq: undefined,
       progressDialog: false,
       progressReq: undefined,
+      petitionDialog: false,
+      petitionReq: undefined,
+      petitionSelectCourses: [],
       newManualProgress: 0
     };
   },
@@ -193,18 +265,6 @@ export default {
           this.$store.commit('addReq', newReq);
         }
       }
-    },
-    isCourse6: function () {
-      return this.selectedTrees.some(course => {
-        // checks if a course is one of the ones that the course 6 audit page works for
-        // if statement needed because otherwise it gives an error if the courses haven't loaded yet
-        if (course['short-title']) {
-          const major = course['short-title'].slice(0, 3);
-          return ['6-1', '6-2', '6-3', '6-7', '6-14', '6', '6-P'].includes(major);
-        } else {
-          return false;
-        }
-      });
     },
     getCourses: function () {
       const courses = this.reqList.slice(0);
@@ -245,6 +305,30 @@ export default {
           };
         }
       }, this);
+    },
+    reqPASubstitution: {
+      get: function () {
+        const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
+        // Checks if unique key in progressAssert, if it is, searches for substitution key
+        if (petitionReqPA !== undefined) {
+          return petitionReqPA['substitutions'];
+        } else {
+          return undefined;
+        }
+      }
+    },
+    reqPAIgnore: {
+      get: function () {
+        const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
+        if (petitionReqPA !== undefined) {
+          return petitionReqPA['ignore'];
+        } else {
+          return false; // So checkbox properly updates when resetPetition is used
+        }
+      },
+      set: function (ignoreVal) {
+        this.$store.commit('setPAIgnore', { uniqueKey: this.petitionReq['list-id'], isIgnored: ignoreVal });
+      }
     }
   },
   methods: {
@@ -259,18 +343,11 @@ export default {
       this.viewDialog = true;
       this.dialogReq = req;
     },
-    percentage: function (req) {
-      const pfulfilled = req.percent_fulfilled;
-      const pcolor = req.fulfilled
-        ? '#00b300'
-        : req.percent_fulfilled > 15
-          ? '#efce15'
-          : '#ef8214';
-      return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: #fff`;
-    },
-    deleteReq: function (req) {
-      const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
-      this.$store.commit('removeReq', reqName);
+    reqPetition: function (event, req) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.petitionDialog = true;
+      this.petitionReq = req;
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {
@@ -332,12 +409,51 @@ export default {
       this.progressReq = undefined;
       this.progressDialog = false;
       this.newManualProgress = 0;
+    },
+    percentage: function (req) {
+      const pfulfilled = req.percent_fulfilled;
+      const pcolor = req.fulfilled
+        ? '#00b300'
+        : req.percent_fulfilled > 15
+          ? '#efce15'
+          : '#ef8214';
+      return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: #fff`;
+    },
+    deleteReq: function (req) {
+      const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
+      this.$store.commit('removeReq', reqName);
+    },
+    submitPetition: function () {
+      this.$store.commit('setPASubstitutions', { uniqueKey: this.petitionReq['list-id'], newReqs: this.petitionSelectCourses });
+      this.petitionSelectCourses = [];
+    },
+    clearPetition: function () {
+      this.$store.commit('removeProgressAssertion', this.petitionReq['list-id']);
+    },
+    isPetitioned: function (req) {
+      if (req['list-id'] in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions) {
+        return !('ignore' in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[req['list-id']]);
+      } else {
+        return false;
+      }
+    },
+    isIgnored: function (req) {
+      if (req['list-id'] in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions) {
+        return 'ignore' in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[req['list-id']];
+      } else {
+        return false;
+      }
     }
   }
 };
 </script>
 
 <style scoped>
+.appendLeft {
+  float: left;
+  position: relative;
+  bottom: 3px;
+}
 .percentage-bar {
   background: linear-gradient(
     90deg,
@@ -352,8 +468,9 @@ export default {
   padding-top: 5px;
   padding-bottom: 5px;
 }
-.terminal {
-  cursor: default;
+.petition-padding {
+  padding-left: 5%;
+  padding-right: 5%;
 }
 </style>
 <style>
