@@ -99,19 +99,6 @@ export default {
     }
   },
   methods: {
-    fcssecape: function (ch, asCodePoint) {
-      if (asCodePoint) {
-        if (ch === '\0') {
-          return '\uFFFD';
-        }
-        return ch.slice(0, -1) + '\\' + ch.charCodeAt(ch.length - 1).toString(16) + ' ';
-      }
-      return '\\' + ch;
-    },
-    escape: function (sel) {
-      return (sel + '').replace(/([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g
-        , fcssescape);
-    },
     clickSubject: function (subj, scroller) {
       this.scrollerClicked = scroller;
       this.subjectClicked = subj;
