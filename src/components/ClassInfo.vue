@@ -267,12 +267,12 @@ export default {
       var thisGIRAttr = this.currentSubject.gir_attribute;
       var IDMatcher;
 
-      if(thisGIRAttr == undefined){
+      if (thisGIRAttr === undefined) {
         IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
-      } else { //Expression taken directly from above, but modified for GIRs
-        thisGIRAttr = "GIR:"+thisGIRAttr
-        var filteredCurrentID = currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-        IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + '(' + thisGIRAttr + '|' + filteredCurrentID + ')' + '(?![\\da-zA-Z])' );
+      } else { // Expression taken directly from above, but modified for GIRs
+        thisGIRAttr = 'GIR:' + thisGIRAttr;
+        var filteredCurrentID = currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + '(' + thisGIRAttr + '|' + filteredCurrentID + ')' + '(?![\\da-zA-Z])');
       }
       return this.$store.state.subjectsInfo.filter(function (s) {
         return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
