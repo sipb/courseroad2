@@ -42,7 +42,8 @@
         "Vuetify": "readonly",
         "VueRouter": "readonly",
         "VueCookies": "readonly",
-        "BrowserSupportPlugin": "readonly"
+        "BrowserSupportPlugin": "readonly",
+        "regeneratorRuntime": "readonly"
       }
     }
   ]
