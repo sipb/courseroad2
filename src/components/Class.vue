@@ -60,10 +60,11 @@
             v-model="shouldOverrideWarnings"
             label="Override warnings"
             color="orange darken-3"
+            @change="$store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})"
           />
         </v-card-text>
         <v-card-actions style="justify-content: flex-end;">
-          <v-btn flat @click="warningDialog = false; $store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})">
+          <v-btn flat @click="warningDialog = false">
             Close
           </v-btn>
         </v-card-actions>

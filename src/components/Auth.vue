@@ -148,6 +148,9 @@ export default {
           if (!Array.isArray(newRoads[roadID].contents.selectedSubjects[0])) {
             newRoads[roadID].contents.selectedSubjects = this.getSimpleSelectedSubjects(newRoads[roadID].contents.selectedSubjects);
           }
+          if (newRoads[roadID].contents.progressAssertions === undefined) {
+            newRoads[roadID].contents.progressAssertions = {};
+          }
         }
         if (this.justLoaded) {
           if (!(this.activeRoad in newRoads)) {
@@ -254,6 +257,9 @@ export default {
           road: roadData.data.file,
           ignoreSet: true
         });
+
+        _this.$store.commit('setRetrieved', roadID);
+
         _this.gettingUserData = false;
         return roadData;
       });
@@ -275,6 +281,10 @@ export default {
       // sanitize progressOverrides
       if (road.contents.progressOverrides === undefined) {
         road.contents.progressOverrides = {};
+      }
+      // sanitize progressAssertions
+      if (road.contents.progressAssertions === undefined) {
+        road.contents.progressAssertions = {};
       }
     },
     getUserData: function () {
@@ -301,7 +311,8 @@ export default {
               contents: {
                 coursesOfStudy: ['girs'],
                 selectedSubjects: Array.from(Array(16), () => []),
-                progressOverrides: {}
+                progressOverrides: {},
+                progressAssertions: {}
               }
             };
             this.$store.commit('setRoad', {
@@ -315,7 +326,7 @@ export default {
           }
           this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
           // Set list of unretrieved roads to all but first road ID
-          this.$store.commit('setUnretrieved', fileKeys.slice(1));
+          this.$store.commit('setUnretrieved', fileKeys);
           if (fileKeys.length) {
             return this.retrieveRoad(fileKeys[0]);
           }
@@ -407,7 +418,7 @@ export default {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
-      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [], progressAssertions: {} }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
       const roadToSend = {};
       Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
       const savePromise = this.postSecure('/sync/sync_road/', roadToSend)

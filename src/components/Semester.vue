@@ -1,6 +1,7 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content
+    v-show="!hideIap || semesterType !== 'IAP'"
     :id="'road_'+roadID+'_semester_' + index"
     dropzone="copy"
     @dragover.native.prevent
@@ -11,7 +12,7 @@
           <span style="width: 12em; display: inline-block;">
             <b>
               <v-hover>
-                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
+                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openRoadSettingsDialog">
                   {{ semesterYearName }}
                   {{ semesterType }}
                   <span v-if="index>0">{{ "'" + semesterYear.toString().substring(2) }}</span>
@@ -160,6 +161,10 @@ export default {
       required: true
     },
     isOpen: {
+      type: Boolean,
+      required: true
+    },
+    hideIap: {
       type: Boolean,
       required: true
     }
@@ -407,9 +412,9 @@ export default {
     }
   },
   methods: {
-    openChangeYearDialog: function (event) {
+    openRoadSettingsDialog: function (event) {
       event.stopPropagation();
-      this.$emit('open-change-year-dialog');
+      this.$emit('open-road-settings-dialog');
     },
     noLongerOffered: function (course) {
       if (course.is_historical) {

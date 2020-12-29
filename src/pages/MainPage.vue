@@ -35,6 +35,7 @@
         slot="extension"
         @delete-road="$refs.authcomponent.deleteRoad($event)"
         @add-road="addRoad(...arguments)"
+        @retrieve="$refs.authcomponent.retrieveRoad($event)"
       />
 
       <import-export
@@ -426,7 +427,8 @@ export default {
       const newContents = {
         coursesOfStudy: cos,
         selectedSubjects: ss,
-        progressOverrides: overrides
+        progressOverrides: overrides,
+        progressAssertions: {}
       };
       const newRoad = {
         downloaded: moment().format(DATE_FORMAT),

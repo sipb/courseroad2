@@ -21,6 +21,7 @@ const store = new Vuex.Store({
     genericIndex: {},
     itemAdding: undefined,
     loggedIn: false,
+    hideIAP: localStorage.hideIAP === 'true',
     roads: {
       '$defaultroad$': {
         downloaded: moment().format(DATE_FORMAT),
@@ -30,7 +31,8 @@ const store = new Vuex.Store({
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: Array.from(Array(16), () => []),
-          progressOverrides: {}
+          progressOverrides: {},
+          progressAssertions: {}
         }
       }
     },
@@ -48,6 +50,9 @@ const store = new Vuex.Store({
   getters: {
     userYear (state) {
       return Math.floor((state.currentSemester - 1) / 3);
+    },
+    hideIAP: state => {
+      return state.hideIAP;
     }
   },
   mutations: {
@@ -103,13 +108,36 @@ const store = new Vuex.Store({
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
       state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex].overrideWarnings = payload.override;
     },
+    setPASubstitutions (state, { uniqueKey, newReqs }) {
+      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    setPAIgnore (state, { uniqueKey, isIgnored }) {
+      const progressAssertion = state.roads[state.activeRoad].contents.progressAssertions[uniqueKey];
+      if (isIgnored === true) {
+        if (progressAssertion === undefined) {
+          Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': isIgnored });
+        } else {
+          progressAssertion['ignore'] = isIgnored;
+        }
+      } else {
+        if (progressAssertion['substitutions'] === undefined) {
+          this.commit('removeProgressAssertion', uniqueKey);
+        } else {
+          Vue.delete(progressAssertion, 'ignore');
+        }
+      }
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
     setUnretrieved (state, roadIDs) {
       state.unretrieved = roadIDs;
     },
     setRetrieved (state, roadID) {
       // Remove from unretrieved list when a road is retrieved
       const roadIDIndex = state.unretrieved.indexOf(roadID);
-      state.unretrieved.splice(roadIDIndex, 1);
+      if (roadIDIndex >= 0) {
+        state.unretrieved.splice(roadIDIndex, 1);
+      }
     },
     parseGenericCourses (state) {
       const girAttributes = {
@@ -208,6 +236,10 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       state.fulfillmentNeeded = 'none';
     },
+    removeProgressAssertion (state, uniqueKey) {
+      Vue.delete(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey);
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
     resetID (state, { oldid, newid }) {
       newid = newid.toString();
       Vue.set(state.roads, newid, state.roads[oldid]);
@@ -226,6 +258,10 @@ const store = new Vuex.Store({
     },
     setLoggedIn (state, newLoggedIn) {
       state.loggedIn = newLoggedIn;
+    },
+    setHideIAP: (state, value) => {
+      state.hideIAP = value;
+      localStorage.hideIAP = value;
     },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
