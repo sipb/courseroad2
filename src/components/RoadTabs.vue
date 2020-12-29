@@ -8,7 +8,7 @@
       <v-tabs-slider />
       <template
         v-for="roadId in Object.keys(roads)"
-        class = "m-0 p-0"
+        class="m-0 p-0"
       >
         <v-tab
           :key="roadId"
@@ -22,7 +22,7 @@
             <v-icon>edit</v-icon>
           </v-btn>
         </v-tab>
-        <v-divider class = "mt-0 mb-0" vertical inset/>
+        <v-divider :key="roadId" class="mt-0 mb-0" vertical inset />
       </template>
       <v-dialog v-model="editDialog" max-width="600" @input="newRoadName = ''">
         <v-card>
