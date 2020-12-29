@@ -123,19 +123,21 @@ export default {
         const email = this.accessInfo.academic_id;
         const endPoint = email.indexOf('@');
         const kerb = email.slice(0, endPoint);
-        axios.get('https://mit-people-v3.cloudhub.io/people/v3/people/' + kerb,
-          { headers: { 'client_id': '01fce9ed7f9d4d26939a68a4126add9b',
-            'client_secret': 'D4ce51aA6A32421DA9AddF4188b93255' } })
+        axios.get(process.env.APP_URL + '/cgi-bin/people.py?kerb=' + kerb)
           .then(response => {
-            // subtract 1 for zero-indexing
-            const year = response.data.item.affiliations[0].classYear - 1;
-            if (year === undefined) {
+            if (response.status !== 200) {
               console.log('Failed to find user year');
             } else {
-              this.changeSemester(year);
+              const year = response.data.year;
+              if (year === undefined) {
+                console.log('Failed to find user year');
+              } else {
+                this.changeSemester(year);
+                console.log('setting year to ' + year);
+              }
             }
           });
-      };
+      }
     }
   },
   mounted () {
@@ -145,6 +147,9 @@ export default {
         for (var roadID in newRoads) {
           if (!Array.isArray(newRoads[roadID].contents.selectedSubjects[0])) {
             newRoads[roadID].contents.selectedSubjects = this.getSimpleSelectedSubjects(newRoads[roadID].contents.selectedSubjects);
+          }
+          if (newRoads[roadID].contents.progressAssertions === undefined) {
+            newRoads[roadID].contents.progressAssertions = {};
           }
         }
         if (this.justLoaded) {
@@ -252,6 +257,9 @@ export default {
           road: roadData.data.file,
           ignoreSet: true
         });
+
+        _this.$store.commit('setRetrieved', roadID);
+
         _this.gettingUserData = false;
         return roadData;
       });
@@ -274,12 +282,13 @@ export default {
       if (road.contents.progressOverrides === undefined) {
         road.contents.progressOverrides = {};
       }
+      // sanitize progressAssertions
+      if (road.contents.progressAssertions === undefined) {
+        road.contents.progressAssertions = {};
+      }
     },
     getUserData: function () {
       this.gettingUserData = true;
-      for (var i = 0; i < this.newRoads.length; i++) {
-        this.saveRemote(this.newRoads[i]);
-      }
       this.getSecure('/sync/roads/')
         .then(function (response) {
           if (response.status === 200 && response.data.success) {
@@ -289,8 +298,11 @@ export default {
           }
         }).then(function (files) {
           this.renumberRoads(files);
+          for (var i = 0; i < this.newRoads.length; i++) {
+            this.saveRemote(this.newRoads[i]);
+          }
           const fileKeys = Object.keys(files);
-          for (var i = 0; i < fileKeys.length; i++) {
+          for (i = 0; i < fileKeys.length; i++) {
             const blankRoad = {
               downloaded: moment().format(DATE_FORMAT),
               changed: files[fileKeys[i]].changed,
@@ -299,7 +311,8 @@ export default {
               contents: {
                 coursesOfStudy: ['girs'],
                 selectedSubjects: Array.from(Array(16), () => []),
-                progressOverrides: {}
+                progressOverrides: {},
+                progressAssertions: {}
               }
             };
             this.$store.commit('setRoad', {
@@ -313,7 +326,7 @@ export default {
           }
           this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
           // Set list of unretrieved roads to all but first road ID
-          this.$store.commit('setUnretrieved', fileKeys.slice(1));
+          this.$store.commit('setUnretrieved', fileKeys);
           if (fileKeys.length) {
             return this.retrieveRoad(fileKeys[0]);
           }
@@ -405,7 +418,7 @@ export default {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
-      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [], progressAssertions: {} }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
       const roadToSend = {};
       Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
       const savePromise = this.postSecure('/sync/sync_road/', roadToSend)

@@ -31,7 +31,7 @@
           </v-btn>
           <v-card-title>Edit Road</v-card-title>
           <v-card-text>
-            <v-text-field v-if="editDialog" v-model="newRoadName" autofocus label="Road Name" />
+            <v-text-field v-if="editDialog" v-model="newRoadName" autofocus label="Road Name" @keyup.enter="renameRoad" />
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -42,7 +42,7 @@
             <v-btn
               color="primary"
               :disabled="otherRoadHasName(tabRoad, newRoadName)"
-              @click="$store.commit('setRoadName', {id: tabRoad, name: newRoadName}); editDialog = false; newRoadName = ''"
+              @click="renameRoad"
             >
               Submit
             </v-btn>
@@ -145,6 +145,11 @@ export default {
   watch: {
     activeRoad: function (newRoad, oldRoad) {
       this.tabRoad = this.activeRoad;
+    },
+    '$store.state.unretrieved': function (unretrieved) {
+      if (this.addDialog && this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) === -1) {
+        this.addRoadFromDuplicate();
+      }
     }
   },
   methods: {
@@ -157,15 +162,29 @@ export default {
     createRoad: function () {
       if (!this.duplicateRoad) {
         this.$emit('add-road', this.newRoadName);
+        this.addDialog = false;
+        this.newRoadName = '';
       } else if (this.duplicateRoadSource in this.roads) {
-        this.$emit('add-road',
-          this.newRoadName,
-          this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
-          this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
-          Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
-        );
+        if (this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) >= 0) {
+          this.$emit('retrieve', this.duplicateRoadSource);
+        } else {
+          this.addRoadFromDuplicate();
+        }
       }
+    },
+    addRoadFromDuplicate: function () {
+      this.$emit('add-road',
+        this.newRoadName,
+        this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
+        this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
+        Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
+      );
       this.addDialog = false;
+      this.newRoadName = '';
+    },
+    renameRoad: function () {
+      this.$store.commit('setRoadName', { id: this.tabRoad, name: this.newRoadName });
+      this.editDialog = false;
       this.newRoadName = '';
     }
   }
