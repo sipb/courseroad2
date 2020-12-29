@@ -1,6 +1,6 @@
 <template>
   <v-layout row grow>
-    <v-btn class="collapse-button" outline round color="primary" @click="exportRoad">
+    <v-btn class="collapse-button" outline color="primary" @click="exportRoad">
       <span class="hidden-sm-and-down">Export</span>
       <font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" />
     </v-btn>
@@ -9,7 +9,7 @@
       v-model="dialog"
       max-width="600"
     >
-      <v-btn slot="activator" class="collapse-button" outline round color="primary">
+      <v-btn slot="activator" class="collapse-button" outline color="primary">
         <span class="hidden-sm-and-down">Import</span>
         <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
       </v-btn>
@@ -28,6 +28,7 @@
             label="Road name"
             clearable
             autofocus
+            @keyup.enter="importRoad"
           />
 
           <v-spacer />
@@ -55,7 +56,7 @@
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
-                Make sure you have given this road a name, and uploaded/pasted a valid '.road' file.
+                Make sure you have given this road a unique name, and uploaded/pasted a valid '.road' file.
               </v-card-text>
             </v-card>
           </v-flex>
@@ -135,7 +136,7 @@ export default {
     exportRoad: function (event) {
       const filename = this.roads[this.activeRoad].name + '.road';
 
-      const roadSubjects = this.roads[this.activeRoad].contents.selectedSubjects.flat();
+      const roadSubjects = this.flatten(this.roads[this.activeRoad].contents.selectedSubjects);
       const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[this.activeRoad].contents, { selectedSubjects: roadSubjects });
 
       const text = JSON.stringify(formattedRoadContents);
@@ -156,7 +157,10 @@ export default {
     importRoad: function (event) {
       let fail = false;
       // check for legal input
-      if (this.inputtext === '' || this.roadtitle === '') {
+      if (this.inputtext === '' ||
+          this.roadtitle === '' ||
+          this.otherRoadHasName(this.roadtitle)
+      ) {
         fail = true;
       }
 
@@ -231,7 +235,7 @@ export default {
     },
     otherRoadHasName: function (roadName) {
       const otherRoadNames = Object.keys(this.roads).filter(function (road) {
-        return this.roads[road].name === roadName;
+        return this.roads[road].name.toLowerCase() === roadName.toLowerCase();
       }.bind(this));
       return otherRoadNames.length > 0;
     }

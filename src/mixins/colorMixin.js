@@ -1,3 +1,4 @@
+// Colors are at assets/css/coursecolors.css
 export default {
   data: function () {
     return {
@@ -12,7 +13,14 @@ export default {
     };
   },
   methods: {
-    courseColor: function (id) {
+    // courseColor takes in subject
+    courseColor: function (subject) {
+      // Custom course have custom_color component
+      if (subject.custom_color) {
+        return 'custom_color-' + subject.custom_color.slice(1);
+      }
+      // Otherwise it's normal class which id determines color
+      const id = subject.id || subject.subject_id;
       if (id !== undefined) {
         let course = id.split('.')[0];
         if (course.indexOf('GIR:') >= 0) {

@@ -1,6 +1,7 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content
+    v-show="!hideIap || semesterType !== 'IAP'"
     :id="'road_'+roadID+'_semester_' + index"
     dropzone="copy"
     @dragover.native.prevent
@@ -8,12 +9,13 @@
     <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;">
       <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
-          <span style="width: 6em; display: inline-block;">
+          <span style="width: 12em; display: inline-block;">
             <b>
               <v-hover>
-                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="changeYear">
+                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openRoadSettingsDialog">
+                  {{ semesterYearName }}
                   {{ semesterType }}
-                  {{ semesterYear }}
+                  <span v-if="index>0">{{ "'" + semesterYear.toString().substring(2) }}</span>
                 </span>
               </v-hover>
             </b>
@@ -21,12 +23,68 @@
           <span style="min-width: 4.5em; display: inline-block;">
             Units: {{ semesterInformation.totalUnits }}
           </span>
-          Hours: {{ semesterInformation.expectedHours.toFixed(1) }}
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <span v-on="on">Hours: {{ semesterInformation.totalExpectedHours.toFixed(1) }}</span>
+            </template>
+            <div id="tooltipTable">
+              <table v-if="semesterSubjects.length">
+                <tr v-if="semesterInformation.expectedHoursQuarter1.length">
+                  <th v-if="semesterInformation.anyClassInSingleQuarter" rowspan="2">
+                    Quarter 1 <br>
+                    <span style="font-weight: normal">
+                      {{ semesterInformation.totalExpectedHoursQuarter1.toFixed(1) }}h
+                    </span>
+                  </th>
+                  <th class="rightbar">
+                    Class
+                  </th>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
+                    <b>{{ subj.id }}</b>
+                  </td>
+                </tr>
+                <tr v-if="semesterInformation.expectedHoursQuarter1.length">
+                  <th class="rightbar">
+                    Hours
+                  </th>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
+                    {{ subj.hours.toFixed(1) }}h
+                  </td>
+                </tr>
+                <tr
+                  v-if="semesterInformation.anyClassInSingleQuarter && semesterInformation.expectedHoursQuarter2.length"
+                  class="topbar"
+                >
+                  <th rowspan="2">
+                    Quarter 2 <br>
+                    <span style="font-weight: normal">
+                      {{ semesterInformation.totalExpectedHoursQuarter2.toFixed(1) }}h
+                    </span>
+                  </th>
+                  <th class="rightbar">
+                    Class
+                  </th>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
+                    <b>{{ subj.id }}</b>
+                  </td>
+                </tr>
+                <tr v-if="semesterInformation.anyClassInSingleQuarter && semesterInformation.expectedHoursQuarter2.length">
+                  <th class="rightbar">
+                    Hours
+                  </th>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
+                    {{ subj.hours.toFixed(1) }}h
+                  </td>
+                </tr>
+              </table>
+              <span v-else>No Classes</span>
+            </div>
+          </v-tooltip>
         </v-flex>
         <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
           <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.id+'-'+subjindex+'-'+index" xs3>
             <v-card>
-              <div v-if="subject!=='placeholder'" :class="courseColor(subject.id)">
+              <div v-if="subject!=='placeholder'" :class="courseColor(subject)">
                 <v-card-text class="mini-course">
                   <b>{{ subject.id }}</b>
                 </v-card-text>
@@ -76,6 +134,7 @@
 <script>
 import Class from './Class.vue';
 import colorMixin from './../mixins/colorMixin.js';
+import reqFulfillment from './../mixins/reqFulfillment.js';
 import schedule from './../mixins/schedule.js';
 
 export default {
@@ -83,8 +142,33 @@ export default {
   components: {
     'class': Class
   },
-  mixins: [colorMixin, schedule],
-  props: ['selectedSubjects', 'semesterSubjects', 'index', 'roadID', 'isOpen', 'baseYear', 'currentSemester'],
+  mixins: [colorMixin, schedule, reqFulfillment],
+  props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
+    semesterSubjects: {
+      type: Array,
+      required: true
+    },
+    index: {
+      type: Number,
+      required: true
+    },
+    roadID: {
+      type: String,
+      required: true
+    },
+    isOpen: {
+      type: Boolean,
+      required: true
+    },
+    hideIap: {
+      type: Boolean,
+      required: true
+    }
+  },
   data: function () {
     return {
       newYear: this.semesterYear,
@@ -95,6 +179,15 @@ export default {
   computed: {
     isActiveRoad () {
       return this.$store.state.activeRoad === this.roadID;
+    },
+    baseYear: function () {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const baseYear = (today.getMonth() >= 5) ? currentYear + 1 : currentYear;
+      return baseYear - this.$store.getters.userYear;
+    },
+    currentSemester () {
+      return this.$store.state.currentSemester;
     },
     itemAdding () {
       return this.$store.state.itemAdding;
@@ -118,10 +211,10 @@ export default {
           var prereqsfulfilled = true;
           var coreqsfulfilled = true;
           if (prereqString !== undefined) {
-            prereqsfulfilled = this.reqFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects);
+            prereqsfulfilled = this.reqsFulfilled(prereqString, this.index > 0 ? this.previousSubjects(subj) : this.concurrentSubjects);
           }
           if (coreqString !== undefined) {
-            coreqsfulfilled = this.reqFulfilled(coreqString, this.concurrentSubjects);
+            coreqsfulfilled = this.reqsFulfilled(coreqString, this.concurrentSubjects);
           }
           if (subj.either_prereq_or_coreq) {
             if (!(prereqsfulfilled || coreqsfulfilled)) {
@@ -144,6 +237,9 @@ export default {
         if (subj !== undefined) {
           const semType = (this.index - 1) % 3;
 
+          // WARNING: be careful with injecting info from the subject like this
+          //  -- if we ever take user input, it could lead to XSS attacks from custom classes
+          //  (but right now we only ever insert info from FireRoad subjects)
           if (this.noLongerOffered(subj)) {
             const lastSemester = subj.source_semester.split('-');
             subjectWarnings.push('<b>Not offered</b> - This subject is no longer offered (last offered ' + lastSemester.join(' ') + ').');
@@ -161,7 +257,7 @@ export default {
       return allWarnings;
     },
     concurrentSubjects: function () {
-      return this.selectedSubjects.slice(0, this.index + 1).flat();
+      return this.flatten(this.selectedSubjects.slice(0, this.index + 1));
     },
     semData: function () {
       if (this.addingFromCard || this.draggingOver) {
@@ -263,22 +359,46 @@ export default {
         tu = isNaN(tu) ? 0 : tu;
         return units + tu;
       }, 0);
-      const totalExpectedHours = function (hours, subj) {
-        let eh = subj.in_class_hours + subj.out_of_class_hours;
-        eh = isNaN(eh) ? subj.total_units : eh;
-        eh = isNaN(eh) ? 0 : eh;
-        return hours + eh;
+      const expectedHours = function (subj) {
+        let hours = subj.in_class_hours + subj.out_of_class_hours;
+        hours = isNaN(hours) ? subj.total_units : hours;
+        hours = isNaN(hours) ? 0 : hours;
+        return {
+          hours: hours,
+          id: subj.subject_id
+        };
+      };
+      const sumExpectedHours = function (hours, subj) {
+        return hours + subj.hours;
       };
       const isInQuarter = function (subj, quarter) {
         return subj.quarter_information === undefined || parseInt(subj.quarter_information.split(',')[0]) === quarter;
       };
-      const expectedHoursQuarter1 = classesInfo.filter((s) => isInQuarter(s, 0)).reduce(totalExpectedHours, 0);
-      const expectedHoursQuarter2 = classesInfo.filter((s) => isInQuarter(s, 1)).reduce(totalExpectedHours, 0);
-      const expectedHours = Math.max(expectedHoursQuarter1, expectedHoursQuarter2);
+      const expectedHoursQuarter1 = classesInfo.filter((s) => isInQuarter(s, 0)).map(expectedHours);
+      const totalExpectedHoursQuarter1 = expectedHoursQuarter1.reduce(sumExpectedHours, 0);
+      const expectedHoursQuarter2 = classesInfo.filter((s) => isInQuarter(s, 1)).map(expectedHours);
+      const totalExpectedHoursQuarter2 = expectedHoursQuarter2.reduce(sumExpectedHours, 0);
+      const totalExpectedHours = Math.max(totalExpectedHoursQuarter1, totalExpectedHoursQuarter2);
+      const anyClassInSingleQuarter = classesInfo.some((s) => s.quarter_information !== undefined);
+
       return {
-        totalUnits: totalUnits,
-        expectedHours: expectedHours
+        totalUnits,
+        totalExpectedHours,
+        anyClassInSingleQuarter,
+        expectedHoursQuarter1,
+        expectedHoursQuarter2,
+        totalExpectedHoursQuarter1,
+        totalExpectedHoursQuarter2
       };
+    },
+    semesterYearName: function () {
+      const yearNames = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Fifth Year'];
+      if (this.index === 0) {
+        return '';
+      } else {
+        const yearIndex = Math.floor((this.index - 1) / 3);
+        return yearNames[yearIndex];
+      }
     },
     semesterYear: function () {
       return this.index === 0
@@ -292,9 +412,9 @@ export default {
     }
   },
   methods: {
-    changeYear: function (event) {
+    openRoadSettingsDialog: function (event) {
       event.stopPropagation();
-      this.$emit('change-year');
+      this.$emit('open-road-settings-dialog');
     },
     noLongerOffered: function (course) {
       if (course.is_historical) {
@@ -320,7 +440,7 @@ export default {
     },
     previousSubjects: function (subj) {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
-      const beforeThisSemester = this.selectedSubjects.slice(0, this.index).flat();
+      const beforeThisSemester = this.flatten(this.selectedSubjects.slice(0, this.index));
       const previousQuarter = this.selectedSubjects[this.index].filter(s => {
         const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
         let inPreviousQuarter = false;
@@ -333,77 +453,6 @@ export default {
         return inPreviousQuarter;
       });
       return beforeThisSemester.concat(previousQuarter);
-    },
-    classSatisfies: function (req, id, allSubjects) {
-      if (req === id) {
-        return true;
-      }
-
-      let subj;
-      if (id in this.$store.state.subjectsIndex) {
-        subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[id]];
-      } else if (id in this.$store.state.genericIndex) {
-        subj = this.$store.state.genericCourses[this.$store.state.genericIndex[id]];
-      } else {
-        // subj not found in known courses
-        return false;
-      }
-
-      if (subj.equivalent_subjects !== undefined && subj.equivalent_subjects.indexOf(req) >= 0) {
-        return true;
-      }
-
-      // ex: 6.00 satisfies the 6.0001 requirement
-      if (subj.children !== undefined && subj.children.indexOf(req) >= 0) {
-        return true;
-      }
-
-      // ex: 6.0001 and 6.0002 together satisfy the 6.00 requirement
-      if (subj.parent !== undefined && req === subj.parent) {
-        const parentCourse = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.parent]];
-        if (parentCourse !== undefined) {
-          if (parentCourse.children.every((sid) => allSubjects.indexOf(sid) >= 0)) {
-            return true;
-          }
-        }
-      }
-
-      if (req.indexOf('.') === -1) {
-        if (req.indexOf('GIR:') >= 0) {
-          req = req.substring(4);
-          return subj.gir_attribute === req;
-        } else if (req.indexOf('HASS') >= 0) {
-          return subj.hass_attribute.split(',').indexOf(req) >= 0;
-        } else if (req.indexOf('CI') >= 0) {
-          return subj.communication_requirement === req;
-        }
-      }
-      return false;
-    },
-    reqFulfilled: function (reqString, subjects) {
-      const allIDs = subjects.map((s) => s.id);
-      reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',');
-      const splitReq = reqString.split(/(,|\(|\)|\/)/);
-      const _this = this;
-      for (let i = 0; i < splitReq.length; i++) {
-        if (splitReq[i].indexOf('"') >= 0) {
-          // Set strings (like "permission of instructor") automatically to false
-          // If required as an alternative to other prereqs, will not affect fulfillment
-          // If the string is a required prereq, it must be manually dismissed
-          splitReq[i] = 'false';
-        } else if ('()/, '.indexOf(splitReq[i]) < 0) {
-          if (allIDs.indexOf(splitReq[i]) >= 0) {
-            splitReq[i] = 'true';
-          } else {
-            const anyClassSatisfies = subjects.some((s) => _this.classSatisfies(splitReq[i], s.id, allIDs));
-            splitReq[i] = anyClassSatisfies ? 'true' : 'false';
-          }
-        }
-      }
-      const reqExpression = splitReq.join('').replace(/\//g, '||').replace(/,/g, '&&');
-      // i know this seems scary, but the above code guarantees there will only be ()/, true false in this string
-      // eslint-disable-next-line no-eval
-      return eval(reqExpression);
     },
     dragenter: function (event) {
       this.draggingOver = true;
@@ -454,5 +503,22 @@ export default {
     overflow: hidden;
     white-space: nowrap;
     color: white;
+  }
+  /* tooltip table styling */
+  #tooltipTable table {
+    border-collapse: collapse;
+    margin: 0;
+  }
+  #tooltipTable table , #tooltipTable th, #tooltipTable td {
+    border: 3px solid grey;
+  }
+  #tooltipTable th, #tooltipTable td {
+    padding: 0.4em;
+  }
+  #tooltipTable .rightbar {
+    border-right-width: 5px;
+  }
+  #tooltipTable .topbar th, #tooltipTable .topbar td {
+    border-top-width: 5px;
   }
 </style>

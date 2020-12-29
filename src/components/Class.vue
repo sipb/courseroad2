@@ -64,18 +64,17 @@
           <h3>Warnings for {{ classInfo.id }}</h3>
         </v-card-title>
         <v-card-text>
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <p v-for="warning in warnings" :key="warning" v-html="warning" />
           <v-switch
             v-model="shouldOverrideWarnings"
             label="Override warnings"
             color="orange darken-3"
+            @change="$store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})"
           />
         </v-card-text>
         <v-card-actions style="justify-content: flex-end;">
-          <v-btn
-            flat
-            @click="warningDialog = false; $store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})"
-          >
+          <v-btn flat @click="warningDialog = false">
             Close
           </v-btn>
         </v-card-actions>
@@ -90,7 +89,24 @@ import colorMixin from './../mixins/colorMixin.js';
 export default {
   name: 'Class',
   mixins: [colorMixin],
-  props: ['classIndex', 'classInfo', 'semesterIndex', 'warnings'],
+  props: {
+    classIndex: {
+      type: Number,
+      required: true
+    },
+    classInfo: {
+      type: [Object, String],
+      required: true
+    },
+    semesterIndex: {
+      type: Number,
+      required: true
+    },
+    warnings: {
+      type: Array,
+      required: true
+    }
+  },
   data () {
     return {
       warningDialog: false,
@@ -125,7 +141,7 @@ export default {
       }
     },
     cardClass: function (classInfo) {
-      return `classbox ${this.courseColor(classInfo.id)}`;
+      return `classbox ${this.courseColor(classInfo)}`;
     }
   }
 };

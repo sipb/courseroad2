@@ -10,13 +10,18 @@ const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    versionNumber: '1.0.0', // change when making backwards-incompatible changes
+    currentSemester: 1,
     activeRoad: '$defaultroad$',
     addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
+    fullSubjectsInfoLoaded: false,
     genericCourses: [],
     genericIndex: {},
     itemAdding: undefined,
+    loggedIn: false,
+    hideIAP: localStorage.hideIAP === 'true',
     roads: {
       '$defaultroad$': {
         downloaded: moment().format(DATE_FORMAT),
@@ -26,7 +31,8 @@ const store = new Vuex.Store({
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: Array.from(Array(16), () => []),
-          progressOverrides: {}
+          progressOverrides: {},
+          progressAssertions: {}
         }
       }
     },
@@ -41,10 +47,18 @@ const store = new Vuex.Store({
     // list of road IDs that have not been retrieved from the server yet
     unretrieved: []
   },
+  getters: {
+    userYear (state) {
+      return Math.floor((state.currentSemester - 1) / 3);
+    },
+    hideIAP: state => {
+      return state.hideIAP;
+    }
+  },
   mutations: {
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
     },
     addFromCard (state, classItem) {
       state.addingFromCard = true;
@@ -53,7 +67,6 @@ const store = new Vuex.Store({
     addReq (state, event) {
       state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
-      Vue.set(state.roads, state.activeRoad, state.roads[state.activeRoad]);
       state.fulfillmentNeeded = event;
     },
     allowCookies (state) {
@@ -89,11 +102,32 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(classIndex, 1);
       currentClass.semester = semester;
       state.roads[state.activeRoad].contents.selectedSubjects[semester].push(currentClass);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
     },
     overrideWarnings (state, payload) {
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
-      Vue.set(state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex], 'overrideWarnings', payload.override);
+      state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex].overrideWarnings = payload.override;
+    },
+    setPASubstitutions (state, { uniqueKey, newReqs }) {
+      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    setPAIgnore (state, { uniqueKey, isIgnored }) {
+      const progressAssertion = state.roads[state.activeRoad].contents.progressAssertions[uniqueKey];
+      if (isIgnored === true) {
+        if (progressAssertion === undefined) {
+          Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': isIgnored });
+        } else {
+          progressAssertion['ignore'] = isIgnored;
+        }
+      } else {
+        if (progressAssertion['substitutions'] === undefined) {
+          this.commit('removeProgressAssertion', uniqueKey);
+        } else {
+          Vue.delete(progressAssertion, 'ignore');
+        }
+      }
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setUnretrieved (state, roadIDs) {
       state.unretrieved = roadIDs;
@@ -101,7 +135,9 @@ const store = new Vuex.Store({
     setRetrieved (state, roadID) {
       // Remove from unretrieved list when a road is retrieved
       const roadIDIndex = state.unretrieved.indexOf(roadID);
-      state.unretrieved.splice(roadIDIndex, 1);
+      if (roadIDIndex >= 0) {
+        state.unretrieved.splice(roadIDIndex, 1);
+      }
     },
     parseGenericCourses (state) {
       const girAttributes = {
@@ -119,7 +155,8 @@ const store = new Vuex.Store({
       const hassAttributes = {
         'HASS-A': ['HASS Arts', 'ha'],
         'HASS-S': ['HASS Social Sciences', 'hs'],
-        'HASS-H': ['Hass Humanities', 'hh']
+        'HASS-H': ['HASS Humanities', 'hh'],
+        'HASS-E': ['HASS Elective', 'ht']
       };
       const ciAttributes = {
         'CI-H': ['Communication Intensive', 'hc'],
@@ -191,13 +228,17 @@ const store = new Vuex.Store({
     },
     removeClass (state, { classInfo, classIndex }) {
       state.roads[state.activeRoad].contents.selectedSubjects[classInfo.semester].splice(classIndex, 1);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
     },
     removeReq (state, event) {
       const reqIndex = state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
       state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       state.fulfillmentNeeded = 'none';
+    },
+    removeProgressAssertion (state, uniqueKey) {
+      Vue.delete(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey);
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     resetID (state, { oldid, newid }) {
       newid = newid.toString();
@@ -211,6 +252,16 @@ const store = new Vuex.Store({
     },
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;
+    },
+    setFullSubjectsInfoLoaded (state, isFull) {
+      state.fullSubjectsInfoLoaded = isFull;
+    },
+    setLoggedIn (state, newLoggedIn) {
+      state.loggedIn = newLoggedIn;
+    },
+    setHideIAP: (state, value) => {
+      state.hideIAP = value;
+      localStorage.hideIAP = value;
     },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
@@ -234,15 +285,21 @@ const store = new Vuex.Store({
       state.roads = roads;
     },
     setRoadName (state, { id, name }) {
-      Vue.set(state.roads[id], 'name', name);
-      Vue.set(state.roads[id], 'changed', moment().format(DATE_FORMAT));
+      state.roads[id].name = name;
+      state.roads[id].changed = moment().format(DATE_FORMAT);
     },
     setSubjectsInfo (state, data) {
       state.subjectsInfo = data;
     },
+    setCurrentSemester (state, sem) {
+      state.currentSemester = Math.max(1, sem);
+    },
     updateProgress (state, progress) {
       Vue.set(state.roads[state.activeRoad].contents.progressOverrides, progress.listID, progress.progress);
-      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
+    },
+    setFromLocalStorage (state, localStore) {
+      store.replaceState(localStore);
     },
     updateRoad (state, id, road) {
       Object.assign(state.roads[id], road);
@@ -259,6 +316,7 @@ const store = new Vuex.Store({
     async loadAllSubjects ({ commit }) {
       const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
       commit('setSubjectsInfo', response.data);
+      commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
@@ -287,6 +345,7 @@ function getMatchingAttributes (gir, hass, ci) {
     }
     return !(ci !== undefined && subject.communication_requirement !== ci);
   });
+
   const totalObject = matchingClasses.reduce(function (accumObject, nextClass) {
     return {
       offered_spring: accumObject.offered_spring || nextClass.offered_spring,
