@@ -122,6 +122,7 @@ export default {
         case 'md': return 'height: 5.8em;'; // 3 lines
         case 'lg': return 'height: 4.2em;'; // 2 lines
         case 'xl': return 'height: 4.2em;'; // 2 lines
+        default: return 'height: 5.8em;'; // 3 lines
       }
     }
   },
