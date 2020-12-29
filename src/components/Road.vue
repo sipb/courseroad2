@@ -117,7 +117,7 @@ export default {
   mounted () {
     const visibleList = JSON.parse(this.$cookies.get('visibleList' + this.roadID));
     if (this.$store.state.cookiesAllowed && visibleList) {
-      if (Array.isArray(visibleList) && visibleList.length == this.numSems) {
+      if (Array.isArray(visibleList) && visibleList.length === this.numSems) {
         this.visibleList = visibleList;
       } else {
         this.$cookies.remove('visibleList' + this.roadID);
