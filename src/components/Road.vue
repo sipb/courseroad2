@@ -119,6 +119,8 @@ export default {
     if (this.$store.state.cookiesAllowed && visibleList) {
       if (Array.isArray(visibleList) && visibleList.length == this.numSems) {
         this.visibleList = visibleList;
+      } else {
+        this.$cookies.remove('visibleList' + this.roadID);
       }
     };
   }
