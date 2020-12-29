@@ -1,16 +1,21 @@
+# To run this script you must have 'aklog' written in ~/.bash_environment
+# (or the environment file for whatever shell you use)
+# and 'sipb' and 'athena' written in ~/.xlog (both of these files should be in your athena locker).
+# Otherwise, you will not have permission to access the courseroad locker,
+# even if you are on courseroad-dev.
+
 #syntax: ./deploy.sh [dev or prod] [kerberos]
 npm run build-$1
-scp -r -o GSSAPIAuthentication=yes -o GSSAPIDelegateCredentials=yes dist $2@athena.dialup.mit.edu:
 if [ "$1" = "prod" ]; then
   echo -n "You are about to deploy to the production site, are you sure? (y/n)? "
   read answer
   if [ "$answer" != "${answer#[Yy]}" ] ;then
-    ssh $2@athena.dialup.mit.edu -K 'aklog athena sipb && cp -r dist/* /mit/courseroad/web_scripts/courseroad/ && rm -r dist'
+    scp -r deploy/production/.htaccess dist/* cgi-bin/ $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/
   else
     echo cancelled
   fi
 elif [ "$1" = "dev" ]; then
-  ssh $2@athena.dialup.mit.edu -K 'aklog athena sipb && cp -r dist/* /mit/courseroad/web_scripts/courseroad/dev/ && rm -r dist'
+    scp -r deploy/development/.htaccess dist/* cgi-bin/ $2@athena.dialup.mit.edu:/mit/courseroad/web_scripts/courseroad/dev/
 else
   echo "Invalid build location"
 fi

@@ -15,32 +15,37 @@
       :semester-subjects="selectedSubjects[index-1]"
       :road-i-d="roadID"
       :is-open="visibleList[index-1]"
-      :base-year="baseYear"
       :adding-from-card="addingFromCard"
-      :current-semester="currentSemester"
       :dragging-over="dragSemesterNum===index-1"
-      @change-year="changeYearDialog = true"
+      :hide-iap="hideIAP"
+      @open-road-settings-dialog="openRoadSettings = true"
     />
-    <v-dialog v-model="changeYearDialog" max-width="600">
+    <v-dialog v-model="openRoadSettings" max-width="600">
       <v-card>
-        <v-btn icon flat style="float:right" @click="changeYearDialog = false">
+        <v-btn icon flat style="float:right" @click="openRoadSettings = false">
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
-          <h1>I am a...</h1>
+          <h1>Road Settings</h1>
         </v-card-title>
         <v-card-text>
           <v-select
-            v-model="newYear"
+            v-model="year"
             :items="[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
+            label="I am a..."
+            outlined
+          />
+          <v-switch
+            v-model="hideIAP"
+            label="Hide IAP"
           />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn flat @click="changeYearDialog = false">
+          <v-btn flat @click="openRoadSettings = false">
             Cancel
           </v-btn>
-          <v-btn color="primary" @click="$emit('change-year',newYear); changeYearDialog = false;">
+          <v-btn color="primary" @click="$emit('change-year',year); openRoadSettings = false;">
             Submit
           </v-btn>
         </v-card-actions>
@@ -57,24 +62,67 @@ export default {
   components: {
     'semester': Semester
   },
-  props: ['selectedSubjects', 'roadID', 'currentSemester', 'addingFromCard', 'dragSemesterNum'],
+  props: {
+    selectedSubjects: {
+      type: Array,
+      required: true
+    },
+    roadID: {
+      type: String,
+      required: true
+    },
+    addingFromCard: {
+      type: Boolean,
+      required: true
+    },
+    dragSemesterNum: {
+      type: Number,
+      required: true
+    }
+  },
   data: function () {
     const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
     const numSemesters = 16;
     return {
       visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
-      changeYearDialog: false,
-      newYear: parseInt((this.currentSemester - 1) / 3),
+      openRoadSettings: false,
       numSems: numSemesters
     };
   },
   computed: {
-    baseYear: function () {
-      const today = new Date();
-      const currentYear = today.getFullYear();
-      const baseYear = (today.getMonth() >= 5 && today.getMonth() <= 10) ? currentYear + 1 : currentYear;
-      return baseYear - Math.floor((this.currentSemester - 1) / 3);
+    year: {
+      get: function () {
+        return this.$store.getters.userYear;
+      },
+      set: function (newYear) {
+        this.$emit('change-year', newYear);
+      }
+    },
+    hideIAP: {
+      get: function () {
+        return this.$store.getters.hideIAP;
+      },
+      set: function (value) {
+        this.$store.commit('setHideIAP', value);
+      }
     }
+  },
+  watch: {
+    visibleList: function (newVisibleList) {
+      if (this.$store.state.cookiesAllowed) {
+        this.$cookies.set('visibleList' + this.roadID, JSON.stringify(newVisibleList));
+      }
+    }
+  },
+  mounted () {
+    const visibleList = JSON.parse(this.$cookies.get('visibleList' + this.roadID));
+    if (this.$store.state.cookiesAllowed && visibleList) {
+      if (Array.isArray(visibleList) && visibleList.length === this.numSems) {
+        this.visibleList = visibleList;
+      } else {
+        this.$cookies.remove('visibleList' + this.roadID);
+      }
+    };
   }
 };
 </script>

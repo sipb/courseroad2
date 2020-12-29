@@ -1,20 +1,50 @@
 {
+  "plugins": ["jest"],
   "extends": [
     "plugin:vue/recommended",
     "standard"
   ],
   "rules": {
-    "vue/max-attributes-per-line": ["error", {
-      "singleline": 5,
-      "multiline": {
-        "max": 1,
-        "allowFirstLine": false
+    "vue/max-attributes-per-line": [
+      "error",
+      {
+        "singleline": 5,
+        "multiline": {
+          "max": 1,
+          "allowFirstLine": false
+        }
       }
-    }],
-    "semi": [2, "always", {
-      "omitLastInOneLineBlock": true
-    }],
+    ],
+    "semi": [
+      2,
+      "always",
+      {
+        "omitLastInOneLineBlock": true
+      }
+    ],
     "no-var": 0,
     "prefer-const": 1
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "tests/unit/**/*.spec.js"
+      ],
+      "env": {
+        "jest": true
+      },
+      "globals": {
+        "mount": "readonly",
+        "shallowMount": "readonly",
+        "createLocalVue": "readonly",
+        "Vue": "readonly",
+        "Vuex": "readonly",
+        "Vuetify": "readonly",
+        "VueRouter": "readonly",
+        "VueCookies": "readonly",
+        "BrowserSupportPlugin": "readonly",
+        "regeneratorRuntime": "readonly"
+      }
+    }
+  ]
 }
