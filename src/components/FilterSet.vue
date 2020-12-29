@@ -7,6 +7,7 @@
     >
       <v-btn
         v-for="(filter, index) in filters"
+        :id="cssID(filter.name)"
         :key="filter.name"
         flat
         :value="index"
@@ -36,14 +37,27 @@ export default {
     }
   },
   methods: {
+    /* selectionIndices : a list of the indices of selected filters
+
+    produces an array of booleans filtersSelected, such that for
+    0 <= i < filters.length, filtersSelected[i] is true iff
+    i is in selectionIndices
+
+    emits an input event with this array to let the search menu know
+    */
     changeFilter (selectionIndices) {
       var filtersSelected = this.filters.map((f, i) => selectionIndices.indexOf(i) >= 0);
       this.$emit('input', filtersSelected);
     },
+    /*
+    Focuses the search input after a filter is selected so typing in searchbar
+    can begin immediately after
+    */
     buttonClicked (event) {
-      // Focus the search input in case user wants to start typing after
-      // selecting a filter
       document.getElementById('searchInputTF').focus();
+    },
+    cssID (name) {
+      return 'filter-' + name.replace(/[~!@$%^&*()+=,./';:"?><[\]\\{}|`#]/gi, '-');
     }
   }
 };

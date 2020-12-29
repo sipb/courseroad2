@@ -28,7 +28,7 @@
   "overrides": [
     {
       "files": [
-        "tests/unit/*.spec.js"
+        "tests/unit/**/*.spec.js"
       ],
       "env": {
         "jest": true
@@ -42,7 +42,8 @@
         "Vuetify": "readonly",
         "VueRouter": "readonly",
         "VueCookies": "readonly",
-        "BrowserSupportPlugin": "readonly"
+        "BrowserSupportPlugin": "readonly",
+        "regeneratorRuntime": "readonly"
       }
     }
   ]
