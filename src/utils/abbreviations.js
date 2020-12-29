@@ -305,7 +305,7 @@ const abbreviations = {
   // 'animal': 'anim',
   // 'nervous': 'nerv',
   // 'electricity': 'electr',
-  'certificate': 'cert',
+  'certificate': 'cert'
   // 'exercise': 'exerc',
   // 'physiological': 'physiol',
   // 'company': 'comp'
