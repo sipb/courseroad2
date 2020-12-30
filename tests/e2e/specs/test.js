@@ -4,8 +4,8 @@ describe('Basic Tests', () => {
   beforeEach(() => {
     // Mock Fireroad get and post requests with empty response
     cy.server();
-    cy.route(Cypress.env("VUE_APP_FIREROAD_URL") + "/**", "");
-    cy.route("POST", Cypress.env("VUE_APP_FIREROAD_URL") + "/**", "");
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', '');
+    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', '');
   });
   it('Visits the app root url', () => {
     cy.visit('/');
@@ -14,23 +14,23 @@ describe('Basic Tests', () => {
   });
   it('Adds a class', () => {
     // Set up simple test catalog to return from API
-    cy.route(Cypress.env("VUE_APP_FIREROAD_URL") + "/courses/all?full=true",
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          "subject_id": "6.004",
-          "title": "Computation Structures",
-          "offered_fall": true,
-          "offered_spring": true
+          'subject_id': '6.004',
+          'title': 'Computation Structures',
+          'offered_fall': true,
+          'offered_spring': true
         },
         {
-          "subject_id": "16.004",
-          "title": "Unified Engineering: Thermodynamics and Propulsion",
-          "offered_fall": true,
-          "offered_spring": true
+          'subject_id': '16.004',
+          'title': 'Unified Engineering: Thermodynamics and Propulsion',
+          'offered_fall': true,
+          'offered_spring': true
         }
       ]
     );
-    
+
     cy.visit('/');
 
     // Search for class
