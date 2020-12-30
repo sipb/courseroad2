@@ -3,11 +3,15 @@ language: node_js
 node_js:
   - "11"
 
+env:
+  - VUE_APP_URL=http://localhost:8081
+  - VUE_APP_FIREROAD_URL=https://fireroad-dev.mit.edu
+
 jobs:
   include:
+    - stage: e2e
+      script: npm run test:e2e-headless
     - stage: lint
       script: npm run lint
     - stage: unit
       script: npm run test:unit
-    - stage: e2e
-      script: npm run test:e2e-headless
