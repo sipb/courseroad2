@@ -43,6 +43,7 @@
                 style="margin-left:auto;"
                 class="secondary"
                 @click="addClass"
+                id="addClassFromCard"
               >
                 <v-icon>add</v-icon>
               </v-btn>
