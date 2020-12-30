@@ -100,6 +100,7 @@
             :selected-subjects="roads[activeRoad].contents.selectedSubjects"
             :req-list="reqList"
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
+            data-cy="audit"
           />
           <v-flex shrink style="padding: 14px; padding-bottom: 0;">
             <p>
@@ -133,6 +134,7 @@
             :road-i-d="roadId"
             :adding-from-card="addingFromCard && activeRoad===roadId"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
+            :data-cy="'road_' + roadId"
             @change-year="$refs.authcomponent.changeSemester($event)"
           />
         </v-tab-item>
