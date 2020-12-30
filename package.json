@@ -5,7 +5,7 @@
   "author": "courseroad-dev team",
   "scripts": {
     "test:unit": "vue-cli-service test:unit --coverage",
-    "test:e2e": "vue-cli-service test:e2e",
+    "test:e2e": "vue-cli-service test:e2e --url http://localhost:8080",
     "lint": "node_modules/.bin/eslint --ext .js,.vue src/ tests/",
     "build-dev": "webpack --env.APP_URL=https://courseroad.mit.edu/dev --env.FIREROAD_URL=https://fireroad.mit.edu --mode=production --config build/webpack.config.dev.js",
     "build-prod": "webpack --env.APP_URL=https://courseroad.mit.edu --env.FIREROAD_URL=https://fireroad.mit.edu --mode=production --config build/webpack.config.dev.js",
