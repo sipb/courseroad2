@@ -3,7 +3,8 @@
 describe('Basic Tests', () => {
   it('Visits the app root url', () => {
     cy.visit('/');
-    cy.contains('h3', 'C o u r s e R o a d');
+    cy.contains('h3', 'C o u r s e R o a d')
+      .should('exist');
   });
   it('Adds a class', () => {
     cy.visit('/');
@@ -18,7 +19,8 @@ describe('Basic Tests', () => {
 
     // Check that class is pulled up in class info card
     cy.getByDataCy('classInfoCard')
-      .contains('h3', 'Computation Structures');
+      .contains('h3', 'Computation Structures')
+      .should('exist');
 
     // Add class from class info card
     cy.getByDataCy('addClassFromCardButton')
@@ -33,7 +35,7 @@ describe('Basic Tests', () => {
     // Check the class is now in the semester
     cy.get('@freshmanSpring').within(() => {
       cy.getByDataCy('classInSemester3_6004')
-        .contains('', 'Computation Structures');
+        .should('contain', 'Computation Structures');
     });
   });
 });
