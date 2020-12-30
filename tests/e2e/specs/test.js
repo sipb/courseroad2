@@ -9,30 +9,31 @@ describe('Basic Tests', () => {
     cy.visit('/');
 
     // Search for class
-    cy.get('#searchInputTF')
+    cy.getByDataCy("classSearchInput")
       .type('6.004');
 
     // Click on class
-    cy.get('[id="6.004"]')
+    cy.getByDataCy("classInSearch6004")
       .click();
 
     // Check that class is pulled up in class info card
-    cy.get('#classInfoCard')
+    cy.getByDataCy("classInfoCard")
       .contains('h3', 'Computation Structures');
 
     // Add class from class info card
-    cy.get('#addClassFromCard')
+    cy.getByDataCy("addClassFromCardButton")
       .click();
 
-    cy.get('[id="road_$defaultroad$_semester_3"]').as('freshmanSpring');
+    cy.getByDataCy('road_$defaultroad$__semester_3').as('freshmanSpring');
     // Add class by clicking on placeholder
     cy.get('@freshmanSpring').within(() => {
-      cy.get('.placeholder').click();
+      cy.getByDataCy('placeholderClass').click();
     });
 
     // Check the class is now in the semester
     cy.get('@freshmanSpring').within(() => {
-      cy.contains('#class60043', '6.004');
+      cy.getByDataCy('classInSemester3_6004')
+        .contains('', 'Computation Structures');
     });
   });
 });

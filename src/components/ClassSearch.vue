@@ -22,7 +22,7 @@
           <template slot="items" slot-scope="props">
             <v-hover>
               <tr
-                :id="props.item.subject_id"
+                :data-cy="'classInSearch'+props.item.subject_id.replace('.','')"
                 slot-scope="{ hover }"
                 :class="{ 'elevation-3': hover }"
                 draggable="true"

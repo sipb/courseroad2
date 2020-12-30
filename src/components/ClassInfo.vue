@@ -3,6 +3,7 @@
     <v-flex>
       <v-card
         id="classInfoCard"
+        data-cy="classInfoCard"
         class="class-info-card"
         style="display: flex; flex-direction:column;"
         width="30%"
@@ -38,7 +39,7 @@
 
               <v-btn
                 v-if="!addingFromCard"
-                id="addClassFromCard"
+                data-cy="addClassFromCardButton"
                 fab
                 small
                 style="margin-left:auto;"

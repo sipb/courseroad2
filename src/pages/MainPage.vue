@@ -53,6 +53,7 @@
       <v-layout justify-end>
         <v-text-field
           id="searchInputTF"
+          data-cy="classSearchInput"
           v-model="searchInput"
           autocomplete="off"
           class="expanded-search"

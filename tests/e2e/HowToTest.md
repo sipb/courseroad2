@@ -28,4 +28,4 @@ and checks for an h3 tag containing the CourseRoad logo.
 API queries from the [DOM testing library](https://testing-library.com/docs/dom-testing-library/api-queries) can be used to find elements.
 
 [Cypress Documentation](https://docs.cypress.io/guides/references/best-practices.html) has details on best practices and the different types of
-assertions that can be made about the application.
+assertions that can be made about the application.  The API is detailed [here](https://docs.cypress.io/api/api/table-of-contents.html)
