@@ -346,7 +346,7 @@ export default {
 
     this.setActiveRoad();
 
-    axios.get(process.env.FIREROAD_URL + `/requirements/list_reqs/`)
+    axios.get(process.env.VUE_APP_FIREROAD_URL + `/requirements/list_reqs/`)
       .then(response => {
         this.reqList = Object.keys(response.data).map((m) => {
           return Object.assign(response.data[m], { key: m });
@@ -401,7 +401,7 @@ export default {
           const req = fulfillments[r];
           const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
           alteredRoadContents.selectedSubjects = this.flatten(alteredRoadContents.selectedSubjects);
-          axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
+          axios.post(process.env.VUE_APP_FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);
           }.bind({ data: this, req: req }));

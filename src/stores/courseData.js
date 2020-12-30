@@ -314,7 +314,7 @@ const store = new Vuex.Store({
   },
   actions: {
     async loadAllSubjects ({ commit }) {
-      const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
+      const response = await axios.get(process.env.VUE_APP_FIREROAD_URL + `/courses/all?full=true`);
       commit('setSubjectsInfo', response.data);
       commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');
