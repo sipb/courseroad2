@@ -48,7 +48,7 @@
     },
     {
       "files": [
-        "tests/e2e/specs/**/*.js"
+        "tests/e2e/**/*.js"
       ],
       "env": {
           "cypress/globals": true

@@ -9,19 +9,19 @@ describe('Basic Tests', () => {
     cy.visit('/');
 
     // Search for class
-    cy.getByDataCy("classSearchInput")
+    cy.getByDataCy('classSearchInput')
       .type('6.004');
 
     // Click on class
-    cy.getByDataCy("classInSearch6004")
+    cy.getByDataCy('classInSearch6004')
       .click();
 
     // Check that class is pulled up in class info card
-    cy.getByDataCy("classInfoCard")
+    cy.getByDataCy('classInfoCard')
       .contains('h3', 'Computation Structures');
 
     // Add class from class info card
-    cy.getByDataCy("addClassFromCardButton")
+    cy.getByDataCy('addClassFromCardButton')
       .click();
 
     cy.getByDataCy('road_$defaultroad$__semester_3').as('freshmanSpring');
