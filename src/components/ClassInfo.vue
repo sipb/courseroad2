@@ -38,12 +38,12 @@
 
               <v-btn
                 v-if="!addingFromCard"
+                id="addClassFromCard"
                 fab
                 small
                 style="margin-left:auto;"
                 class="secondary"
                 @click="addClass"
-                id="addClassFromCard"
               >
                 <v-icon>add</v-icon>
               </v-btn>

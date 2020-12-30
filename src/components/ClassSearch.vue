@@ -22,13 +22,13 @@
           <template slot="items" slot-scope="props">
             <v-hover>
               <tr
+                :id="props.item.subject_id"
                 slot-scope="{ hover }"
                 :class="{ 'elevation-3': hover }"
                 draggable="true"
                 style="cursor: grab; margin: 4px;"
                 @dragstart="dragStart($event, props)"
                 @click="viewClassInfo(props)"
-                :id="props.item.subject_id"
               >
                 <td style="padding: 0px; white-space: nowrap; width: 30%;">
                   <v-icon style="vertical-align: middle;">
