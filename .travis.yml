@@ -2,11 +2,7 @@ language: node_js
 
 node_js:
   - "11"
-
-env:
-  - VUE_APP_URL=http://localhost:8081
-  - VUE_APP_FIREROAD_URL=https://fireroad-dev.mit.edu
-
+  
 jobs:
   include:
     - stage: e2e
