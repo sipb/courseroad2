@@ -1,11 +1,15 @@
 // https://docs.cypress.io/api/introduction/api.html
 
+const getStore = () => cy.window().its('app.$store');
+
 describe('Startup Tests', () => {
   beforeEach(() => {
+    cy.reload();
+
     // Mock Fireroad get and post requests with empty response
     cy.server();
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', '');
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', '');
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
+    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
   });
   it('Visits main website', () => {
     cy.visit('/');
@@ -25,5 +29,24 @@ describe('Startup Tests', () => {
     // Searchbar should be there
     cy.getByDataCy('classSearchInput')
       .should('exist');
+  });
+  it('Navigates to about page', () => {
+    cy.visit('/');
+
+    // Click on about page link
+    cy.getByDataCy('aboutLink')
+      .click();
+
+    // Check that we are on the about page
+    cy.getByDataCy('aboutTitle')
+      .should('exist');
+
+    // Go back to main page
+    cy.getByDataCy('aboutBackArrow')
+      .click();
+
+    // Check that we have left the about page
+    cy.getByDataCy('aboutTitle')
+      .should('not.exist');
   });
 });

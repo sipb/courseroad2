@@ -7,9 +7,8 @@ Vue.use(Vuex);
 
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
-const store = new Vuex.Store({
-  strict: process.env.NODE_ENV !== 'production',
-  state: {
+const getDefaultState = () => {
+  return {
     versionNumber: '1.0.0', // change when making backwards-incompatible changes
     currentSemester: 1,
     activeRoad: '$defaultroad$',
@@ -46,7 +45,12 @@ const store = new Vuex.Store({
     fulfillmentNeeded: 'all',
     // list of road IDs that have not been retrieved from the server yet
     unretrieved: []
-  },
+  }
+}
+
+const store = new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
+  state: getDefaultState(),
   getters: {
     userYear (state) {
       return Math.floor((state.currentSemester - 1) / 3);
@@ -56,6 +60,11 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    resetState (state) {
+      Object.assign(state, getDefaultState());
+      state.itemAdding = undefined;
+      state.cookiesAllowed = undefined;
+    },
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
@@ -81,6 +90,10 @@ const store = new Vuex.Store({
     },
     disallowCookies (state) {
       state.cookiesAllowed = false;
+    },
+    unallowCookies (state) {
+      state.cookiesAllowed = undefined;
+      console.log(JSON.stringify(state));
     },
     deleteRoad (state, id) {
       state.ignoreRoadChanges = true;

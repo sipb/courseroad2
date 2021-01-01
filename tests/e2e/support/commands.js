@@ -27,3 +27,12 @@
 Cypress.Commands.add('getByDataCy', (selector, ...args) => {
   return cy.get(`[data-cy='${selector}']`, ...args);
 });
+
+Cypress.Commands.add('store', () =>
+  cy.window().its('app.$store')
+);
+
+Cypress.Commands.add('resetStore', () => {
+  cy.store().invoke('commit', 'resetState');
+  cy.store().its('cookiesAllowed').should('eq', undefined);
+});

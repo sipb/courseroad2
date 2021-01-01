@@ -1,12 +1,12 @@
 <template>
   <v-container>
-    <router-link to="/" style="color: inherit; text-decoration: none;">
+    <router-link to="/" style="color: inherit; text-decoration: none;" data-cy="aboutBackArrow">
       <v-btn icon flat>
         <v-icon>arrow_back</v-icon>
       </v-btn>
     </router-link>
     <div class="text-sm" style="margin: 0px auto; max-width: 48em;">
-      <h1>About CourseRoad</h1>
+      <h1 data-cy="aboutTitle">About CourseRoad</h1>
       <p class="px-3">
         CourseRoad is a student-run academic planner for MIT students.
         It allows students to plan out their degrees, test out paths for different

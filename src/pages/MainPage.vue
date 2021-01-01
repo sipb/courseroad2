@@ -88,7 +88,7 @@
               </h3>
             </v-flex>
             <v-flex>
-              <router-link to="/about" style="float: right;">
+              <router-link to="/about" style="float: right;" data-cy="aboutLink">
                 About
               </router-link>
             </v-flex>
@@ -322,6 +322,8 @@ export default {
     }
   },
   created () {
+    console.log("Main page checking cookies");
+    console.log(this.cookiesAllowed);
     if (this.$cookies.get('versionNumber') !== this.$store.state.versionNumber) {
       console.log('Warning: the version number has changed.');
       // do whatever needs to happen when the version changed, probably including clearing local storage

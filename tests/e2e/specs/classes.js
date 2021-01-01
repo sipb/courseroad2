@@ -1,9 +1,11 @@
 describe('Classes Tests', () => {
   beforeEach(() => {
+    cy.reload();
+
     // Mock Fireroad get and post requests with empty response
     cy.server();
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', '');
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', '');
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
+    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
   });
   it('Adds a class', () => {
     // Set up simple test catalog to return from API

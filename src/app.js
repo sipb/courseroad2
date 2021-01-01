@@ -39,9 +39,13 @@ var router = new VueRouter({
 
 VueCookies.config(Infinity);
 
-new Vue({
+const app = new Vue({
   el: '#app',
   router: router,
   render: h => h(App),
   store
 });
+
+if (window.Cypress) {
+  window.app = app;
+}

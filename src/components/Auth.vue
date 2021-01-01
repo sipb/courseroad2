@@ -177,7 +177,10 @@ export default {
     window.onbeforeunload = function () {
       if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
-        const tabs = JSON.parse(this.$cookies.get('tabs'));
+        const tabs = [];
+        if (this.$cookies.isKey('tabs')) {
+          tabs = JSON.parse(this.$cookies.get('tabs'));
+        }
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
         this.$cookies.set('tabs', JSON.stringify(tabs));
