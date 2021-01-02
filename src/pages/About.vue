@@ -6,7 +6,9 @@
       </v-btn>
     </router-link>
     <div class="text-sm" style="margin: 0px auto; max-width: 48em;">
-      <h1 data-cy="aboutTitle">About CourseRoad</h1>
+      <h1 data-cy="aboutTitle">
+        About CourseRoad
+      </h1>
       <p class="px-3">
         CourseRoad is a student-run academic planner for MIT students.
         It allows students to plan out their degrees, test out paths for different

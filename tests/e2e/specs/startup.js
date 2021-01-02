@@ -1,7 +1,5 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-const getStore = () => cy.window().its('app.$store');
-
 describe('Startup Tests', () => {
   beforeEach(() => {
     cy.reload();

@@ -45,8 +45,8 @@ const getDefaultState = () => {
     fulfillmentNeeded: 'all',
     // list of road IDs that have not been retrieved from the server yet
     unretrieved: []
-  }
-}
+  };
+};
 
 const store = new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',

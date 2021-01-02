@@ -177,7 +177,7 @@ export default {
     window.onbeforeunload = function () {
       if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
-        const tabs = [];
+        let tabs = [];
         if (this.$cookies.isKey('tabs')) {
           tabs = JSON.parse(this.$cookies.get('tabs'));
         }
