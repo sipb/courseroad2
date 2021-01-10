@@ -155,8 +155,56 @@ describe('Classes Tests', () => {
     });
   });
 
-  it('Allows for dragging a class between semesters', () => {
-    // Skip until I figure out dragging
+  it.only('Allows for dragging a class between semesters', () => {
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
+      [
+        {
+          'subject_id': '2.003',
+          'title': 'Dynamics and Control I',
+          'offered_fall': true,
+          'offered_spring': true
+        },
+        {
+          'subject_id': '4.021',
+          'title': 'Design Studio: How to Design',
+          'offered_fall': true,
+          'offered_spring': true
+        }
+      ]
+    );
+
+    cy.visit('/');
+
+    // Search for class
+    cy.getByDataCy('classSearchInput')
+      .type('2.003')
+
+
+    cy.getByDataCy('road_$defaultroad$__semester_1').as('freshmanFall');
+    cy.getByDataCy('road_$defaultroad$__semester_3').as('freshmanSpring');
+
+
+    // Drag 2.003 into Freshman Fall
+    cy.dragAndDrop('[data-cy="classInSearch2_003"]',
+                    '[data-cy="road_$defaultroad$__semester_1_dropZone"]',
+                     0, 0);
+
+    // Check the class is now in the semester
+    cy.get('@freshmanFall').within(() => {
+     cy.getByDataCy('classInSemester1_2_003')
+       .should('contain', 'Dynamics and Control I');
+    });
+
+    // Drag 2.003 into Freshman Spring
+    cy.dragAndDrop('[data-cy="classInSemester1_2_003"]',
+                    '[data-cy="road_$defaultroad$__semester_3_dropZone"]',
+                    0, 0);
+
+    // Check the class is now in the semester
+    cy.get('@freshmanSpring').within(() => {
+     cy.getByDataCy('classInSemester3_2_003')
+       .should('contain', 'Dynamics and Control I');
+    });
 
   });
 
