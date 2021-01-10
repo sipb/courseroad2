@@ -25,7 +25,7 @@
         <v-card
           v-else
           :id="'class'+classInfo.id.replace('.','')+semesterIndex"
-          :data-cy="'classInSemester' + semesterIndex + '_' + classInfo.id.replace('.', '')"
+          :data-cy="'classInSemester' + semesterIndex + '_' + classInfo.id.replace('.', '_')"
           draggable
           @dragstart="dragStart"
           @click="$store.commit('pushClassStack', classInfo.id)"

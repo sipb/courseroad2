@@ -21,7 +21,7 @@
               </v-hover>
             </b>
           </span>
-          <span style="min-width: 4.5em; display: inline-block;">
+          <span style="min-width: 4.5em; display: inline-block;" data-cy="semesterUnits">
             Units: {{ semesterInformation.totalUnits }}
           </span>
           <v-tooltip bottom>

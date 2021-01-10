@@ -21,7 +21,7 @@
               <h3>{{ currentSubject.subject_id }}</h3>
             </div>
             <div style="margin-left:auto">
-              <v-btn icon style="margin: 0;" @click="$store.commit('clearClassInfoStack')">
+              <v-btn icon style="margin: 0;" @click="$store.commit('clearClassInfoStack')" data-cy="closeClassInfoButton">
                 <v-icon style="margin:0; padding: 0; color:white;">
                   close
                 </v-icon>

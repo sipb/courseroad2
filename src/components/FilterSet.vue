@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-group">
+  <div class="filter-group" :data-cy="'filter_' + label">
     <span class="filter-title">{{ label }}</span>
     <v-btn-toggle
       multiple
@@ -12,6 +12,7 @@
         flat
         :value="index"
         @click="buttonClicked"
+        :data-cy="'filterButton_' + filter.name"
       >
         {{ filter.short }}
       </v-btn>
