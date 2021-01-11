@@ -55,75 +55,65 @@ describe('Settings/Persistency Tests', () => {
   });
 
   it('Saves open/close semester states', () => {
+    cy.visit('/');
+
+    cy.getByDataCy('acceptCookies')
+      .click();
+
     cy.getByDataCy('road_$defaultroad$__semester_0')
       .as('priorCredit');
+
+    cy.getByDataCy('road_$defaultroad$__semester_0_dropZone')
+      .as('priorCreditPanel');
 
     cy.getByDataCy('road_$defaultroad$__semester_1')
       .as('freshmanFall');
 
+    cy.getByDataCy('road_$defaultroad$__semester_1_dropZone')
+      .as('freshmanFallPanel');
+
     cy.getByDataCy('road_$defaultroad$__semester_7')
       .as('juniorFall');
 
-    cy.get('@priorCredit')
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('not.be.visible');
-      });
+    cy.getByDataCy('road_$defaultroad$__semester_7_dropZone')
+      .as('juniorFallPanel');
+
+    cy.get('@priorCreditPanel')
+      .should('not.be.visible');
 
     cy.get('@priorCredit')
-      .click()
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('be.visible');
-      });
+      .click();
+
+    cy.get('@priorCreditPanel')
+      .should('be.visible');
+
+    cy.get('@freshmanFallPanel')
+      .should('be.visible');
 
     cy.get('@freshmanFall')
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('be.visible');
-      });
+      .click();
 
-    cy.get('@freshmanFall')
-      .click()
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('not.be.visible');
-      });
+    cy.get('@freshmanFallPanel')
+      .should('not.be.visible');
+
+    cy.get('@juniorFallPanel')
+      .should('be.visible');
 
     cy.get('@juniorFall')
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('be.visible');
-      });
+      .click();
 
-    cy.get('@juniorFall')
-      .click()
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('not.be.visible');
-      });
+    cy.get('@juniorFallPanel')
+      .should('not.be.visible');
 
     cy.reload();
 
-    cy.get('@priorCredit')
-      .click()
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('be.visible');
-      });
+    cy.get('@priorCreditPanel')
+      .should('be.visible');
 
-    cy.get('@freshmanFall')
-      .click()
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('not.be.visible');
-      });
+    cy.get('@freshmanFallPanel')
+      .should('not.be.visible');
 
-    cy.get('@juniorFall')
-      .click()
-      .within(() => {
-        cy.getByDataCy('semesterContent')
-          .should('not.be.visible');
-      });
+    cy.get('@juniorFallPanel')
+      .should('not.be.visible');
   });
 });

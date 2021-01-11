@@ -178,7 +178,14 @@
               <span v-if="cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color="primary" class="ma-1" @click="$store.commit('allowCookies'); dismissCookies();">
+              <v-btn
+                small
+                depressed
+                color="primary"
+                class="ma-1"
+                data-cy="acceptCookies"
+                @click="$store.commit('allowCookies'); dismissCookies();"
+              >
                 I accept
               </v-btn>
             </v-flex>

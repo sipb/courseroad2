@@ -11,8 +11,8 @@
         :key="filter.name"
         flat
         :value="index"
-        @click="buttonClicked"
         :data-cy="'filterButton_' + filter.name"
+        @click="buttonClicked"
       >
         {{ filter.short }}
       </v-btn>

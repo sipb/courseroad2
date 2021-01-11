@@ -106,11 +106,10 @@
       fluid
       grid-list-md
       :class="semData.bgColor"
-      data-cy="semesterContent"
+      :data-cy="'road_'+roadID+'__semester_' + index + '_dropZone'"
       @dragenter="dragenter"
       @dragleave="dragleave"
       @drop="ondrop"
-      :data-cy="'road_'+roadID+'__semester_' + index + '_dropZone'"
     >
       <v-layout wrap align-center justify-center row>
         <class

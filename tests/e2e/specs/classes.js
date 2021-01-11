@@ -82,18 +82,16 @@ describe('Classes Tests', () => {
     cy.getByDataCy('classSearchInput')
       .type('6.004');
 
-
     // Drag 6.004 into Freshman Fall
     cy.dragAndDrop('[data-cy="classInSearch6_004"]',
-                    '[data-cy="road_$defaultroad$__semester_1_dropZone"]',
-                     0, 0);
+      '[data-cy="road_$defaultroad$__semester_1_dropZone"]',
+      0, 0);
 
     // Check the class is now in the semester
     cy.getByDataCy('road_$defaultroad$__semester_1').within(() => {
-     cy.getByDataCy('classInSemester1_6_004')
-       .should('contain', 'Computation Structures');
+      cy.getByDataCy('classInSemester1_6_004')
+        .should('contain', 'Computation Structures');
     });
-
   });
 
   it('Does not allow putting the class in the wrong semester', () => {
@@ -140,7 +138,7 @@ describe('Classes Tests', () => {
     // Check that class can't be added to a spring semestter
     cy.get('@freshmanSpring').within(() => {
       cy.getByDataCy('placeholderClass')
-        .should('not.be.visible')
+        .should('not.be.visible');
     });
 
     // Add class by clicking on placeholder
@@ -155,7 +153,7 @@ describe('Classes Tests', () => {
     });
   });
 
-  it.only('Allows for dragging a class between semesters', () => {
+  it('Allows for dragging a class between semesters', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
@@ -177,35 +175,32 @@ describe('Classes Tests', () => {
 
     // Search for class
     cy.getByDataCy('classSearchInput')
-      .type('2.003')
-
+      .type('2.003');
 
     cy.getByDataCy('road_$defaultroad$__semester_1').as('freshmanFall');
     cy.getByDataCy('road_$defaultroad$__semester_3').as('freshmanSpring');
 
-
     // Drag 2.003 into Freshman Fall
     cy.dragAndDrop('[data-cy="classInSearch2_003"]',
-                    '[data-cy="road_$defaultroad$__semester_1_dropZone"]',
-                     0, 0);
+      '[data-cy="road_$defaultroad$__semester_1_dropZone"]',
+      0, 0);
 
     // Check the class is now in the semester
     cy.get('@freshmanFall').within(() => {
-     cy.getByDataCy('classInSemester1_2_003')
-       .should('contain', 'Dynamics and Control I');
+      cy.getByDataCy('classInSemester1_2_003')
+        .should('contain', 'Dynamics and Control I');
     });
 
     // Drag 2.003 into Freshman Spring
     cy.dragAndDrop('[data-cy="classInSemester1_2_003"]',
-                    '[data-cy="road_$defaultroad$__semester_3_dropZone"]',
-                    0, 0);
+      '[data-cy="road_$defaultroad$__semester_3_dropZone"]',
+      0, 0);
 
     // Check the class is now in the semester
     cy.get('@freshmanSpring').within(() => {
-     cy.getByDataCy('classInSemester3_2_003')
-       .should('contain', 'Dynamics and Control I');
+      cy.getByDataCy('classInSemester3_2_003')
+        .should('contain', 'Dynamics and Control I');
     });
-
   });
 
   it('Displays the units for classes in semesters', () => {
@@ -295,7 +290,7 @@ describe('Classes Tests', () => {
         },
         {
           'subject_id': '5.111',
-          'title': 'Principals of Chemical Science',
+          'title': 'Principals of Chemical Science'
         }
       ]
     );
@@ -319,7 +314,6 @@ describe('Classes Tests', () => {
     // Ensure 14.02 is in results
     cy.getByDataCy('classInSearch14_02')
       .should('exist');
-
   });
 
   it('Allows searching by text', () => {
@@ -328,11 +322,11 @@ describe('Classes Tests', () => {
       [
         {
           'subject_id': '18.03',
-          'title': 'Differential Equations',
+          'title': 'Differential Equations'
         },
         {
           'subject_id': '7.012',
-          'title': 'Introductory Biology',
+          'title': 'Introductory Biology'
         }
       ]
     );
@@ -451,6 +445,5 @@ describe('Classes Tests', () => {
       cy.getByDataCy('classInSemester3_24_118')
         .should('exist');
     });
-
   });
 });
