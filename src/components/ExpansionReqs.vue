@@ -1,6 +1,6 @@
 <template>
   <div :id="reqID">
-    <v-btn v-if="!requirement.topLevel" icon small @click="closeMe">
+    <v-btn v-if="!requirement.topLevel" icon small @click="closeMe" :data-cy="'closeButton'+reqID">
       <v-icon>close</v-icon>
     </v-btn>
     <span
@@ -19,7 +19,7 @@
         >
           {{ requirement.reqs[0].expansionDesc }}
         </span>
-        <subject-scroll :subjects="requirement.reqs[0].reqs" @click-subject="clickSubject($event, 0)" />
+        <subject-scroll :subjects="requirement.reqs[0].reqs" @click-subject="clickSubject($event, 0)" :data-cy="'doubleScroller0'+reqID" />
       </div>
       <div :id="'ds1'+reqID">
         <span
@@ -29,10 +29,10 @@
         >
           {{ requirement.reqs[1].expansionDesc }}
         </span>
-        <subject-scroll :subjects="requirement.reqs[1].reqs" @click-subject="clickSubject($event, 1)" />
+        <subject-scroll :subjects="requirement.reqs[1].reqs" @click-subject="clickSubject($event, 1)"  :data-cy="'doubleScroller1'+reqID" />
       </div>
     </div>
-    <subject-scroll v-else :subjects="requirement.reqs" @click-subject="clickSubject" />
+    <subject-scroll v-else :subjects="requirement.reqs" @click-subject="clickSubject" :data-cy="'singleScroller'+reqID"/>
     <div v-if="open && getNextReqs !== undefined" class="expanded-req">
       <ExpansionReqs
         :requirement="getNextReqs"

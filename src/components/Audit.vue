@@ -32,6 +32,7 @@
             slot-scope="{ hover }"
             :class="{ 'elevation-3': hover, 'yellow lighten-3': isPetitioned(item), 'grey lighten-2': isIgnored(item)}"
             :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
+            :data-cy="'auditItem' + item['list-id']"
           >
             <v-icon
               v-if="!('reqs' in item)"
