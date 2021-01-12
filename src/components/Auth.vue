@@ -123,7 +123,7 @@ export default {
         const email = this.accessInfo.academic_id;
         const endPoint = email.indexOf('@');
         const kerb = email.slice(0, endPoint);
-        axios.get(process.env.APP_URL + '/cgi-bin/people.py?kerb=' + kerb)
+        axios.get(process.env.VUE_APP_URL + '/cgi-bin/people.py?kerb=' + kerb)
           .then(response => {
             if (response.status !== 200) {
               console.log('Failed to find user year');
@@ -192,7 +192,7 @@ export default {
   },
   methods: {
     loginUser: function (event) {
-      window.location.href = `${process.env.FIREROAD_URL}/login/?redirect=${process.env.APP_URL}`;
+      window.location.href = `${process.env.VUE_APP_FIREROAD_URL}/login/?redirect=${process.env.VUE_APP_URL}`;
       if (this.cookiesAllowed) {
         this.$cookies.set('hasLoggedIn', true);
       }
@@ -212,7 +212,7 @@ export default {
         'Authorization': 'Bearer ' + this.accessInfo.access_token
       } };
       const currentMonth = new Date().getMonth();
-      return axios.get(process.env.FIREROAD_URL + '/verify/', headerList)
+      return axios.get(process.env.VUE_APP_FIREROAD_URL + '/verify/', headerList)
         .then(function (verifyResponse) {
           if (verifyResponse.data.success) {
             this.$store.commit('setCurrentSemester', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
@@ -229,8 +229,8 @@ export default {
           'Authorization': 'Bearer ' + this.accessInfo.access_token
         } };
         return params
-          ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
-          : axiosFunc(process.env.FIREROAD_URL + link, headerList);
+          ? axiosFunc(process.env.VUE_APP_FIREROAD_URL + link, params, headerList)
+          : axiosFunc(process.env.VUE_APP_FIREROAD_URL + link, headerList);
       } else {
         return Promise.reject(new Error('No auth information'));
       }
@@ -376,7 +376,7 @@ export default {
     },
 
     getAuthorizationToken: function (code) {
-      axios.get(process.env.FIREROAD_URL + '/fetch_token/?code=' + code)
+      axios.get(process.env.VUE_APP_FIREROAD_URL + '/fetch_token/?code=' + code)
         .then(function (response) {
           if (response.data.success) {
             if (this.data.cookiesAllowed) {

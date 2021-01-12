@@ -23,6 +23,7 @@
             <v-hover>
               <tr
                 slot-scope="{ hover }"
+                :data-cy="'classInSearch'+props.item.subject_id.replace('.','')"
                 :class="{ 'elevation-3': hover }"
                 draggable="true"
                 style="cursor: grab; margin: 4px;"
