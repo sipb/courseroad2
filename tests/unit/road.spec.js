@@ -21,7 +21,7 @@ describe('Road', () => {
         userYear: 1
       },
       getters: {
-        userYear: () => { return store.state.userYear }
+        userYear: (state) => { return state.userYear }
       },
       mutations: {
         addClass: (state) => {
@@ -31,19 +31,20 @@ describe('Road', () => {
           return true;
         },
         setUserYear: (state, newYear) => {
-          store.state.userYear = newYear;
+          state.userYear = newYear;
         }
       }
     });
   });
   it('opens the changeYearDialog', () => {
-    const wrapper = mount(Road, { stubs: { 'semester': true }, propsData: { 'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false }, store, localVue });
-    expect(wrapper.vm.changeYearDialog).toBe(false);
-    wrapper.vm.changeYearDialog = true;
-    expect(wrapper.vm.changeYearDialog).toBe(true);
+    expect(true);
+    const wrapper = mount(Road, { stubs: ['semester'], propsData: { 'selectedSubjects': [1, 2], 'roadID': '1', 'addingFromCard': false, 'dragSemesterNum': 1 }, store, localVue, mocks: { $cookies: { get: () => false, remove: () => false } } });
+    expect(wrapper.vm.openRoadSettings).toBe(false);
+    wrapper.vm.openRoadSettings = true;
+    expect(wrapper.vm.openRoadSettings).toBe(true);
   });
   it('emits change-year when submit is selected', () => {
-    const wrapper = mount(Road, { stubs: { 'semester': true }, propsData: { 'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false }, store, localVue });
+    const wrapper = mount(Road, { stubs: ['semester'], propsData: { 'selectedSubjects': [1, 2], 'roadID': '1', 'addingFromCard': false, 'dragSemesterNum': 1 }, store, localVue, mocks: { $cookies: { get: () => false, remove: () => false } } });
     wrapper.vm.changeYearDialog = true;
     const myButton = wrapper.find('#change-year');
     myButton.trigger('click');
@@ -51,7 +52,7 @@ describe('Road', () => {
     expect(emitEvent).toBeTruthy();
   });
   it('updates year when year is changed in the store', () => {
-    const wrapper = mount(Road, { stubs: { 'semester': true }, propsData: { 'selectedSubjects': [1, 2], 'roadID': 1, 'addingFromCard': false, 'dragSemesterNum': false }, store, localVue });
+    const wrapper = mount(Road, { stubs: ['semester'], propsData: { 'selectedSubjects': [1, 2], 'roadID': '1', 'addingFromCard': false, 'dragSemesterNum': 1 }, store, localVue, mocks: { $cookies: { get: () => false, remove: () => false } } });
     expect(wrapper.vm.year).toBe(1);
     wrapper.vm.$store.commit('setUserYear', 2);
     expect(wrapper.vm.year).toBe(2);
