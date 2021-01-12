@@ -37,7 +37,6 @@ describe('Road', () => {
     });
   });
   it('opens the changeYearDialog', () => {
-    expect(true);
     const wrapper = mount(Road, { stubs: ['semester'], propsData: { 'selectedSubjects': [1, 2], 'roadID': '1', 'addingFromCard': false, 'dragSemesterNum': 1 }, store, localVue, mocks: { $cookies: { get: () => false, remove: () => false } } });
     expect(wrapper.vm.openRoadSettings).toBe(false);
     wrapper.vm.openRoadSettings = true;
