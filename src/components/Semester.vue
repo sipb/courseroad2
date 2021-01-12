@@ -3,6 +3,7 @@
   <v-expansion-panel-content
     v-show="!hideIap || semesterType !== 'IAP'"
     :id="'road_'+roadID+'_semester_' + index"
+    :data-cy="'road_'+roadID+'__semester_' + index"
     dropzone="copy"
     @dragover.native.prevent
   >

@@ -1,5 +1,5 @@
 {
-  "plugins": ["jest"],
+  "plugins": ["jest", "cypress"],
   "extends": [
     "plugin:vue/recommended",
     "standard"
@@ -44,6 +44,14 @@
         "VueCookies": "readonly",
         "BrowserSupportPlugin": "readonly",
         "regeneratorRuntime": "readonly"
+      }
+    },
+    {
+      "files": [
+        "tests/e2e/**/*.js"
+      ],
+      "env": {
+          "cypress/globals": true
       }
     }
   ]
