@@ -1,7 +1,7 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
 
-  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;">
+  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;" data-cy="auditBox">
     <div style="display: flex; align-content: space-between; margin: 12px 0px;">
       <v-autocomplete
         v-model="changeReqs"
@@ -15,6 +15,7 @@
         deletable-chips
         dense
         no-data-text="'No results found'"
+        data-cy="auditMajorChips"
       />
     </div>
 

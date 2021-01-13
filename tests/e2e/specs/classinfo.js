@@ -128,12 +128,12 @@ describe('Class Info Card Tests', () => {
               .should('not.exist');
           });
 
-          // Check that related subjects are present
-          cy.getByDataCy('cardRelatedSubjects')
-            .within(() => {
-              cy.getByDataCy('subjectInScroller3')
-                .should('contain', '6.914');
-            });
+        // Check that related subjects are present
+        cy.getByDataCy('cardRelatedSubjects')
+          .within(() => {
+            cy.getByDataCy('subjectInScroller3')
+              .should('contain', '6.914');
+          });
       });
   });
 
@@ -181,7 +181,7 @@ describe('Class Info Card Tests', () => {
     cy.getByDataCy('classSearchInput')
       .type('3.010');
 
-    // Drag 3.010 into Freshman Fall
+    // Drag 3.010 into Freshman Spring
     cy.dragAndDrop('[data-cy="classInSearch3_010"]',
       '[data-cy="road_$defaultroad$__semester_3_dropZone"]',
       0, 0);
@@ -317,6 +317,5 @@ describe('Class Info Card Tests', () => {
         cy.getByDataCy('cardSubjectTitle')
           .should('contain', 'Health Economics');
       });
-
   });
 });

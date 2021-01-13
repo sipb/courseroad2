@@ -102,7 +102,7 @@
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
             data-cy="audit"
           />
-          <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+          <v-flex shrink style="padding: 14px; padding-bottom: 0;" data-cy="unofficialWarning">
             <p>
               <b>Warning:</b> This is an unofficial tool that may not accurately
               reflect degree progress. Please view the

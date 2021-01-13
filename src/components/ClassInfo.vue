@@ -13,7 +13,7 @@
         <v-card-title :class="['card-header',courseColor(currentSubject)]">
           <v-flex style="display: flex; flex-direction: row; align-items: center;">
             <div style="padding: 0; margin: 0; display: block;">
-              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$store.commit('popClassStack')" data-cy="cardPreviousButton">
+              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon data-cy="cardPreviousButton" @click="$store.commit('popClassStack')">
                 <v-icon>navigate_before</v-icon>
               </v-btn>
             </div>
@@ -146,7 +146,9 @@
               </tr>
               <tr v-if="currentSubject.enrollment_number !== undefined">
                 <td><b>Average Enrollment</b></td>
-                <td data-cy="cardEnrollment">{{ currentSubject.enrollment_number }}</td>
+                <td data-cy="cardEnrollment">
+                  {{ currentSubject.enrollment_number }}
+                </td>
               </tr>
               <tr v-if="currentSubject.rating !== undefined">
                 <td><b>Average Rating</b></td>
@@ -174,7 +176,9 @@
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
-            <p data-cy="cardDescription"> {{ currentSubject.description }} </p>
+            <p data-cy="cardDescription">
+              {{ currentSubject.description }}
+            </p>
             <p v-if="currentSubject.url !== undefined">
               <a target="_blank" :href="currentSubject.url">View in course catalog</a>
             </p>
@@ -198,8 +202,8 @@
               <expansion-reqs
                 :requirement="parsedPrereqs"
                 :req-i-d="currentSubject.subject_id+'prereq0'"
-                @click-subject="clickRelatedSubject"
                 data-cy="cardPrereqs"
+                @click-subject="clickRelatedSubject"
               />
             </div>
             <h4 v-if="currentSubject.either_prereq_or_coreq">
