@@ -66,7 +66,7 @@
       </a>
     </p>
 
-    <v-dialog v-model="progressDialog" max-width="600">
+    <v-dialog v-model="progressDialog" max-width="600" data-cy="progressDialog">
       <v-card v-if="progressReq !== undefined">
         <v-btn icon flat style="float:right" @click="progressDialog=false">
           <v-icon>close</v-icon>
@@ -106,7 +106,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="viewDialog" max-width="600">
+    <v-dialog v-model="viewDialog" max-width="600" data-cy="auditViewDialog">
       <div v-if="dialogReq !== undefined">
         <v-card>
           <v-btn icon flat style="float:right" @click="viewDialog = false">
@@ -123,6 +123,7 @@
             <div
               class="percentage-bar p-block"
               :style="percentage(dialogReq)"
+              data-cy="auditDialogPercentage"
             >
               {{ dialogReq["percent_fulfilled"] }}% fulfilled
             </div>
@@ -130,7 +131,7 @@
           <v-card-text v-if="'req' in dialogReq">
             {{ dialogReq["req"] }}
           </v-card-text>
-          <v-card-text>
+          <v-card-text data-cy="viewDialogSatisfyingCourses">
             <b>Satisfying courses:</b>
             <div v-for="course in dialogReq['sat_courses']" :key="course">
               {{ course }}

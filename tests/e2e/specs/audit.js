@@ -119,7 +119,7 @@ describe('Audit Tests', () => {
       .should('not.exist');
   });
 
-  it.only('Computes progress in audit tree', () => {
+  it('Computes progress in audit tree', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', [
       {
         'subject_id': '21M.301',
@@ -166,24 +166,76 @@ describe('Audit Tests', () => {
       '[data-cy="road_$defaultroad$__semester_3_dropZone"]',
       0, 0);
 
-    // cy.intercept('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', (req) => {
-    //   console.log(req.body);
-    //   return progMajor21M1
-    // });
-
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', (req) => {
-      console.log(req);
-      return progMajor21M1;
-    });
+    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', progMajor21M1)
+      .as('checkProg');
 
     // Drag 21M.423 into Sophomore Fall
     cy.dragAndDrop('[data-cy="classInSearch21M_423"]',
       '[data-cy="road_$defaultroad$__semester_4_dropZone"]',
       0, 0);
 
+    // Check that 3 subjects were recieved
+    cy.wait('@checkProg')
+      .its('request.body.selectedSubjects')
+      .should('have.length', 3);
+
+    // Check that audit shows correct percentages from progress response
+    cy.getByDataCy('auditItemmajor21M-1')
+      .trigger('mouseover');
+
+    cy.getByDataCy('percentFulfilledmajor21M-1')
+      .should('contain', '27%');
+
+    cy.getByDataCy('auditItemmajor21M-1')
+      .click();
+
+    cy.getByDataCy('auditItemmajor21M-1.0')
+      .trigger('mouseover');
+
+    cy.getByDataCy('percentFulfilledmajor21M-1.0')
+      .should('contain', '50%');
+
+    // Open the requirements dialog and check its information
+    cy.getByDataCy('auditInfoButtonmajor21M-1.0')
+      .click();
+
+    cy.getByDataCy('viewDialogSatisfyingCourses')
+      .should('contain', '21M.423')
+      .should('contain', '21M.301')
+      .should('contain', '21M.293');
   });
 
-  it('Drags classes from audit to road', () => {
+  it.only('Drags classes from audit to road', () => {
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', [
+      {
+        'subject_id': '18.02',
+        'title': 'Calculus',
+        'gir_attribute': 'CAL2',
+        'offered_spring': true,
+        'offered_fall': false
+      }
+    ]);
+    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
 
+    cy.visit('/');
+
+    // Open audit to the science GIR requirements
+    cy.getByDataCy('auditItemgirs')
+      .click();
+
+    cy.getByDataCy('auditItemgirs.0')
+      .click();
+
+    // Drag GIR:CAL2 from the audit
+    cy.dragAndDrop('[data-cy="requirementgirs.0.3"]',
+      '[data-cy="road_$defaultroad$__semester_6_dropZone"]',
+      0, 0);
+
+    // Check that CAL2 has been added to Sophomore Spring
+    cy.getByDataCy('road_$defaultroad$__semester_6')
+      .within(() => {
+        cy.getByDataCy('classInSemester6_CAL2')
+          .should('contain', 'Generic Calculus II GIR');
+      });
   });
 });

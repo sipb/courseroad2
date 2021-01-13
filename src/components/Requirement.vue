@@ -5,6 +5,7 @@
     @dragstart="dragStart"
     @mouseover="hoveringOver = true"
     @mouseleave="hoveringOver = false"
+    :data-cy="'requirement' + req['list-id']"
   >
     <v-layout row>
       <v-flex>
@@ -85,6 +86,7 @@
             && 'percent_fulfilled' in req
             && req.percent_fulfilled !== 'N/A'"
           :style="'float: right; color: '+percentageTextColor"
+          :data-cy="'percentFulfilled' + req['list-id']"
         >
           &nbsp;{{ req.percent_fulfilled }}%
           <v-icon
@@ -95,6 +97,7 @@
             @mouseover="iconHover = true"
             @mouseleave="iconHover = false"
             @click.stop="$emit('click-info', $event)"
+            :data-cy="'auditInfoButton'+req['list-id']"
           >
             info
           </v-icon>
