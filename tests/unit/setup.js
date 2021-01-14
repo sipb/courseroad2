@@ -5,6 +5,7 @@ import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
 import VueCookies from 'vue-cookies';
 import BrowserSupportPlugin from './../../src/plugins/browserSupport';
+import regeneratorRuntime from 'regenerator-runtime';
 
 global.mount = mount;
 global.shallowMount = shallowMount;
@@ -15,6 +16,7 @@ global.Vuetify = Vuetify;
 global.VueRouter = VueRouter;
 global.VueCookies = VueCookies;
 global.BrowserSupportPlugin = BrowserSupportPlugin;
+global.regeneratorRuntime = regeneratorRuntime;
 
 // So Vuetify doesn't yell about missing data-app
 const el = document.createElement('div');

@@ -3,6 +3,7 @@
     <v-flex>
       <v-card
         id="classInfoCard"
+        data-cy="classInfoCard"
         class="class-info-card"
         style="display: flex; flex-direction:column;"
         width="30%"
@@ -38,6 +39,7 @@
 
               <v-btn
                 v-if="!addingFromCard"
+                data-cy="addClassFromCardButton"
                 fab
                 small
                 style="margin-left:auto;"
@@ -118,6 +120,18 @@
                   </span>
                 </td>
               </tr>
+              <tr v-if="currentSubject.virtual_status !== undefined">
+                <td><b>Virtual</b></td>
+                <td v-if="currentSubject.virtual_status === 'Virtual/In-Person'">
+                  Partly Virtual
+                </td>
+                <td v-else-if="currentSubject.virtual_status === 'In-Person'">
+                  No
+                </td>
+                <td v-else>
+                  Yes
+                </td>
+              </tr>
               <tr v-if="currentSubject.instructors !== undefined">
                 <td><b>Instructor</b></td>
                 <td>
@@ -167,6 +181,10 @@
                 View Course Evaluations
               </a>
             </p>
+            <div v-if="currentSubject.joint_subjects !== undefined">
+              <h3>Joint Subjects</h3>
+              <subject-scroll :subjects="currentSubject.joint_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
+            </div>
             <div v-if="currentSubject.equivalent_subjects !== undefined">
               <h3>Equivalent Subjects</h3>
               <subject-scroll :subjects="currentSubject.equivalent_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
@@ -251,7 +269,16 @@ export default {
     subjectsWithPrereq: function () {
       const currentID = this.currentSubject.subject_id;
       const currentDept = currentID.substring(0, currentID.indexOf('.'));
-      var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+
+      var thisGIRAttr = this.currentSubject.gir_attribute;
+      var IDMatcher;
+
+      if (thisGIRAttr === undefined) {
+        IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+      } else { // Expression taken directly from above, but modified for GIRs
+        var filteredCurrentID = currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + '(' + 'GIR:' + thisGIRAttr + '|' + filteredCurrentID + ')' + '(?![\\da-zA-Z])');
+      }
       return this.$store.state.subjectsInfo.filter(function (s) {
         return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
       }).sort(function (s1, s2) {
@@ -348,21 +375,22 @@ export default {
             connectionType = nextConnectionType;
           }
           if (isBaseReq(onereq)) {
+            let subRequirement;
             if (onereq.indexOf("'") >= 0) {
-              parsedReq.reqs.push({ subject_id: onereq.replace(/'/g, ''), title: '', fulfilled: false });
+              subRequirement = { subject_id: onereq.replace(/'/g, ''), title: '' };
             } else {
-              const subRequirement = Object.assign({}, getClassInfo(onereq));
-              if (this.firstAppearance >= -1) {
-                const allPreviousSubjects = this.flatten(
-                  this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects
-                    .slice(0, this.firstAppearance)
-                );
-                subRequirement.fulfilled = this.reqsFulfilled(onereq, allPreviousSubjects);
-              } else {
-                subRequirement.fulfilled = true;
-              }
-              parsedReq.reqs.push(subRequirement);
+              subRequirement = Object.assign({}, getClassInfo(onereq));
             }
+            if (this.firstAppearance >= -1) {
+              const allPreviousSubjects = this.flatten(
+                this.$store.state.roads[this.$store.state.activeRoad].contents.selectedSubjects
+                  .slice(0, this.firstAppearance)
+              );
+              subRequirement.fulfilled = this.reqsFulfilled(onereq, allPreviousSubjects);
+            } else {
+              subRequirement.fulfilled = true;
+            }
+            parsedReq.reqs.push(subRequirement);
           } else {
             parsedReq.reqs.push(parseReqs(onereq));
           }

@@ -1,7 +1,9 @@
 <template>
   <!-- stolen from this example: https://vuetifyjs.com/en/components/cards#grids -->
   <v-expansion-panel-content
+    v-show="!hideIap || semesterType !== 'IAP'"
     :id="'road_'+roadID+'_semester_' + index"
+    :data-cy="'road_'+roadID+'__semester_' + index"
     dropzone="copy"
     @dragover.native.prevent
   >
@@ -11,7 +13,7 @@
           <span style="width: 12em; display: inline-block;">
             <b>
               <v-hover>
-                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openChangeYearDialog">
+                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openRoadSettingsDialog">
                   {{ semesterYearName }}
                   {{ semesterType }}
                   <span v-if="index>0">{{ "'" + semesterYear.toString().substring(2) }}</span>
@@ -162,6 +164,10 @@ export default {
     isOpen: {
       type: Boolean,
       required: true
+    },
+    hideIap: {
+      type: Boolean,
+      required: true
     }
   },
   data: function () {
@@ -175,8 +181,8 @@ export default {
     isActiveRoad () {
       return this.$store.state.activeRoad === this.roadID;
     },
-    baseYear: function () {
-      const today = new Date();
+    baseYear () {
+      const today = new Date(Date.now());
       const currentYear = today.getFullYear();
       const baseYear = (today.getMonth() >= 5) ? currentYear + 1 : currentYear;
       return baseYear - this.$store.getters.userYear;
@@ -407,9 +413,9 @@ export default {
     }
   },
   methods: {
-    openChangeYearDialog: function (event) {
+    openRoadSettingsDialog: function (event) {
       event.stopPropagation();
-      this.$emit('open-change-year-dialog');
+      this.$emit('open-road-settings-dialog');
     },
     noLongerOffered: function (course) {
       if (course.is_historical) {

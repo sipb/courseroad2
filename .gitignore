@@ -77,10 +77,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.env.test
-
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
@@ -111,3 +107,7 @@ public
 
 # Credentials for the MIT People API
 credentials.ini
+
+# E2E Runs
+tests/e2e/screenshots
+tests/e2e/videos
