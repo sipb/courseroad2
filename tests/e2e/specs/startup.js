@@ -1,14 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Startup Tests', () => {
-  beforeEach(() => {
-    cy.reload();
-
-    // Mock Fireroad get and post requests with empty response
-    cy.server();
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-  });
   it('Visits main website', () => {
     cy.visit('/');
 

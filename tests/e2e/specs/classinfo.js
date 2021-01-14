@@ -2,15 +2,6 @@ import exampleClass from '../assets/class_10_26.js';
 import girs from '../assets/reqs_girs.js';
 
 describe('Class Info Card Tests', () => {
-  beforeEach(() => {
-    cy.reload();
-
-    // Mock Fireroad get and post requests with empty response
-    cy.server();
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-  });
-
   it('Opens the class info card', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [

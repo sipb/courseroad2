@@ -7,15 +7,6 @@ import { objectSlice } from '../support/utilities.js';
 const path = require('path');
 
 describe('Road tests', () => {
-  beforeEach(() => {
-    cy.reload();
-
-    // Mock Fireroad get and post requests with empty response
-    cy.server();
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-  });
-
   it('Adds, renames, and deletes roads', () => {
     cy.visit('/');
 

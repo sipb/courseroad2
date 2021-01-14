@@ -6,15 +6,6 @@ import reqs from '../assets/list_reqs.js';
 import { objectSlice } from '../support/utilities.js';
 
 describe('Audit Tests', () => {
-  beforeEach(() => {
-    cy.reload();
-
-    // Mock Fireroad get and post requests with empty response
-    cy.server();
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-  });
-
   it('Adds and removes majors', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', []);
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
