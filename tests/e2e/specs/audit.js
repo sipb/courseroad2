@@ -157,11 +157,15 @@ describe('Audit Tests', () => {
     cy.getByDataCy('classSearchInput')
       .type('21M');
 
+    // Wait until empty progress received
+    cy.wait('@fakeProg');
+
     // Drag 21M.301 into Freshman Fall
     cy.dragAndDrop('[data-cy="classInSearch21M_301"]',
       '[data-cy="road_$defaultroad$__semester_1_dropZone"]',
       0, 0);
 
+    // Wait until empty progress received
     cy.wait('@fakeProg');
 
     // Drag 21M.293 into Freshman Spring
@@ -169,8 +173,10 @@ describe('Audit Tests', () => {
       '[data-cy="road_$defaultroad$__semester_3_dropZone"]',
       0, 0);
 
+    // Wait until empty progress received
     cy.wait('@fakeProg');
 
+    // Set up real progress for after adding 3rd class
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', progMajor21M1)
       .as('checkProg');
 
