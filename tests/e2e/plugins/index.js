@@ -69,7 +69,8 @@ module.exports = (on, config) => {
     videosFolder: 'tests/e2e/videos',
     supportFile: 'tests/e2e/support/index.js',
     env: {
-      VUE_APP_FIREROAD_URL: process.env.VUE_APP_FIREROAD_URL
+      VUE_APP_FIREROAD_URL: process.env.VUE_APP_FIREROAD_URL,
+      VUE_APP_URL: process.env.VUE_APP_URL
     }
   });
 };

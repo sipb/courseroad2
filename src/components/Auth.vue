@@ -6,6 +6,7 @@
       outline
       color="primary"
       @click="loginUser"
+      data-cy="loginButton"
     >
       <span class="hidden-sm-and-down">Login</span>
       <font-awesome-icon class="hidden-md-and-up" icon="sign-in-alt" />
@@ -16,6 +17,7 @@
       outline
       color="primary"
       @click="logoutUser"
+      data-cy="logoutButton"
     >
       <span class="hidden-sm-and-down">Logout</span>
       <font-awesome-icon class="hidden-md-and-up" icon="sign-out-alt" />
@@ -141,6 +143,10 @@ export default {
     }
   },
   mounted () {
+    window.setLocationHref = function(url) {
+      window.location.href = url;
+    }
+
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
@@ -195,7 +201,7 @@ export default {
   },
   methods: {
     loginUser: function (event) {
-      window.location.href = `${process.env.VUE_APP_FIREROAD_URL}/login/?redirect=${process.env.VUE_APP_URL}`;
+      window.setLocationHref(`${process.env.VUE_APP_FIREROAD_URL}/login/?redirect=${process.env.VUE_APP_URL}`);
       if (this.cookiesAllowed) {
         this.$cookies.set('hasLoggedIn', true);
       }
