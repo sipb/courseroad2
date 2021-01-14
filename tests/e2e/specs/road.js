@@ -270,10 +270,6 @@ describe('Road tests', () => {
       })
       .as('roadID')
       .then(function () {
-        // todo: Should not need to navigate away: remove when fixed
-        cy.getByDataCy('roadTab$defaultroad$')
-          .click();
-
         cy.getByDataCy('roadTab' + this.roadID)
           .click();
       });

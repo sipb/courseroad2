@@ -452,6 +452,7 @@ export default {
         road: newRoad,
         ignoreSet: false
       });
+      this.$store.commit('resetFulfillmentNeeded');
       this.$store.commit('setActiveRoad', tempRoadID);
       this.$refs.authcomponent.newRoads.push(tempRoadID);
     },
