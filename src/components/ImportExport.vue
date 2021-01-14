@@ -1,6 +1,6 @@
 <template>
   <v-layout row grow>
-    <v-btn class="collapse-button" outline color="primary" @click="exportRoad">
+    <v-btn class="collapse-button" outline color="primary" @click="exportRoad" data-cy="exportRoadButton">
       <span class="hidden-sm-and-down">Export</span>
       <font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" />
     </v-btn>
@@ -9,7 +9,7 @@
       v-model="dialog"
       max-width="600"
     >
-      <v-btn slot="activator" class="collapse-button" outline color="primary">
+      <v-btn slot="activator" class="collapse-button" outline color="primary" data-cy="importRoadButton">
         <span class="hidden-sm-and-down">Import</span>
         <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
       </v-btn>
@@ -29,10 +29,11 @@
             clearable
             autofocus
             @keyup.enter="importRoad"
+            data-cy="importRoadTitle"
           />
 
           <v-spacer />
-          <input id="file" type="file">
+          <input id="file" type="file" data-cy="importRoadFileInput">
 
           <v-textarea
             v-model="inputtext"
@@ -71,6 +72,7 @@
             color="primary"
             :disabled="otherRoadHasName(roadtitle)"
             @click="importRoad"
+            data-cy="importRoadSubmitButton"
           >
             Import!
           </v-btn>

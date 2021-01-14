@@ -9,11 +9,60 @@
 // /* eslint-disable import/no-extraneous-dependencies, global-require */
 // const webpack = require('@cypress/webpack-preprocessor')
 
+const path = require('path');
+const fs = require('fs');
+
+const downloadDirectory = path.join(__dirname, '..', 'downloads');
+
+const isFirefox = (browser) => browser.family === 'firefox';
+
 module.exports = (on, config) => {
   // on('file:preprocessor', webpack({
   //  webpackOptions: require('@vue/cli-service/webpack.config'),
   //  watchOptions: {}
   // }))
+
+
+  // Download code based on https://github.com/cypress-io/cypress-example-recipes/blob/master/examples/testing-dom__download/cypress/plugins/index.js
+  on('task', {
+    clearDownloads () {
+      console.log("Clearing folder %s", downloadDirectory);
+      // fs.rmdirSync(downloadDirectory, { recursive: true });
+      return null;
+    },
+    readRoadFile (filename) {
+      console.log("Reading road file %s", filename);
+      return "";
+    }
+  });
+
+  // https://on.cypress.io/browser-launch-api
+  on('before:browser:launch', (browser, options) => {
+    console.log('browser %o', browser);
+
+    if (isFirefox(browser)) {
+      // special settings for Firefox browser
+      // to prevent showing popup dialogs that block the rest of the test
+      options.preferences['browser.download.dir'] = downloadDirectory
+      options.preferences['browser.download.folderList'] = 2
+
+      // needed to prevent the download prompt for CSV, Excel, and ZIP files
+      // TIP: with Firefox DevTools open, download the file yourself
+      // and observe the reported MIME type in the Developer Tools
+      const mimeTypes = [
+        'text/csv',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // Excel
+        'application/zip',
+      ]
+
+      options.preferences['browser.helperApps.neverAsk.saveToDisk'] = mimeTypes.join(',')
+
+      return options
+    }
+
+    // note: we set the download folder in Chrome-based browsers
+    // from the spec itself using automation API
+  });
 
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',

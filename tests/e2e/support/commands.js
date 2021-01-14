@@ -23,9 +23,14 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import 'cypress-file-upload';
 
 Cypress.Commands.add('getByDataCy', (selector, ...args) => {
   return cy.get(`[data-cy='${selector}']`, ...args);
+});
+
+Cypress.Commands.add('getByDataCyPattern', (modifier, selector, ...args) => {
+  return cy.get(`[data-cy${modifier}=${selector}]`, ...args);
 });
 
 Cypress.Commands.add('store', () =>

@@ -142,7 +142,8 @@ describe('Audit Tests', () => {
     ]);
 
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', major21M1);
+    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', major21M1)
+      .as('fakeProg');
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/list_reqs/',
       objectSlice(reqs, ['girs', 'major21M-1']));
 
@@ -161,10 +162,14 @@ describe('Audit Tests', () => {
       '[data-cy="road_$defaultroad$__semester_1_dropZone"]',
       0, 0);
 
+    cy.wait('@fakeProg');
+
     // Drag 21M.293 into Freshman Spring
     cy.dragAndDrop('[data-cy="classInSearch21M_293"]',
       '[data-cy="road_$defaultroad$__semester_3_dropZone"]',
       0, 0);
+
+    cy.wait('@fakeProg');
 
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', progMajor21M1)
       .as('checkProg');
@@ -205,7 +210,7 @@ describe('Audit Tests', () => {
       .should('contain', '21M.293');
   });
 
-  it.only('Drags classes from audit to road', () => {
+  it('Drags classes from audit to road', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', [
       {
         'subject_id': '18.02',
