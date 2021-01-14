@@ -2,7 +2,7 @@ import exampleSubjects from '../assets/example_road_subjs.js';
 import girs from '../assets/reqs_girs.js';
 import major21M1 from '../assets/reqs_21m_1.js';
 import reqs from '../assets/list_reqs.js';
-import { objectSlice } from '../support/utilities.js'
+import { objectSlice } from '../support/utilities.js';
 
 const path = require('path');
 
@@ -127,7 +127,7 @@ describe('Road tests', () => {
 
         cy.get('.v-select')
           .click();
-      })
+      });
 
     // Select duplicate source to be "My First Road"
     cy.get('.v-menu__content.menuable__content__active')
@@ -149,8 +149,8 @@ describe('Road tests', () => {
       .contains('Duplicate Test Road', { matchCase: false })
       .parent()
       .then((el) => {
-        let dataCy = el.eq(0).attr('data-cy');
-        let roadID = dataCy.substring(dataCy.indexOf('roadTab') + 7);
+        const dataCy = el.eq(0).attr('data-cy');
+        const roadID = dataCy.substring(dataCy.indexOf('roadTab') + 7);
         return roadID;
       })
       .as('roadID')
@@ -259,14 +259,13 @@ describe('Road tests', () => {
           .click();
       });
 
-
     // Identify road ID and ensure we are clicked to that road tab
     cy.getByDataCyPattern('^', 'roadTab')
       .contains('My Imported Road', { matchCase: false })
       .parent()
       .then((el) => {
-        let dataCy = el.eq(0).attr('data-cy');
-        let roadID = dataCy.substring(dataCy.indexOf('roadTab') + 7);
+        const dataCy = el.eq(0).attr('data-cy');
+        const roadID = dataCy.substring(dataCy.indexOf('roadTab') + 7);
         return roadID;
       })
       .as('roadID')
@@ -332,7 +331,7 @@ describe('Road tests', () => {
     // Set up downloads
     cy.task('clearDownloads');
 
-    let downloadsFolder = 'tests/e2e/downloads';
+    const downloadsFolder = 'tests/e2e/downloads';
 
     console.log(Cypress.browser);
     if (Cypress.browser.family !== 'firefox') {
@@ -340,10 +339,10 @@ describe('Road tests', () => {
       cy.wrap(
         Cypress.automation('remote:debugger:protocol', {
           command: 'Page.setDownloadBehavior',
-          params: { behavior: 'allow', downloadPath: downloadsFolder },
+          params: { behavior: 'allow', downloadPath: downloadsFolder }
         }),
         { log: false }
-      )
+      );
     }
 
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
@@ -406,7 +405,7 @@ describe('Road tests', () => {
     // Check downloaded road is accurate
     cy.readFile(filename, { timeout: 15000 })
       .should((file) => {
-        let road = JSON.parse(file);
+        const road = JSON.parse(file);
 
         expect(road.coursesOfStudy).to.deep.equal(['girs', 'major21M-1']);
         expect(road.selectedSubjects).to.have.lengthOf(2);

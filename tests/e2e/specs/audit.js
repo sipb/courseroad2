@@ -3,7 +3,7 @@ import major16 from '../assets/reqs_16.js';
 import major21M1 from '../assets/reqs_21m_1.js';
 import progMajor21M1 from '../assets/prog_ex_21m_1.js';
 import reqs from '../assets/list_reqs.js';
-import { objectSlice } from '../support/utilities.js'
+import { objectSlice } from '../support/utilities.js';
 
 describe('Audit Tests', () => {
   beforeEach(() => {

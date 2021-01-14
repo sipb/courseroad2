@@ -1,6 +1,6 @@
 <template>
   <v-layout row grow>
-    <v-btn class="collapse-button" outline color="primary" @click="exportRoad" data-cy="exportRoadButton">
+    <v-btn class="collapse-button" outline color="primary" data-cy="exportRoadButton" @click="exportRoad">
       <span class="hidden-sm-and-down">Export</span>
       <font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" />
     </v-btn>
@@ -28,8 +28,8 @@
             label="Road name"
             clearable
             autofocus
-            @keyup.enter="importRoad"
             data-cy="importRoadTitle"
+            @keyup.enter="importRoad"
           />
 
           <v-spacer />
@@ -71,8 +71,8 @@
           <v-btn
             color="primary"
             :disabled="otherRoadHasName(roadtitle)"
-            @click="importRoad"
             data-cy="importRoadSubmitButton"
+            @click="importRoad"
           >
             Import!
           </v-btn>

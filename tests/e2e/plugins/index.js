@@ -10,7 +10,6 @@
 // const webpack = require('@cypress/webpack-preprocessor')
 
 const path = require('path');
-const fs = require('fs');
 
 const downloadDirectory = path.join(__dirname, '..', 'downloads');
 
@@ -22,17 +21,16 @@ module.exports = (on, config) => {
   //  watchOptions: {}
   // }))
 
-
   // Download code based on https://github.com/cypress-io/cypress-example-recipes/blob/master/examples/testing-dom__download/cypress/plugins/index.js
   on('task', {
     clearDownloads () {
-      console.log("Clearing folder %s", downloadDirectory);
+      console.log('Clearing folder %s', downloadDirectory);
       // fs.rmdirSync(downloadDirectory, { recursive: true });
       return null;
     },
     readRoadFile (filename) {
-      console.log("Reading road file %s", filename);
-      return "";
+      console.log('Reading road file %s', filename);
+      return '';
     }
   });
 
@@ -43,8 +41,8 @@ module.exports = (on, config) => {
     if (isFirefox(browser)) {
       // special settings for Firefox browser
       // to prevent showing popup dialogs that block the rest of the test
-      options.preferences['browser.download.dir'] = downloadDirectory
-      options.preferences['browser.download.folderList'] = 2
+      options.preferences['browser.download.dir'] = downloadDirectory;
+      options.preferences['browser.download.folderList'] = 2;
 
       // needed to prevent the download prompt for CSV, Excel, and ZIP files
       // TIP: with Firefox DevTools open, download the file yourself
@@ -52,12 +50,12 @@ module.exports = (on, config) => {
       const mimeTypes = [
         'text/csv',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // Excel
-        'application/zip',
-      ]
+        'application/zip'
+      ];
 
-      options.preferences['browser.helperApps.neverAsk.saveToDisk'] = mimeTypes.join(',')
+      options.preferences['browser.helperApps.neverAsk.saveToDisk'] = mimeTypes.join(',');
 
-      return options
+      return options;
     }
 
     // note: we set the download folder in Chrome-based browsers
