@@ -423,7 +423,7 @@ export default {
       return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: #fff`;
     },
     deleteReq: function (req) {
-      const reqName = req['list-id'].substring(0, req['list-id'].indexOf('.reql'));
+      const reqName = req['list-id'];
       this.$store.commit('removeReq', reqName);
     },
     submitPetition: function () {

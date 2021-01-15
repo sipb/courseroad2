@@ -241,9 +241,13 @@ const store = new Vuex.Store({
     },
     removeReq (state, event) {
       const reqIndex = state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
-      state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
-      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
-      state.fulfillmentNeeded = 'none';
+      if (reqIndex === -1) {
+        console.log('Attempted to remove a requirement not in the requirements list.');
+      } else {
+        state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
+        state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
+        state.fulfillmentNeeded = 'none';
+      }
     },
     removeProgressAssertion (state, uniqueKey) {
       Vue.delete(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey);

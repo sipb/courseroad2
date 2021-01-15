@@ -182,8 +182,8 @@ export default {
     isActiveRoad () {
       return this.$store.state.activeRoad === this.roadID;
     },
-    baseYear: function () {
-      const today = new Date();
+    baseYear () {
+      const today = new Date(Date.now());
       const currentYear = today.getFullYear();
       const baseYear = (today.getMonth() >= 5) ? currentYear + 1 : currentYear;
       return baseYear - this.$store.getters.userYear;
