@@ -24,7 +24,6 @@
     "axios": "^0.21.1",
     "cache-loader": "^4.1.0",
     "cgi": "^0.3.1",
-    "jquery": "^3.5.1",
     "material-design-icons-iconfont": "^4.0.5",
     "moment": "^2.29.1",
     "thread-loader": "^3.0.1",

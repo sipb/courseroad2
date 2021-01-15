@@ -200,7 +200,6 @@ import RoadTabs from './../components/RoadTabs.vue';
 import ConflictDialog from './../components/ConflictDialog.vue';
 import Auth from './../components/Auth.vue';
 import axios from 'axios';
-import $ from 'jquery';
 import moment from 'moment';
 import UAParser from 'ua-parser-js';
 import Vue from 'vue';
@@ -335,15 +334,6 @@ export default {
     if (localStorage.courseRoadStore !== undefined && this.cookiesAllowed && this.$store.state.loggedIn) {
       this.$store.commit('setFromLocalStorage', JSON.parse(localStorage.courseRoadStore));
     };
-    const borders = $('.v-navigation-drawer__border');
-    const scrollers = $('.scroller');
-    const scrollWidth = scrollers.width();
-    // moves nav drawer border with scroll
-    // if the effect proves too annoying we can remove the borders instead
-    scrollers.scroll(function () {
-      const scrollPosition = scrollers.scrollLeft();
-      borders.css({ top: 0, left: scrollWidth - 1 + scrollPosition });
-    });
 
     this.setActiveRoad();
 

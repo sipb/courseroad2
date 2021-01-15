@@ -46,7 +46,6 @@
 
 <script>
 import SubjectScroll from '../components/SubjectScroll.vue';
-import $ from 'jquery';
 import Vue from 'vue';
 
 export default {
@@ -118,10 +117,11 @@ export default {
         this.expansionIndex = subj.index;
         this.open = true;
         Vue.nextTick(function () {
-          const scrollPoint = $('#' + $.escapeSelector(scrollPointID));
-          const topPoint = scrollPoint.offset().top;
-          const cardBody = $('#cardBody');
-          cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
+          const scrollPoint = document.getElementById(escape(scrollPointID));
+          const topPoint = scrollPoint.getBoundingClientRect().top;
+          const cardBody = document.getElementById('cardBody');
+          const cardTopPoint = cardBody.getBoundingClientRect().top;
+          cardBody.scrollTop = topPoint - cardTopPoint + cardBody.scrollTop - 10;
         });
       } else {
         if (subj.id.indexOf('GIR:') >= 0) {
@@ -137,13 +137,14 @@ export default {
       this.open = false;
       let scrollPoint;
       if (!this.doubleScroller) {
-        scrollPoint = $('#' + $.escapeSelector(this.reqID));
+        scrollPoint = document.getElementById(escape(this.reqID));
       } else {
-        scrollPoint = $('#ds' + this.whichScroller + $.escapeSelector(this.reqID));
+        scrollPoint = document.getElementById('ds' + this.whichScroller + escape(this.reqID));
       }
-      const topPoint = scrollPoint.offset().top;
-      const cardBody = $('#cardBody');
-      cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 350);
+      const topPoint = scrollPoint.getBoundingClientRect().top;
+      const cardBody = document.getElementById('cardBody');
+      const cardTopPoint = cardBody.getBoundingClientRect().top;
+      cardBody.scrollTop = topPoint - cardTopPoint + cardBody.scrollTop - 10;
     }
   }
 };
