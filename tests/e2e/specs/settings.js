@@ -49,9 +49,11 @@ describe('Settings/Persistency Tests', () => {
   it('Saves open/close semester states', () => {
     cy.visit('/');
 
+    // Accept cookies
     cy.getByDataCy('acceptCookies')
       .click();
 
+    // Define semesters
     cy.getByDataCy('road_$defaultroad$__semester_0')
       .as('priorCredit');
 
@@ -70,6 +72,7 @@ describe('Settings/Persistency Tests', () => {
     cy.getByDataCy('road_$defaultroad$__semester_7_dropZone')
       .as('juniorFallPanel');
 
+    // Open and close some semesters
     cy.get('@priorCreditPanel')
       .should('not.be.visible');
 
@@ -97,8 +100,10 @@ describe('Settings/Persistency Tests', () => {
     cy.get('@juniorFallPanel')
       .should('not.be.visible');
 
+    // Reload page
     cy.reload();
 
+    // Check that semesters are in same state
     cy.get('@priorCreditPanel')
       .should('be.visible');
 

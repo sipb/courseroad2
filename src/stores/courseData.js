@@ -91,10 +91,6 @@ const store = new Vuex.Store({
     disallowCookies (state) {
       state.cookiesAllowed = false;
     },
-    unallowCookies (state) {
-      state.cookiesAllowed = undefined;
-      console.log(JSON.stringify(state));
-    },
     deleteRoad (state, id) {
       state.ignoreRoadChanges = true;
       Vue.delete(state.roads, id);
