@@ -5,9 +5,9 @@ node_js:
 
 jobs:
   include:
-    - stage: lint
-      script: npm run lint
-    - stage: unit
-      script: npm run test:unit
+    # - stage: lint
+    #   script: npm run lint
+    # - stage: unit
+    #   script: npm run test:unit
     - stage: e2e
-      script: npm run test:e2e-record
+      script: npm run test:e2e-headless
