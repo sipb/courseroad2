@@ -111,7 +111,6 @@ credentials.ini
 # E2E Runs
 tests/e2e/screenshots
 tests/e2e/videos
-<<<<<<< HEAD
 tests/e2e/downloads
-=======
->>>>>>> master
+
+env.sh

@@ -7,6 +7,7 @@
     "test:unit": "vue-cli-service test:unit --coverage",
     "test:e2e": "vue-cli-service test:e2e",
     "test:e2e-headless": "vue-cli-service test:e2e --headless",
+    "test:e2e-record": "vue-cli-service test:e2e --headless --record",
     "lint": "node_modules/.bin/eslint --ext .js,.vue src/ tests/",
     "build-dev": "webpack --env VUE_APP_URL=https://courseroad.mit.edu/dev --env VUE_APP_FIREROAD_URL=https://fireroad.mit.edu --mode=production --config build/webpack.config.dev.js",
     "build-prod": "webpack --env VUE_APP_URL=https://courseroad.mit.edu --env VUE_APP_FIREROAD_URL=https://fireroad.mit.edu --mode=production --config build/webpack.config.dev.js",
