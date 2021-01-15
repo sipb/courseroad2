@@ -281,7 +281,7 @@ describe('Auth Tests', () => {
       .should('contain', 'Aerospace Engineering');
   });
 
-  it.only('Logs in after creating a road with a conflicting name', () => {
+  it('Logs in after creating a road with a conflicting name', () => {
     // Add some classes to course catalog
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', [
       {
