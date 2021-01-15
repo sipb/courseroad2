@@ -5,8 +5,8 @@
       class="collapse-button"
       outline
       color="primary"
-      @click="loginUser"
       data-cy="loginButton"
+      @click="loginUser"
     >
       <span class="hidden-sm-and-down">Login</span>
       <font-awesome-icon class="hidden-md-and-up" icon="sign-in-alt" />
@@ -16,8 +16,8 @@
       class="collapse-button"
       outline
       color="primary"
-      @click="logoutUser"
       data-cy="logoutButton"
+      @click="logoutUser"
     >
       <span class="hidden-sm-and-down">Logout</span>
       <font-awesome-icon class="hidden-md-and-up" icon="sign-out-alt" />
@@ -143,9 +143,9 @@ export default {
     }
   },
   mounted () {
-    window.setLocationHref = function(url) {
+    window.setLocationHref = function (url) {
       window.location.href = url;
-    }
+    };
 
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');

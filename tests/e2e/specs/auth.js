@@ -1,13 +1,23 @@
-const moment = require('moment');
 import girs from '../assets/reqs_girs.js';
 import major16 from '../assets/reqs_16.js';
 import major21M1 from '../assets/reqs_21m_1.js';
 import reqs from '../assets/list_reqs.js';
 import { objectSlice } from '../support/utilities.js';
-import sync_road_data from '../assets/sync_roads.js';
+import syncRoadData from '../assets/sync_roads.js';
+
+// Fake authorization data
+const fakeCode = 'abcdefg';
+const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf';
+const fakeAccessInfo = {
+  academic_id: 'tester@mit.edu',
+  access_token: fakeAccessToken,
+  current_semester: 4,
+  success: true,
+  username: '893465234'
+};
 
 describe('Auth Tests', () => {
-  it('Logs in and out', () => {
+  beforeEach(() => {
     // Mock the requirements routes
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', []);
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
@@ -15,18 +25,6 @@ describe('Auth Tests', () => {
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major16/', major16);
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/list_reqs/',
       objectSlice(reqs, ['girs', 'major21M-1', 'major16']));
-
-    // Fake authorization data
-    const fakeCode = 'abcdefg';
-    const fakeToken = 'a1b2c3d4';
-    const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf'
-    const fakeAccessInfo = {
-      academic_id: 'tester@mit.edu',
-      access_token: fakeAccessToken,
-      current_semester: 4,
-      success: true,
-      username: '893465234'
-    }
 
     // Mock getting an authorization token from a code through Fireroad
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/fetch_token/?code=' + fakeCode, {
@@ -46,27 +44,28 @@ describe('Auth Tests', () => {
 
     // Mock road syncing
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads', {
-      files: sync_road_data.files,
+      files: syncRoadData.files,
       success: true
     }).as('syncRoads');
 
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=123', {
-      file: sync_road_data.file123,
+      file: syncRoadData.file123,
       success: true
     }).as('syncRoad123');
 
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=456', {
-      file: sync_road_data.file456,
+      file: syncRoadData.file456,
       success: true
     }).as('syncRoad456');
 
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=1089', {
-      file: sync_road_data.file1089,
+      file: syncRoadData.file1089,
       success: true
     }).as('syncRoad1089');
+  });
 
+  it('Logs in and out', () => {
     cy.visit('/');
-
 
     // Prevent redirecting to Fireroad to login
     // Check that window location is correct and redirect back with fake code
@@ -187,63 +186,6 @@ describe('Auth Tests', () => {
   });
 
   it('Logs in after creating a road', () => {
-    // Mock the requirements routes
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', []);
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', major21M1);
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major16/', major16);
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/list_reqs/',
-      objectSlice(reqs, ['girs', 'major21M-1', 'major16']));
-
-    // Fake authorization data
-    const fakeCode = 'abcdefg';
-    const fakeToken = 'a1b2c3d4';
-    const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf'
-    const fakeAccessInfo = {
-      academic_id: 'tester@mit.edu',
-      access_token: fakeAccessToken,
-      current_semester: 4,
-      success: true,
-      username: '893465234'
-    }
-
-    // Mock getting an authorization token from a code through Fireroad
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/fetch_token/?code=' + fakeCode, {
-      success: true,
-      access_info: fakeAccessInfo
-    }).as('fetchToken');
-
-    // Mock verify route
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/verify', {
-      current_semester: 4,
-      success: true
-    }).as('verify');
-
-    // Mock cgi people directory script
-    cy.route('/cgi-bin/people.py?kerb=tester', { year: 1 })
-      .as('getYear');
-
-    // Mock road syncing
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads', {
-      files: sync_road_data.files,
-      success: true
-    }).as('syncRoads');
-
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=123', {
-      file: sync_road_data.file123,
-      success: true
-    }).as('syncRoad123');
-
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=456', {
-      file: sync_road_data.file456,
-      success: true
-    }).as('syncRoad456');
-
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=1089', {
-      file: sync_road_data.file1089,
-      success: true
-    }).as('syncRoad1089');
-
     // Add some classes to course catalog
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', [
       {
@@ -340,63 +282,6 @@ describe('Auth Tests', () => {
   });
 
   it.only('Logs in after creating a road with a conflicting name', () => {
-    // Mock the requirements routes
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', []);
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', major21M1);
-    cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major16/', major16);
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/list_reqs/',
-      objectSlice(reqs, ['girs', 'major21M-1', 'major16']));
-
-    // Fake authorization data
-    const fakeCode = 'abcdefg';
-    const fakeToken = 'a1b2c3d4';
-    const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf'
-    const fakeAccessInfo = {
-      academic_id: 'tester@mit.edu',
-      access_token: fakeAccessToken,
-      current_semester: 4,
-      success: true,
-      username: '893465234'
-    }
-
-    // Mock getting an authorization token from a code through Fireroad
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/fetch_token/?code=' + fakeCode, {
-      success: true,
-      access_info: fakeAccessInfo
-    }).as('fetchToken');
-
-    // Mock verify route
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/verify', {
-      current_semester: 4,
-      success: true
-    }).as('verify');
-
-    // Mock cgi people directory script
-    cy.route('/cgi-bin/people.py?kerb=tester', { year: 1 })
-      .as('getYear');
-
-    // Mock road syncing
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads', {
-      files: sync_road_data.files,
-      success: true
-    }).as('syncRoads');
-
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=123', {
-      file: sync_road_data.file123,
-      success: true
-    }).as('syncRoad123');
-
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=456', {
-      file: sync_road_data.file456,
-      success: true
-    }).as('syncRoad456');
-
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=1089', {
-      file: sync_road_data.file1089,
-      success: true
-    }).as('syncRoad1089');
-
     // Add some classes to course catalog
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', [
       {
@@ -453,7 +338,6 @@ describe('Auth Tests', () => {
     // Add major 16
     cy.getByDataCy('auditMajorChips')
       .type('21M{enter}{backspace}{backspace}{backspace}{esc}');
-
 
     // Select "My First Road" tab and click edit button
     cy.getByDataCy('roadTab$defaultroad$')
