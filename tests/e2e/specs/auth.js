@@ -83,8 +83,6 @@ describe('Auth Tests', () => {
     cy.getByDataCy('loginButton')
       .click();
 
-
-
     // Ensure correct headers are set
     cy.wait('@verify')
       .then((req) => {

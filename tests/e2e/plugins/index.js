@@ -32,12 +32,12 @@ module.exports = (on, config) => {
       console.log('Reading road file %s', filename);
       return '';
     },
-    error(message) {
-      console.error("\x1b[31m", "ERROR:", message, "\x1b[0m");
+    error (message) {
+      console.error('\x1b[31m', 'ERROR:', message, '\x1b[0m');
     },
-    warn(message) {
-      console.warn("\x1b[33m", "WARNING:", message, "\x1b[0m");
-    },
+    warn (message) {
+      console.warn('\x1b[33m', 'WARNING:', message, '\x1b[0m');
+    }
   });
 
   // https://on.cypress.io/browser-launch-api
