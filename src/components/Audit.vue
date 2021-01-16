@@ -1,7 +1,7 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
 
-  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;">
+  <v-col style="padding: 0px 18px 0px 18px; overflow: auto;">
     <div style="display: flex; align-content: space-between; margin: 12px 0px;">
       <v-autocomplete
         v-model="changeReqs"
@@ -66,7 +66,7 @@
 
     <v-dialog v-model="progressDialog" max-width="600">
       <v-card v-if="progressReq !== undefined">
-        <v-btn icon flat style="float:right" @click="progressDialog=false">
+        <v-btn icon text style="float:right" @click="progressDialog=false">
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
@@ -78,23 +78,23 @@
             manually enter how many of these requirements you have completed for your degree.
           </p>
           <h3>{{ capitalize(progressReq.threshold.criterion) }} Completed: {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}</h3>
-          <v-layout row justify-start style="width: 70%; margin: auto;">
-            <v-flex shrink style="width: 3em; margin-right: 1em;">
+          <v-row justify="start" style="width: 70%; margin: auto;">
+            <v-col class="shrink" style="width: 3em; margin-right: 1em;">
               <v-text-field v-model="newManualProgress" type="number" @keyup.enter="updateManualProgress" />
-            </v-flex>
-            <v-flex>
+            </v-col>
+            <v-col>
               <v-slider
                 v-model="newManualProgress"
                 :max="progressReq.threshold.cutoff"
                 :min="0"
                 :step="1"
               />
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn flat @click="progressDialog=false; progressReq=undefined;">
+          <v-btn text @click="progressDialog=false; progressReq=undefined;">
             Cancel
           </v-btn>
           <v-btn color="primary" @click="updateManualProgress">
@@ -107,7 +107,7 @@
     <v-dialog v-model="viewDialog" max-width="600">
       <div v-if="dialogReq !== undefined">
         <v-card>
-          <v-btn icon flat style="float:right" @click="viewDialog = false">
+          <v-btn icon text style="float:right" @click="viewDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title>{{ dialogReq["title"] }}</v-card-title>
@@ -152,7 +152,7 @@
     <v-dialog v-model="petitionDialog" max-width="600">
       <v-card>
         <div v-if="petitionReq !== undefined">
-          <v-btn icon flat style="float:right" @click="petitionDialog = false; petitionReq = undefined;">
+          <v-btn icon text style="float:right" @click="petitionDialog = false; petitionReq = undefined;">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title v-if="'title' in petitionReq">
@@ -170,7 +170,7 @@
           <v-select
             v-model="petitionSelectCourses"
             :disabled="reqPAIgnore"
-            :items="selectedSubjects.flat()"
+            :items="selectedSubjects.text()"
             item-text="id"
             label="Select Courses to Petition with:"
             no-data-text="No Courses Found"
@@ -202,7 +202,7 @@
         </div>
       </v-card>
     </v-dialog>
-  </v-flex>
+  </v-col>
 </template>
 
 <script>

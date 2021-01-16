@@ -1,5 +1,5 @@
 {
-  "plugins": ["jest", "cypress"],
+  "plugins": ["jest", "cypress", "vuetify"],
   "extends": [
     "plugin:vue/recommended",
     "standard"
@@ -23,7 +23,10 @@
       }
     ],
     "no-var": 0,
-    "prefer-const": 1
+    "prefer-const": 1,
+    "vuetify/no-deprecated-classes": "error",
+    "vuetify/grid-unknown-attributes": "error",
+    "vuetify/no-legacy-grid": "error",
   },
   "overrides": [
     {

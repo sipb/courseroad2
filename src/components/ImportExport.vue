@@ -1,6 +1,6 @@
 <template>
-  <v-layout row grow>
-    <v-btn class="collapse-button" outline color="primary" @click="exportRoad">
+  <v-row class="grow">
+    <v-btn class="collapse-button" outlined color="primary" @click="exportRoad">
       <span class="hidden-sm-and-down">Export</span>
       <font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" />
     </v-btn>
@@ -9,7 +9,7 @@
       v-model="dialog"
       max-width="600"
     >
-      <v-btn slot="activator" class="collapse-button" outline color="primary">
+      <v-btn slot="activator" class="collapse-button" outlined color="primary">
         <span class="hidden-sm-and-down">Import</span>
         <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" />
       </v-btn>
@@ -24,7 +24,7 @@
           <v-text-field
             v-if="dialog"
             v-model="roadtitle"
-            outline
+            outlined
             label="Road name"
             clearable
             autofocus
@@ -40,26 +40,26 @@
             label="Or copy/paste a road here"
             full-width
             single-line
-            outline
+            outlined
           />
 
           <v-spacer />
-          <v-flex v-if="otherRoadHasName(roadtitle)">
+          <v-col v-if="otherRoadHasName(roadtitle)">
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
                 There's already a road with this name.
               </v-card-text>
             </v-card>
-          </v-flex>
-          <v-flex v-if="badinput">
+          </v-col>
+          <v-col v-if="badinput">
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
                 Make sure you have given this road a unique name, and uploaded/pasted a valid '.road' file.
               </v-card-text>
             </v-card>
-          </v-flex>
+          </v-col>
         </v-card-text>
 
         <v-card-actions>
@@ -77,7 +77,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

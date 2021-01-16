@@ -1,7 +1,7 @@
 <template>
-  <v-container grid-list-md style="padding: 0.5em;">
-    <v-layout row overflow-x>
-      <v-flex v-for="(subject,index) in subjects" :key="subject.subject_id">
+  <v-container style="padding: 0.5em;">
+    <v-row class="overflow-x">
+      <v-col v-for="(subject,index) in subjects" :key="subject.subject_id">
         <v-badge right overlap color="rgba(0,0,0,0)">
           <v-card class="subject" @click="$emit('click-subject', {id:subject.subject_id,index:index})">
             <div :class="[courseColor(subject), shouldLighten(subject)]" style="height:100%;">
@@ -19,9 +19,9 @@
             </v-icon>
           </template>
         </v-badge>
-      </v-flex>
-      <v-flex style="width:500px" />
-    </v-layout>
+      </v-col>
+      <v-col style="width:500px" />
+    </v-row>
   </v-container>
 </template>
 <script>

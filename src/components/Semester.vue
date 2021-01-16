@@ -7,9 +7,9 @@
     dropzone="copy"
     @dragover.native.prevent
   >
-    <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;">
-      <v-layout row align-center style="user-select: none;">
-        <v-flex xs6>
+    <v-container slot="header" style="padding: 0px; margin-left: 0px;">
+      <v-row align="center" style="user-select: none;">
+        <v-col class="xs">
           <span style="width: 12em; display: inline-block;">
             <b>
               <v-hover>
@@ -81,9 +81,9 @@
               <span v-else>No Classes</span>
             </div>
           </v-tooltip>
-        </v-flex>
-        <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
-          <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.id+'-'+subjindex+'-'+index" xs3>
+        </v-col>
+        <v-row v-if="!isOpen" class="xs6" style="max-width: 50%;">
+          <v-col v-for="(subject,subjindex) in semesterSubjects" :key="subject.id+'-'+subjindex+'-'+index" class="xs">
             <v-card>
               <div v-if="subject!=='placeholder'" :class="courseColor(subject)">
                 <v-card-text class="mini-course">
@@ -91,26 +91,25 @@
                 </v-card-text>
               </div>
             </v-card>
-          </v-flex>
-        </v-layout>
-        <v-layout v-else>
-          <v-flex xs10 :style="{ 'color': semData.textColor }">
+          </v-col>
+        </v-row>
+        <v-row v-else>
+          <v-col class="xs" :style="{ 'color': semData.textColor }">
             {{ semData.message }}
-          </v-flex>
-        </v-layout>
-      </v-layout>
+          </v-col>
+        </v-row>
+      </v-row>
     </v-container>
 
     <v-container
       class="lighten-3"
       fluid
-      grid-list-md
       :class="semData.bgColor"
       @dragenter="dragenter"
       @dragleave="dragleave"
       @drop="ondrop"
     >
-      <v-layout wrap align-center justify-center row>
+      <v-row align="center" justify="center">
         <class
           v-for="(subject, subjindex) in semesterSubjects"
           :key="subject.id + '-' + subjindex + '-' + index"
@@ -127,7 +126,7 @@
           :warnings="[]"
           :class-index="semesterSubjects.length"
         />
-      </v-layout>
+      </v-row>
     </v-container>
   </v-expansion-panel-content>
 </template>

@@ -1,9 +1,9 @@
 <template>
-  <v-layout row align-center grow>
+  <v-row class="grow" align="center">
     <v-btn
       v-if="!loggedIn"
       class="collapse-button"
-      outline
+      outlined
       color="primary"
       @click="loginUser"
     >
@@ -13,7 +13,7 @@
     <v-btn
       v-if="loggedIn"
       class="collapse-button"
-      outline
+      outlined
       color="primary"
       @click="logoutUser"
     >
@@ -39,7 +39,7 @@
     <div v-if="currentlySaving || gettingUserData">
       <v-progress-circular :size="18" indeterminate />
     </div>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

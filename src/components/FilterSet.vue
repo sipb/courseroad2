@@ -9,7 +9,7 @@
         v-for="(filter, index) in filters"
         :id="cssID(filter.name)"
         :key="filter.name"
-        flat
+        text
         :value="index"
         @click="buttonClicked"
       >
