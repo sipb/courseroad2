@@ -3,19 +3,27 @@
     <v-tabs
       v-model="tabRoad"
       show-arrows
+      color="blue lighten-5"
     >
       <v-tabs-slider />
-      <v-tab
+      <template
         v-for="roadId in Object.keys(roads)"
-        :key="roadId"
-        :href="`#${roadId}`"
-        @click="$store.commit('setActiveRoad', roadId)"
+        class="m-0 p-0"
       >
-        {{ roads[roadId].name }}
-        <v-btn v-show="roadId == tabRoad" icon flat @click="newRoadName = roads[roadId].name; editDialog = true;">
-          <v-icon>edit</v-icon>
-        </v-btn>
-      </v-tab>
+        <v-tab
+          :key="roadId"
+          :href="`#${roadId}`"
+          class="blue lighten-5"
+          active-class="primary lighten-2 elevation-5"
+          @click="$store.commit('setActiveRoad', roadId)"
+        >
+          <span>{{ roads[roadId].name }}</span>
+          <v-btn v-show="roadId == tabRoad" icon flat @click="newRoadName = roads[roadId].name; editDialog = true;">
+            <v-icon>edit</v-icon>
+          </v-btn>
+        </v-tab>
+        <v-divider :key="roadId" class="mt-0 mb-0" vertical inset />
+      </template>
       <v-dialog v-model="editDialog" max-width="600" @input="newRoadName = ''">
         <v-card>
           <v-btn icon flat style="float:right" @click="editDialog = false">
