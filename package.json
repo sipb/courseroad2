@@ -12,6 +12,7 @@
     "build-dev": "webpack --env VUE_APP_URL=https://courseroad.mit.edu/dev --env VUE_APP_FIREROAD_URL=https://fireroad.mit.edu --mode=production --config build/webpack.config.dev.js",
     "build-prod": "webpack --env VUE_APP_URL=https://courseroad.mit.edu --env VUE_APP_FIREROAD_URL=https://fireroad.mit.edu --mode=production --config build/webpack.config.dev.js",
     "dev": "webpack serve --env VUE_APP_URL=http://localhost:8080 --env VUE_APP_FIREROAD_URL=https://fireroad-dev.mit.edu --mode=development --config build/webpack.config.dev.js",
+    "devdev": "webpack serve --env VUE_APP_URL=http://localhost:8080 --env VUE_APP_FIREROAD_URL=http://localhost:8000 --mode=development --config build/webpack.config.dev.js",
     "lint-fix": "node_modules/.bin/eslint --ext .js,.vue --fix src/ tests/",
     "test": "npm run test:unit && npm run test:e2e-headless"
   },
