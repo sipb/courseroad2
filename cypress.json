@@ -1,5 +1,4 @@
 {
   "pluginsFile": "tests/e2e/plugins/index.js",
-  "projectId": "ikn3as",
-  "video": false
+  "projectId": "ikn3as"
 }

@@ -220,7 +220,7 @@ describe('Auth Tests', () => {
         // Expect to login via fireroad
         expect(url).to.equal(Cypress.env('VUE_APP_FIREROAD_URL') + '/login/?redirect=' + Cypress.env('VUE_APP_URL'));
         // Redirect with a fake code
-        window.location.href = Cypress.env('VUE_APP_URL') + '/?code=' + fakeCode;
+        window.location.search = 'code=' + fakeCode;
       });
     });
 
@@ -316,7 +316,7 @@ describe('Auth Tests', () => {
         // Expect to login via fireroad
         expect(url).to.equal(Cypress.env('VUE_APP_FIREROAD_URL') + '/login/?redirect=' + Cypress.env('VUE_APP_URL'));
         // Redirect with a fake code
-        window.location.href = Cypress.env('VUE_APP_URL') + '/?code=' + fakeCode;
+        window.location.search = 'code=' + fakeCode;
       });
     });
 
