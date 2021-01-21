@@ -255,7 +255,6 @@ export default {
       const _this = this;
       this.gettingUserData = true;
       return this.getSecure('/sync/roads/?id=' + roadID).then(function (roadData) {
-        console.log(roadData.data.file.contents);
         if (roadData.status === 200 && roadData.data.success) {
           roadData.data.file.downloaded = moment().format(DATE_FORMAT);
           roadData.data.file.changed = moment().format(DATE_FORMAT);

@@ -279,7 +279,7 @@ export default {
     // call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function (newRoad) {
       this.justLoaded = false;
-      if (this.$store.state.unretrieved.indexOf(newRoad) >= 0) {
+      if (this.$store.state.unretrieved.indexOf(newRoad) >= 0 && !this.$refs.authcomponent.gettingUserData) {
         const _this = this;
         this.$refs.authcomponent.retrieveRoad(newRoad).then(function () {
           _this.$store.commit('setRetrieved', newRoad);
