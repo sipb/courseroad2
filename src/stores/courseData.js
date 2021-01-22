@@ -62,8 +62,6 @@ const store = new Vuex.Store({
   mutations: {
     resetState (state) {
       Object.assign(state, getDefaultState());
-      state.itemAdding = undefined;
-      state.cookiesAllowed = undefined;
     },
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
