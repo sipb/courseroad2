@@ -55,7 +55,7 @@ describe('Class Info Card Tests', () => {
         cy.getByDataCy('cardRating')
           .should('contain', '5.05');
 
-        // Check expecetd hours
+        // Check expected hours
         cy.getByDataCy('cardHours')
           .should('contain', '9.70 out of class')
           .should('contain', '10.83 in class');
