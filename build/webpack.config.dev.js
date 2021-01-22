@@ -8,6 +8,7 @@ const cgi = require('cgi')
 
 module.exports = (env) => {
   return {
+    devtool: 'eval-source-map',
     entry: [
       '@babel/polyfill',
       './src/app.js'

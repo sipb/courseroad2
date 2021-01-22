@@ -9,31 +9,40 @@
         v-for="roadId in Object.keys(roads)"
         :key="roadId"
         :href="`#${roadId}`"
+        :data-cy="'roadTab' + roadId"
         @click="$store.commit('setActiveRoad', roadId)"
       >
         {{ roads[roadId].name }}
-        <v-btn v-show="roadId == tabRoad" icon flat @click="newRoadName = roads[roadId].name; editDialog = true;">
+        <v-btn v-show="roadId == tabRoad" icon flat data-cy="editRoadButton" @click="newRoadName = roads[roadId].name; editDialog = true;">
           <v-icon>edit</v-icon>
         </v-btn>
       </v-tab>
-      <v-dialog v-model="editDialog" max-width="600" @input="newRoadName = ''">
+      <v-dialog v-model="editDialog" max-width="600" data-cy="editRoadDialog" @input="newRoadName = ''">
         <v-card>
           <v-btn icon flat style="float:right" @click="editDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
           <v-card-title>Edit Road</v-card-title>
           <v-card-text>
-            <v-text-field v-if="editDialog" v-model="newRoadName" autofocus label="Road Name" @keyup.enter="renameRoad" />
+            <v-text-field
+              v-if="editDialog"
+              v-model="newRoadName"
+              autofocus
+              label="Road Name"
+              data-cy="renameRoadField"
+              @keyup.enter="renameRoad"
+            />
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="error" @click="editDialog = false; deleteDialog = true;">
+            <v-btn color="error" data-cy="deleteRoadButton" @click="editDialog = false; deleteDialog = true;">
               <v-icon>delete</v-icon>
               Delete Road
             </v-btn>
             <v-btn
               color="primary"
               :disabled="otherRoadHasName(tabRoad, newRoadName)"
+              data-cy="editRoadSubmitButton"
               @click="renameRoad"
             >
               Submit
@@ -41,7 +50,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-if="tabRoad in roads" v-model="deleteDialog" max-width="600">
+      <v-dialog v-if="tabRoad in roads" v-model="deleteDialog" max-width="600" data-cy="deleteRoadDialog">
         <v-card>
           <v-btn icon flat style="float:right" @click="deleteDialog = false">
             <v-icon>close</v-icon>
@@ -53,13 +62,13 @@
             <v-btn flat @click="deleteDialog = false; editDialog = true;">
               Cancel
             </v-btn>
-            <v-btn color="error" @click="deleteDialog = false; $emit('delete-road',tabRoad); newRoadName = ''">
+            <v-btn color="error" data-cy="deleteRoadConfirmButton" @click="deleteDialog = false; $emit('delete-road',tabRoad); newRoadName = ''">
               Delete
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="addDialog" max-width="600" @input="newRoadName = ''">
+      <v-dialog v-model="addDialog" max-width="600" data-cy="addRoadDialog" @input="newRoadName = ''">
         <v-card>
           <v-btn icon flat style="float:right" @click="addDialog = false">
             <v-icon>close</v-icon>
@@ -71,16 +80,17 @@
               v-model="newRoadName"
               autofocus
               placeholder="New road name"
+              data-cy="newRoadName"
               @keyup.enter="
                 if (validRoadName) createRoad()"
             />
             <v-layout row>
               <v-flex xs6>
-                <v-switch v-model="duplicateRoad" label="Duplicate existing" />
+                <v-switch v-model="duplicateRoad" label="Duplicate existing" data-cy="duplicateSwitch" />
               </v-flex>
               <v-flex>
-                <v-select v-model="duplicateRoadSource" :disabled="!duplicateRoad" :items="Object.keys(roads)">
-                  <template slot="item" slot-scope="{item}">
+                <v-select v-model="duplicateRoadSource" :disabled="!duplicateRoad" :items="Object.keys(roads)" data-cy="selectDuplicateRoadSource">
+                  <template slot="item" slot-scope="{item}" :data-cy="'duplicateRoadSourceItem'+roads[item].id">
                     {{ roads[item].name }}
                   </template>
                   <template slot="selection" slot-scope="{item}">
@@ -92,7 +102,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn :disabled="!validRoadName" color="primary" @click="createRoad">
+            <v-btn :disabled="!validRoadName" color="primary" data-cy="createRoadButton" @click="createRoad">
               Create
             </v-btn>
           </v-card-actions>
@@ -100,7 +110,14 @@
       </v-dialog>
     </v-tabs>
     <v-flex>
-      <v-btn type="submit" icon flat color="primary" @click="addDialog = true">
+      <v-btn
+        type="submit"
+        icon
+        flat
+        color="primary"
+        data-cy="addRoadButton"
+        @click="addDialog = true"
+      >
         <v-icon>add</v-icon>
       </v-btn>
     </v-flex>

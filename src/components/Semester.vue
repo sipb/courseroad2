@@ -7,13 +7,13 @@
     dropzone="copy"
     @dragover.native.prevent
   >
-    <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;">
+    <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;" data-cy="semesterHeader">
       <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
           <span style="width: 12em; display: inline-block;">
             <b>
               <v-hover>
-                <span slot-scope="{ hover }" :class="hover && 'hovering'" @click="openRoadSettingsDialog">
+                <span slot-scope="{ hover }" :class="hover && 'hovering'" data-cy="semester_title" @click="openRoadSettingsDialog">
                   {{ semesterYearName }}
                   {{ semesterType }}
                   <span v-if="index>0">{{ "'" + semesterYear.toString().substring(2) }}</span>
@@ -21,7 +21,7 @@
               </v-hover>
             </b>
           </span>
-          <span style="min-width: 4.5em; display: inline-block;">
+          <span style="min-width: 4.5em; display: inline-block;" data-cy="semesterUnits">
             Units: {{ semesterInformation.totalUnits }}
           </span>
           <v-tooltip bottom>
@@ -106,6 +106,7 @@
       fluid
       grid-list-md
       :class="semData.bgColor"
+      :data-cy="'road_'+roadID+'__semester_' + index + '_dropZone'"
       @dragenter="dragenter"
       @dragleave="dragleave"
       @drop="ondrop"

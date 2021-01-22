@@ -23,7 +23,54 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import 'cypress-file-upload';
 
 Cypress.Commands.add('getByDataCy', (selector, ...args) => {
   return cy.get(`[data-cy='${selector}']`, ...args);
+});
+
+Cypress.Commands.add('getByDataCyPattern', (modifier, selector, ...args) => {
+  return cy.get(`[data-cy${modifier}=${selector}]`, ...args);
+});
+
+Cypress.Commands.add('store', () =>
+  cy.window().its('app.$store')
+);
+
+Cypress.Commands.add('resetStore', () => {
+  cy.store().invoke('commit', 'resetState');
+  cy.store().its('cookiesAllowed').should('eq', undefined);
+});
+
+Cypress.Commands.add('dragAndDrop', (subject, target, dragIndex, dropIndex) => {
+  const dataTransfer = new DataTransfer();
+
+  cy.get(subject)
+    .eq(dragIndex)
+    .trigger('pointerdown', { which: 1, button: 0 })
+    .trigger('dragstart', { dataTransfer: dataTransfer });
+
+  cy.get(target)
+    .eq(dropIndex)
+    .trigger('dragenter', { dataTransfer: dataTransfer })
+    .trigger('dragover', { dataTransfer: dataTransfer })
+    .trigger('drop', { dataTransfer: dataTransfer });
+});
+
+// // Uncomment for help debugging
+// Cypress.on('uncaught:exception', (err, runnable) => {
+//   // returning false here prevents Cypress from
+//   // failing the test
+//   console.log(err);
+//   return false
+// });
+
+Cypress.on('window:before:load', win => {
+  cy.stub(win.console, 'error', msg => {
+    cy.now('task', 'error', msg);
+  });
+
+  cy.stub(win.console, 'warn', msg => {
+    cy.now('task', 'warn', msg);
+  });
 });

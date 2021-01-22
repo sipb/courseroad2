@@ -3,7 +3,7 @@
     <v-layout row overflow-x>
       <v-flex v-for="(subject,index) in subjects" :key="subject.subject_id">
         <v-badge right overlap color="rgba(0,0,0,0)">
-          <v-card class="subject" @click="$emit('click-subject', {id:subject.subject_id,index:index})">
+          <v-card class="subject" :data-cy="'subjectInScroller'+index" @click="$emit('click-subject', {id:subject.subject_id,index:index})">
             <div :class="[courseColor(subject), shouldLighten(subject)]" style="height:100%;">
               <v-card-text class="cardtext pa-1">
                 <div><b>{{ subject.subject_id }}</b></div>

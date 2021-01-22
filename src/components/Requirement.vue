@@ -2,6 +2,7 @@
   <div
     class="requirement"
     :draggable="canDrag(req)"
+    :data-cy="'requirement' + req['list-id']"
     @dragstart="dragStart"
     @mouseover="hoveringOver = true"
     @mouseleave="hoveringOver = false"
@@ -85,6 +86,7 @@
             && 'percent_fulfilled' in req
             && req.percent_fulfilled !== 'N/A'"
           :style="'float: right; color: '+percentageTextColor"
+          :data-cy="'percentFulfilled' + req['list-id']"
         >
           &nbsp;{{ req.percent_fulfilled }}%
           <v-icon
@@ -92,6 +94,7 @@
             style="padding-left: 0.2em; padding-right: 0em;"
             small
             :color="iconColor"
+            :data-cy="'auditInfoButton'+req['list-id']"
             @mouseover="iconHover = true"
             @mouseleave="iconHover = false"
             @click.stop="$emit('click-info', $event)"

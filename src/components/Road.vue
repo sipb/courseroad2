@@ -35,6 +35,7 @@
             :items="[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
             label="I am a..."
             outlined
+            data-cy="selectClassYear"
           />
           <v-switch
             v-model="hideIAP"
@@ -46,7 +47,7 @@
           <v-btn flat @click="openRoadSettings = false">
             Cancel
           </v-btn>
-          <v-btn id="change-year" color="primary" @click="$emit('change-year',year); openRoadSettings = false;">
+          <v-btn id="change-year" color="primary" data-cy="submitRoadSettingsButton" @click="$emit('change-year',year); openRoadSettings = false;">
             Submit
           </v-btn>
         </v-card-actions>

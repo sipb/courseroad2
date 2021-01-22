@@ -88,7 +88,7 @@
               </h3>
             </v-flex>
             <v-flex>
-              <router-link to="/about" style="float: right;">
+              <router-link to="/about" style="float: right;" data-cy="aboutLink">
                 About
               </router-link>
             </v-flex>
@@ -100,8 +100,9 @@
             :selected-subjects="roads[activeRoad].contents.selectedSubjects"
             :req-list="reqList"
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
+            data-cy="audit"
           />
-          <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+          <v-flex shrink style="padding: 14px; padding-bottom: 0;" data-cy="unofficialWarning">
             <p>
               <b>Warning:</b> This is an unofficial tool that may not accurately
               reflect degree progress. Please view the
@@ -133,6 +134,7 @@
             :road-i-d="roadId"
             :adding-from-card="addingFromCard && activeRoad===roadId"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
+            :data-cy="'road_' + roadId"
             @change-year="$refs.authcomponent.changeSemester($event)"
           />
         </v-tab-item>
@@ -176,7 +178,14 @@
               <span v-if="cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color="primary" class="ma-1" @click="$store.commit('allowCookies'); dismissCookies();">
+              <v-btn
+                small
+                depressed
+                color="primary"
+                class="ma-1"
+                data-cy="acceptCookies"
+                @click="$store.commit('allowCookies'); dismissCookies();"
+              >
                 I accept
               </v-btn>
             </v-flex>
@@ -320,7 +329,7 @@ export default {
     }
   },
   created () {
-    if (this.$cookies.get('versionNumber') !== this.$store.state.versionNumber) {
+    if (this.cookiesAllowed && this.$cookies.get('versionNumber') !== this.$store.state.versionNumber) {
       console.log('Warning: the version number has changed.');
       // do whatever needs to happen when the version changed, probably including clearing local storage
       // then update the version number cookie
@@ -443,6 +452,7 @@ export default {
         road: newRoad,
         ignoreSet: false
       });
+      this.$store.commit('resetFulfillmentNeeded');
       this.$store.commit('setActiveRoad', tempRoadID);
       this.$refs.authcomponent.newRoads.push(tempRoadID);
     },

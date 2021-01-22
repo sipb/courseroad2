@@ -5,6 +5,7 @@
       class="collapse-button"
       outline
       color="primary"
+      data-cy="loginButton"
       @click="loginUser"
     >
       <span class="hidden-sm-and-down">Login</span>
@@ -15,6 +16,7 @@
       class="collapse-button"
       outline
       color="primary"
+      data-cy="logoutButton"
       @click="logoutUser"
     >
       <span class="hidden-sm-and-down">Logout</span>
@@ -142,6 +144,10 @@ export default {
     }
   },
   mounted () {
+    window.setLocationHref = function (url) {
+      window.location.href = url;
+    };
+
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
@@ -180,7 +186,10 @@ export default {
     window.onbeforeunload = function () {
       if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
-        const tabs = this.$cookies.get('tabs').ids;
+        let tabs = [];
+        if (this.$cookies.isKey('tabs')) {
+          tabs = this.$cookies.get('tabs').ids;
+        }
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
         if (tabs.length) {
@@ -199,7 +208,7 @@ export default {
   },
   methods: {
     loginUser: function (event) {
-      window.location.href = `${process.env.VUE_APP_FIREROAD_URL}/login/?redirect=${process.env.VUE_APP_URL}`;
+      window.setLocationHref(`${process.env.VUE_APP_FIREROAD_URL}/login/?redirect=${process.env.VUE_APP_URL}`);
       if (this.cookiesAllowed) {
         this.$cookies.set('hasLoggedIn', true);
       }

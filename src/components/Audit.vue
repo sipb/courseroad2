@@ -1,7 +1,7 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
 
-  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;">
+  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;" data-cy="auditBox">
     <div style="display: flex; align-content: space-between; margin: 12px 0px;">
       <v-autocomplete
         v-model="changeReqs"
@@ -15,6 +15,7 @@
         deletable-chips
         dense
         no-data-text="'No results found'"
+        data-cy="auditMajorChips"
       />
     </div>
 
@@ -32,6 +33,7 @@
             slot-scope="{ hover }"
             :class="{ 'elevation-3': hover, 'yellow lighten-3': isPetitioned(item), 'grey lighten-2': isIgnored(item)}"
             :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
+            :data-cy="'auditItem' + item['list-id']"
           >
             <v-icon
               v-if="!('reqs' in item)"
@@ -64,7 +66,7 @@
       </a>
     </p>
 
-    <v-dialog v-model="progressDialog" max-width="600">
+    <v-dialog v-model="progressDialog" max-width="600" data-cy="progressDialog">
       <v-card v-if="progressReq !== undefined">
         <v-btn icon flat style="float:right" @click="progressDialog=false">
           <v-icon>close</v-icon>
@@ -104,7 +106,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="viewDialog" max-width="600">
+    <v-dialog v-model="viewDialog" max-width="600" data-cy="auditViewDialog">
       <div v-if="dialogReq !== undefined">
         <v-card>
           <v-btn icon flat style="float:right" @click="viewDialog = false">
@@ -121,6 +123,7 @@
             <div
               class="percentage-bar p-block"
               :style="percentage(dialogReq)"
+              data-cy="auditDialogPercentage"
             >
               {{ dialogReq["percent_fulfilled"] }}% fulfilled
             </div>
@@ -128,7 +131,7 @@
           <v-card-text v-if="'req' in dialogReq">
             {{ dialogReq["req"] }}
           </v-card-text>
-          <v-card-text>
+          <v-card-text data-cy="viewDialogSatisfyingCourses">
             <b>Satisfying courses:</b>
             <div v-for="course in dialogReq['sat_courses']" :key="course">
               {{ course }}
@@ -140,6 +143,7 @@
               v-if="'title-no-degree' in dialogReq"
               color="error"
               @click="deleteReq(dialogReq); viewDialog = false; dialogReq = undefined"
+              data-cy="viewDialogRemoveButton"
             >
               <v-icon>delete</v-icon>
               Remove Requirement
