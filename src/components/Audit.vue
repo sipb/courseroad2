@@ -143,6 +143,7 @@
               v-if="'title-no-degree' in dialogReq"
               color="error"
               @click="deleteReq(dialogReq); viewDialog = false; dialogReq = undefined"
+              data-cy="viewDialogRemoveButton"
             >
               <v-icon>delete</v-icon>
               Remove Requirement

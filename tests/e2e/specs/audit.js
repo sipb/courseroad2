@@ -6,7 +6,7 @@ import reqs from '../assets/list_reqs.js';
 import { objectSlice } from '../support/utilities.js';
 
 describe('Audit Tests', () => {
-  it('Adds and removes majors', () => {
+  it.only('Adds and removes majors', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', []);
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', major21M1);
@@ -107,6 +107,26 @@ describe('Audit Tests', () => {
     cy.getByDataCy('auditItemmajor16')
       .should('not.exist');
     cy.getByDataCy('auditItemgirs')
+      .should('not.exist');
+
+    // Search and enter 16 major
+    cy.getByDataCy('auditMajorChips')
+      .type('16{enter}{backspace}{backspace}{esc}');
+
+    // Click the info buton
+    cy.getByDataCy('auditItemmajor16')
+      .trigger('mouseover');
+
+    // Open the requirements dialog and check its information
+    cy.getByDataCy('auditInfoButtonmajor16')
+      .click();
+
+    // Remove the requirementt
+    cy.getByDataCy('viewDialogRemoveButton')
+      .click();
+
+    // Check that Course 16 is not in audit now
+    cy.getByDataCy('auditItemmajor16')
       .should('not.exist');
   });
 
