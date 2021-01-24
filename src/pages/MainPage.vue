@@ -287,7 +287,6 @@ export default {
   watch: {
     // call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function (newRoad) {
-      this.justLoaded = false;
       if (this.$store.state.unretrieved.indexOf(newRoad) >= 0 && !this.$refs.authcomponent.gettingUserData) {
         const _this = this;
         this.$refs.authcomponent.retrieveRoad(newRoad).then(function () {
@@ -296,9 +295,12 @@ export default {
       } else if (newRoad !== '') {
         this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
-      if (newRoad !== '') {
+      // If just loaded, store isn't loaded yet
+      // and so we can't overwrite the router just yet
+      if (newRoad !== '' && !this.justLoaded) {
         this.$router.push({ path: `/road/${newRoad}` });
       }
+      this.justLoaded = false;
     },
     cookiesAllowed: function (newCA) {
       if (newCA) {
@@ -325,6 +327,9 @@ export default {
       deep: true
     },
     $route () {
+      this.setActiveRoad();
+    },
+    justLoaded () {
       this.setActiveRoad();
     }
   },
@@ -429,7 +434,6 @@ export default {
           return true;
         }
       }
-      this.$router.push({ path: `/road/${this.activeRoad}` });
       return false;
     },
     addRoad: function (roadName, cos = ['girs'], ss = Array.from(Array(16), () => []), overrides = {}) {
