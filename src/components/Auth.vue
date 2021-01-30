@@ -346,7 +346,9 @@ export default {
           if (fileKeys.includes(this.$route.params.road)) {
             this.$store.commit('setActiveRoad', this.$route.params.road);
           } else {
+            // Redirect to first road if road cannot be found
             this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
+            this.$router.push({ path: `/road/${Object.keys(this.roads)[0]}` });
           }
           // Set list of unretrieved roads to all but first road ID
           this.$store.commit('setUnretrieved', fileKeys);
