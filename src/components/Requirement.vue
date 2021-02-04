@@ -170,7 +170,7 @@ export default {
     dragStart: function (event) {
       let usedInfo = this.classInfo(this.req);
       if (usedInfo === undefined) {
-        usedInfo = { id: this.req.req };
+        usedInfo = { subject_id: this.req.req };
       }
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: true, classIndex: -1 }));
       this.$store.commit('dragStartClass', {

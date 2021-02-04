@@ -175,7 +175,7 @@
             v-model="petitionSelectCourses"
             :disabled="reqPAIgnore"
             :items="selectedSubjects.flat()"
-            item-text="id"
+            item-text="subject_id"
             label="Select Courses to Petition with:"
             no-data-text="No Courses Found"
             multiple

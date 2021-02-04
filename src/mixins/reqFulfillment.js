@@ -47,7 +47,7 @@ export default {
       return false;
     },
     reqsFulfilled: function (reqString, subjects) {
-      const allIDs = subjects.map((s) => s.id);
+      const allIDs = subjects.map((s) => s.subject_id);
       reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ',');
       const splitReq = reqString.split(/(,|\(|\)|\/)/);
       const _this = this;
@@ -97,7 +97,7 @@ export default {
           if (allIDs.indexOf(splitReq[i]) >= 0) {
             splitReq[i] = 'true';
           } else {
-            const anyClassSatisfies = subjects.some((s) => _this.classSatisfies(splitReq[i], s.id, allIDs));
+            const anyClassSatisfies = subjects.some((s) => _this.classSatisfies(splitReq[i], s.subject_id, allIDs));
             splitReq[i] = anyClassSatisfies ? 'true' : 'false';
           }
         }

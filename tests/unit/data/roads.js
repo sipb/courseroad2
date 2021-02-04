@@ -11,11 +11,11 @@ export default {
       contents: {
         coursesOfStudy: ['girs'],
         selectedSubjects: [
-          { 'title': 'Introduction to Algorithms', 'id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 },
-          { 'title': 'Computation Structures', 'id': '6.004', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 },
-          { 'title': 'Principles of Chemical Science', 'id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 1 },
-          { 'title': 'Introduction to Algorithms', 'id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 3, 'semester': 2 },
-          { 'title': 'Generic Biology GIR', 'id': 'GIR:BIOL', 'units': 12, 'overrideWarnings': false, 'index': 4, 'semester': 3 }
+          { 'title': 'Introduction to Algorithms', 'subject_id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 },
+          { 'title': 'Computation Structures', 'subject_id': '6.004', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 },
+          { 'title': 'Principles of Chemical Science', 'subject_id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 1 },
+          { 'title': 'Introduction to Algorithms', 'subject_id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 3, 'semester': 2 },
+          { 'title': 'Generic Biology GIR', 'subject_id': 'GIR:BIOL', 'units': 12, 'overrideWarnings': false, 'index': 4, 'semester': 3 }
         ],
         progressOverrides: {}
       }

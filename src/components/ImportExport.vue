@@ -166,7 +166,7 @@ export default {
         fail = true;
       }
 
-      const expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'id'];
+      const expectedFields = ['index', 'title', 'overrideWarnings', 'semester', 'units', 'subject_id'];
 
       if (!fail) {
         try {
@@ -179,9 +179,9 @@ export default {
           }
           // subject_id issue
           const newss = obj.selectedSubjects.map((s) => {
-            if ('subject_id' in s) {
-              s.id = s.subject_id;
-              delete s.subject_id;
+            if ('id' in s) {
+              s.subject_id = s.id;
+              delete s.id;
             }
             return s;
           });
@@ -190,10 +190,10 @@ export default {
           const ss = obj.selectedSubjects.map((s) => {
             // make sure it has everything, if not fill in from subjectsIndex or genericCourses
             let subject;
-            if (this.$store.state.subjectsIndex[s.id] !== undefined) {
-              subject = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
-            } else if (this.$store.state.genericIndex[s.id] !== undefined) {
-              subject = this.$store.state.genericCourses[this.$store.state.genericIndex[s.id]];
+            if (this.$store.state.subjectsIndex[s.subject_id] !== undefined) {
+              subject = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.subject_id]];
+            } else if (this.$store.state.genericIndex[s.subject_id] !== undefined) {
+              subject = this.$store.state.genericCourses[this.$store.state.genericIndex[s.subject_id]];
             }
 
             if (subject !== undefined) {
@@ -209,7 +209,7 @@ export default {
               });
               return s;
             }
-            console.log('ignoring ' + s.id);
+            console.log('ignoring ' + s.subject_id);
             return undefined;
           }).filter((s) => {
             return s !== undefined;
