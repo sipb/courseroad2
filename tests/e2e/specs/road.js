@@ -478,6 +478,7 @@ describe('Road tests', () => {
         cy.url().should('include', `/road/${roadID}`);
         
         // Ensure 7.46 in Router Road
+        // TODO Error here only exists if logged in, no issue if local storage
         cy.getByDataCy(`road_${roadID}__semester_1`)
           .within(() => {
             cy.getByDataCy('classInSemester1_7_46')
@@ -498,7 +499,12 @@ describe('Road tests', () => {
   it("Handles unknown road ids in url correctly", () => {
     // Two things should occur, the user is redirected to the default road
     // and the url shows the id of the default road instead of the unknown road
-
+    cy.visit('/');
+    const random_id = 909258;
+    cy.visit(`/road/${random_id}`);
+    
+    // TODO Error exists only for a user who is not logged in
+    cy.url().should('include', '/road/$default_road$');
   })
 
 });
