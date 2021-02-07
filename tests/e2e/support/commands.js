@@ -63,17 +63,17 @@ Cypress.Commands.add('dragAndDrop', (subject, target, dragIndex, dropIndex) => {
     .trigger('drop', { dataTransfer: dataTransfer });
 });
 
-Cypress.Commands.add('setupAuth', (accessToken, opts = { addRoads: false }) => {
+Cypreus.Commands.add('setupAuth', (code, accessToken, opts = { addRoads: false }) => {
   /**
       Sets up a mocked auth to test site while logged in
       Parameters:
+      code [string] : Mocked code for user
       accessToken [string] : Fake auth token for user
       opts:
         addRoads [boolean] : Whether to add sync routes to some placeholder roads (123, 456, 1089)
     */
 
   // Fake authorization data
-  const fakeCode = 'abcdefg';
   const fakeAccessInfo = {
     academic_id: 'tester@mit.edu',
     access_token: accessToken,
@@ -106,7 +106,7 @@ Cypress.Commands.add('setupAuth', (accessToken, opts = { addRoads: false }) => {
 
   // Mock getting an authorization token from a code through Fireroad
   cy.route(
-    Cypress.env('VUE_APP_FIREROAD_URL') + '/fetch_token/?code=' + fakeCode,
+    Cypress.env('VUE_APP_FIREROAD_URL') + '/fetch_token/?code=' + code,
     {
       success: true,
       access_info: fakeAccessInfo
@@ -128,7 +128,7 @@ Cypress.Commands.add('setupAuth', (accessToken, opts = { addRoads: false }) => {
     success: true
   }).as('syncRoads');
 
-  if (true || opts.addRoads) {
+  if (opts.addRoads) {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=123', {
       file: syncRoadData.file123,
       success: true
@@ -151,7 +151,7 @@ Cypress.Commands.add('login', code => {
    * Mocks login redirect and logs in
    * Assumes you have just called cy.visit('/') and cy.setupAuth(accessToken, opts)
    * Params:
-   *
+   * code [string] : Mocked code for user
    */
 
   // Prevent redirecting to Fireroad to login
@@ -162,8 +162,8 @@ Cypress.Commands.add('login', code => {
       // Expect to login via fireroad
       expect(url).to.equal(
         Cypress.env('VUE_APP_FIREROAD_URL') +
-          '/login/?redirect=' +
-          Cypress.env('VUE_APP_URL')
+        '/login/?redirect=' +
+        Cypress.env('VUE_APP_URL')
       );
       // Redirect with a fake code
       window.location.search = 'code=' + code;
