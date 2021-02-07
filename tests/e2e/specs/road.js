@@ -3,6 +3,7 @@ import girs from '../assets/reqs_girs.js';
 import major21M1 from '../assets/reqs_21m_1.js';
 import reqs from '../assets/list_reqs.js';
 import { objectSlice } from '../support/utilities.js';
+import { files } from '../assets/sync_roads.js';
 
 const path = require('path');
 
@@ -496,7 +497,7 @@ describe('Road tests', () => {
 
   });
 
-  it("Handles unknown road ids in url correctly", () => {
+  it("Handles unknown road ids in url correctly (Logged In)", () => {
     // Two things should occur, the user is redirected to the default road
     // and the url shows the id of the default road instead of the unknown road
     const fakeCode = 'abcdefg';
@@ -508,8 +509,11 @@ describe('Road tests', () => {
     const random_id = 909258;
     cy.visit(`/road/${random_id}`);
 
+
+    // Should be the road that is defaulted to when no road id is specified
+    const defaultRoadId = Object.keys(files)[0];
     // TODO Error exists only for a user who is not logged in
-    cy.url().should('include', '/road/$default_road$');
+    cy.url().should('include', `/road/${defaultRoadId}`);
   })
 
 });
