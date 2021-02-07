@@ -507,6 +507,7 @@ describe('Road tests', () => {
     // Should be file 123, which contains 14.03
     const defaultRoadId = Object.keys(syncedRoads.files)[0];
 
+    // Test whether the site navigates to the correct road based on the url and loads its content
     const testRoad = syncedRoads.file456;
     cy.visit(`/road/${testRoad.id}`);
     cy.url().should('include', `/road/${testRoad.id}`);
@@ -518,6 +519,7 @@ describe('Road tests', () => {
           .should('exist');
       });
 
+    // Test whether default road gets correctly loaded when no road id given
     cy.visit('/');
     // Ensure 14.03 in default road
     cy.getByDataCy(`road_${defaultRoadId}__semester_1`)
