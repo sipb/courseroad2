@@ -24,6 +24,12 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 import 'cypress-file-upload';
+import girs from '../assets/reqs_girs.js';
+import major16 from '../assets/reqs_16.js';
+import major21M1 from '../assets/reqs_21m_1.js';
+import reqs from '../assets/list_reqs.js';
+import { objectSlice } from '../support/utilities.js';
+import syncRoadData from '../assets/sync_roads.js';
 
 Cypress.Commands.add('getByDataCy', (selector, ...args) => {
   return cy.get(`[data-cy='${selector}']`, ...args);
@@ -33,13 +39,13 @@ Cypress.Commands.add('getByDataCyPattern', (modifier, selector, ...args) => {
   return cy.get(`[data-cy${modifier}=${selector}]`, ...args);
 });
 
-Cypress.Commands.add('store', () =>
-  cy.window().its('app.$store')
-);
+Cypress.Commands.add('store', () => cy.window().its('app.$store'));
 
 Cypress.Commands.add('resetStore', () => {
   cy.store().invoke('commit', 'resetState');
-  cy.store().its('cookiesAllowed').should('eq', undefined);
+  cy.store()
+    .its('cookiesAllowed')
+    .should('eq', undefined);
 });
 
 Cypress.Commands.add('dragAndDrop', (subject, target, dragIndex, dropIndex) => {
@@ -55,6 +61,117 @@ Cypress.Commands.add('dragAndDrop', (subject, target, dragIndex, dropIndex) => {
     .trigger('dragenter', { dataTransfer: dataTransfer })
     .trigger('dragover', { dataTransfer: dataTransfer })
     .trigger('drop', { dataTransfer: dataTransfer });
+});
+
+Cypress.Commands.add('setupAuth', (accessToken, opts = { addRoads: false }) => {
+  /**
+      Sets up a mocked auth to test site while logged in
+      Parameters:
+      accessToken [string] : Fake auth token for user
+      opts:
+        addRoads [boolean] : Whether to add sync routes to some placeholder roads (123, 456, 1089)
+    */
+
+  // Fake authorization data
+  const fakeCode = 'abcdefg';
+  const fakeAccessInfo = {
+    academic_id: 'tester@mit.edu',
+    access_token: accessToken,
+    current_semester: 4,
+    success: true,
+    username: '893465234'
+  };
+
+  // Mock the requirements routes
+  cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', []);
+  cy.route(
+    'POST',
+    Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/',
+    girs
+  );
+  cy.route(
+    'POST',
+    Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/',
+    major21M1
+  );
+  cy.route(
+    'POST',
+    Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major16/',
+    major16
+  );
+  cy.route(
+    Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/list_reqs/',
+    objectSlice(reqs, ['girs', 'major21M-1', 'major16'])
+  );
+
+  // Mock getting an authorization token from a code through Fireroad
+  cy.route(
+    Cypress.env('VUE_APP_FIREROAD_URL') + '/fetch_token/?code=' + fakeCode,
+    {
+      success: true,
+      access_info: fakeAccessInfo
+    }
+  ).as('fetchToken');
+
+  // Mock verify route
+  cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/verify', {
+    current_semester: 4,
+    success: true
+  }).as('verify');
+
+  // Mock cgi people directory script
+  cy.route('/cgi-bin/people.py?kerb=tester', { year: 1 }).as('getYear');
+
+  // Mock road syncing
+  cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads', {
+    files: syncRoadData.files,
+    success: true
+  }).as('syncRoads');
+
+  if (true || opts.addRoads) {
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=123', {
+      file: syncRoadData.file123,
+      success: true
+    }).as('syncRoad123');
+
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=456', {
+      file: syncRoadData.file456,
+      success: true
+    }).as('syncRoad456');
+
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=1089', {
+      file: syncRoadData.file1089,
+      success: true
+    }).as('syncRoad1089');
+  }
+});
+
+Cypress.Commands.add('login', code => {
+  /**
+   * Mocks login redirect and logs in
+   * Assumes you have just called cy.visit('/') and cy.setupAuth(accessToken, opts)
+   * Params:
+   *
+   */
+
+  // Prevent redirecting to Fireroad to login
+  // Check that window location is correct and redirect back with fake code
+  // (This is what Fireroad would do)
+  cy.window().then(window => {
+    cy.stub(window, 'setLocationHref', url => {
+      // Expect to login via fireroad
+      expect(url).to.equal(
+        Cypress.env('VUE_APP_FIREROAD_URL') +
+          '/login/?redirect=' +
+          Cypress.env('VUE_APP_URL')
+      );
+      // Redirect with a fake code
+      window.location.search = 'code=' + code;
+    });
+  });
+
+  // Click login button
+  cy.getByDataCy('loginButton').click();
 });
 
 // // Uncomment for help debugging
