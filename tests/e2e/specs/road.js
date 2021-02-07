@@ -402,7 +402,7 @@ describe('Road tests', () => {
       });
   });
 
-  it("Loads correct road based on url", () => {
+  it("Loads correct road based on url (Logged Out)", () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
@@ -497,6 +497,17 @@ describe('Road tests', () => {
 
   });
 
+  it("Handles unknown road ids in url correctly (Logged Out)", () => {
+    // Two things should occur, the user is redirected to the default road
+    // and the url shows the id of the default road instead of the unknown road
+    cy.visit('/');
+
+    const randomId = 909258;
+    cy.visit(`/road/${randomId}`);
+
+    cy.url().should('include', '/road/$defaultroad$');
+  });
+
   it("Handles unknown road ids in url correctly (Logged In)", () => {
     // Two things should occur, the user is redirected to the default road
     // and the url shows the id of the default road instead of the unknown road
@@ -506,14 +517,13 @@ describe('Road tests', () => {
     cy.visit('/');
     cy.login(fakeCode);
 
-    const random_id = 909258;
-    cy.visit(`/road/${random_id}`);
+    const randomId = 909258;
+    cy.visit(`/road/${randomId}`);
 
 
     // Should be the road that is defaulted to when no road id is specified
     const defaultRoadId = Object.keys(files)[0];
-    // TODO Error exists only for a user who is not logged in
     cy.url().should('include', `/road/${defaultRoadId}`);
-  })
+  });
 
 });
