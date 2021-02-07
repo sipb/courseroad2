@@ -400,7 +400,7 @@ describe('Road tests', () => {
         expect(road.selectedSubjects[1].id).to.equal('12.001');
       });
   });
-  
+
   it("Loads correct road based on url", () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
@@ -458,7 +458,7 @@ describe('Road tests', () => {
       .then(function () {
         cy.getByDataCy('roadTab' + this.roadID)
           .click();
-        
+
         // Add 7.46 to 'Test Road - Router'
         cy.getByDataCy('classSearchInput')
           .type('{backspace}{backspace}{backspace}{backspace}')
@@ -476,7 +476,7 @@ describe('Road tests', () => {
       .then(roadID => {
         cy.visit(`/road/${roadID}`);
         cy.url().should('include', `/road/${roadID}`);
-        
+
         // Ensure 7.46 in Router Road
         // TODO Error here only exists if logged in, no issue if local storage
         cy.getByDataCy(`road_${roadID}__semester_1`)
@@ -485,24 +485,29 @@ describe('Road tests', () => {
               .should('exist');
           });
       })
-    
-      cy.visit('/');
-      // Ensure 3.45 in default road
-      cy.getByDataCy('road_$defaultroad$__semester_1')
-        .within(() => {
-          cy.getByDataCy('classInSemester1_3_45')
-            .should('exist');
-        });
+
+    cy.visit('/');
+    // Ensure 3.45 in default road
+    cy.getByDataCy('road_$defaultroad$__semester_1')
+      .within(() => {
+        cy.getByDataCy('classInSemester1_3_45')
+          .should('exist');
+      });
 
   });
-  
+
   it("Handles unknown road ids in url correctly", () => {
     // Two things should occur, the user is redirected to the default road
     // and the url shows the id of the default road instead of the unknown road
+    const fakeCode = 'abcdefg';
+    const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf';
+    cy.setupAuth(fakeCode, fakeAccessToken);
     cy.visit('/');
+    cy.login(fakeCode);
+
     const random_id = 909258;
     cy.visit(`/road/${random_id}`);
-    
+
     // TODO Error exists only for a user who is not logged in
     cy.url().should('include', '/road/$default_road$');
   })

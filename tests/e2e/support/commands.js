@@ -63,14 +63,13 @@ Cypress.Commands.add('dragAndDrop', (subject, target, dragIndex, dropIndex) => {
     .trigger('drop', { dataTransfer: dataTransfer });
 });
 
-Cypreus.Commands.add('setupAuth', (code, accessToken, opts = { addRoads: false }) => {
+Cypress.Commands.add('setupAuth', (code, accessToken) => {
   /**
       Sets up a mocked auth to test site while logged in
+      By default user has 3 roads: 123, 456, 1089
       Parameters:
       code [string] : Mocked code for user
       accessToken [string] : Fake auth token for user
-      opts:
-        addRoads [boolean] : Whether to add sync routes to some placeholder roads (123, 456, 1089)
     */
 
   // Fake authorization data
@@ -111,45 +110,43 @@ Cypreus.Commands.add('setupAuth', (code, accessToken, opts = { addRoads: false }
       success: true,
       access_info: fakeAccessInfo
     }
-  ).as('fetchToken');
+  );
 
   // Mock verify route
   cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/verify', {
     current_semester: 4,
     success: true
-  }).as('verify');
+  });
 
   // Mock cgi people directory script
-  cy.route('/cgi-bin/people.py?kerb=tester', { year: 1 }).as('getYear');
+  cy.route('/cgi-bin/people.py?kerb=tester', { year: 1 });
 
   // Mock road syncing
   cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads', {
     files: syncRoadData.files,
     success: true
-  }).as('syncRoads');
+  });
 
-  if (opts.addRoads) {
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=123', {
-      file: syncRoadData.file123,
-      success: true
-    }).as('syncRoad123');
+  cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=123', {
+    file: syncRoadData.file123,
+    success: true
+  });
 
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=456', {
-      file: syncRoadData.file456,
-      success: true
-    }).as('syncRoad456');
+  cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=456', {
+    file: syncRoadData.file456,
+    success: true
+  });
 
-    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=1089', {
-      file: syncRoadData.file1089,
-      success: true
-    }).as('syncRoad1089');
-  }
+  cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/sync/roads/?id=1089', {
+    file: syncRoadData.file1089,
+    success: true
+  });
 });
 
 Cypress.Commands.add('login', code => {
   /**
    * Mocks login redirect and logs in
-   * Assumes you have just called cy.visit('/') and cy.setupAuth(accessToken, opts)
+   * Assumes you have just called cy.visit('/') and cy.setupAuth(accessToken)
    * Params:
    * code [string] : Mocked code for user
    */
