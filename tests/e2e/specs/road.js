@@ -3,7 +3,7 @@ import girs from '../assets/reqs_girs.js';
 import major21M1 from '../assets/reqs_21m_1.js';
 import reqs from '../assets/list_reqs.js';
 import { objectSlice } from '../support/utilities.js';
-import { files } from '../assets/sync_roads.js';
+import syncedRoads from '../assets/sync_roads.js';
 
 const path = require('path');
 
@@ -497,6 +497,37 @@ describe('Road tests', () => {
 
   });
 
+  it("Loads correct road based on url (Logged In)", () => {
+    const fakeCode = 'abcdefg';
+    const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf';
+    cy.setupAuth(fakeCode, fakeAccessToken);
+    cy.visit('/');
+    cy.login(fakeCode);
+
+    // Should be file 123, which contains 14.03
+    const defaultRoadId = Object.keys(syncedRoads.files)[0];
+
+    const testRoad = syncedRoads.file456;
+    cy.visit(`/road/${testRoad.id}`);
+    cy.url().should('include', `/road/${testRoad.id}`);
+
+    // Ensure 6.042 in test road semester 3
+    cy.getByDataCy(`road_${testRoad.id}__semester_3`)
+      .within(() => {
+        cy.getByDataCy('classInSemester3_6_042')
+          .should('exist');
+      });
+
+    cy.visit('/');
+    // Ensure 14.03 in default road
+    cy.getByDataCy(`road_${defaultRoadId}__semester_1`)
+      .within(() => {
+        cy.getByDataCy('classInSemester1_14_03')
+          .should('exist');
+      });
+
+  });
+
   it("Handles unknown road ids in url correctly (Logged Out)", () => {
     // Two things should occur, the user is redirected to the default road
     // and the url shows the id of the default road instead of the unknown road
@@ -522,7 +553,7 @@ describe('Road tests', () => {
 
 
     // Should be the road that is defaulted to when no road id is specified
-    const defaultRoadId = Object.keys(files)[0];
+    const defaultRoadId = Object.keys(syncedRoads.files)[0];
     cy.url().should('include', `/road/${defaultRoadId}`);
   });
 
