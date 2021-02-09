@@ -402,7 +402,7 @@ describe('Road tests', () => {
       });
   });
 
-  it("Loads correct road based on url (Logged Out)", () => {
+  it('Loads correct road based on url (Logged Out)', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
@@ -485,7 +485,7 @@ describe('Road tests', () => {
             cy.getByDataCy('classInSemester1_7_46')
               .should('exist');
           });
-      })
+      });
 
     cy.visit('/');
     // Ensure 3.45 in default road
@@ -494,10 +494,9 @@ describe('Road tests', () => {
         cy.getByDataCy('classInSemester1_3_45')
           .should('exist');
       });
-
   });
 
-  it("Loads correct road based on url (Logged In)", () => {
+  it('Loads correct road based on url (Logged In)', () => {
     const fakeCode = 'abcdefg';
     const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf';
     cy.setupAuth(fakeCode, fakeAccessToken);
@@ -527,10 +526,9 @@ describe('Road tests', () => {
         cy.getByDataCy('classInSemester1_14_03')
           .should('exist');
       });
-
   });
 
-  it("Handles unknown road ids in url correctly (Logged Out)", () => {
+  it('Handles unknown road ids in url correctly (Logged Out)', () => {
     // Two things should occur, the user is redirected to the default road
     // and the url shows the id of the default road instead of the unknown road
     cy.visit('/');
@@ -541,7 +539,7 @@ describe('Road tests', () => {
     cy.url().should('include', '/road/$defaultroad$');
   });
 
-  it("Handles unknown road ids in url correctly (Logged In)", () => {
+  it('Handles unknown road ids in url correctly (Logged In)', () => {
     // Two things should occur, the user is redirected to the default road
     // and the url shows the id of the default road instead of the unknown road
     const fakeCode = 'abcdefg';
@@ -553,10 +551,8 @@ describe('Road tests', () => {
     const randomId = 909258;
     cy.visit(`/road/${randomId}`);
 
-
     // Should be the road that is defaulted to when no road id is specified
     const defaultRoadId = Object.keys(syncedRoads.files)[0];
     cy.url().should('include', `/road/${defaultRoadId}`);
   });
-
 });
