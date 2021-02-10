@@ -427,12 +427,12 @@ export default {
       }
     },
     setActiveRoad: function () {
+      const roadRequested = this.$route.params.road;
       if (this.roads.hasOwnProperty(this.$route.params.road)) {
-        const roadRequested = this.$route.params.road;
-        if (roadRequested in this.roads) {
-          this.$store.commit('setActiveRoad', roadRequested);
-          return true;
-        }
+        this.$store.commit('setActiveRoad', roadRequested);
+        return true;
+      } else if (!this.justLoaded && this.$store.state.loggedIn !== undefined && !this.$store.state.loggedIn) {
+        this.$router.push({ path: '/' });
       }
       return false;
     },
