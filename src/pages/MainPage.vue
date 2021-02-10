@@ -431,6 +431,9 @@ export default {
       if (this.roads.hasOwnProperty(this.$route.params.road)) {
         this.$store.commit('setActiveRoad', roadRequested);
         return true;
+      } else if (!this.$cookies.isKey('accessInfo')) {
+        // If user isn't logged in, and bad road id in url, then redirect to default road
+        this.$router.push({ path: '/' });
       }
       return false;
     },
