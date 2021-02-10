@@ -431,8 +431,6 @@ export default {
       if (this.roads.hasOwnProperty(this.$route.params.road)) {
         this.$store.commit('setActiveRoad', roadRequested);
         return true;
-      } else if (!this.justLoaded && this.$store.state.loggedIn !== undefined && !this.$store.state.loggedIn) {
-        this.$router.push({ path: '/' });
       }
       return false;
     },

@@ -536,7 +536,7 @@ describe('Road tests', () => {
     const randomId = 909258;
     cy.visit(`/road/${randomId}`);
 
-    cy.url().should('include', '/road/$defaultroad$');
+    cy.url().should('not.include', `/road/${randomId}`);
   });
 
   it('Handles unknown road ids in url correctly (Logged In)', () => {
