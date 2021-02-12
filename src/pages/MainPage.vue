@@ -433,7 +433,12 @@ export default {
         return true;
       } else if (!this.$cookies.isKey('accessInfo')) {
         // If user isn't logged in, and bad road id in url, then redirect to default road
-        this.$router.push({ path: '/' });
+        const defaultRoadId = this.$store.state.activeRoad;
+        if (defaultRoadId !== undefined) {
+          this.$router.push({ path: `/road/${defaultRoadId}` });
+        } else {
+          this.$router.push({ path: '/' });
+        }
       }
       return false;
     },
