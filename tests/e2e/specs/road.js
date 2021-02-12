@@ -479,11 +479,10 @@ describe('Road tests', () => {
         cy.url().should('include', `/road/${roadID}`);
 
         // Ensure 7.46 in Router Road
-        // TODO Error here only exists if logged in, no issue if local storage
         cy.getByDataCy(`road_${roadID}__semester_1`)
           .within(() => {
             cy.getByDataCy('classInSemester1_7_46')
-              .should('exist');
+              .should('be.visible');
           });
       });
 
