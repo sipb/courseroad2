@@ -325,12 +325,6 @@ export default {
         }
       },
       deep: true
-    },
-    $route () {
-      this.setActiveRoad();
-    },
-    justLoaded () {
-      this.setActiveRoad();
     }
   },
   created () {
@@ -434,11 +428,7 @@ export default {
       } else if (!this.$cookies.isKey('accessInfo')) {
         // If user isn't logged in, and bad road id in url, then redirect to default road
         const defaultRoadId = this.$store.state.activeRoad;
-        if (defaultRoadId !== undefined) {
-          this.$router.push({ path: `/road/${defaultRoadId}` });
-        } else {
-          this.$router.push({ path: '/' });
-        }
+        this.$router.replace({ path: `/road/${defaultRoadId}` });
       }
       return false;
     },
