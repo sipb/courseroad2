@@ -343,11 +343,22 @@ export default {
           if (this.justLoaded && fileKeys.length > 0) {
             this.$store.commit('deleteRoad', '$defaultroad$');
           }
-          this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
+          if (fileKeys.includes(this.$route.params.road)) {
+            this.$store.commit('setActiveRoad', this.$route.params.road);
+          } else {
+            // Redirect to first road if road cannot be found
+            this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
+            this.$router.push({ path: `/road/${Object.keys(this.roads)[0]}` });
+          }
           // Set list of unretrieved roads to all but first road ID
           this.$store.commit('setUnretrieved', fileKeys);
           if (fileKeys.length) {
-            return this.retrieveRoad(fileKeys[0]);
+            // Retrieves based on url and defaults to first road if unable to find it
+            if (fileKeys.includes(this.$route.params.road)) {
+              return this.retrieveRoad(this.$route.params.road);
+            } else {
+              return this.retrieveRoad(fileKeys[0]);
+            }
           }
         }.bind(this)).then(function () {
           this.gettingUserData = false;

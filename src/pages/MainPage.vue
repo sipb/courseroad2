@@ -287,7 +287,6 @@ export default {
   watch: {
     // call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function (newRoad) {
-      this.justLoaded = false;
       if (this.$store.state.unretrieved.indexOf(newRoad) >= 0 && !this.$refs.authcomponent.gettingUserData) {
         const _this = this;
         this.$refs.authcomponent.retrieveRoad(newRoad).then(function () {
@@ -296,9 +295,12 @@ export default {
       } else if (newRoad !== '') {
         this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
-      if (newRoad !== '') {
+      // If just loaded, store isn't loaded yet
+      // and so we can't overwrite the router just yet
+      if (newRoad !== '' && !this.justLoaded) {
         this.$router.push({ path: `/road/${newRoad}` });
       }
+      this.justLoaded = false;
     },
     cookiesAllowed: function (newCA) {
       if (newCA) {
@@ -323,9 +325,6 @@ export default {
         }
       },
       deep: true
-    },
-    $route () {
-      this.setActiveRoad();
     }
   },
   created () {
@@ -422,14 +421,15 @@ export default {
       }
     },
     setActiveRoad: function () {
+      const roadRequested = this.$route.params.road;
       if (this.roads.hasOwnProperty(this.$route.params.road)) {
-        const roadRequested = this.$route.params.road;
-        if (roadRequested in this.roads) {
-          this.$store.commit('setActiveRoad', roadRequested);
-          return true;
-        }
+        this.$store.commit('setActiveRoad', roadRequested);
+        return true;
+      } else if (!this.$cookies.isKey('accessInfo')) {
+        // If user isn't logged in, and bad road id in url, then redirect to default road
+        const defaultRoadId = this.$store.state.activeRoad;
+        this.$router.replace({ path: `/road/${defaultRoadId}` });
       }
-      this.$router.push({ path: `/road/${this.activeRoad}` });
       return false;
     },
     addRoad: function (roadName, cos = ['girs'], ss = Array.from(Array(16), () => []), overrides = {}) {

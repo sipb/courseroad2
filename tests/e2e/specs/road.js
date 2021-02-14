@@ -3,6 +3,7 @@ import girs from '../assets/reqs_girs.js';
 import major21M1 from '../assets/reqs_21m_1.js';
 import reqs from '../assets/list_reqs.js';
 import { objectSlice } from '../support/utilities.js';
+import syncedRoads from '../assets/sync_roads.js';
 
 const path = require('path');
 
@@ -399,5 +400,159 @@ describe('Road tests', () => {
         expect(road.selectedSubjects[0].id).to.equal('17.01');
         expect(road.selectedSubjects[1].id).to.equal('12.001');
       });
+  });
+
+  it('Loads correct road based on url (Logged Out)', () => {
+    cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
+      [
+        {
+          'subject_id': '3.45',
+          'title': 'Magnetic Materials',
+          'offered_fall': true,
+          'offered_spring': true
+        },
+        {
+          'subject_id': '7.46',
+          'title': 'Building with Cells',
+          'offered_fall': true,
+          'offered_spring': true
+        }
+      ]
+    );
+    cy.visit('/');
+
+    // Add 3.45 to default road
+    cy.getByDataCy('classSearchInput')
+      .type('3.45');
+
+    cy.dragAndDrop('[data-cy="classInSearch3_45"]',
+      '[data-cy="road_$defaultroad$__semester_1_dropZone"]',
+      0, 0);
+
+    cy.getByDataCy('classSearchInput')
+      .click();
+
+    // Click add new road button
+    cy.getByDataCy('addRoadButton')
+      .click();
+
+    // Add road named "Test Road - Router"
+    cy.get('.v-dialog--active')
+      .within(() => {
+        cy.getByDataCy('newRoadName')
+          .type('Test Road - Router');
+
+        cy.getByDataCy('createRoadButton')
+          .click();
+      });
+
+    // Identify road ID and ensure we are clicked to that road tab
+    cy.getByDataCyPattern('^', 'roadTab')
+      .contains('Test Road - Router', { matchCase: false })
+      .parent()
+      .then((el) => {
+        const dataCy = el.eq(0).attr('data-cy');
+        const roadID = dataCy.substring(dataCy.indexOf('roadTab') + 7);
+        return roadID;
+      })
+      .as('roadID')
+      .then(function () {
+        cy.getByDataCy('roadTab' + this.roadID)
+          .click();
+
+        // Add 7.46 to 'Test Road - Router'
+        cy.getByDataCy('classSearchInput')
+          .type('{backspace}{backspace}{backspace}{backspace}')
+          .type('7.46');
+
+        cy.dragAndDrop('[data-cy="classInSearch7_46"]',
+          `[data-cy="road_${this.roadID}__semester_1_dropZone"]`,
+          0, 0);
+
+        cy.getByDataCy('classSearchInput')
+          .click();
+      });
+
+    cy.get('@roadID')
+      .then(roadID => {
+        cy.visit(`/road/${roadID}`);
+        cy.url().should('include', `/road/${roadID}`);
+
+        // Ensure 7.46 in Router Road
+        cy.getByDataCy(`road_${roadID}__semester_1`)
+          .within(() => {
+            cy.getByDataCy('classInSemester1_7_46')
+              .should('be.visible');
+          });
+      });
+
+    cy.visit('/');
+    // Ensure 3.45 in default road
+    cy.getByDataCy('road_$defaultroad$__semester_1')
+      .within(() => {
+        cy.getByDataCy('classInSemester1_3_45')
+          .should('exist');
+      });
+  });
+
+  it('Loads correct road based on url (Logged In)', () => {
+    const fakeCode = 'abcdefg';
+    const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf';
+    cy.setupAuth(fakeCode, fakeAccessToken);
+    cy.visit('/');
+    cy.login(fakeCode);
+
+    // Should be file 123, which contains 14.03
+    const defaultRoadId = Object.keys(syncedRoads.files)[0];
+
+    // Test whether the site navigates to the correct road based on the url and loads its content
+    const testRoad = syncedRoads.file456;
+    cy.visit(`/road/${testRoad.id}`);
+    cy.url().should('include', `/road/${testRoad.id}`);
+
+    // Ensure 6.042 in test road semester 3
+    cy.getByDataCy(`road_${testRoad.id}__semester_3`)
+      .within(() => {
+        cy.getByDataCy('classInSemester3_6_042')
+          .should('exist');
+      });
+
+    // Test whether default road gets correctly loaded when no road id given
+    cy.visit('/');
+    // Ensure 14.03 in default road
+    cy.getByDataCy(`road_${defaultRoadId}__semester_1`)
+      .within(() => {
+        cy.getByDataCy('classInSemester1_14_03')
+          .should('exist');
+      });
+  });
+
+  it('Handles unknown road ids in url correctly (Logged Out)', () => {
+    // Two things should occur, the user is redirected to the default road
+    // and the url shows the id of the default road instead of the unknown road
+    cy.visit('/');
+
+    const randomId = 909258;
+    cy.visit(`/road/${randomId}`);
+
+    cy.url().should('not.include', `/road/${randomId}`);
+    cy.url().should('include', '/road/$defaultroad$');
+  });
+
+  it('Handles unknown road ids in url correctly (Logged In)', () => {
+    // Two things should occur, the user is redirected to the default road
+    // and the url shows the id of the default road instead of the unknown road
+    const fakeCode = 'abcdefg';
+    const fakeAccessToken = 'jGWHEO2IfpdSEt1dyDkf';
+    cy.setupAuth(fakeCode, fakeAccessToken);
+    cy.visit('/');
+    cy.login(fakeCode);
+
+    const randomId = 909258;
+    cy.visit(`/road/${randomId}`);
+
+    // Should be the road that is defaulted to when no road id is specified
+    const defaultRoadId = Object.keys(syncedRoads.files)[0];
+    cy.url().should('include', `/road/${defaultRoadId}`);
   });
 });

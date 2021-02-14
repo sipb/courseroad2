@@ -6,7 +6,7 @@ import reqs from '../assets/list_reqs.js';
 import { objectSlice } from '../support/utilities.js';
 
 describe('Audit Tests', () => {
-  it.only('Adds and removes majors', () => {
+  it('Adds and removes majors', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', []);
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major21M-1/', major21M1);

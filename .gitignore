@@ -114,3 +114,6 @@ tests/e2e/videos
 tests/e2e/downloads
 
 env.sh
+
+# VSCode Debugging Configurations
+.vscode
