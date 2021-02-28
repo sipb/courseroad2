@@ -88,7 +88,7 @@
           :style="'float: right; color: '+percentageTextColor"
           :data-cy="'percentFulfilled' + req['list-id']"
         >
-          {{ req.percent_fulfilled }}%
+          &nbsp;{{ req.percent_fulfilled }}%
           <v-icon
             v-if="'reqs' in req && hoveringOver"
             style="padding-left: 0.2em; padding-right: 0em;"
