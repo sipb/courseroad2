@@ -186,6 +186,7 @@ export default {
 <style scoped>
   .requirement {
     font-size: 0.75em;
+    flex: 1;
   }
 
   .p-bar {
