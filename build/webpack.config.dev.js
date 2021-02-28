@@ -8,6 +8,7 @@ const cgi = require('cgi')
 
 module.exports = (env) => {
   return {
+    devtool: 'eval-source-map',
     entry: [
       '@babel/polyfill',
       './src/app.js'
@@ -65,7 +66,7 @@ module.exports = (env) => {
       ]
     },
     output: {
-      publicPath: env.APP_URL.indexOf('dev') !== -1 ? '/dev/' : '/'
+      publicPath: env.VUE_APP_URL.indexOf('dev') !== -1 ? '/dev/' : '/'
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
@@ -78,8 +79,8 @@ module.exports = (env) => {
       new MiniCssExtractPlugin({
         filename: 'css/app.css'
       }),
-      new webpack.DefinePlugin({ 'process.env.APP_URL': JSON.stringify(env.APP_URL) }),
-      new webpack.DefinePlugin({ 'process.env.FIREROAD_URL': JSON.stringify(env.FIREROAD_URL) })
+      new webpack.DefinePlugin({ 'process.env.VUE_APP_URL': JSON.stringify(env.VUE_APP_URL) }),
+      new webpack.DefinePlugin({ 'process.env.VUE_APP_FIREROAD_URL': JSON.stringify(env.VUE_APP_FIREROAD_URL) })
     ]
   }
 }

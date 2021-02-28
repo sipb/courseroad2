@@ -5,6 +5,7 @@
       class="collapse-button"
       outline
       color="primary"
+      data-cy="loginButton"
       @click="loginUser"
     >
       <span class="hidden-sm-and-down">Login</span>
@@ -15,6 +16,7 @@
       class="collapse-button"
       outline
       color="primary"
+      data-cy="logoutButton"
       @click="logoutUser"
     >
       <span class="hidden-sm-and-down">Logout</span>
@@ -23,6 +25,7 @@
     <v-tooltip bottom :disabled="saveWarnings.length===0">
       <v-icon
         v-if="!currentlySaving && !gettingUserData"
+        id="save-icon"
         slot="activator"
         :color="saveColor"
         style="user-select: none;"
@@ -123,7 +126,7 @@ export default {
         const email = this.accessInfo.academic_id;
         const endPoint = email.indexOf('@');
         const kerb = email.slice(0, endPoint);
-        axios.get(process.env.APP_URL + '/cgi-bin/people.py?kerb=' + kerb)
+        axios.get(process.env.VUE_APP_URL + '/cgi-bin/people.py?kerb=' + kerb)
           .then(response => {
             if (response.status !== 200) {
               console.log('Failed to find user year');
@@ -141,12 +144,19 @@ export default {
     }
   },
   mounted () {
+    window.setLocationHref = function (url) {
+      window.location.href = url;
+    };
+
     if (this.$cookies.isKey('newRoads')) {
       const newRoads = this.$cookies.get('newRoads');
       if (Object.keys(newRoads).length) {
         for (var roadID in newRoads) {
           if (!Array.isArray(newRoads[roadID].contents.selectedSubjects[0])) {
             newRoads[roadID].contents.selectedSubjects = this.getSimpleSelectedSubjects(newRoads[roadID].contents.selectedSubjects);
+          }
+          if (newRoads[roadID].contents.progressAssertions === undefined) {
+            newRoads[roadID].contents.progressAssertions = {};
           }
         }
         if (this.justLoaded) {
@@ -162,22 +172,31 @@ export default {
       this.$store.commit('allowCookies');
     }
 
-    window.cookies = this.$cookies;
     if (this.$cookies.isKey('accessInfo')) {
-      this.loggedIn = true;
       this.accessInfo = this.$cookies.get('accessInfo');
-      this.verify();
+      this.loggedIn = true;
       this.$store.commit('allowCookies');
-      this.getUserData();
+      this.verify().then(() => {
+        this.getUserData();
+      });
     }
+
+    this.setTabID();
 
     window.onbeforeunload = function () {
       if (this.cookiesAllowed) {
         const tabID = sessionStorage.tabID;
-        const tabs = JSON.parse(this.$cookies.get('tabs'));
+        let tabs = [];
+        if (this.$cookies.isKey('tabs')) {
+          tabs = this.$cookies.get('tabs').ids;
+        }
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
-        this.$cookies.set('tabs', JSON.stringify(tabs));
+        if (tabs.length) {
+          this.$cookies.set('tabs', { 'ids': tabs });
+        } else {
+          this.$cookies.remove('tabs');
+        }
       }
       if (this.currentlySaving) {
         return 'Are you sure you want to leave?  Your roads are not saved.';
@@ -189,7 +208,7 @@ export default {
   },
   methods: {
     loginUser: function (event) {
-      window.location.href = `${process.env.FIREROAD_URL}/login/?redirect=${process.env.APP_URL}`;
+      window.setLocationHref(`${process.env.VUE_APP_FIREROAD_URL}/login/?redirect=${process.env.VUE_APP_URL}`);
       if (this.cookiesAllowed) {
         this.$cookies.set('hasLoggedIn', true);
       }
@@ -209,7 +228,7 @@ export default {
         'Authorization': 'Bearer ' + this.accessInfo.access_token
       } };
       const currentMonth = new Date().getMonth();
-      return axios.get(process.env.FIREROAD_URL + '/verify/', headerList)
+      return axios.get(process.env.VUE_APP_FIREROAD_URL + '/verify/', headerList)
         .then(function (verifyResponse) {
           if (verifyResponse.data.success) {
             this.$store.commit('setCurrentSemester', verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0));
@@ -218,7 +237,10 @@ export default {
             this.logoutUser();
             return Promise.reject(new Error('Token not valid'));
           }
-        }.bind(this));
+        }.bind(this)).catch(function (err) {
+          this.logoutUser();
+          return Promise.reject(err);
+        });
     },
     doSecure: function (axiosFunc, link, params) {
       if (this.loggedIn && this.accessInfo !== undefined) {
@@ -226,8 +248,8 @@ export default {
           'Authorization': 'Bearer ' + this.accessInfo.access_token
         } };
         return params
-          ? axiosFunc(process.env.FIREROAD_URL + link, params, headerList)
-          : axiosFunc(process.env.FIREROAD_URL + link, headerList);
+          ? axiosFunc(process.env.VUE_APP_FIREROAD_URL + link, params, headerList)
+          : axiosFunc(process.env.VUE_APP_FIREROAD_URL + link, headerList);
       } else {
         return Promise.reject(new Error('No auth information'));
       }
@@ -279,6 +301,10 @@ export default {
       if (road.contents.progressOverrides === undefined) {
         road.contents.progressOverrides = {};
       }
+      // sanitize progressAssertions
+      if (road.contents.progressAssertions === undefined) {
+        road.contents.progressAssertions = {};
+      }
     },
     getUserData: function () {
       this.gettingUserData = true;
@@ -304,7 +330,8 @@ export default {
               contents: {
                 coursesOfStudy: ['girs'],
                 selectedSubjects: Array.from(Array(16), () => []),
-                progressOverrides: {}
+                progressOverrides: {},
+                progressAssertions: {}
               }
             };
             this.$store.commit('setRoad', {
@@ -316,11 +343,22 @@ export default {
           if (this.justLoaded && fileKeys.length > 0) {
             this.$store.commit('deleteRoad', '$defaultroad$');
           }
-          this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
+          if (fileKeys.includes(this.$route.params.road)) {
+            this.$store.commit('setActiveRoad', this.$route.params.road);
+          } else {
+            // Redirect to first road if road cannot be found
+            this.$store.commit('setActiveRoad', Object.keys(this.roads)[0]);
+            this.$router.push({ path: `/road/${Object.keys(this.roads)[0]}` });
+          }
           // Set list of unretrieved roads to all but first road ID
           this.$store.commit('setUnretrieved', fileKeys);
           if (fileKeys.length) {
-            return this.retrieveRoad(fileKeys[0]);
+            // Retrieves based on url and defaults to first road if unable to find it
+            if (fileKeys.includes(this.$route.params.road)) {
+              return this.retrieveRoad(this.$route.params.road);
+            } else {
+              return this.retrieveRoad(fileKeys[0]);
+            }
           }
         }.bind(this)).then(function () {
           this.gettingUserData = false;
@@ -368,7 +406,7 @@ export default {
     },
 
     getAuthorizationToken: function (code) {
-      axios.get(process.env.FIREROAD_URL + '/fetch_token/?code=' + code)
+      axios.get(process.env.VUE_APP_FIREROAD_URL + '/fetch_token/?code=' + code)
         .then(function (response) {
           if (response.data.success) {
             if (this.data.cookiesAllowed) {
@@ -410,7 +448,7 @@ export default {
         assignKeys.id = roadID;
       }
       const roadSubjects = this.flatten(this.roads[roadID].contents.selectedSubjects);
-      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [] }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
+      const formattedRoadContents = Object.assign({ coursesOfStudy: ['girs'], progressOverrides: [], progressAssertions: {} }, this.roads[roadID].contents, { selectedSubjects: roadSubjects });
       const roadToSend = {};
       Object.assign(roadToSend, this.roads[roadID], { contents: formattedRoadContents }, assignKeys);
       const savePromise = this.postSecure('/sync/sync_road/', roadToSend)
@@ -579,28 +617,29 @@ export default {
       if (this.cookiesAllowed) {
         if (sessionStorage.tabID !== undefined) {
           this.tabID = sessionStorage.tabID;
+          const tabNum = parseInt(this.tabID);
           if (this.$cookies.isKey('tabs')) {
-            var tabs = JSON.parse(this.$cookies.get('tabs'));
-            if (tabs.indexOf(this.tabID) === -1) {
-              tabs.push(this.tabID);
-              this.$cookies.set('tabs', JSON.stringify(tabs));
+            var tabs = this.$cookies.get('tabs').ids;
+            if (tabs.indexOf(tabNum) === -1) {
+              tabs.push(tabNum);
+              this.$cookies.set('tabs', { 'ids': tabs });
             }
           } else {
-            this.$cookies.set('tabs', JSON.stringify([this.tabID]));
+            this.$cookies.set('tabs', { 'ids': [tabNum] });
           }
         } else {
           // TODO: look into whether this = sign is acting correctly?
-          if (this.$cookies.isKey('tabs') && (tabs = JSON.parse(this.$cookies.get('tabs'))).length) {
+          if (this.$cookies.isKey('tabs') && (tabs = this.$cookies.get('tabs').ids)) {
             const maxTab = Math.max(...tabs);
             const newTab = (maxTab + 1).toString();
             sessionStorage.tabID = newTab;
             this.tabID = newTab;
-            tabs.push(newTab);
-            this.$cookies.set('tabs', JSON.stringify(tabs));
+            tabs.push(maxTab + 1);
+            this.$cookies.set('tabs', { 'ids': tabs });
           } else {
             sessionStorage.tabID = '1';
             this.tabID = '1';
-            this.$cookies.set('tabs', '["1"]');
+            this.$cookies.set('tabs', { 'ids': [1] });
           }
         }
       }

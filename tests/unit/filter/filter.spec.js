@@ -1,4 +1,4 @@
-import { Filter, RegexFilter, MathFilter, BooleanFilter } from '../../../src/utilities/filters.js';
+import { Filter, RegexFilter, MathFilter, BooleanFilter, ArrayFilter } from '../../../src/utilities/filters.js';
 
 function testFilter (FilterType, args, matching, nonmatching) {
   const m1 = matching[0];
@@ -98,6 +98,7 @@ function testFilter (FilterType, args, matching, nonmatching) {
 }
 
 testFilter(Filter, [(x) => x === 7], [7], [4, 6, 13, 'cat', 'dog']);
-testFilter(RegexFilter, ['^ca.+'], ['cat', 'car', 'camera', 'cab', 'candid'], ['arcade', 'ca', 'coat', 'orca', 'act']);
+testFilter(RegexFilter, ['^ca.+', ''], ['cat', 'car', 'camera', 'cab', 'candid'], ['arcade', 'ca', 'coat', 'orca', 'act']);
 testFilter(MathFilter, [[4, 8], false], [5, 6, 7, 6.5], [4, 8, 9, 10, 2]);
 testFilter(BooleanFilter, [false], [true], [false]);
+testFilter(ArrayFilter, [RegexFilter, ['ra', '']], [['rage', 'range'], ['random', 'look'], ['hi', 'ramp'], ['radio'], ['rail']], [[], ['list', 'hello'], [], [], ['one']]);

@@ -54,6 +54,7 @@
         <v-text-field
           id="searchInputTF"
           v-model="searchInput"
+          data-cy="classSearchInput"
           autocomplete="off"
           class="expanded-search"
           prepend-icon="search"
@@ -87,7 +88,7 @@
               </h3>
             </v-flex>
             <v-flex>
-              <router-link to="/about" style="float: right;">
+              <router-link to="/about" style="float: right;" data-cy="aboutLink">
                 About
               </router-link>
             </v-flex>
@@ -99,8 +100,9 @@
             :selected-subjects="roads[activeRoad].contents.selectedSubjects"
             :req-list="reqList"
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
+            data-cy="audit"
           />
-          <v-flex shrink style="padding: 14px; padding-bottom: 0;">
+          <v-flex shrink style="padding: 14px; padding-bottom: 0;" data-cy="unofficialWarning">
             <p>
               <b>Warning:</b> This is an unofficial tool that may not accurately
               reflect degree progress. Please view the
@@ -132,6 +134,7 @@
             :road-i-d="roadId"
             :adding-from-card="addingFromCard && activeRoad===roadId"
             :drag-semester-num="(activeRoad===roadId) ? dragSemesterNum : -1"
+            :data-cy="'road_' + roadId"
             @change-year="$refs.authcomponent.changeSemester($event)"
           />
         </v-tab-item>
@@ -175,7 +178,14 @@
               <span v-if="cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed color="primary" class="ma-1" @click="$store.commit('allowCookies'); dismissCookies();">
+              <v-btn
+                small
+                depressed
+                color="primary"
+                class="ma-1"
+                data-cy="acceptCookies"
+                @click="$store.commit('allowCookies'); dismissCookies();"
+              >
                 I accept
               </v-btn>
             </v-flex>
@@ -277,8 +287,7 @@ export default {
   watch: {
     // call fireroad to check fulfillment if you change active roads or change something about a road
     activeRoad: function (newRoad) {
-      this.justLoaded = false;
-      if (this.$store.state.unretrieved.indexOf(newRoad) >= 0) {
+      if (this.$store.state.unretrieved.indexOf(newRoad) >= 0 && !this.$refs.authcomponent.gettingUserData) {
         const _this = this;
         this.$refs.authcomponent.retrieveRoad(newRoad).then(function () {
           _this.$store.commit('setRetrieved', newRoad);
@@ -286,9 +295,12 @@ export default {
       } else if (newRoad !== '') {
         this.updateFulfillment(this.$store.state.fulfillmentNeeded);
       }
-      if (newRoad !== '') {
+      // If just loaded, store isn't loaded yet
+      // and so we can't overwrite the router just yet
+      if (newRoad !== '' && !this.justLoaded) {
         this.$router.push({ path: `/road/${newRoad}` });
       }
+      this.justLoaded = false;
     },
     cookiesAllowed: function (newCA) {
       if (newCA) {
@@ -313,13 +325,10 @@ export default {
         }
       },
       deep: true
-    },
-    $route () {
-      this.setActiveRoad();
     }
   },
   created () {
-    if (this.$cookies.get('versionNumber') !== this.$store.state.versionNumber) {
+    if (this.cookiesAllowed && this.$cookies.get('versionNumber') !== this.$store.state.versionNumber) {
       console.log('Warning: the version number has changed.');
       // do whatever needs to happen when the version changed, probably including clearing local storage
       // then update the version number cookie
@@ -346,7 +355,7 @@ export default {
 
     this.setActiveRoad();
 
-    axios.get(process.env.FIREROAD_URL + `/requirements/list_reqs/`)
+    axios.get(process.env.VUE_APP_FIREROAD_URL + `/requirements/list_reqs/`)
       .then(response => {
         this.reqList = Object.keys(response.data).map((m) => {
           return Object.assign(response.data[m], { key: m });
@@ -401,7 +410,7 @@ export default {
           const req = fulfillments[r];
           const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
           alteredRoadContents.selectedSubjects = this.flatten(alteredRoadContents.selectedSubjects);
-          axios.post(process.env.FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
+          axios.post(process.env.VUE_APP_FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);
           }.bind({ data: this, req: req }));
@@ -412,14 +421,15 @@ export default {
       }
     },
     setActiveRoad: function () {
+      const roadRequested = this.$route.params.road;
       if (this.roads.hasOwnProperty(this.$route.params.road)) {
-        const roadRequested = this.$route.params.road;
-        if (roadRequested in this.roads) {
-          this.$store.commit('setActiveRoad', roadRequested);
-          return true;
-        }
+        this.$store.commit('setActiveRoad', roadRequested);
+        return true;
+      } else if (!this.$cookies.isKey('accessInfo')) {
+        // If user isn't logged in, and bad road id in url, then redirect to default road
+        const defaultRoadId = this.$store.state.activeRoad;
+        this.$router.replace({ path: `/road/${defaultRoadId}` });
       }
-      this.$router.push({ path: `/road/${this.activeRoad}` });
       return false;
     },
     addRoad: function (roadName, cos = ['girs'], ss = Array.from(Array(16), () => []), overrides = {}) {
@@ -427,7 +437,8 @@ export default {
       const newContents = {
         coursesOfStudy: cos,
         selectedSubjects: ss,
-        progressOverrides: overrides
+        progressOverrides: overrides,
+        progressAssertions: {}
       };
       const newRoad = {
         downloaded: moment().format(DATE_FORMAT),
@@ -441,6 +452,7 @@ export default {
         road: newRoad,
         ignoreSet: false
       });
+      this.$store.commit('resetFulfillmentNeeded');
       this.$store.commit('setActiveRoad', tempRoadID);
       this.$refs.authcomponent.newRoads.push(tempRoadID);
     },

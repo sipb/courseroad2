@@ -7,6 +7,7 @@
       <filter-set v-model="chosenFilters.level" :label="'Level'" :filters="allFilters.level.filters" />
       <filter-set v-model="chosenFilters.units" :label="'Units'" :filters="allFilters.units.filters" />
       <filter-set v-model="chosenFilters.terms" :label="'Term'" :filters="allFilters.terms.filters" />
+      <filter-set v-model="chosenFilters.virtual" :label="'Virtual'" :filters="allFilters.virtual.filters" />
     </div>
     <div style="display: flex; flex: 1; min-height: 0px;">
       <div style="flex: 1; overflow: auto;">
@@ -22,6 +23,7 @@
             <v-hover>
               <tr
                 slot-scope="{ hover }"
+                :data-cy="'classInSearch'+props.item.subject_id.replace('.','_')"
                 :class="{ 'elevation-3': hover }"
                 draggable="true"
                 style="cursor: grab; margin: 4px;"
@@ -50,22 +52,25 @@
 import FilterSet from './FilterSet.vue';
 import $ from 'jquery';
 import Vue from 'vue';
-import { FilterGroup, RegexFilter, MathFilter, BooleanFilter } from './../utilities/filters.js';
+import { FilterGroup, RegexFilter, MathFilter, BooleanFilter, ArrayFilter } from '../utilities/filters.js';
 
-var girAny = new RegexFilter('GIR:Any', 'Any', '.+', ['gir_attribute']);
-var girLab = new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', ['gir_attribute']);
-var girRest = new RegexFilter('GIR:REST', 'REST', '.*(REST|RST2).*', ['gir_attribute']);
-var hassAny = new RegexFilter('HASS:Any', 'Any', 'HASS', ['hass_attribute']);
-var hassArt = new RegexFilter('HASS-A', 'A', 'HASS-A', ['hass_attribute']);
-var hassSocialScience = new RegexFilter('HASS-S', 'S', 'HASS-S', ['hass_attribute']);
-var hassHumanity = new RegexFilter('HASS-H', 'H', 'HASS-H', ['hass_attribute']);
-var hassElective = new RegexFilter('HASS-E', 'E', 'HASS-E', ['hass_attribute']);
-var ciAny = new RegexFilter('CI:Any', 'Any', 'CI.+', ['communication_requirement']);
-var ciH = new RegexFilter('CI-H', 'CI-H', 'CI-H', ['communication_requirement']);
-var ciHW = new RegexFilter('CI-HW', 'CI-HW', 'CI-HW', ['communication_requirement']);
-var ciNone = new RegexFilter('Not CI', 'None', '^(?!CI)', ['communication_requirement']);
-var levelUG = new RegexFilter('Undergraduate', 'UG', 'U', ['level']);
-var levelG = new RegexFilter('Graduate', 'G', 'G', ['level']);
+var girAny = new RegexFilter('GIR:Any', 'Any', '.+', undefined, ['gir_attribute']);
+var girLab = new RegexFilter('GIR:Lab', 'Lab', '.*(LAB|LAB2).*', undefined, ['gir_attribute']);
+var girRest = new RegexFilter('GIR:REST', 'REST', '.*(REST|RST2).*', undefined, ['gir_attribute']);
+var hassAny = new RegexFilter('HASS:Any', 'Any', 'HASS', undefined, ['hass_attribute']);
+var hassArt = new RegexFilter('HASS-A', 'A', 'HASS-A', undefined, ['hass_attribute']);
+var hassSocialScience = new RegexFilter('HASS-S', 'S', 'HASS-S', undefined, ['hass_attribute']);
+var virtual = new RegexFilter('Virtual', 'Y', '^Virtual$', undefined, ['virtual_status']);
+var notVirtual = new RegexFilter('In Person', 'N', '^In-Person$', undefined, ['virtual_status']);
+var partlyVirtual = new RegexFilter('Partly Virtual', 'Both', '^Virtual/In-Person$', undefined, ['virtual_status']);
+var hassHumanity = new RegexFilter('HASS-H', 'H', 'HASS-H', undefined, ['hass_attribute']);
+var hassElective = new RegexFilter('HASS-E', 'E', 'HASS-E', undefined, ['hass_attribute']);
+var ciAny = new RegexFilter('CI:Any', 'Any', 'CI.+', undefined, ['communication_requirement']);
+var ciH = new RegexFilter('CI-H', 'CI-H', 'CI-H', undefined, ['communication_requirement']);
+var ciHW = new RegexFilter('CI-HW', 'CI-HW', 'CI-HW', undefined, ['communication_requirement']);
+var ciNone = new RegexFilter('Not CI', 'None', '^(?!CI)', undefined, ['communication_requirement']);
+var levelUG = new RegexFilter('Undergraduate', 'UG', 'U', undefined, ['level']);
+var levelG = new RegexFilter('Graduate', 'G', 'G', undefined, ['level']);
 var unitsLt6 = new MathFilter('<6', '<6', [undefined, 6], false, ['total_units']);
 var units6 = new MathFilter('6', '6', [6, 6], true, ['total_units']);
 var units9 = new MathFilter('9', '9', [9, 9], true, ['total_units']);
@@ -76,7 +81,8 @@ var unitsGte15 = new MathFilter('>15', '>15', [15, undefined], false, ['total_un
 var termFall = new BooleanFilter('Fall', 'FA', false, ['offered_fall']);
 var termIAP = new BooleanFilter('IAP', 'IAP', false, ['offered_IAP']);
 var termSpring = new BooleanFilter('Spring', 'SP', false, ['offered_spring']);
-var textFilter = new RegexFilter('Subject ID', 'ID', '', ['subject_id', 'title'], 'OR', 'nameInput');
+var textFilter = new RegexFilter('Subject ID', 'ID', '', 'nameInput', ['subject_id', 'title'], 'OR');
+var instructorFilter = new ArrayFilter('Instructor', 'Prof', RegexFilter, ['', 'nameInput'], ['instructors'], 'OR');
 
 export default {
   name: 'ClassSearch',
@@ -102,7 +108,8 @@ export default {
         ci: [false, false, false],
         level: [false, false],
         units: [false, false, false, false, false, false, false],
-        terms: [false, false, false]
+        terms: [false, false, false],
+        virtual: [false, false, false]
       },
       allFilters: {
         girs: new FilterGroup('GIR', [girAny, girLab, girRest], 'OR'),
@@ -110,7 +117,8 @@ export default {
         ci: new FilterGroup('CI', [ciAny, ciH, ciHW, ciNone], 'OR'),
         level: new FilterGroup('Level', [levelUG, levelG], 'OR'),
         units: new FilterGroup('Units', [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15], 'OR'),
-        terms: new FilterGroup('Term', [termFall, termIAP, termSpring], 'OR')
+        terms: new FilterGroup('Term', [termFall, termIAP, termSpring], 'OR'),
+        virtual: new FilterGroup('Virtual', [virtual, notVirtual, partlyVirtual], 'OR')
       },
       rowsPerPageItems: [5, 10, 20, 50, { 'text': '$vuetify.dataIterator.rowsPerPageAll', 'value': -1 }],
       pagination: {
@@ -133,10 +141,11 @@ export default {
       }
 
       textFilter.setupInputs({ nameInput: this.nameInput });
+      instructorFilter.setupInputs({ nameInput: this.nameInput });
 
       // Filter subjects that match all filter sets and the text filter
       const filteredSubjects = this.allSubjects.filter((subject) => {
-        var matches = textFilter.matches(subject, { nameInput: this.nameInput });
+        var matches = textFilter.matches(subject) || instructorFilter.matches(subject);
         return matches && Object.keys(this.allFilters).every((filterGroup) => {
           return this.allFilters[filterGroup].matches(subject, this.chosenFilters[filterGroup]);
         });

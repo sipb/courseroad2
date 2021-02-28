@@ -9,3 +9,5 @@ jobs:
       script: npm run lint
     - stage: unit
       script: npm run test:unit
+    - stage: e2e
+      script: npm run test:e2e-record

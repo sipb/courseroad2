@@ -6,6 +6,7 @@
       <v-badge slot-scope="{ hover }" overlap right color="rgba(0,0,0,0)" style="width:100%;">
         <v-card
           v-if="classInfo == 'placeholder'"
+          data-cy="placeholderClass"
           class="placeholder classbox"
         >
           <v-container fill-height>
@@ -24,6 +25,7 @@
         <v-card
           v-else
           :id="'class'+classInfo.id.replace('.','')+semesterIndex"
+          :data-cy="'classInSemester' + semesterIndex + '_' + classInfo.id.replace('.', '_')"
           draggable
           @dragstart="dragStart"
           @click="$store.commit('pushClassStack', classInfo.id)"
@@ -60,10 +62,11 @@
             v-model="shouldOverrideWarnings"
             label="Override warnings"
             color="orange darken-3"
+            @change="$store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})"
           />
         </v-card-text>
         <v-card-actions style="justify-content: flex-end;">
-          <v-btn flat @click="warningDialog = false; $store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})">
+          <v-btn flat @click="warningDialog = false">
             Close
           </v-btn>
         </v-card-actions>

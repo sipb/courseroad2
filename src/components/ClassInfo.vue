@@ -3,6 +3,7 @@
     <v-flex>
       <v-card
         id="classInfoCard"
+        data-cy="classInfoCard"
         class="class-info-card"
         style="display: flex; flex-direction:column;"
         width="30%"
@@ -12,7 +13,7 @@
         <v-card-title :class="['card-header',courseColor(currentSubject)]">
           <v-flex style="display: flex; flex-direction: row; align-items: center;">
             <div style="padding: 0; margin: 0; display: block;">
-              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon @click="$store.commit('popClassStack')">
+              <v-btn v-if="classInfoStack.length > 1" style="padding: 0; margin: 0; color:white;" icon data-cy="cardPreviousButton" @click="$store.commit('popClassStack')">
                 <v-icon>navigate_before</v-icon>
               </v-btn>
             </div>
@@ -20,7 +21,7 @@
               <h3>{{ currentSubject.subject_id }}</h3>
             </div>
             <div style="margin-left:auto">
-              <v-btn icon style="margin: 0;" @click="$store.commit('clearClassInfoStack')">
+              <v-btn icon style="margin: 0;" data-cy="closeClassInfoButton" @click="$store.commit('clearClassInfoStack')">
                 <v-icon style="margin:0; padding: 0; color:white;">
                   close
                 </v-icon>
@@ -33,11 +34,14 @@
           <div id="cardBody" class="card-body-container">
             <v-layout row>
               <div style="padding: 0 0 0.5em 0;">
-                <h3>{{ currentSubject.title }}</h3>
+                <h3 data-cy="cardSubjectTitle">
+                  {{ currentSubject.title }}
+                </h3>
               </div>
 
               <v-btn
                 v-if="!addingFromCard"
+                data-cy="addClassFromCardButton"
                 fab
                 small
                 style="margin-left:auto;"
@@ -72,7 +76,7 @@
             <table cellspacing="4">
               <tr v-if="currentSubject.total_units!==undefined">
                 <td><b>Units</b></td>
-                <td>
+                <td data-cy="cardUnits">
                   {{ currentSubject.total_units }}
                   <span
                     v-if="currentSubject.lecture_units !== undefined
@@ -92,7 +96,7 @@
                 "
               >
                 <td><b>Offered</b></td>
-                <td>
+                <td data-cy="cardOffered">
                   <ul class="comma-separated">
                     <li v-if="currentSubject.offered_fall">
                       Fall
@@ -118,7 +122,19 @@
                   </span>
                 </td>
               </tr>
-              <tr v-if="currentSubject.instructors !== undefined">
+              <tr v-if="currentSubject.virtual_status !== undefined" data-cy="cardVirtual">
+                <td><b>Virtual</b></td>
+                <td v-if="currentSubject.virtual_status === 'Virtual/In-Person'">
+                  Partly Virtual
+                </td>
+                <td v-else-if="currentSubject.virtual_status === 'In-Person'">
+                  No
+                </td>
+                <td v-else>
+                  Yes
+                </td>
+              </tr>
+              <tr v-if="currentSubject.instructors !== undefined" data-cy="cardInstructors">
                 <td><b>Instructor</b></td>
                 <td>
                   <ul class="comma-separated">
@@ -130,17 +146,19 @@
               </tr>
               <tr v-if="currentSubject.enrollment_number !== undefined">
                 <td><b>Average Enrollment</b></td>
-                <td>{{ currentSubject.enrollment_number }}</td>
+                <td data-cy="cardEnrollment">
+                  {{ currentSubject.enrollment_number }}
+                </td>
               </tr>
               <tr v-if="currentSubject.rating !== undefined">
                 <td><b>Average Rating</b></td>
-                <td>
+                <td data-cy="cardRating">
                   <a target="_blank" :href="'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
                     {{ currentSubject.rating }}
                   </a>
                 </td>
               </tr>
-              <tr v-if="currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined">
+              <tr v-if="currentSubject.in_class_hours !== undefined || currentSubject.out_of_class_hours !== undefined" data-cy="cardHours">
                 <td><b>{{ currentSubject.subject_id in $store.state.genericIndex ? "Average* hours" : "Hours" }}</b></td>
                 <td>
                   <table cellspacing="0">
@@ -158,7 +176,9 @@
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
-            <p> {{ currentSubject.description }} </p>
+            <p data-cy="cardDescription">
+              {{ currentSubject.description }}
+            </p>
             <p v-if="currentSubject.url !== undefined">
               <a target="_blank" :href="currentSubject.url">View in course catalog</a>
             </p>
@@ -167,6 +187,10 @@
                 View Course Evaluations
               </a>
             </p>
+            <div v-if="currentSubject.joint_subjects !== undefined">
+              <h3>Joint Subjects</h3>
+              <subject-scroll :subjects="currentSubject.joint_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
+            </div>
             <div v-if="currentSubject.equivalent_subjects !== undefined">
               <h3>Equivalent Subjects</h3>
               <subject-scroll :subjects="currentSubject.equivalent_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
@@ -178,6 +202,7 @@
               <expansion-reqs
                 :requirement="parsedPrereqs"
                 :req-i-d="currentSubject.subject_id+'prereq0'"
+                data-cy="cardPrereqs"
                 @click-subject="clickRelatedSubject"
               />
             </div>
@@ -194,7 +219,7 @@
                 @click-subject="clickRelatedSubject"
               />
             </div>
-            <div v-if="currentSubject.related_subjects !== undefined">
+            <div v-if="currentSubject.related_subjects !== undefined" data-cy="cardRelatedSubjects">
               <h3>Related subjects</h3>
               <subject-scroll :subjects="currentSubject.related_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
             </div>
@@ -251,7 +276,16 @@ export default {
     subjectsWithPrereq: function () {
       const currentID = this.currentSubject.subject_id;
       const currentDept = currentID.substring(0, currentID.indexOf('.'));
-      var IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+
+      var thisGIRAttr = this.currentSubject.gir_attribute;
+      var IDMatcher;
+
+      if (thisGIRAttr === undefined) {
+        IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\da-zA-Z])');
+      } else { // Expression taken directly from above, but modified for GIRs
+        var filteredCurrentID = currentID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        IDMatcher = new RegExp('(^|[^\\da-zA-Z])' + '(' + 'GIR:' + thisGIRAttr + '|' + filteredCurrentID + ')' + '(?![\\da-zA-Z])');
+      }
       return this.$store.state.subjectsInfo.filter(function (s) {
         return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
       }).sort(function (s1, s2) {

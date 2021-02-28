@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-group">
+  <div class="filter-group" :data-cy="'filter_' + label">
     <span class="filter-title">{{ label }}</span>
     <v-btn-toggle
       multiple
@@ -7,9 +7,11 @@
     >
       <v-btn
         v-for="(filter, index) in filters"
+        :id="cssID(filter.name)"
         :key="filter.name"
         flat
         :value="index"
+        :data-cy="'filterButton_' + filter.name"
         @click="buttonClicked"
       >
         {{ filter.short }}
@@ -54,6 +56,9 @@ export default {
     */
     buttonClicked (event) {
       document.getElementById('searchInputTF').focus();
+    },
+    cssID (name) {
+      return 'filter-' + name.replace(/[~!@$%^&*()+=,./';:"?><[\]\\{}|`#]/gi, '-');
     }
   }
 };

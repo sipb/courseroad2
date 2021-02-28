@@ -2,6 +2,7 @@
   <div
     class="requirement"
     :draggable="canDrag(req)"
+    :data-cy="'requirement' + req['list-id']"
     @dragstart="dragStart"
     @mouseover="hoveringOver = true"
     @mouseleave="hoveringOver = false"
@@ -20,13 +21,55 @@
           <span style="font-style:italic">{{ req['threshold-desc'] }}</span>
         </div>
         <span v-else>
-          <span v-if="'title' in req"> {{ req.title }} </span>
+          <span v-if="'title' in req">
+            {{ req.title }}
+            <div
+              v-if="req['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions"
+              style="display:inline-block"
+            >
+              <v-icon
+                v-if="!('ignore' in $store.state.roads[$store.state.activeRoad].contents.progressAssertions[req['list-id']])"
+                small
+              >
+                gavel
+              </v-icon>
+              <v-icon v-else small>
+                highlight_off
+              </v-icon>
+            </div>
+          </span>
+          <span
+            v-if="hoveringOver"
+            style="float:right"
+          >
+            <v-icon
+              style="padding-left: 0.2em; padding-right: 0em;"
+              small
+              :color="petitionColor"
+              @mouseover="petitionHover = true"
+              @mouseleave="petitionHover = false"
+              @click.stop="$emit('click-petition', $event)"
+            >
+              post_add
+            </v-icon>
+          </span>
         </span>
         <span v-if="!req['plain-string']">
           <span v-if="!('title' in req) && 'req' in req">
             <span :class="reqFulfilled">{{ req.req }}</span>
             <span v-if="'threshold-desc' in req" style="font-style:italic">
               ({{ req['threshold-desc'] }})
+            </span>
+            <span v-if="req['list-id'] in $store.state.roads[$store.state.activeRoad].contents.progressAssertions">
+              <v-icon
+                v-if="!('ignore' in $store.state.roads[$store.state.activeRoad].contents.progressAssertions[req['list-id']])"
+                small
+              >
+                gavel
+              </v-icon>
+              <v-icon v-else small>
+                highlight_off
+              </v-icon>
             </span>
           </span>
         </span>
@@ -43,6 +86,7 @@
             && 'percent_fulfilled' in req
             && req.percent_fulfilled !== 'N/A'"
           :style="'float: right; color: '+percentageTextColor"
+          :data-cy="'percentFulfilled' + req['list-id']"
         >
           {{ req.percent_fulfilled }}%
           <v-icon
@@ -50,6 +94,7 @@
             style="padding-left: 0.2em; padding-right: 0em;"
             small
             :color="iconColor"
+            :data-cy="'auditInfoButton'+req['list-id']"
             @mouseover="iconHover = true"
             @mouseleave="iconHover = false"
             @click.stop="$emit('click-info', $event)"
@@ -83,12 +128,16 @@ export default {
     return {
       open: [],
       hoveringOver: false,
-      iconHover: false
+      iconHover: false,
+      petitionHover: false
     };
   },
   computed: {
     iconColor: function () {
       return this.iconHover ? 'info' : 'grey';
+    },
+    petitionColor: function () {
+      return this.petitionHover ? 'info' : 'grey';
     },
     reqFulfilled: function () {
       return {

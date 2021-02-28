@@ -32,16 +32,20 @@ var routes = [
 ];
 
 var router = new VueRouter({
-  base: process.env.APP_URL.indexOf('dev') !== -1 ? '/dev/' : '/',
+  base: process.env.VUE_APP_URL.indexOf('dev') !== -1 ? '/dev/' : '/',
   mode: 'history',
   routes
 });
 
 VueCookies.config(Infinity);
 
-new Vue({
+const app = new Vue({
   el: '#app',
   router: router,
   render: h => h(App),
   store
 });
+
+if (window.Cypress) {
+  window.app = app;
+}

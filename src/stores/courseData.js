@@ -7,9 +7,8 @@ Vue.use(Vuex);
 
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
-const store = new Vuex.Store({
-  strict: process.env.NODE_ENV !== 'production',
-  state: {
+const getDefaultState = () => {
+  return {
     versionNumber: '1.0.0', // change when making backwards-incompatible changes
     currentSemester: 1,
     activeRoad: '$defaultroad$',
@@ -21,6 +20,7 @@ const store = new Vuex.Store({
     genericIndex: {},
     itemAdding: undefined,
     loggedIn: false,
+    hideIAP: localStorage.hideIAP === 'true',
     roads: {
       '$defaultroad$': {
         downloaded: moment().format(DATE_FORMAT),
@@ -30,7 +30,8 @@ const store = new Vuex.Store({
         contents: {
           coursesOfStudy: ['girs'],
           selectedSubjects: Array.from(Array(16), () => []),
-          progressOverrides: {}
+          progressOverrides: {},
+          progressAssertions: {}
         }
       }
     },
@@ -44,13 +45,24 @@ const store = new Vuex.Store({
     fulfillmentNeeded: 'all',
     // list of road IDs that have not been retrieved from the server yet
     unretrieved: []
-  },
+  };
+};
+
+const store = new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
+  state: getDefaultState(),
   getters: {
     userYear (state) {
       return Math.floor((state.currentSemester - 1) / 3);
+    },
+    hideIAP: state => {
+      return state.hideIAP;
     }
   },
   mutations: {
+    resetState (state) {
+      Object.assign(state, getDefaultState());
+    },
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
@@ -102,6 +114,27 @@ const store = new Vuex.Store({
     overrideWarnings (state, payload) {
       const classIndex = state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester].indexOf(payload.classInfo);
       state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex].overrideWarnings = payload.override;
+    },
+    setPASubstitutions (state, { uniqueKey, newReqs }) {
+      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
+    },
+    setPAIgnore (state, { uniqueKey, isIgnored }) {
+      const progressAssertion = state.roads[state.activeRoad].contents.progressAssertions[uniqueKey];
+      if (isIgnored === true) {
+        if (progressAssertion === undefined) {
+          Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': isIgnored });
+        } else {
+          progressAssertion['ignore'] = isIgnored;
+        }
+      } else {
+        if (progressAssertion['substitutions'] === undefined) {
+          this.commit('removeProgressAssertion', uniqueKey);
+        } else {
+          Vue.delete(progressAssertion, 'ignore');
+        }
+      }
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setUnretrieved (state, roadIDs) {
       state.unretrieved = roadIDs;
@@ -206,9 +239,17 @@ const store = new Vuex.Store({
     },
     removeReq (state, event) {
       const reqIndex = state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
-      state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
-      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
-      state.fulfillmentNeeded = 'none';
+      if (reqIndex === -1) {
+        console.log('Attempted to remove a requirement not in the requirements list.');
+      } else {
+        state.roads[state.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
+        state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
+        state.fulfillmentNeeded = 'none';
+      }
+    },
+    removeProgressAssertion (state, uniqueKey) {
+      Vue.delete(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey);
+      Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     resetID (state, { oldid, newid }) {
       newid = newid.toString();
@@ -228,6 +269,10 @@ const store = new Vuex.Store({
     },
     setLoggedIn (state, newLoggedIn) {
       state.loggedIn = newLoggedIn;
+    },
+    setHideIAP: (state, value) => {
+      state.hideIAP = value;
+      localStorage.hideIAP = value;
     },
     setRoadProp (state, { id, prop, value, ignoreSet }) {
       if (ignoreSet) {
@@ -280,7 +325,7 @@ const store = new Vuex.Store({
   },
   actions: {
     async loadAllSubjects ({ commit }) {
-      const response = await axios.get(process.env.FIREROAD_URL + `/courses/all?full=true`);
+      const response = await axios.get(process.env.VUE_APP_FIREROAD_URL + `/courses/all?full=true`);
       commit('setSubjectsInfo', response.data);
       commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');
