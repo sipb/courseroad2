@@ -457,7 +457,7 @@ export default {
 .appendLeft {
   float: left;
   position: relative;
-  bottom: 3px;
+  align-self: center;
 }
 .req-container {
   display: flex;
