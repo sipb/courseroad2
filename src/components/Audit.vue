@@ -31,6 +31,7 @@
         <v-hover :disabled="!leaf || !canDrag(item)">
           <div
             slot-scope="{ hover }"
+            class="req-container"
             :class="{ 'elevation-3': hover, 'yellow lighten-3': isPetitioned(item), 'grey lighten-2': isIgnored(item)}"
             :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
             :data-cy="'auditItem' + item['list-id']"
@@ -456,7 +457,10 @@ export default {
 .appendLeft {
   float: left;
   position: relative;
-  bottom: 3px;
+  align-self: center;
+}
+.req-container {
+  display: flex;
 }
 .percentage-bar {
   background: linear-gradient(
