@@ -29,6 +29,7 @@
         slot="activator"
         :color="saveColor"
         style="user-select: none;"
+        title="All changes saved!"
       >
         {{ saveIcon }}
       </v-icon>
