@@ -170,10 +170,10 @@
 
     <v-footer v-if="!dismissedCookies" fixed style="height: unset;">
       <v-layout column>
-        <v-flex v-if="!dismissedCookies" class="lime accent-3 py-1 px-2">
+        <v-flex v-if="!dismissedCookies" class="py-1 px-2" style="background-color: #34627d !important;">
           <v-layout row align-center>
-            <v-flex>
-              This website uses cookies and session storage to store your data and login token, and important features like saving roads will not work without them.
+            <v-flex style="color: white;">
+              This website uses cookies and session storage to store your data and login token, and important features like saving roads will not work without them. <br>
               <span v-if="cookiesAllowed === undefined">By continuing to use this website or clicking "I accept", you consent to the use of cookies.</span>
               <span v-if="cookiesAllowed !== undefined">By continuing to use this website, you have consented to the use of cookies, but may opt out by clicking the button to the right.</span>
             </v-flex>
@@ -184,13 +184,14 @@
                 color="primary"
                 class="ma-1"
                 data-cy="acceptCookies"
+                style="background-color: #06b300 !important; color:white !important;"
                 @click="$store.commit('allowCookies'); dismissCookies();"
               >
                 I accept
               </v-btn>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed class="ma-1" @click="disallowCookies">
+              <v-btn small depressed class="ma-1" style="background-color:#34627d !important; color:rgb(255 255 255 / 70%) !important;" @click="disallowCookies">
                 Opt out
               </v-btn>
             </v-flex>
