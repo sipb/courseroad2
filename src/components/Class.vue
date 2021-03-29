@@ -35,8 +35,8 @@
             <v-icon style="margin: 4px" small @click="$store.commit('removeClass', {classInfo: classInfo, classIndex: classIndex}); $event.stopPropagation();">
               cancel
             </v-icon>
-            <v-card-text class="card-text">
-              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ classInfo.title }}
+            <v-card-text ref="title" v-line-clamp:20="3" class="card-text">
+              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ useShortenedTitle && textTruncated ? shortenedTitle : classInfo.title }}
             </v-card-text>
           </div>
         </v-card>
@@ -77,6 +77,7 @@
 
 <script>
 import colorMixin from './../mixins/colorMixin.js';
+import * as abbreviations from './../utils/abbreviations.js';
 
 export default {
   name: 'Class',
@@ -102,8 +103,28 @@ export default {
   data () {
     return {
       warningDialog: false,
-      shouldOverrideWarnings: this.classInfo.overrideWarnings
+      shouldOverrideWarnings: this.classInfo.overrideWarnings,
+      useShortenedTitle: true, // Set to false to never shorten titles
+      textTruncated: false // Changed to true by VueLineClamp if title is too long
     };
+  },
+  computed: {
+    shortenedTitle: function () {
+      var title = this.classInfo.title.split(/([^A-Za-z])/);// Keep separators
+      var shortTitle = '';
+      for (const word of title) {
+        const lookup = word.toLowerCase();
+        const abbr = abbreviations.punctuated[lookup] || abbreviations.notPunctuated[lookup];
+        if (abbr) {
+          const abbrevChar = lookup in abbreviations.punctuated ? '.' : '';
+          // Match capitalization
+          shortTitle += (word.charAt(0) === lookup.charAt(0) ? abbr : abbr.charAt(0).toUpperCase() + abbr.slice(1)) + abbrevChar;
+        } else {
+          shortTitle += word;
+        }
+      }
+      return shortTitle;
+    }
   },
   methods: {
     dragStart: function (event) {
@@ -134,19 +155,14 @@ export default {
     padding: 0;
     margin: .2em .4em 0em .2em;
     height: 100%;
+    overflow: hidden;
   }
 
   .classbox {
     display: flex;
     align-items: flex-start;
     height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
-    overflow: hidden;
-    padding: .2em .4em .4em .2em;
-    /* Multi-line truncation is not a supported feature of CSS right now.
-       Optimally, we would have multi-line truncation within the cards, but
-       currently extra words are clipped.
-    text-overflow: ellipsis;
-    white-space: nowrap; */
+    padding: .2em .4em .5em .2em;
   }
 
   .placeholder {
