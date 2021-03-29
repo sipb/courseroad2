@@ -1,0 +1,4005 @@
+
+> courseroad@1.0.0 test /Users/georgiashay/Documents/0Classes/0Undergraduate-MIT/Freshman/Extracurriculars/SIPB/Courseroad/courseroad2
+> npm run test:unit && npm run test:e2e-headless
+
+
+> courseroad@1.0.0 test:unit /Users/georgiashay/Documents/0Classes/0Undergraduate-MIT/Freshman/Extracurriculars/SIPB/Courseroad/courseroad2
+> vue-cli-service test:unit --coverage
+
+PASS tests/unit/filter/filter.spec.js
+PASS tests/unit/filter/filtergroup.spec.js
+PASS tests/unit/filter/regexfilter.spec.js
+PASS tests/unit/filter/mathfilter.spec.js
+PASS tests/unit/filter/booleanfilter.spec.js
+PASS tests/unit/filterset.spec.js
+FAIL tests/unit/conflictdialog.spec.js
+  ● ConflictDialog › renders subjects correctly
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "6.006"
+    Received: ""
+
+      82 |     }
+      83 |     for (i = 0; i < store.state.roads[45].contents.selectedSubjects.flat().length; i++) {
+    > 84 |       expect(localSubjects.at(i).text()).toBe(store.state.roads[45].contents.selectedSubjects.flat()[i].subject_id);
+         |                                          ^
+      85 |     }
+      86 |   });
+      87 |   it('colors subjects correctly', () => {
+
+      at Object.<anonymous> (tests/unit/conflictdialog.spec.js:84:42)
+
+PASS tests/unit/road.spec.js
+  ● Console
+
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 1.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 2.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 1.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 2.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 1.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 2.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 1.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 2.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 1.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Number with value 2.
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "semesterSubjects". Expected Array, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "hideIap". Expected Boolean, got Undefined 
+      
+      found in
+      
+      ---> <Semester>
+             <VExpansionPanel>
+               <Semester>
+                 <Root>
+
+PASS tests/unit/classsearch.spec.js
+PASS tests/unit/semester.spec.js
+  ● Console
+
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.warn node_modules/vuetify/dist/vuetify.js:25195
+      [Vuetify] The v-expansion-panel-content component must be used inside a v-expansion-panel
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+    console.error node_modules/vue/dist/vue.runtime.common.dev.js:621
+      [Vue warn]: Invalid prop: type check failed for prop "classInfo". Expected Object, String, got Number with value 1.
+      
+      found in
+      
+      ---> <Class>
+             <Transition>
+               <VExpansionPanelContent>
+                 <Semester>
+                   <Root>
+
+---------------------|----------|----------|----------|----------|-------------------|
+File                 |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+---------------------|----------|----------|----------|----------|-------------------|
+All files            |    58.01 |    34.15 |    68.66 |    57.82 |                   |
+ components          |       65 |    43.98 |    65.12 |    64.77 |                   |
+  Class.vue          |    14.29 |        0 |        0 |    14.29 |... 11,119,120,124 |
+  ClassSearch.vue    |    83.72 |       60 |    63.64 |    83.72 |... 31,237,240,241 |
+  ConflictDialog.vue |      100 |    92.86 |      100 |      100 |               104 |
+  FilterSet.vue      |      100 |      100 |      100 |      100 |                   |
+  Road.vue           |    53.33 |       25 |    57.14 |    53.33 |... 15,122,123,125 |
+  Semester.vue       |    49.35 |    38.14 |    58.33 |    49.02 |... 87,489,492,493 |
+ mixins              |     0.81 |        0 |     8.33 |     0.85 |                   |
+  colorMixin.js      |     4.76 |        0 |    33.33 |        5 |... 36,37,38,41,44 |
+  reqFulfillment.js  |        0 |        0 |        0 |        0 |... 47,150,151,153 |
+  schedule.js        |        0 |        0 |        0 |        0 |... ,9,10,11,12,14 |
+ plugins             |      100 |      100 |      100 |      100 |                   |
+  browserSupport.js  |      100 |      100 |      100 |      100 |                   |
+ utilities           |      100 |      100 |    97.06 |      100 |                   |
+  filters.js         |      100 |      100 |    97.06 |      100 |                   |
+---------------------|----------|----------|----------|----------|-------------------|
+
+Test Suites: 1 failed, 9 passed, 10 total
+Tests:       1 failed, 160 passed, 161 total
+Snapshots:   0 total
+Time:        6.043s
+Ran all test suites.
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! courseroad@1.0.0 test:unit: `vue-cli-service test:unit --coverage`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the courseroad@1.0.0 test:unit script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/georgiashay/.npm/_logs/2021-02-04T02_15_33_605Z-debug.log
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! courseroad@1.0.0 test: `npm run test:unit && npm run test:e2e-headless`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the courseroad@1.0.0 test script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/georgiashay/.npm/_logs/2021-02-04T02_15_33_647Z-debug.log

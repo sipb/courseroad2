@@ -397,8 +397,8 @@ describe('Road tests', () => {
 
         expect(road.coursesOfStudy).to.deep.equal(['girs', 'major21M-1']);
         expect(road.selectedSubjects).to.have.lengthOf(2);
-        expect(road.selectedSubjects[0].id).to.equal('17.01');
-        expect(road.selectedSubjects[1].id).to.equal('12.001');
+        expect(road.selectedSubjects[0].subject_id).to.equal('17.01');
+        expect(road.selectedSubjects[1].subject_id).to.equal('12.001');
       });
   });
 

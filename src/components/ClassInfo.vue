@@ -304,7 +304,7 @@ export default {
       const currentID = this.currentSubject.subject_id;
 
       const subjectInSemesters = currentSubjects.map((semesterSubjects) => {
-        return semesterSubjects.map((subj) => subj.id).indexOf(currentID) >= 0;
+        return semesterSubjects.map((subj) => subj.subject_id).indexOf(currentID) >= 0;
       });
 
       return subjectInSemesters.indexOf(true);
@@ -319,7 +319,7 @@ export default {
       };
     },
     clickRelatedSubject: function (subject) {
-      this.$store.commit('pushClassStack', subject.id);
+      this.$store.commit('pushClassStack', subject.subject_id);
       $('#cardBody').animate({ scrollTop: 0 });
     },
     parseRequirements: function (requirements) {

@@ -24,11 +24,11 @@
 
         <v-card
           v-else
-          :id="'class'+classInfo.id.replace('.','')+semesterIndex"
-          :data-cy="'classInSemester' + semesterIndex + '_' + classInfo.id.replace('.', '_')"
+          :id="'class'+classInfo.subject_id.replace('.','')+semesterIndex"
+          :data-cy="'classInSemester' + semesterIndex + '_' + classInfo.subject_id.replace('.', '_')"
           draggable
           @dragstart="dragStart"
-          @click="$store.commit('pushClassStack', classInfo.id)"
+          @click="$store.commit('pushClassStack', classInfo.subject_id)"
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
@@ -36,7 +36,7 @@
               cancel
             </v-icon>
             <v-card-text class="card-text">
-              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.id }}</span> {{ classInfo.title }}
+              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.subject_id }}</span> {{ classInfo.title }}
             </v-card-text>
           </div>
         </v-card>
@@ -53,7 +53,7 @@
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
-          <h3>Warnings for {{ classInfo.id }}</h3>
+          <h3>Warnings for {{ classInfo.subject_id }}</h3>
         </v-card-title>
         <v-card-text>
           <!-- eslint-disable-next-line vue/no-v-html -->
@@ -117,7 +117,7 @@ export default {
     },
     clickClass: function (classInfo) {
       if (classInfo !== 'placeholder') {
-        this.$store.commit('pushClassStack', classInfo.id);
+        this.$store.commit('pushClassStack', classInfo.subject_id);
       }
     },
     cardClass: function (classInfo) {

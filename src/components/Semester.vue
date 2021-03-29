@@ -40,15 +40,15 @@
                   <th class="rightbar">
                     Class
                   </th>
-                  <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
-                    <b>{{ subj.id }}</b>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.subject_id">
+                    <b>{{ subj.subject_id }}</b>
                   </td>
                 </tr>
                 <tr v-if="semesterInformation.expectedHoursQuarter1.length">
                   <th class="rightbar">
                     Hours
                   </th>
-                  <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.id">
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter1" :key="subj.subject_id">
                     {{ subj.hours.toFixed(1) }}h
                   </td>
                 </tr>
@@ -65,15 +65,15 @@
                   <th class="rightbar">
                     Class
                   </th>
-                  <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
-                    <b>{{ subj.id }}</b>
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.subject_id">
+                    <b>{{ subj.subject_id }}</b>
                   </td>
                 </tr>
                 <tr v-if="semesterInformation.anyClassInSingleQuarter && semesterInformation.expectedHoursQuarter2.length">
                   <th class="rightbar">
                     Hours
                   </th>
-                  <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.id">
+                  <td v-for="subj in semesterInformation.expectedHoursQuarter2" :key="subj.subject_id">
                     {{ subj.hours.toFixed(1) }}h
                   </td>
                 </tr>
@@ -83,11 +83,11 @@
           </v-tooltip>
         </v-flex>
         <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
-          <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.id+'-'+subjindex+'-'+index" xs3>
+          <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.subject_id+'-'+subjindex+'-'+index" xs3>
             <v-card>
               <div v-if="subject!=='placeholder'" :class="courseColor(subject)">
                 <v-card-text class="mini-course">
-                  <b>{{ subject.id }}</b>
+                  <b>{{ subject.subject_id }}</b>
                 </v-card-text>
               </div>
             </v-card>
@@ -114,7 +114,7 @@
       <v-layout wrap align-center justify-center row>
         <class
           v-for="(subject, subjindex) in semesterSubjects"
-          :key="subject.id + '-' + subjindex + '-' + index"
+          :key="subject.subject_id + '-' + subjindex + '-' + index"
           :class-info="subject"
           :semester-index="index"
           :warnings="warnings[subjindex]"
@@ -204,7 +204,7 @@ export default {
       const allWarnings = Array(this.semesterSubjects.length).fill([]);
       for (let i = 0; i < this.semesterSubjects.length; i++) {
         const subjectWarnings = [];
-        const subjID = this.semesterSubjects[i].id;
+        const subjID = this.semesterSubjects[i].subject_id;
         let subj;
         if (subjID in this.$store.state.subjectsIndex) {
           subj = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subjID]];
@@ -346,10 +346,10 @@ export default {
     },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
-        if (subj.id in this.$store.state.subjectsIndex) {
-          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.id]];
-        } else if (subj.id in this.$store.state.genericIndex) {
-          return this.$store.state.genericCourses[this.$store.state.genericIndex[subj.id]];
+        if (subj.subject_id in this.$store.state.subjectsIndex) {
+          return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.subject_id]];
+        } else if (subj.subject_id in this.$store.state.genericIndex) {
+          return this.$store.state.genericCourses[this.$store.state.genericIndex[subj.subject_id]];
         } else {
           return undefined;
         }
@@ -367,7 +367,7 @@ export default {
         hours = isNaN(hours) ? 0 : hours;
         return {
           hours: hours,
-          id: subj.subject_id
+          subject_id: subj.subject_id
         };
       };
       const sumExpectedHours = function (hours, subj) {
@@ -444,7 +444,7 @@ export default {
       const subjInQuarter2 = subj.quarter_information !== undefined && subj.quarter_information.split(',')[0] === '1';
       const beforeThisSemester = this.flatten(this.selectedSubjects.slice(0, this.index));
       const previousQuarter = this.selectedSubjects[this.index].filter(s => {
-        const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.id]];
+        const subj2 = this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[s.subject_id]];
         let inPreviousQuarter = false;
         if (subj2 !== undefined) {
           inPreviousQuarter = s.semester === this.index &&
@@ -481,7 +481,7 @@ export default {
             overrideWarnings: false,
             semester: this.index,
             title: this.itemAdding.title,
-            id: this.itemAdding.subject_id,
+            subject_id: this.itemAdding.subject_id,
             units: this.itemAdding.total_units
           };
           this.$store.commit('addClass', newClass);

@@ -23,7 +23,7 @@
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for="req in conflictInfo.other_contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
               <p id="selected-subjects-cloud">
-                Selected Subjects: <span v-for="(course, index) in conflictInfo.other_contents.selectedSubjects" :key="JSON.stringify(course)" :class="colorSubject(index, 'remote')"> {{ course.id }} </span>
+                Selected Subjects: <span v-for="(course, index) in conflictInfo.other_contents.selectedSubjects" :key="JSON.stringify(course)" :class="colorSubject(index, 'remote')"> {{ course.subject_id }} </span>
               </p>
             </v-card>
           </v-list>
@@ -47,7 +47,7 @@
               <b><p>Contents:</p></b>
               <p>Courses of Study: <span v-for="req in roads[conflictInfo.id].contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
               <p id="selected-subjects-local">
-                Selected Subjects: <span v-for="(course, index) in flatten(roads[conflictInfo.id].contents.selectedSubjects)" :key="JSON.stringify(course)" :class="colorSubject(index, 'local')"> {{ course.id }} </span>
+                Selected Subjects: <span v-for="(course, index) in flatten(roads[conflictInfo.id].contents.selectedSubjects)" :key="JSON.stringify(course)" :class="colorSubject(index, 'local')"> {{ course.subject_id }} </span>
               </p>
             </v-card>
           </v-list>
@@ -90,10 +90,10 @@ export default {
     },
     colorSubject: function (subjectIndex, subjectList) {
       const remoteSubjects = this.renumberDuplicates(this.conflictInfo.other_contents.selectedSubjects.map(
-        s => s.id + ' ' + s.semester
+        s => s.subject_id + ' ' + s.semester
       ));
       const localSubjects = this.renumberDuplicates(this.flatten(this.roads[this.conflictInfo.id].contents.selectedSubjects).map(
-        s => s.id + ' ' + s.semester
+        s => s.subject_id + ' ' + s.semester
       ));
       let currentSubject;
       if (subjectList === 'remote') {

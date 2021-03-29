@@ -124,8 +124,8 @@ export default {
           cardBody.animate({ scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10 }, 200);
         });
       } else {
-        if (subj.id.indexOf('GIR:') >= 0) {
-          subj.id = subj.id.substring(4);
+        if (subj.subject_id.indexOf('GIR:') >= 0) {
+          subj.subject_id = subj.subject_id.substring(4);
         }
         this.$emit('click-subject', subj);
       }

@@ -96,10 +96,10 @@ const store = new Vuex.Store({
     dragStartClass (state, event) {
       let classInfo = event.classInfo;
       if (classInfo === undefined) {
-        if (event.basicClass.id in state.subjectsIndex) {
-          classInfo = state.subjectsInfo[state.subjectsIndex[event.basicClass.id]];
-        } else if (event.basicClass.id in state.genericIndex) {
-          classInfo = state.genericCourses[state.genericIndex[event.basicClass.id]];
+        if (event.basicClass.subject_id in state.subjectsIndex) {
+          classInfo = state.subjectsInfo[state.subjectsIndex[event.basicClass.subject_id]];
+        } else if (event.basicClass.subject_id in state.genericIndex) {
+          classInfo = state.genericCourses[state.genericIndex[event.basicClass.subject_id]];
         }
       }
       state.itemAdding = classInfo;
@@ -337,7 +337,7 @@ const store = new Vuex.Store({
         overrideWarnings: false,
         semester: index,
         title: state.itemAdding.title,
-        id: state.itemAdding.subject_id,
+        subject_id: state.itemAdding.subject_id,
         units: state.itemAdding.total_units
       };
       commit('addClass', newClass);

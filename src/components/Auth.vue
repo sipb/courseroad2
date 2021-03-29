@@ -287,9 +287,9 @@ export default {
     sanitizeRoad: function (road) {
       // sanitize subject_id
       const newss = road.contents.selectedSubjects.map((s) => {
-        if ('subject_id' in s) {
-          s.id = s.subject_id;
-          delete s.subject_id;
+        if ('id' in s) {
+          s.subject_id = s.id;
+          delete s.id;
         }
         return s;
       });
