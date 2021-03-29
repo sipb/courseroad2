@@ -5,7 +5,7 @@
     <div style="display: flex; align-content: space-between; margin: 12px 0px;">
       <v-autocomplete
         v-model="changeReqs"
-        :hint="'Your programs'.concat(changeReqs.length < 2 ? ' -- click to add a major' : '')"
+        :hint="'Your Programs'.concat(changeReqs.length < 2 ? ' -- click to add a major' : '')"
         :items="getCourses"
         item-text="medium-title"
         item-value="key"

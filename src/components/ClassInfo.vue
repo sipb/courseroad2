@@ -180,7 +180,7 @@
               {{ currentSubject.description }}
             </p>
             <p v-if="currentSubject.url !== undefined">
-              <a target="_blank" :href="currentSubject.url">View in course catalog</a>
+              <a target="_blank" :href="currentSubject.url">View in Course Catalog</a>
             </p>
             <p v-if="currentSubject.subject_id in $store.state.subjectsIndex">
               <a target="_blank" :href="'https://sisapp.mit.edu/ose-rpt/subjectEvaluationSearch.htm?search=Search&subjectCode='+currentSubject.subject_id">
@@ -220,7 +220,7 @@
               />
             </div>
             <div v-if="currentSubject.related_subjects !== undefined" data-cy="cardRelatedSubjects">
-              <h3>Related subjects</h3>
+              <h3>Related Subjects</h3>
               <subject-scroll :subjects="currentSubject.related_subjects.map(classInfo)" @click-subject="clickRelatedSubject" />
             </div>
             <div v-if="subjectsWithPrereq.length > 0">
