@@ -191,7 +191,7 @@
               </v-btn>
             </v-flex>
             <v-flex shrink>
-              <v-btn small depressed class="ma-1" style="background-color:#34627d !important; color:rgb(255 255 255 / 70%) !important;" @click="disallowCookies">
+              <v-btn small depressed class="ma-1" style="background-color:#34627d !important; border: 1px solid rgb(255 255 255 / 70%) !important; color:rgb(255 255 255 / 70%) !important;" @click="disallowCookies">
                 Opt out
               </v-btn>
             </v-flex>
