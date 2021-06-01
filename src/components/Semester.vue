@@ -6,8 +6,17 @@
     :data-cy="'road_'+roadID+'__semester_' + index"
     dropzone="copy"
     @dragover.native.prevent
+    :class="semData.bgColorHeader"
   >
-    <v-container slot="header" grid-list-xs style="padding: 0px; margin-left: 0px;" data-cy="semesterHeader">
+    <v-container
+      slot="header"
+      grid-list-xs
+      style="padding: 0px; margin-left: 0px;"
+      data-cy="semesterHeader"
+      @dragenter="dragenter"
+      @dragleave="dragleave"
+      @drop="ondrop"
+    >
       <v-layout row align-center style="user-select: none;">
         <v-flex xs6>
           <span style="width: 12em; display: inline-block;">
@@ -83,6 +92,9 @@
           </v-tooltip>
         </v-flex>
         <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
+          <v-flex xs10 :style="{ 'color': semData.textColor}">
+            {{ semData.message }}
+          </v-flex>
           <v-flex v-for="(subject,subjindex) in semesterSubjects" :key="subject.subject_id+'-'+subjindex+'-'+index" xs3>
             <v-card>
               <div v-if="subject!=='placeholder'" :class="courseColor(subject)">
@@ -267,50 +279,58 @@ export default {
           return {
             bgColor: 'red',
             message: 'Loading subjects... give us a minute',
-            textColor: 'DarkRed'
+            textColor: 'DarkRed',
+            bgColorHeader: 'red lighten-5'
           };
         } else if (this.itemAdding === undefined) {
           return {
             bgColor: 'red',
             message: 'If you see this message, contact courseroad@mit.edu and tell them "710".',
-            textColor: 'DarkRed'
+            textColor: 'DarkRed',
+            bgColorHeader: 'red lighten-5'
           };
         } else if (this.index === 0 || this.offeredNow) {
           return {
             bgColor: 'green',
             message: 'Add class here',
-            textColor: 'DarkGreen'
+            textColor: 'DarkGreen',
+            bgColorHeader: 'green lighten-5'
           };
         } else if (this.itemAddingNoLongerOffered) {
           return {
             bgColor: 'yellow',
             message: 'Subject no longer offered',
-            textColor: 'DarkGoldenRod'
+            textColor: 'DarkGoldenRod',
+            bgColorHeader: 'yellow lighten-5'
           };
         } else if (this.itemAddingNotCurrentlyOffered) {
           return {
             bgColor: 'yellow',
             message: 'Subject not offered this year',
-            textColor: 'DarkGoldenRod'
+            textColor: 'DarkGoldenRod',
+            bgColorHeader: 'yellow lighten-5'
           };
         } else if (this.isSameYear) {
           return {
             bgColor: 'red',
             message: 'Subject not available this semester',
-            textColor: 'DarkRed'
+            textColor: 'DarkRed',
+            bgColorHeader: 'red lighten-5'
           };
         } else {
           return {
             bgColor: 'yellow',
             message: 'Subject may not be available this semester',
-            textColor: 'DarkGoldenRod'
+            textColor: 'DarkGoldenRod',
+            bgColorHeader: 'yellow lighten-5'
           };
         }
       }
       return {
         bgColor: 'grey',
         message: '',
-        textColor: ''
+        textColor: '',
+        bgColorHeader: ''
       };
     },
     isSameYear: function () {
