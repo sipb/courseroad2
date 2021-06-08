@@ -91,7 +91,7 @@
             </div>
           </v-tooltip>
         </v-flex>
-        <v-layout v-if="!isOpen" row xs6 style="max-width: 50%;">
+        <v-layout v-if="!isOpen" row xs6 style="max-width: 50%; overflow-x: auto;">
           <v-flex xs10 :style="{ 'color': semData.textColor}">
             {{ semData.message }}
           </v-flex>
