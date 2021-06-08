@@ -11,6 +11,7 @@
       v-for="index in numSems"
       :key="index-1"
       :index="index-1"
+      :is-open="visibleList[index-1]"
       :selected-subjects="selectedSubjects"
       :semester-subjects="selectedSubjects[index-1]"
       :road-i-d="roadID"
