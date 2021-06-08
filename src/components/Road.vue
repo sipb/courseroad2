@@ -1,6 +1,6 @@
 <template>
   <!-- more on expansion panels (and more examples): https://vuetifyjs.com/en/components/expansion-panels -->
-  <!-- this is the example I copied: https://vuetifyjs.com/en/components/expansion-panels#expand -->
+  <!-- this is the example I copied: https://v15.vuetifyjs.com/en/components/expansion-panels#expand -->
   <v-expansion-panel
     v-model="visibleList"
     expand
@@ -14,7 +14,6 @@
       :selected-subjects="selectedSubjects"
       :semester-subjects="selectedSubjects[index-1]"
       :road-i-d="roadID"
-      :is-open="visibleList[index-1]"
       :adding-from-card="addingFromCard"
       :dragging-over="dragSemesterNum===index-1"
       :hide-iap="hideIAP"
@@ -60,6 +59,9 @@
 import Semester from './Semester.vue';
 
 export default {
+  created () {
+    this.$root.$refs.Road = this;
+  },
   name: 'Semester',
   components: {
     'semester': Semester
@@ -114,6 +116,14 @@ export default {
       if (this.$store.state.cookiesAllowed) {
         this.$cookies.set('visibleList' + this.roadID, JSON.stringify(newVisibleList));
       }
+    }
+  },
+  methods: {
+    all: function () {
+      this.visibleList = [...Array(this.numSems).keys()].map(_ => false);
+    },
+    none: function () {
+      this.visibleList = [...Array(this.numSems).keys()].map(_ => true);
     }
   },
   mounted () {
