@@ -230,7 +230,9 @@ const store = new Vuex.Store({
     },
     pushClassStack (state, id) {
       if (id in state.subjectsIndex || id in state.genericIndex) {
-        state.classInfoStack.push(id);
+        if (state.classInfoStack.length === 0 || id !== state.classInfoStack[state.classInfoStack.length - 1]) { // we don't want to push to the stack if we click the same class over and over again
+          state.classInfoStack.push(id);
+        }
       }
     },
     removeClass (state, { classInfo, classIndex }) {
