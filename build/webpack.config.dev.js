@@ -16,13 +16,13 @@ module.exports = (env) => {
     devServer: {
       historyApiFallback: true,
       hot: true,
-      watchOptions: {
-        poll: true
+      static: {
+        watch: true
       },
-      before: function (app, server, compiler) {
+      onBeforeSetupMiddleware: function (devServer) {
         // Before handing all other dev server requests, check if the route is to the People API middleware and pass
         // it to the CGI handler.
-        app.get('/cgi-bin/people.py', function (req, res) {
+        devServer.app.get('/cgi-bin/people.py', function (req, res) {
           cgi(resolve(__dirname, '..', 'cgi-bin', 'people.py'))(req, res)
         })
       }

@@ -30,7 +30,7 @@
     "moment": "^2.29.1",
     "thread-loader": "^3.0.1",
     "typeface-roboto": "0.0.54",
-    "ua-parser-js": "^0.7.23",
+    "ua-parser-js": "^1.0.1",
     "url-loader": "^4.1.1",
     "vue-context": "^3.4.0",
     "vue-cookies": "^1.7.4",
@@ -48,13 +48,13 @@
     "@fortawesome/vue-fontawesome": "^0.1.10",
     "@vue/cli-plugin-e2e-cypress": "^4.5.9",
     "@vue/cli-plugin-unit-jest": "^4.5.9",
-    "@vue/cli-service": "^4.5.9",
+    "@vue/cli-service": "^4.5.14",
     "@vue/test-utils": "1.0.0-beta.29",
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.2.2",
     "css-loader": "^4.3.0",
     "cypress-file-upload": "^4.1.1",
-    "eslint": "^5.16.0",
+    "eslint": "^8.1.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-import": "^2.22.1",
@@ -75,8 +75,8 @@
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.2",
-    "webpack-cli": "^4.3.0",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.3.1"
   },
   "bugs": {
     "url": "https://github.com/npfoss/courseroad2/issues"
