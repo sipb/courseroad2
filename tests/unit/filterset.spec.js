@@ -19,7 +19,11 @@ describe('Filter Set', () => {
     fakeSearchInput.id = 'searchInputTF';
     document.body.appendChild(fakeSearchInput);
 
-    const wrapper = mount(FilterSet, { localVue, propsData, attachToDocument: true });
+    const elem = document.createElement('div');
+    if (document.body) {
+      document.body.appendChild(elem);
+    }
+    const wrapper = mount(FilterSet, { localVue, propsData, attachTo: elem });
 
     const buttons = wrapper.findAll('.v-btn');
     const button0 = wrapper.find('.v-btn[value="0"]');
@@ -48,7 +52,11 @@ describe('Filter Set', () => {
     fakeSearchInput.id = 'searchInputTF';
     document.body.appendChild(fakeSearchInput);
 
-    const wrapper = mount(FilterSet, { localVue, propsData, attachToDocument: true });
+    const elem = document.createElement('div');
+    if (document.body) {
+      document.body.appendChild(elem);
+    }
+    const wrapper = mount(FilterSet, { localVue, propsData, attachTo: elem });
 
     // Click some button
     const button = wrapper.findAll('.v-btn').at(0);

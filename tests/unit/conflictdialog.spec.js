@@ -46,35 +46,40 @@ describe('ConflictDialog', () => {
   });
   it('is a Vue instance', () => {
     const wrapper = shallowMount(ConflictDialog, { store, localVue });
-    expect(wrapper.isVueInstance()).toBeTruthy();
+    expect(wrapper.vm).toBeTruthy();
   });
-  it('opens the conflict dialog when a conflict is started', () => {
+  it('opens the conflict dialog when a conflict is started', async () => {
     const wrapper = mount(ConflictDialog, { store, localVue, propsData: { conflictInfo } });
     expect(wrapper.vm.conflictDialog).toBe(false);
     wrapper.vm.startConflict();
     expect(wrapper.vm.conflictDialog).toBe(true);
+    await wrapper.vm.$nextTick();
     const dialog = wrapper.find('.v-dialog');
     expect(dialog.exists()).toBe(true);
     expect(dialog.isVisible()).toBe(true);
   });
-  it('closes the conflict dialog when a conflict is resolved', () => {
+  it('closes the conflict dialog when a conflict is resolved', async () => {
     const wrapper = mount(ConflictDialog, { store, localVue, propsData: { conflictInfo } });
     wrapper.vm.startConflict();
+    await wrapper.vm.$nextTick();
     wrapper.vm.resolveConflict();
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.conflictDialog).toBe(false);
     const dialog = wrapper.find('.v-dialog');
     expect(dialog.exists()).toBe(true);
     expect(dialog.isVisible()).toBe(false);
   });
-  it('does not open the conflict dialog without conflict information', () => {
+  it('does not open the conflict dialog without conflict information', async () => {
     const wrapper = mount(ConflictDialog, { store, localVue });
     wrapper.vm.startConflict();
+    await wrapper.vm.$nextTick();
     const dialog = wrapper.find('.v-dialog');
     expect(dialog.exists()).toBe(false);
   });
-  it('renders subjects correctly', () => {
+  it('renders subjects correctly', async () => {
     const wrapper = mount(ConflictDialog, { store, localVue, propsData: { conflictInfo } });
     wrapper.vm.startConflict();
+    await wrapper.vm.$nextTick();
     const cloudSubjects = wrapper.find('#selected-subjects-cloud').findAll('span');
     const localSubjects = wrapper.find('#selected-subjects-local').findAll('span');
     for (var i = 0; i < conflictInfo.other_contents.selectedSubjects.length; i++) {
@@ -84,9 +89,10 @@ describe('ConflictDialog', () => {
       expect(localSubjects.at(i).text()).toBe(store.state.roads[45].contents.selectedSubjects.flat()[i].subject_id);
     }
   });
-  it('colors subjects correctly', () => {
+  it('colors subjects correctly', async () => {
     const wrapper = mount(ConflictDialog, { store, localVue, propsData: { conflictInfo } });
     wrapper.vm.startConflict();
+    await wrapper.vm.$nextTick();
     const cloudSubjects = wrapper.find('#selected-subjects-cloud').findAll('span');
     const localSubjects = wrapper.find('#selected-subjects-local').findAll('span');
     expect(localSubjects.at(0).classes('blue--text')).toBe(false);
@@ -96,9 +102,10 @@ describe('ConflictDialog', () => {
     expect(cloudSubjects.at(1).classes('blue--text')).toBe(true);
     expect(cloudSubjects.at(2).classes('blue--text')).toBe(false);
   });
-  it('emits event to keep local contents', () => {
+  it('emits event to keep local contents', async () => {
     const wrapper = mount(ConflictDialog, { store, localVue, propsData: { conflictInfo } });
     wrapper.vm.startConflict();
+    await wrapper.vm.$nextTick();
     const localColumn = wrapper.find('#local-column');
     const keepLocalButton = localColumn.find('.v-btn');
     keepLocalButton.trigger('click');
@@ -106,9 +113,10 @@ describe('ConflictDialog', () => {
     expect(emitEvent).toBeTruthy();
     expect(emitEvent[0]).toEqual(45);
   });
-  it('emits event to keep remote contents', () => {
+  it('emits event to keep remote contents', async () => {
     const wrapper = mount(ConflictDialog, { store, localVue, propsData: { conflictInfo } });
     wrapper.vm.startConflict();
+    await wrapper.vm.$nextTick();
     const cloudColumn = wrapper.find('#cloud-column');
     const keepRemoteButton = cloudColumn.find('.v-btn');
     keepRemoteButton.trigger('click');
