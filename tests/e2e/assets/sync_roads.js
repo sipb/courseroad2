@@ -1,16 +1,16 @@
 export default {
   files: {
-    '123': {
+    123: {
       changed: '2020-12-23T12:04:01+00:00',
       name: 'Best Road Ever',
       agent: 'MacIntel Chrome Tab 1'
     },
-    '456': {
+    456: {
       changed: '2020-11-20T11:34:27+00:00',
       name: 'A Good Road',
       agent: 'Android'
     },
-    '1089': {
+    1089: {
       changed: '2020-01-05T17:46:11+00:00',
       name: 'Example',
       agent: 'MacIntel Firefox Tab 2'
@@ -25,7 +25,7 @@ export default {
     contents: {
       coursesOfStudy: ['girs'],
       selectedSubjects: [
-        { 'title': 'Microeconomic Theory and Public Policy', 'level': 'U', 'overrideWarnings': false, 'semester': 1, 'units': 12, 'subject_id': '14.03' }
+        { title: 'Microeconomic Theory and Public Policy', level: 'U', overrideWarnings: false, semester: 1, units: 12, subject_id: '14.03' }
       ],
       progressOverrides: {},
       progressAssertions: {}
@@ -40,8 +40,8 @@ export default {
     contents: {
       coursesOfStudy: ['girs', 'major21M-1'],
       selectedSubjects: [
-        { 'title': 'Introduction to Music Technology', 'level': 'U', 'overrideWarnings': false, 'semester': 4, 'units': 12, 'subject_id': '21M.080' },
-        { 'title': 'Mathematics for Computer Science', 'level': 'U', 'overrideWarnings': false, 'semester': 3, 'units': 12, 'subject_id': '6.042' }
+        { title: 'Introduction to Music Technology', level: 'U', overrideWarnings: false, semester: 4, units: 12, subject_id: '21M.080' },
+        { title: 'Mathematics for Computer Science', level: 'U', overrideWarnings: false, semester: 3, units: 12, subject_id: '6.042' }
       ],
       progressOverrides: {},
       progressAssertions: {}
@@ -56,8 +56,8 @@ export default {
     contents: {
       coursesOfStudy: ['girs', 'major16'],
       selectedSubjects: [
-        { 'title': 'Calculus', 'level': 'U', 'overrideWarnings': false, 'semester': 1, 'units': 12, 'subject_id': '18.02' },
-        { 'title': 'Physics I', 'level': 'U', 'overrideWarnings': false, 'semester': 2, 'units': 12, 'subject_id': '8.01' }
+        { title: 'Calculus', level: 'U', overrideWarnings: false, semester: 1, units: 12, subject_id: '18.02' },
+        { title: 'Physics I', level: 'U', overrideWarnings: false, semester: 2, units: 12, subject_id: '8.01' }
       ],
       progressOverrides: {},
       progressAssertions: {}

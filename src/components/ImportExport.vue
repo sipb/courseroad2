@@ -197,11 +197,11 @@ export default {
             }
 
             if (subject !== undefined) {
-              expectedFields.map((f) => {
+              expectedFields.forEach((f) => {
                 if (s[f] === undefined) {
                   // right now (4/16/19) 'units' is the only one that doesn't match and needs an exception
                   if (f === 'units') {
-                    s[f] = subject['total_units'];
+                    s[f] = subject.total_units;
                   } else {
                     s[f] = subject[f];
                   }

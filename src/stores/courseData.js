@@ -22,7 +22,7 @@ const getDefaultState = () => {
     loggedIn: false,
     hideIAP: localStorage.hideIAP === 'true',
     roads: {
-      '$defaultroad$': {
+      $defaultroad$: {
         downloaded: moment().format(DATE_FORMAT),
         changed: moment().format(DATE_FORMAT),
         name: 'My First Road',
@@ -116,19 +116,19 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].contents.selectedSubjects[payload.classInfo.semester][classIndex].overrideWarnings = payload.override;
     },
     setPASubstitutions (state, { uniqueKey, newReqs }) {
-      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'substitutions': newReqs });
+      Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { substitutions: newReqs });
       Vue.set(state.roads[state.activeRoad], 'changed', moment().format(DATE_FORMAT));
     },
     setPAIgnore (state, { uniqueKey, isIgnored }) {
       const progressAssertion = state.roads[state.activeRoad].contents.progressAssertions[uniqueKey];
       if (isIgnored === true) {
         if (progressAssertion === undefined) {
-          Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { 'ignore': isIgnored });
+          Vue.set(state.roads[state.activeRoad].contents.progressAssertions, uniqueKey, { ignore: isIgnored });
         } else {
-          progressAssertion['ignore'] = isIgnored;
+          progressAssertion.ignore = isIgnored;
         }
       } else {
-        if (progressAssertion['substitutions'] === undefined) {
+        if (progressAssertion.substitutions === undefined) {
           this.commit('removeProgressAssertion', uniqueKey);
         } else {
           Vue.delete(progressAssertion, 'ignore');
@@ -148,14 +148,14 @@ const store = new Vuex.Store({
     },
     parseGenericCourses (state) {
       const girAttributes = {
-        'PHY1': ['Physics 1 GIR', 'p1'],
-        'PHY2': ['Physics 2 GIR', 'p2'],
-        'CHEM': ['Chemistry GIR', 'c'],
-        'BIOL': ['Biology GIR', 'b'],
-        'CAL1': ['Calculus I GIR', 'm1'],
-        'CAL2': ['Calculus II GIR', 'm2'],
-        'LAB': ['Lab GIR', 'l1'],
-        'REST': ['REST GIR', 'r']
+        PHY1: ['Physics 1 GIR', 'p1'],
+        PHY2: ['Physics 2 GIR', 'p2'],
+        CHEM: ['Chemistry GIR', 'c'],
+        BIOL: ['Biology GIR', 'b'],
+        CAL1: ['Calculus I GIR', 'm1'],
+        CAL2: ['Calculus II GIR', 'm2'],
+        LAB: ['Lab GIR', 'l1'],
+        REST: ['REST GIR', 'r']
       };
       // the titles of the hass and ci attributes are currently not used in the description on fireroad
       // I think they might be nice to display with the description, but as of now they are unused
@@ -327,7 +327,7 @@ const store = new Vuex.Store({
   },
   actions: {
     async loadAllSubjects ({ commit }) {
-      const response = await axios.get(process.env.VUE_APP_FIREROAD_URL + `/courses/all?full=true`);
+      const response = await axios.get(process.env.VUE_APP_FIREROAD_URL + '/courses/all?full=true');
       commit('setSubjectsInfo', response.data);
       commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');

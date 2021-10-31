@@ -77,16 +77,16 @@ describe('Road tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '3.45',
-          'title': 'Magnetic Materials',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '3.45',
+          title: 'Magnetic Materials',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '7.46',
-          'title': 'Building with Cells',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '7.46',
+          title: 'Building with Cells',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );
@@ -212,23 +212,23 @@ describe('Road tests', () => {
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/master6-P/', {
       'title-no-degree': 'Electrical Engineering and Computer Science',
       'list-id': 'master6-P.reql',
-      'percent_fulfilled': 0,
-      'fulfilled': false,
-      'reqs': []
+      percent_fulfilled: 0,
+      fulfilled: false,
+      reqs: []
     });
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/minor18/', {
       'title-no-degree': 'Mathematics',
       'list-id': 'minor18.reql',
-      'percent_fulfilled': 0,
-      'fulfilled': false,
-      'reqs': []
+      percent_fulfilled: 0,
+      fulfilled: false,
+      reqs: []
     });
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/major6-2/', {
       'title-no-degree': 'Electrical Engineering and Computer Science',
       'list-id': 'major6-2.reql',
-      'percent_fulfilled': 0,
-      'fulfilled': false,
-      'reqs': []
+      percent_fulfilled: 0,
+      fulfilled: false,
+      reqs: []
     });
 
     cy.visit('/');
@@ -340,16 +340,16 @@ describe('Road tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '12.001',
-          'title': 'Introduction to Geology',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '12.001',
+          title: 'Introduction to Geology',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '17.01',
-          'title': 'Justice',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '17.01',
+          title: 'Justice',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );
@@ -406,16 +406,16 @@ describe('Road tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '3.45',
-          'title': 'Magnetic Materials',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '3.45',
+          title: 'Magnetic Materials',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '7.46',
-          'title': 'Building with Cells',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '7.46',
+          title: 'Building with Cells',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );

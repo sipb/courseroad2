@@ -62,7 +62,7 @@ import Semester from './Semester.vue';
 export default {
   name: 'Semester',
   components: {
-    'semester': Semester
+    semester: Semester
   },
   props: {
     selectedSubjects: {

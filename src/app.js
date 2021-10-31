@@ -17,7 +17,7 @@ import BrowserSupportPlugin from './plugins/browserSupport';
 
 library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
 
-Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.component('FontAwesomeIcon', FontAwesomeIcon);
 
 Vue.use(Vuetify);
 Vue.use(VueCookies);

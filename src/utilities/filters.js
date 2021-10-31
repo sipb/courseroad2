@@ -22,8 +22,8 @@ class Filter {
       mode = 'OR';
     }
     this.combine = {
-      'AND': (a, b) => a && b,
-      'OR': (a, b) => a || b
+      AND: (a, b) => a && b,
+      OR: (a, b) => a || b
     }[mode];
   }
 
@@ -162,8 +162,8 @@ class RegexFilter extends Filter {
 
     // Functions to transform regex by a priority
     var priorityFunctions = {
-      'atStart': atStart,
-      'asLiteral': asLiteral
+      atStart: atStart,
+      asLiteral: asLiteral
     };
 
     // Order to apply functions (must add ^ after escaping, for example)
@@ -295,8 +295,8 @@ class FilterGroup {
     this.name = name;
     this.filters = filters;
     this.combine = {
-      'AND': (a, b) => a && b,
-      'OR': (a, b) => a || b
+      AND: (a, b) => a && b,
+      OR: (a, b) => a || b
     }[combination];
   }
 
@@ -342,6 +342,7 @@ class ArrayFilter extends Filter {
     super(name, shortName, comparator, attributeNames, mode);
     this.subfilter = subfilter;
   }
+
   matches (subject) {
     // starting value of true for and, false for or
     var isMatch = !this.combine(true, false);
@@ -356,6 +357,7 @@ class ArrayFilter extends Filter {
     }
     return isMatch;
   }
+
   setupInputs (inputs) {
     this.subfilter.setupInputs(inputs);
   }

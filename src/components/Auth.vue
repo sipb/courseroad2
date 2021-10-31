@@ -194,7 +194,7 @@ export default {
         const tabIndex = tabs.indexOf(tabID);
         tabs.splice(tabIndex, 1);
         if (tabs.length) {
-          this.$cookies.set('tabs', { 'ids': tabs });
+          this.$cookies.set('tabs', { ids: tabs });
         } else {
           this.$cookies.remove('tabs');
         }
@@ -225,9 +225,11 @@ export default {
       window.location.reload();
     },
     verify: function () {
-      const headerList = { headers: {
-        'Authorization': 'Bearer ' + this.accessInfo.access_token
-      } };
+      const headerList = {
+        headers: {
+          Authorization: 'Bearer ' + this.accessInfo.access_token
+        }
+      };
       const currentMonth = new Date().getMonth();
       return axios.get(process.env.VUE_APP_FIREROAD_URL + '/verify/', headerList)
         .then(function (verifyResponse) {
@@ -245,9 +247,11 @@ export default {
     },
     doSecure: function (axiosFunc, link, params) {
       if (this.loggedIn && this.accessInfo !== undefined) {
-        const headerList = { headers: {
-          'Authorization': 'Bearer ' + this.accessInfo.access_token
-        } };
+        const headerList = {
+          headers: {
+            Authorization: 'Bearer ' + this.accessInfo.access_token
+          }
+        };
         return params
           ? axiosFunc(process.env.VUE_APP_FIREROAD_URL + link, params, headerList)
           : axiosFunc(process.env.VUE_APP_FIREROAD_URL + link, headerList);
@@ -424,7 +428,7 @@ export default {
     attemptLogin: function () {
       const queryObject = getQueryObject();
       if ('code' in queryObject) {
-        const code = queryObject['code'];
+        const code = queryObject.code;
         window.history.pushState('CourseRoad Home', 'CourseRoad Home', './#' + this.activeRoad);
         this.getAuthorizationToken(code);
       } else if (this.$cookies.get('hasLoggedIn') === 'true' && !this.loggedIn) {
@@ -549,7 +553,7 @@ export default {
     getNewRoadData: function () {
       const newRoadData = {};
       if (this.newRoads.indexOf('$defaultroad$') === -1 && '$defaultroad$' in this.roads) {
-        if (this.flatten(this.roads['$defaultroad$'].contents.selectedSubjects).length > 0 || JSON.stringify(Array.from(this.roads['$defaultroad$'].contents.coursesOfStudy)) !== '["girs"]') {
+        if (this.flatten(this.roads.$defaultroad$.contents.selectedSubjects).length > 0 || JSON.stringify(Array.from(this.roads.$defaultroad$.contents.coursesOfStudy)) !== '["girs"]') {
           this.newRoads.push('$defaultroad$');
         }
       }
@@ -623,10 +627,10 @@ export default {
             var tabs = this.$cookies.get('tabs').ids;
             if (tabs.indexOf(tabNum) === -1) {
               tabs.push(tabNum);
-              this.$cookies.set('tabs', { 'ids': tabs });
+              this.$cookies.set('tabs', { ids: tabs });
             }
           } else {
-            this.$cookies.set('tabs', { 'ids': [tabNum] });
+            this.$cookies.set('tabs', { ids: [tabNum] });
           }
         } else {
           // TODO: look into whether this = sign is acting correctly?
@@ -636,11 +640,11 @@ export default {
             sessionStorage.tabID = newTab;
             this.tabID = newTab;
             tabs.push(maxTab + 1);
-            this.$cookies.set('tabs', { 'ids': tabs });
+            this.$cookies.set('tabs', { ids: tabs });
           } else {
             sessionStorage.tabID = '1';
             this.tabID = '1';
-            this.$cookies.set('tabs', { 'ids': [1] });
+            this.$cookies.set('tabs', { ids: [1] });
           }
         }
       }

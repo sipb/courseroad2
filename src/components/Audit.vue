@@ -143,8 +143,8 @@
             <v-btn
               v-if="'title-no-degree' in dialogReq"
               color="error"
-              @click="deleteReq(dialogReq); viewDialog = false; dialogReq = undefined"
               data-cy="viewDialogRemoveButton"
+              @click="deleteReq(dialogReq); viewDialog = false; dialogReq = undefined"
             >
               <v-icon>delete</v-icon>
               Remove Requirement
@@ -316,7 +316,7 @@ export default {
         const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
         // Checks if unique key in progressAssert, if it is, searches for substitution key
         if (petitionReqPA !== undefined) {
-          return petitionReqPA['substitutions'];
+          return petitionReqPA.substitutions;
         } else {
           return undefined;
         }
@@ -326,7 +326,7 @@ export default {
       get: function () {
         const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
         if (petitionReqPA !== undefined) {
-          return petitionReqPA['ignore'];
+          return petitionReqPA.ignore;
         } else {
           return false; // So checkbox properly updates when resetPetition is used
         }

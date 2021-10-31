@@ -133,22 +133,22 @@ describe('Audit Tests', () => {
   it('Computes progress in audit tree', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', [
       {
-        'subject_id': '21M.301',
-        'title': 'Harmony and Counterpoint I',
-        'offered_fall': true,
-        'offered_spring': true
+        subject_id: '21M.301',
+        title: 'Harmony and Counterpoint I',
+        offered_fall: true,
+        offered_spring: true
       },
       {
-        'subject_id': '21M.293',
-        'title': 'Music of Africa',
-        'offered_fall': true,
-        'offered_spring': true
+        subject_id: '21M.293',
+        title: 'Music of Africa',
+        offered_fall: true,
+        offered_spring: true
       },
       {
-        'subject_id': '21M.423',
-        'title': 'Conducting and Score-Reading',
-        'offered_fall': true,
-        'offered_spring': true
+        subject_id: '21M.423',
+        title: 'Conducting and Score-Reading',
+        offered_fall: true,
+        offered_spring: true
       }
     ]);
 
@@ -230,11 +230,11 @@ describe('Audit Tests', () => {
   it('Drags classes from audit to road', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true', [
       {
-        'subject_id': '18.02',
-        'title': 'Calculus',
-        'gir_attribute': 'CAL2',
-        'offered_spring': true,
-        'offered_fall': false
+        subject_id: '18.02',
+        title: 'Calculus',
+        gir_attribute: 'CAL2',
+        offered_spring: true,
+        offered_fall: false
       }
     ]);
     cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/requirements/progress/girs/', girs);

@@ -158,10 +158,10 @@ describe('Class Info Card Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '3.010',
-          'title': 'Structure of Materials',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '3.010',
+          title: 'Structure of Materials',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );
@@ -196,10 +196,10 @@ describe('Class Info Card Tests', () => {
       [
         exampleClass,
         {
-          'subject_id': '10.00',
-          'title': 'Molecule Builders',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '10.00',
+          title: 'Molecule Builders',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );
@@ -237,16 +237,16 @@ describe('Class Info Card Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '14.21',
-          'title': 'Health Economics',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '14.21',
+          title: 'Health Economics',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '18.100A',
-          'title': 'Real Analysis',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '18.100A',
+          title: 'Real Analysis',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );

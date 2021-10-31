@@ -137,7 +137,7 @@ export default {
       duplicateRoad: false,
       duplicateRoadSource: '$defaultroad$',
       newRoadName: '',
-      tabRoad: this.activeRoad
+      tabRoad: this.$store.state.activeRoad
     };
   },
   computed: {

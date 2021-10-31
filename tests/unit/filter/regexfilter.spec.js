@@ -125,7 +125,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, high-priority
   it('ranks subjects correctly for 1 positive priority', () => {
     const r = new RegexFilter('test', 't', '(.+)\\1', undefined, ['a']);
-    r.setupVariants({}, { 'atStart': true }, ['atStart']);
+    r.setupVariants({}, { atStart: true }, ['atStart']);
     expectRegexFilterOrder(['five', 'smoot', 'oops'], r);
   });
 
@@ -134,7 +134,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, high-priority
   it('ranks subjects correctly for 1 negative priority', () => {
     const r = new RegexFilter('test', 't', '\\d\\d', undefined, ['a']);
-    r.setupVariants({}, { 'asLiteral': false }, ['asLiteral']);
+    r.setupVariants({}, { asLiteral: false }, ['asLiteral']);
     expectRegexFilterOrder(['hello', '\\a\\b\\c\\d\\d', '444'], r);
   });
 
@@ -143,7 +143,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, mid-priority, high-priority
   it('ranks subjects correctly for positive priorities', () => {
     const r = new RegexFilter('test', 't', '(.)(.)\\2\\1', undefined, ['a']);
-    r.setupVariants({}, { 'atStart': true, 'asLiteral': true }, ['asLiteral', 'atStart']);
+    r.setupVariants({}, { atStart: true, asLiteral: true }, ['asLiteral', 'atStart']);
     expectRegexFilterOrder(['sun', 'afternoon', 'noon', 'abc(.)(.)\\2\\1', '(.)(.)\\2\\1xyz'], r);
   });
 
@@ -152,7 +152,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, mid-priority, high-priority
   it('ranks subjects correctly for mixed priorities', () => {
     const r = new RegexFilter('test', 't', '2.', undefined, ['a']);
-    r.setupVariants({}, { 'atStart': true, 'asLiteral': false }, ['atStart', 'asLiteral']);
+    r.setupVariants({}, { atStart: true, asLiteral: false }, ['atStart', 'asLiteral']);
     expectRegexFilterOrder(['16.400', '12.742', '17.270', '2.00B', '21G.701'], r);
   });
 
@@ -161,7 +161,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, mid-priority, high-priority
   it('ranks subjects correctly for negative priorities', () => {
     const r = new RegexFilter('test', 't', 'b.t', undefined, ['a']);
-    r.setupVariants({}, { 'atStart': false, 'asLiteral': false }, ['asLiteral', 'atStart']);
+    r.setupVariants({}, { atStart: false, asLiteral: false }, ['asLiteral', 'atStart']);
     expectRegexFilterOrder(['house', 'b.th', 'aab.tcc', 'bits', 'robots'], r);
   });
 
@@ -179,7 +179,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, high-priority
   it('ranks subjects correctly for one positive priority with inputs', () => {
     const r = new RegexFilter('test', 't', '\\w+:.+', 'in', ['a'], 'OR');
-    r.setupVariants({ in: 'cat' }, { 'asLiteral': true }, ['asLiteral']);
+    r.setupVariants({ in: 'cat' }, { asLiteral: true }, ['asLiteral']);
     expectRegexFilterOrder(['hello', 'pet: cat', 'world\\w+:.+cat'], r);
   });
 
@@ -188,7 +188,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, high-priority
   it('ranks subjects correctly for one negative priority with inputs', () => {
     const r = new RegexFilter('test', 't', 'sm.{3,}', 'x', ['a'], 'OR');
-    r.setupVariants({ x: 's' }, { 'atStart': false }, ['atStart']);
+    r.setupVariants({ x: 's' }, { atStart: false }, ['atStart']);
     expectRegexFilterOrder(['small', 'small fries', 'chasm abyss'], r);
   });
 
@@ -197,7 +197,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, medium-priority, high-priority
   it('ranks subjects correctly for positive priorities with inputs', () => {
     const r = new RegexFilter('test', 't', '.', 'a', ['a'], 'OR');
-    r.setupVariants({ a: 'at' }, { 'atStart': true, 'asLiteral': true }, ['atStart', 'asLiteral']);
+    r.setupVariants({ a: 'at' }, { atStart: true, asLiteral: true }, ['atStart', 'asLiteral']);
     expectRegexFilterOrder(['ball', 'flat', '...at', 'bat', '.at'], r);
   });
 
@@ -206,7 +206,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, medium-priority, high-priority
   it('ranks subjects correctly for mixed priorities with inputs', () => {
     const r = new RegexFilter('test', 't', 'p.+t', 'y', ['a'], 'OR');
-    r.setupVariants({ y: '.*s' }, { 'atStart': false, 'asLiteral': true }, ['asLiteral', 'atStart']);
+    r.setupVariants({ y: '.*s' }, { atStart: false, asLiteral: true }, ['asLiteral', 'atStart']);
     expectRegexFilterOrder(['acorn', 'paths', 'apartments', 'p.+t.*s', 'all p.+t.*s'], r);
   });
 
@@ -215,7 +215,7 @@ describe('RegexFilter', () => {
   // compareByVariants: non-matching, low-priority, medium-priority, high-priority
   it('ranks subjects correctly for negative priorities with inputs', () => {
     const r = new RegexFilter('test', 't', 'e..e', 'in', ['a'], 'OR');
-    r.setupVariants({ in: 'r' }, { 'atStart': false, 'asLiteral': false }, ['atStart', 'asLiteral']);
+    r.setupVariants({ in: 'r' }, { atStart: false, asLiteral: false }, ['atStart', 'asLiteral']);
     expectRegexFilterOrder(['blank', 'e..er :(', 'experts', 'fore..er', 'centers'], r);
   });
 });

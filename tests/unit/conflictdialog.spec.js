@@ -15,7 +15,7 @@ const conflictInfo = {
   other_date: '2019-09-10T00:51:29+00:00',
   other_contents: {
     coursesOfStudy: ['girs'],
-    selectedSubjects: [{ 'title': 'Introduction to Algorithms', 'subject_id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 }, { 'title': 'Introduction to Algorithms', 'subject_id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 }, { 'title': 'Principles of Chemical Science', 'subject_id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 0 }],
+    selectedSubjects: [{ title: 'Introduction to Algorithms', subject_id: '6.006', units: 12, overrideWarnings: false, index: 0, semester: 0 }, { title: 'Introduction to Algorithms', subject_id: '6.006', units: 12, overrideWarnings: false, index: 1, semester: 0 }, { title: 'Principles of Chemical Science', subject_id: '5.111', units: 12, overrideWarnings: false, index: 2, semester: 0 }],
     progressOverrides: {}
   },
   this_agent: 'MacIntel Chrome Tab 1',
@@ -36,7 +36,7 @@ describe('ConflictDialog', () => {
             agent: '',
             contents: {
               coursesOfStudy: ['girs'],
-              selectedSubjects: [[{ 'title': 'Introduction to Algorithms', 'subject_id': '6.006', 'units': 12, 'overrideWarnings': false, 'index': 0, 'semester': 0 }, { 'title': 'Computation Structures', 'subject_id': '6.004', 'units': 12, 'overrideWarnings': false, 'index': 1, 'semester': 0 }, { 'title': 'Principles of Chemical Science', 'subject_id': '5.111', 'units': 12, 'overrideWarnings': false, 'index': 2, 'semester': 0 }], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
+              selectedSubjects: [[{ title: 'Introduction to Algorithms', subject_id: '6.006', units: 12, overrideWarnings: false, index: 0, semester: 0 }, { title: 'Computation Structures', subject_id: '6.004', units: 12, overrideWarnings: false, index: 1, semester: 0 }, { title: 'Principles of Chemical Science', subject_id: '5.111', units: 12, overrideWarnings: false, index: 2, semester: 0 }], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []],
               progressOverrides: {}
             }
           }
