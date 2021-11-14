@@ -13,7 +13,7 @@
               </v-card-text>
             </div>
           </v-card>
-          <template v-if="shouldLighten(subject)" v-slot:badge>
+          <template v-if="shouldLighten(subject)" #badge>
             <v-icon color="green" medium>
               done
             </v-icon>

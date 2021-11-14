@@ -4,16 +4,16 @@ describe('Classes Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '6.004',
-          'title': 'Computation Structures',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '6.004',
+          title: 'Computation Structures',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '16.004',
-          'title': 'Unified Engineering: Thermodynamics and Propulsion',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '16.004',
+          title: 'Unified Engineering: Thermodynamics and Propulsion',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );
@@ -54,16 +54,16 @@ describe('Classes Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '6.004',
-          'title': 'Computation Structures',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '6.004',
+          title: 'Computation Structures',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '16.004',
-          'title': 'Unified Engineering: Thermodynamics and Propulsion',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '16.004',
+          title: 'Unified Engineering: Thermodynamics and Propulsion',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );
@@ -91,16 +91,16 @@ describe('Classes Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '6.004',
-          'title': 'Computation Structures',
-          'offered_fall': true,
-          'offered_spring': false
+          subject_id: '6.004',
+          title: 'Computation Structures',
+          offered_fall: true,
+          offered_spring: false
         },
         {
-          'subject_id': '16.004',
-          'title': 'Unified Engineering: Thermodynamics and Propulsion',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '16.004',
+          title: 'Unified Engineering: Thermodynamics and Propulsion',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );
@@ -149,16 +149,16 @@ describe('Classes Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '2.003',
-          'title': 'Dynamics and Control I',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '2.003',
+          title: 'Dynamics and Control I',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '4.021',
-          'title': 'Design Studio: How to Design',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '4.021',
+          title: 'Design Studio: How to Design',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );
@@ -200,24 +200,24 @@ describe('Classes Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '6.004',
-          'title': 'Computation Structures',
-          'offered_fall': true,
-          'offered_spring': true,
-          'total_units': 12,
-          'lab_units': 0,
-          'lecture_units': 4,
-          'preparation_units': 8
+          subject_id: '6.004',
+          title: 'Computation Structures',
+          offered_fall: true,
+          offered_spring: true,
+          total_units: 12,
+          lab_units: 0,
+          lecture_units: 4,
+          preparation_units: 8
         },
         {
-          'subject_id': '5.111',
-          'title': 'Principals of Chemical Science',
-          'offered_fall': true,
-          'offered_spring': true,
-          'total_units': 12,
-          'lab_units': 0,
-          'lecture_units': 5,
-          'preparation_units': 7
+          subject_id: '5.111',
+          title: 'Principals of Chemical Science',
+          offered_fall: true,
+          offered_spring: true,
+          total_units: 12,
+          lab_units: 0,
+          lecture_units: 5,
+          preparation_units: 7
         }
       ]
     );
@@ -276,13 +276,13 @@ describe('Classes Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '14.02',
-          'title': 'Principles of Macroeconomics',
-          'hass_attribute': 'HASS-S'
+          subject_id: '14.02',
+          title: 'Principles of Macroeconomics',
+          hass_attribute: 'HASS-S'
         },
         {
-          'subject_id': '5.111',
-          'title': 'Principals of Chemical Science'
+          subject_id: '5.111',
+          title: 'Principals of Chemical Science'
         }
       ]
     );
@@ -313,12 +313,12 @@ describe('Classes Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '18.03',
-          'title': 'Differential Equations'
+          subject_id: '18.03',
+          title: 'Differential Equations'
         },
         {
-          'subject_id': '7.012',
-          'title': 'Introductory Biology'
+          subject_id: '7.012',
+          title: 'Introductory Biology'
         }
       ]
     );
@@ -340,22 +340,22 @@ describe('Classes Tests', () => {
     cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/courses/all?full=true',
       [
         {
-          'subject_id': '5.12',
-          'title': 'Organic Chemistry I',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '5.12',
+          title: 'Organic Chemistry I',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '10.466',
-          'title': 'Structure of Soft Matter',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '10.466',
+          title: 'Structure of Soft Matter',
+          offered_fall: true,
+          offered_spring: true
         },
         {
-          'subject_id': '24.118',
-          'title': 'Paradox and Infinity',
-          'offered_fall': true,
-          'offered_spring': true
+          subject_id: '24.118',
+          title: 'Paradox and Infinity',
+          offered_fall: true,
+          offered_spring: true
         }
       ]
     );

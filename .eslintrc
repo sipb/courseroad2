@@ -9,10 +9,7 @@
       "error",
       {
         "singleline": 5,
-        "multiline": {
-          "max": 1,
-          "allowFirstLine": false
-        }
+        "multiline": 1
       }
     ],
     "semi": [
@@ -23,7 +20,9 @@
       }
     ],
     "no-var": 0,
-    "prefer-const": 1
+    "prefer-const": 1,
+    "vue/multi-word-component-names": 0,
+    "vue/no-useless-template-attributes": 0
   },
   "overrides": [
     {

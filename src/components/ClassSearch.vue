@@ -120,7 +120,7 @@ export default {
         terms: new FilterGroup('Term', [termFall, termIAP, termSpring], 'OR'),
         virtual: new FilterGroup('Virtual', [virtual, notVirtual, partlyVirtual], 'OR')
       },
-      rowsPerPageItems: [5, 10, 20, 50, { 'text': '$vuetify.dataIterator.rowsPerPageAll', 'value': -1 }],
+      rowsPerPageItems: [5, 10, 20, 50, { text: '$vuetify.dataIterator.rowsPerPageAll', value: -1 }],
       pagination: {
         rowsPerPage: 20
       }
@@ -154,7 +154,7 @@ export default {
       // Sort subjects by priority order
       if (this.nameInput.length) {
         // Sort first by if it's a literal string vs regex match, then by if it starts with the search
-        textFilter.setupVariants({ nameInput: this.nameInput }, { 'atStart': true, 'asLiteral': true }, ['asLiteral', 'atStart']);
+        textFilter.setupVariants({ nameInput: this.nameInput }, { atStart: true, asLiteral: true }, ['asLiteral', 'atStart']);
 
         // Compare by variants for each subject
         return filteredSubjects.sort(function (subject1, subject2) {

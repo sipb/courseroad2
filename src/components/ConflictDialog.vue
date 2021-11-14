@@ -1,5 +1,6 @@
 <template>
   <v-dialog v-if="conflictInfo != undefined" v-model="conflictDialog" max-width="600">
+    {{ conflictDialog }}
     <v-card>
       <v-btn icon flat style="float:right" @click="conflictDialog = false">
         <v-icon>close</v-icon>

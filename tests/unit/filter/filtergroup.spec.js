@@ -19,7 +19,7 @@ describe('FilterGroup', () => {
   // covers filters.length = 0, 0 active, mode AND, returns true
   it('passes AND group with 0 filters', () => {
     const g = new FilterGroup('test', [], 'AND');
-    expect(g.matches({ x: 9, y: 10, z: 'hi' }, [], { 'in': 10 })).toBe(true);
+    expect(g.matches({ x: 9, y: 10, z: 'hi' }, [], { in: 10 })).toBe(true);
   });
 
   // covers filters.length > 0, 0 active, mode OR, returns true

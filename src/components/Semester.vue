@@ -5,8 +5,8 @@
     :id="'road_'+roadID+'_semester_' + index"
     :data-cy="'road_'+roadID+'__semester_' + index"
     dropzone="copy"
-    @dragover.native.prevent
     :class="semData.bgColorHeader"
+    @dragover.native.prevent
   >
     <v-container
       slot="header"
@@ -34,7 +34,7 @@
             Units: {{ semesterInformation.totalUnits }}
           </span>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <span v-on="on">Hours: {{ semesterInformation.totalExpectedHours.toFixed(1) }}</span>
             </template>
             <div id="tooltipTable">
@@ -154,7 +154,7 @@ import schedule from './../mixins/schedule.js';
 export default {
   name: 'Semester',
   components: {
-    'class': Class
+    class: Class
   },
   mixins: [colorMixin, schedule, reqFulfillment],
   props: {
@@ -185,7 +185,6 @@ export default {
   },
   data: function () {
     return {
-      newYear: this.semesterYear,
       draggingOver: false,
       dragCount: 0
     };

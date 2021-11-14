@@ -221,12 +221,12 @@ var DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
 export default {
   components: {
-    'audit': Audit,
+    audit: Audit,
     'class-search': ClassSearch,
-    'road': Road,
+    road: Road,
     'road-tabs': RoadTabs,
     'conflict-dialog': ConflictDialog,
-    'auth': Auth,
+    auth: Auth,
     'class-info': ClassInfo,
     'import-export': ImportExport
   },
@@ -356,7 +356,7 @@ export default {
 
     this.setActiveRoad();
 
-    axios.get(process.env.VUE_APP_FIREROAD_URL + `/requirements/list_reqs/`)
+    axios.get(process.env.VUE_APP_FIREROAD_URL + '/requirements/list_reqs/')
       .then(response => {
         this.reqList = Object.keys(response.data).map((m) => {
           return Object.assign(response.data[m], { key: m });
@@ -373,7 +373,7 @@ export default {
     window.addEventListener('beforeunload', () => {
       if (this.cookiesAllowed && this.$store.state.loggedIn) {
         const subjectsInfoNoDescriptions = this.$store.state.subjectsInfo.map(function (x) {
-          x = { 'subject_id': x.subject_id, 'title': x.title, 'offered_fall': x.offered_fall, 'offered_spring': x.offered_spring, 'offered_iap': x.offered_iap };
+          x = { subject_id: x.subject_id, title: x.title, offered_fall: x.offered_fall, offered_spring: x.offered_spring, offered_iap: x.offered_iap };
           return x;
         });
         this.$store.commit('setSubjectsInfo', subjectsInfoNoDescriptions);
@@ -411,7 +411,7 @@ export default {
           const req = fulfillments[r];
           const alteredRoadContents = Object.assign({}, _this.roads[_this.activeRoad].contents);
           alteredRoadContents.selectedSubjects = this.flatten(alteredRoadContents.selectedSubjects);
-          axios.post(process.env.VUE_APP_FIREROAD_URL + `/requirements/progress/` + req + `/`, alteredRoadContents).then(function (response) {
+          axios.post(process.env.VUE_APP_FIREROAD_URL + '/requirements/progress/' + req + '/', alteredRoadContents).then(function (response) {
             // This is necessary so Vue knows about the new property on reqTrees
             Vue.set(this.data.reqTrees, this.req, response.data);
           }.bind({ data: this, req: req }));
@@ -423,7 +423,7 @@ export default {
     },
     setActiveRoad: function () {
       const roadRequested = this.$route.params.road;
-      if (this.roads.hasOwnProperty(this.$route.params.road)) {
+      if (this.$route.params.road in this.roads) {
         this.$store.commit('setActiveRoad', roadRequested);
         return true;
       } else if (!this.$cookies.isKey('accessInfo')) {
