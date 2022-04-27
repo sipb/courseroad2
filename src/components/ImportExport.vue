@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';
+import simpleSSMixin from './../mixins/sanitizeSubjects.js';
 
 export default {
   name: 'ImportExport',
@@ -156,7 +156,7 @@ export default {
 
       document.body.removeChild(element);
     },
-    importRoad: function (event) {
+    importRoad: async function (event) {
       let fail = false;
       // check for legal input
       if (this.inputtext === '' ||
@@ -216,7 +216,7 @@ export default {
           });
 
           // convert selected subjects to more convenient format
-          const simpless = this.getSimpleSelectedSubjects(ss);
+          const simpless = await this.getSimpleSelectedSubjects(ss);
 
           this.$emit('add-road', this.roadtitle, obj.coursesOfStudy, simpless, obj.progressOverrides);
         } catch (error) {

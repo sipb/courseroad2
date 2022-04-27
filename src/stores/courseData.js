@@ -44,7 +44,8 @@ const getDefaultState = () => {
     // none: no update to audit is needed (for changes like road name)
     fulfillmentNeeded: 'all',
     // list of road IDs that have not been retrieved from the server yet
-    unretrieved: []
+    unretrieved: [],
+    loadSubjectsPromise: undefined
   };
 };
 
@@ -323,11 +324,16 @@ const store = new Vuex.Store({
     // Reset fulfillment needed to default of all
     resetFulfillmentNeeded (state) {
       state.fulfillmentNeeded = 'all';
+    },
+    setLoadSubjectsPromise (state, promise) {
+      state.loadSubjectsPromise = promise;
     }
   },
   actions: {
-    async loadAllSubjects ({ commit }) {
-      const response = await axios.get(process.env.VUE_APP_FIREROAD_URL + '/courses/all?full=true');
+    async loadAllSubjects ({ commit, state }) {
+      const promise = axios.get(process.env.VUE_APP_FIREROAD_URL + '/courses/all?full=true');
+      commit('setLoadSubjectsPromise', promise);
+      const response = await promise;
       commit('setSubjectsInfo', response.data);
       commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');
@@ -344,6 +350,13 @@ const store = new Vuex.Store({
       };
       commit('addClass', newClass);
       commit('cancelAddFromCard');
+    },
+    async waitLoadSubjects ({ dispatch, state}) {
+      if (state.loadSubjectsPromise != undefined) {
+        return state.loadSubjectsPromise;
+      } else {
+        return dispatch("loadAllSubjects");
+      }
     }
   }
 });
