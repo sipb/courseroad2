@@ -18,7 +18,7 @@
               </v-btn>
             </div>
             <div style="padding: 0 0.5em 0 0;">
-              <h3>{{ currentSubject.subject_id }}</h3>
+              <h3>{{ currentSubject.subject_id }}<sub v-if="currentSubject.old_id !== undefined">[{{currentSubject.old_id}}]</sub></h3>
             </div>
             <div style="margin-left:auto">
               <v-btn icon style="margin: 0;" data-cy="closeClassInfoButton" @click="$store.commit('clearClassInfoStack')">
