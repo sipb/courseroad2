@@ -284,6 +284,8 @@ export default {
 
         _this.$store.commit('setRetrieved', roadID);
 
+        _this.$store.dispatch('waitAndMigrateOldSubjects', roadID);
+
         _this.gettingUserData = false;
         return roadData;
       });

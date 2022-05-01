@@ -45,7 +45,9 @@ const getDefaultState = () => {
     fulfillmentNeeded: 'all',
     // list of road IDs that have not been retrieved from the server yet
     unretrieved: [],
-    loadSubjectsPromise: undefined
+    loadSubjectsPromise: undefined,
+    loadedSubjects: false,
+    roadsToMigrate: []
   };
 };
 
@@ -76,6 +78,34 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       state.fulfillmentNeeded = event;
+    },
+    migrateOldSubjects(state, roadID) {
+      console.log("Migrating", roadID)
+      for (var i = 0; i < 16; i++) {
+        for (var j = 0; j < state.roads[roadID].contents.selectedSubjects[i].length; j++) {
+          const subject = state.roads[roadID].contents.selectedSubjects[i][j];
+
+          const subjectIndex = state.subjectsIndex[subject.subject_id];
+          const genericIndex = state.genericIndex[subject.subject_id];
+
+          const notInCatalog = subjectIndex == undefined && genericIndex == undefined;
+          const isHistorical = subjectIndex != undefined && state.subjectsInfo[subjectIndex].is_historical;
+
+          if (notInCatalog || isHistorical) {
+            // Look for subject with old ID
+            const oldSubjects = state.subjectsInfo.filter((subj) => {
+              return subj.old_id == subject.subject_id;
+            });
+
+            if (oldSubjects.length > 0) {
+              const oldSubject = oldSubjects[0];
+              subject.subject_id = oldSubject.subject_id;
+              subject.title = oldSubject.title;
+              subject.units = oldSubject.total_units;
+            }
+          }
+        }
+      }
     },
     allowCookies (state) {
       state.cookiesAllowed = true;
@@ -263,6 +293,10 @@ const store = new Vuex.Store({
       Vue.delete(state.roads, oldid);
       state.ignoreRoadChanges = true;
       state.fulfillmentNeeded = 'none';
+      const migrationIndex = state.roadsToMigrate.indexOf(oldid);
+      if (migrationIndex >= 0) {
+        state.roadsToMigrate.splice(migrationIndex, 1, newid);
+      }
     },
     setActiveRoad (state, activeRoad) {
       state.activeRoad = activeRoad;
@@ -327,6 +361,12 @@ const store = new Vuex.Store({
     },
     setLoadSubjectsPromise (state, promise) {
       state.loadSubjectsPromise = promise;
+    },
+    setSubjectsLoaded (state) {
+      state.subjectsLoaded = true;
+    },
+    queueRoadMigration (state, roadID) {
+      state.roadsToMigrate.push(roadID);
     }
   },
   actions: {
@@ -334,11 +374,15 @@ const store = new Vuex.Store({
       const promise = axios.get(process.env.VUE_APP_FIREROAD_URL + '/courses/all?full=true');
       commit('setLoadSubjectsPromise', promise);
       const response = await promise;
+      commit('setSubjectsLoaded');
       commit('setSubjectsInfo', response.data);
       commit('setFullSubjectsInfoLoaded', true);
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
+      for (let roadID of state.roadsToMigrate) {
+        commit('migrateOldSubjects', roadID);
+      }
     },
     addAtPlaceholder ({ commit, state }, index) {
       const newClass = {
@@ -351,11 +395,19 @@ const store = new Vuex.Store({
       commit('addClass', newClass);
       commit('cancelAddFromCard');
     },
-    async waitLoadSubjects ({ dispatch, state}) {
+    async waitLoadSubjects ({ dispatch, state }) {
       if (state.loadSubjectsPromise != undefined) {
         return state.loadSubjectsPromise;
       } else {
         return dispatch("loadAllSubjects");
+      }
+    },
+    waitAndMigrateOldSubjects({ dispatch, commit, state }, roadID) {
+      if (state.subjectsLoaded) {
+        commit("migrateOldSubjects", roadID);
+      } else {
+        commit("queueRoadMigration", roadID);
+        dispatch("waitLoadSubjects");
       }
     }
   }
