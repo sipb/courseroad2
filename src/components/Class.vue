@@ -36,7 +36,7 @@
               cancel
             </v-icon>
             <v-card-text class="card-text">
-              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.subject_id }}</span> {{ classInfo.title }}
+              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.subject_id }}<sub v-if="oldID != undefined">[{{ oldID }}]</sub></span> {{ classInfo.title }}
             </v-card-text>
           </div>
         </v-card>
@@ -122,6 +122,17 @@ export default {
     },
     cardClass: function (classInfo) {
       return `classbox ${this.courseColor(classInfo)}`;
+    }
+  },
+  computed: {
+    oldID: function() {
+      const subjectIndex = this.$store.state.subjectsIndex[this.classInfo.subject_id];
+      if (subjectIndex !== undefined) {
+        const subject = this.$store.state.subjectsInfo[subjectIndex];
+        return subject.old_id;
+      } else {
+        return undefined;
+      }
     }
   }
 };

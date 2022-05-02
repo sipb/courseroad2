@@ -49,7 +49,7 @@
 import axios from 'axios';
 import moment from 'moment';
 import UAParser from 'ua-parser-js';
-import simpleSSMixin from './../mixins/simpleSelectedSubjects.js';
+import simpleSSMixin from './../mixins/sanitizeSubjects.js';
 
 var DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS000Z';
 
@@ -283,6 +283,8 @@ export default {
         });
 
         _this.$store.commit('setRetrieved', roadID);
+
+        _this.$store.dispatch('waitAndMigrateOldSubjects', roadID);
 
         _this.gettingUserData = false;
         return roadData;

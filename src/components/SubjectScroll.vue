@@ -6,7 +6,7 @@
           <v-card class="subject" :data-cy="'subjectInScroller'+index" @click="$emit('click-subject', {subject_id:subject.subject_id,index:index})">
             <div :class="[courseColor(subject), shouldLighten(subject)]" style="height:100%;">
               <v-card-text class="cardtext pa-1">
-                <div><b>{{ subject.subject_id }}</b></div>
+                <div><b>{{ subject.subject_id }}<sub v-if="subject.old_id !== undefined">[{{subject.old_id}}]</sub></b></div>
                 <p class="subject-title">
                   {{ subject.title }}
                 </p>
