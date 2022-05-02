@@ -80,7 +80,6 @@ const store = new Vuex.Store({
       state.fulfillmentNeeded = event;
     },
     migrateOldSubjects(state, roadID) {
-      console.log("Migrating", roadID)
       for (var i = 0; i < 16; i++) {
         for (var j = 0; j < state.roads[roadID].contents.selectedSubjects[i].length; j++) {
           const subject = state.roads[roadID].contents.selectedSubjects[i][j];
@@ -367,6 +366,9 @@ const store = new Vuex.Store({
     },
     queueRoadMigration (state, roadID) {
       state.roadsToMigrate.push(roadID);
+    },
+    clearMigrationQueue (state) {
+      state.roadsToMigrate = [];
     }
   },
   actions: {
@@ -383,6 +385,7 @@ const store = new Vuex.Store({
       for (let roadID of state.roadsToMigrate) {
         commit('migrateOldSubjects', roadID);
       }
+      commit('clearMigrationQueue');
     },
     addAtPlaceholder ({ commit, state }, index) {
       const newClass = {
