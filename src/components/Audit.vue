@@ -66,6 +66,9 @@
         {{ courseLink.text }}
       </a>
     </p>
+    <p>
+      <a href="https://mit.turbovote.org/">Register to Vote!</a>
+    </p>
 
     <v-dialog v-model="progressDialog" max-width="600" data-cy="progressDialog">
       <v-card v-if="progressReq !== undefined">
