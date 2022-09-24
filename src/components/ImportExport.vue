@@ -196,9 +196,9 @@ export default {
               subject = this.$store.state.genericCourses[this.$store.state.genericIndex[s.subject_id]];
             }
 
-            if (subject == undefined) {
+            if (subject === undefined) {
               const oldSubjects = this.$store.state.subjectsInfo.filter((subj) => {
-                return subj.old_id == s.subject_id;
+                return subj.old_id === s.subject_id;
               });
 
               if (oldSubjects.length > 0) {

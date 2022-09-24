@@ -105,6 +105,17 @@ export default {
       shouldOverrideWarnings: this.classInfo.overrideWarnings
     };
   },
+  computed: {
+    oldID: function () {
+      const subjectIndex = this.$store.state.subjectsIndex[this.classInfo.subject_id];
+      if (subjectIndex !== undefined) {
+        const subject = this.$store.state.subjectsInfo[subjectIndex];
+        return subject.old_id;
+      } else {
+        return undefined;
+      }
+    }
+  },
   methods: {
     dragStart: function (event) {
       event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo, classIndex: this.classIndex }));
@@ -122,17 +133,6 @@ export default {
     },
     cardClass: function (classInfo) {
       return `classbox ${this.courseColor(classInfo)}`;
-    }
-  },
-  computed: {
-    oldID: function() {
-      const subjectIndex = this.$store.state.subjectsIndex[this.classInfo.subject_id];
-      if (subjectIndex !== undefined) {
-        const subject = this.$store.state.subjectsInfo[subjectIndex];
-        return subject.old_id;
-      } else {
-        return undefined;
-      }
     }
   }
 };
