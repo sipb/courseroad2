@@ -79,7 +79,7 @@ const store = new Vuex.Store({
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
       state.fulfillmentNeeded = event;
     },
-    migrateOldSubjects(state, roadID) {
+    migrateOldSubjects (state, roadID) {
       for (var i = 0; i < 16; i++) {
         for (var j = 0; j < state.roads[roadID].contents.selectedSubjects[i].length; j++) {
           const subject = state.roads[roadID].contents.selectedSubjects[i][j];
@@ -87,13 +87,13 @@ const store = new Vuex.Store({
           const subjectIndex = state.subjectsIndex[subject.subject_id];
           const genericIndex = state.genericIndex[subject.subject_id];
 
-          const notInCatalog = subjectIndex == undefined && genericIndex == undefined;
-          const isHistorical = subjectIndex != undefined && state.subjectsInfo[subjectIndex].is_historical;
+          const notInCatalog = subjectIndex === undefined && genericIndex === undefined;
+          const isHistorical = subjectIndex !== undefined && state.subjectsInfo[subjectIndex].is_historical;
 
           if (notInCatalog || isHistorical) {
             // Look for subject with old ID
             const oldSubjects = state.subjectsInfo.filter((subj) => {
-              return subj.old_id == subject.subject_id;
+              return subj.old_id === subject.subject_id;
             });
 
             if (oldSubjects.length > 0) {
@@ -382,7 +382,7 @@ const store = new Vuex.Store({
       commit('parseGenericCourses');
       commit('parseGenericIndex');
       commit('parseSubjectsIndex');
-      for (let roadID of state.roadsToMigrate) {
+      for (const roadID of state.roadsToMigrate) {
         commit('migrateOldSubjects', roadID);
       }
       commit('clearMigrationQueue');
@@ -399,18 +399,18 @@ const store = new Vuex.Store({
       commit('cancelAddFromCard');
     },
     async waitLoadSubjects ({ dispatch, state }) {
-      if (state.loadSubjectsPromise != undefined) {
+      if (state.loadSubjectsPromise !== undefined) {
         return state.loadSubjectsPromise;
       } else {
-        return dispatch("loadAllSubjects");
+        return dispatch('loadAllSubjects');
       }
     },
-    waitAndMigrateOldSubjects({ dispatch, commit, state }, roadID) {
+    waitAndMigrateOldSubjects ({ dispatch, commit, state }, roadID) {
       if (state.subjectsLoaded) {
-        commit("migrateOldSubjects", roadID);
+        commit('migrateOldSubjects', roadID);
       } else {
-        commit("queueRoadMigration", roadID);
-        dispatch("waitLoadSubjects");
+        commit('queueRoadMigration', roadID);
+        dispatch('waitLoadSubjects');
       }
     }
   }
