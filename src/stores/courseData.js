@@ -127,7 +127,8 @@ const store = new Vuex.Store({
       const hassAttributes = {
         'HASS-A': ['HASS Arts', 'ha'],
         'HASS-S': ['HASS Social Sciences', 'hs'],
-        'HASS-H': ['Hass Humanities', 'hh']
+        'HASS-H': ['HASS Humanities', 'hh'],
+        'HASS-E': ['HASS Elective', 'ht']
       };
       const ciAttributes = {
         'CI-H': ['Communication Intensive', 'hc'],

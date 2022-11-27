@@ -62,6 +62,7 @@
           @click.native="clickSearch($event); $event.stopPropagation();"
           @input="typeSearch"
           @keydown.esc="searchOpen = false"
+          @keyup.enter="$refs.searchMenu.openFirstClass"
         />
       </v-layout>
     </v-toolbar>
@@ -163,21 +164,8 @@
       @click.native="$event.stopPropagation()"
     />
 
-    <v-footer v-if="!dismissedOld || !dismissedCookies" fixed style="height: unset;">
+    <v-footer v-if="!dismissedCookies" fixed style="height: unset;">
       <v-layout column>
-        <v-flex v-if="!dismissedOld" class="lime accent-1 py-1 px-2">
-          <v-layout row align-center>
-            <v-flex>
-              Looking for the old courseroad?  Visit the old website <a target="_blank" href="https://courseroad.mit.edu/old">here</a> and export your roads!
-            </v-flex>
-            <v-flex shrink>
-              <v-btn small icon flat class="ma-1" @click="dismissOld">
-                <v-icon>close</v-icon>
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-divider v-if="!dismissedOld && !dismissedCookies" />
         <v-flex v-if="!dismissedCookies" class="lime accent-3 py-1 px-2">
           <v-layout row align-center>
             <v-flex>
@@ -246,7 +234,7 @@ export default {
       conflictDialog: false,
       conflictInfo: undefined,
       searchInput: '',
-      dismissedOld: false,
+      dismissedAndroidWarning: false,
       dismissedCookies: false,
       searchOpen: false,
       updatingFulfillment: false,
@@ -303,7 +291,7 @@ export default {
     },
     cookiesAllowed: function (newCA) {
       if (newCA) {
-        this.$cookies.set('dismissedOld', this.dismissedOld);
+        this.$cookies.set('dismissedAndroidWarning', this.dismissedAndroidWarning);
       }
     },
     roads: {
@@ -382,8 +370,8 @@ export default {
       }
     });
 
-    if (this.$cookies.isKey('dismissedOld')) {
-      this.dismissedOld = JSON.parse(this.$cookies.get('dismissedOld'));
+    if (this.$cookies.isKey('dismissedAndroidWarning')) {
+      this.dismissedAndroidWarning = JSON.parse(this.$cookies.get('dismissedAndroidWarning'));
       this.$store.commit('allowCookies');
     }
     if (this.$cookies.isKey('dismissedCookies')) {
@@ -478,9 +466,9 @@ export default {
       this.$refs.authcomponent.updateRemote(id);
     },
     dismissOld: function () {
-      this.dismissedOld = true;
+      this.dismissedAndroidWarning = true;
       if (this.cookiesAllowed) {
-        this.$cookies.set('dismissedOld', true);
+        this.$cookies.set('dismissedAndroidWarning', true);
       }
     },
     dismissCookies: function () {
