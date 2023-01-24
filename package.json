@@ -24,7 +24,7 @@
     "material-design-icons-iconfont": "^4.0.5",
     "moment": "^2.29.4",
     "typeface-roboto": "0.0.54",
-    "ua-parser-js": "^1.0.1",
+    "ua-parser-js": "^1.0.33",
     "url-loader": "^4.1.1",
     "vue-context": "^6.0.0",
     "vue-cookies": "^1.7.4",
