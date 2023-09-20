@@ -13,7 +13,6 @@
         <v-card-title>
           <h2>Custom Activities</h2>
         </v-card-title>
-        <v-select class="px-3" label="Edit an Existing Custom Activity" :items="customClasses" return-object />
         <v-form ref="form" lazy-validation>
           <div class="px-3">
             <v-text-field v-model="form.values.shortTitle" label="Short Title" counter="8" required :rules="form.rules.shortTitleRule" />
@@ -29,14 +28,14 @@
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
             <center>
               <v-btn-toggle v-model="form.values.colorChosen" mandatory>
-                <v-btn class="px-4 mr-2" color="#B55757" :value="'#B55757'" fab />
-                <v-btn class="px-4 mx-2" color="#DE4343" :value="'#DE4343'" fab />
-                <v-btn class="px-4 mx-2" color="#DE9043" :value="'#DE9043'" fab />
-                <v-btn class="px-4 mx-2" color="#DE43DE" :value="'#DE43DE'" fab />
-                <v-btn class="px-4 mx-2" color="#5786B5" :value="'#5786B5'" fab />
-                <v-btn class="px-4 mx-2" color="#8657B5" :value="'#8657B5'" fab />
-                <v-btn class="px-4 mx-2" color="#16B516" :value="'#16B516'" fab />
-                <v-btn class="px-4 ml-2" color="#737373" :value="'#737373'" fab />
+                <v-btn class="px-4 mr-2" color="#B55757" :value="'@0'" fab />
+                <v-btn class="px-4 mx-2" color="#DE4343" :value="'@6'" fab />
+                <v-btn class="px-4 mx-2" color="#DE9043" :value="'@7'" fab />
+                <v-btn class="px-4 mx-2" color="#DE43DE" :value="'@28'" fab />
+                <v-btn class="px-4 mx-2" color="#5786B5" :value="'@19'" fab />
+                <v-btn class="px-4 mx-2" color="#8657B5" :value="'@21'" fab />
+                <v-btn class="px-4 mx-2" color="#16B516" :value="'@16'" fab />
+                <v-btn class="px-4 ml-2" color="#737373" :value="'@39'" fab />
               </v-btn-toggle>
             </center>
           </div>
@@ -76,22 +75,23 @@ export default {
 
     };
   },
-  computed: {
-    customClasses: function () {
-      return this.$store.state.roads[this.$store.state.activeRoad].contents.customClasses;
-    }
-  },
   methods: {
     addCustomClass: function () {
       const newClass = {
-        'id': this.form.values.shortTitle,
-        'title': this.form.values.fullTitle,
-        'units': this.form.values.units,
-        'in_class_hours': this.form.values.inClassHours,
-        'out_of_class_hours': this.form.values.outOfClassHours,
-        'custom_color': this.form.values.colorChosen
+        subject_id: this.form.values.shortTitle,
+        title: this.form.values.fullTitle,
+        units: this.form.values.units,
+        in_class_hours: this.form.values.inClassHours,
+        out_of_class_hours: this.form.values.outOfClassHours,
+        custom_color: this.form.values.colorChosen,
+        public: false,
+        offered_fall: true,
+        offered_IAP: true,
+        offered_spring: true,
+        offered_summer: true
       };
-      this.$store.commit('addCustomClass', newClass);
+      this.viewDialog = false;
+      this.$store.commit('addFromCard', newClass);
     },
     validate: function () {
       if (this.$refs.form.validate()) {

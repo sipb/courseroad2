@@ -31,8 +31,7 @@ const getDefaultState = () => {
           coursesOfStudy: ['girs'],
           selectedSubjects: Array.from(Array(16), () => []),
           progressOverrides: {},
-          progressAssertions: {},
-          customClasses: []
+          progressAssertions: {}
         }
       }
     },
@@ -70,9 +69,6 @@ const store = new Vuex.Store({
     addClass (state, newClass) {
       state.roads[state.activeRoad].contents.selectedSubjects[newClass.semester].push(newClass);
       state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
-    },
-    addCustomClass (state, newClass) {
-      state.roads[state.activeRoad].contents.customClasses.push(newClass);
     },
     addFromCard (state, classItem) {
       state.addingFromCard = true;
@@ -392,13 +388,28 @@ const store = new Vuex.Store({
       commit('clearMigrationQueue');
     },
     addAtPlaceholder ({ commit, state }, index) {
-      const newClass = {
-        overrideWarnings: false,
-        semester: index,
-        title: state.itemAdding.title,
-        subject_id: state.itemAdding.subject_id,
-        units: state.itemAdding.total_units
-      };
+      let newClass = {};
+      if (state.itemAdding.public !== false) {
+        // Class is in catalog
+        newClass = {
+          overrideWarnings: false,
+          semester: index,
+          title: state.itemAdding.title,
+          subject_id: state.itemAdding.subject_id,
+          units: state.itemAdding.total_units
+        };
+      } else {
+        // Adding custom class
+        newClass = {
+          overrideWarnings: false,
+          semester: index,
+          title: state.itemAdding.title,
+          subject_id: state.itemAdding.subject_id,
+          units: state.itemAdding.total_units,
+          public: false,
+          custom_color: state.itemAdding.custom_color
+        };
+      }
       commit('addClass', newClass);
       commit('cancelAddFromCard');
     },
