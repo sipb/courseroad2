@@ -369,6 +369,10 @@ export default {
           return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.subject_id]];
         } else if (subj.subject_id in this.$store.state.genericIndex) {
           return this.$store.state.genericCourses[this.$store.state.genericIndex[subj.subject_id]];
+        } else if (subj.public === false) {
+          return Object.assign({}, subj, {
+            total_units: subj.units
+          })
         } else {
           return undefined;
         }

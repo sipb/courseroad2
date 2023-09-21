@@ -406,8 +406,10 @@ const store = new Vuex.Store({
           title: state.itemAdding.title,
           subject_id: state.itemAdding.subject_id,
           units: state.itemAdding.total_units,
-          public: false,
-          custom_color: state.itemAdding.custom_color
+          in_class_hours: state.itemAdding.in_class_hours,
+          out_of_class_hours: state.itemAdding.out_of_class_hours,
+          custom_color: state.itemAdding.custom_color,
+          public: false
         };
       }
       commit('addClass', newClass);
