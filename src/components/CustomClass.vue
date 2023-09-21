@@ -27,63 +27,63 @@
 
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
             <center>
-              <v-btn-toggle v-model="form.values.colorChosen">
+              <v-btn-toggle v-model="form.values.colorChosen" class="elevation-0">
                 <v-layout row wrap>
                   <v-flex>
-                    <v-btn class="px-4 ma-2" color="#B55757" :value="'@0'" fab />
-                    <v-btn class="px-4 ma-2" color="#B58657" :value="'@1'" fab />
-                    <v-btn class="px-4 ma-2" color="#B5B557" :value="'@2'" fab />
-                    <v-btn class="px-4 ma-2" color="#86B557" :value="'@3'" fab />
-                    <v-btn class="px-4 ma-2" color="#57B557" :value="'@4'" fab />
-                    <v-btn class="px-4 ma-2" color="#57B586" :value="'@5'" fab />
+                    <v-btn class="px-4 ma-2" color="#B55757" :value="'@0'" />
+                    <v-btn class="px-4 ma-2" color="#B58657" :value="'@1'" />
+                    <v-btn class="px-4 ma-2" color="#B5B557" :value="'@2'" />
+                    <v-btn class="px-4 ma-2" color="#86B557" :value="'@3'" />
+                    <v-btn class="px-4 ma-2" color="#57B557" :value="'@4'" />
+                    <v-btn class="px-4 ma-2" color="#57B586" :value="'@5'" />
                   </v-flex>
                   <v-flex>
-                    <v-btn class="px-4 ma-2" color="#DE4343" :value="'@6'" fab />
-                    <v-btn class="px-4 ma-2" color="#DE9043" :value="'@7'" fab />
-                    <v-btn class="px-4 ma-2" color="#DEDE43" :value="'@8'" fab />
-                    <v-btn class="px-4 ma-2" color="#90DE43" :value="'@9'" fab />
-                    <v-btn class="px-4 ma-2" color="#43DE43" :value="'@10'" fab />
-                    <v-btn class="px-4 ma-2" color="#43DE90" :value="'@11'" fab />
+                    <v-btn class="px-4 ma-2" color="#DE4343" :value="'@6'" />
+                    <v-btn class="px-4 ma-2" color="#DE9043" :value="'@7'" />
+                    <v-btn class="px-4 ma-2" color="#DEDE43" :value="'@8'" />
+                    <v-btn class="px-4 ma-2" color="#90DE43" :value="'@9'" />
+                    <v-btn class="px-4 ma-2" color="#43DE43" :value="'@10'" />
+                    <v-btn class="px-4 ma-2" color="#43DE90" :value="'@11'" />
                   </v-flex>
                   <v-flex>
-                    <v-btn class="px-4 ma-2" color="#B51616" :value="'@12'" fab />
-                    <v-btn class="px-4 ma-2" color="#B56516" :value="'@13'" fab />
-                    <v-btn class="px-4 ma-2" color="#B5B516" :value="'@14'" fab />
-                    <v-btn class="px-4 ma-2" color="#65B516" :value="'@15'" fab />
-                    <v-btn class="px-4 ma-2" color="#16B516" :value="'@16'" fab />
-                    <v-btn class="px-4 ma-2" color="#16B565" :value="'@17'" fab />
+                    <v-btn class="px-4 ma-2" color="#B51616" :value="'@12'" />
+                    <v-btn class="px-4 ma-2" color="#B56516" :value="'@13'" />
+                    <v-btn class="px-4 ma-2" color="#B5B516" :value="'@14'" />
+                    <v-btn class="px-4 ma-2" color="#65B516" :value="'@15'" />
+                    <v-btn class="px-4 ma-2" color="#16B516" :value="'@16'" />
+                    <v-btn class="px-4 ma-2" color="#16B565" :value="'@17'" />
                   </v-flex>
                   <v-flex>
-                    <v-btn class="px-4 ma-2" color="#57B5B5" :value="'@18'" fab />
-                    <v-btn class="px-4 ma-2" color="#5786B5" :value="'@19'" fab />
-                    <v-btn class="px-4 ma-2" color="#5757B5" :value="'@20'" fab />
-                    <v-btn class="px-4 ma-2" color="#8657B5" :value="'@21'" fab />
-                    <v-btn class="px-4 ma-2" color="#B557B5" :value="'@22'" fab />
-                    <v-btn class="px-4 ma-2" color="#B55786" :value="'@23'" fab />
+                    <v-btn class="px-4 ma-2" color="#57B5B5" :value="'@18'" />
+                    <v-btn class="px-4 ma-2" color="#5786B5" :value="'@19'" />
+                    <v-btn class="px-4 ma-2" color="#5757B5" :value="'@20'" />
+                    <v-btn class="px-4 ma-2" color="#8657B5" :value="'@21'" />
+                    <v-btn class="px-4 ma-2" color="#B557B5" :value="'@22'" />
+                    <v-btn class="px-4 ma-2" color="#B55786" :value="'@23'" />
                   </v-flex>
                   <v-flex>
-                    <v-btn class="px-4 ma-2" color="#43DEDE" :value="'@24'" fab />
-                    <v-btn class="px-4 ma-2" color="#4390DE" :value="'@25'" fab />
-                    <v-btn class="px-4 ma-2" color="#4343DE" :value="'@26'" fab />
-                    <v-btn class="px-4 ma-2" color="#9043DE" :value="'@27'" fab />
-                    <v-btn class="px-4 ma-2" color="#DE43DE" :value="'@28'" fab />
-                    <v-btn class="px-4 ma-2" color="#DE4390" :value="'@29'" fab />
+                    <v-btn class="px-4 ma-2" color="#43DEDE" :value="'@24'" />
+                    <v-btn class="px-4 ma-2" color="#4390DE" :value="'@25'" />
+                    <v-btn class="px-4 ma-2" color="#4343DE" :value="'@26'" />
+                    <v-btn class="px-4 ma-2" color="#9043DE" :value="'@27'" />
+                    <v-btn class="px-4 ma-2" color="#DE43DE" :value="'@28'" />
+                    <v-btn class="px-4 ma-2" color="#DE4390" :value="'@29'" />
                   </v-flex>
                   <v-flex>
-                    <v-btn class="px-4 ma-2" color="#16B5B5" :value="'@30'" fab />
-                    <v-btn class="px-4 ma-2" color="#1665B5" :value="'@31'" fab />
-                    <v-btn class="px-4 ma-2" color="#1616B5" :value="'@32'" fab />
-                    <v-btn class="px-4 ma-2" color="#6516B5" :value="'@33'" fab />
-                    <v-btn class="px-4 ma-2" color="#B516B5" :value="'@34'" fab />
-                    <v-btn class="px-4 ma-2" color="#B51665" :value="'@35'" fab />
+                    <v-btn class="px-4 ma-2" color="#16B5B5" :value="'@30'" />
+                    <v-btn class="px-4 ma-2" color="#1665B5" :value="'@31'" />
+                    <v-btn class="px-4 ma-2" color="#1616B5" :value="'@32'" />
+                    <v-btn class="px-4 ma-2" color="#6516B5" :value="'@33'" />
+                    <v-btn class="px-4 ma-2" color="#B516B5" :value="'@34'" />
+                    <v-btn class="px-4 ma-2" color="#B51665" :value="'@35'" />
                   </v-flex>
                   <v-flex>
-                    <v-btn class="px-4 ma-2" color="#000000" :value="'@36'" fab />
-                    <v-btn class="px-4 ma-2" color="#262626" :value="'@37'" fab />
-                    <v-btn class="px-4 ma-2" color="#4D4D4D" :value="'@38'" fab />
-                    <v-btn class="px-4 ma-2" color="#737373" :value="'@39'" fab />
-                    <v-btn class="px-4 ma-2" color="#999999" :value="'@40'" fab />
-                    <v-btn class="px-4 ma-2" color="#BFBFBF" :value="'@41'" fab />
+                    <v-btn class="px-4 ma-2" color="#000000" :value="'@36'" />
+                    <v-btn class="px-4 ma-2" color="#262626" :value="'@37'" />
+                    <v-btn class="px-4 ma-2" color="#4D4D4D" :value="'@38'" />
+                    <v-btn class="px-4 ma-2" color="#737373" :value="'@39'" />
+                    <v-btn class="px-4 ma-2" color="#999999" :value="'@40'" />
+                    <v-btn class="px-4 ma-2" color="#BFBFBF" :value="'@41'" />
                   </v-flex>
                 </v-layout>
               </v-btn-toggle>
