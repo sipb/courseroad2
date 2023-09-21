@@ -1,8 +1,8 @@
 <template>
   <v-card>
     <center>
-      <v-btn class="white--text" color="green" @click="viewDialog = true">
-        Create a Custom Activity
+      <v-btn class="white--text" color="#888" :block="true" @click="viewDialog = true">
+        New Custom Activity
       </v-btn>
     </center>
     <v-dialog v-model="viewDialog" max-width="600">
@@ -11,18 +11,18 @@
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
-          <h2>Custom Activities</h2>
+          <h2>New Custom Activity</h2>
         </v-card-title>
         <v-form ref="form" lazy-validation>
           <div class="px-3">
-            <v-text-field v-model="form.values.shortTitle" label="Short Title" counter="8" required :rules="form.rules.shortTitleRule" />
-            <v-text-field v-model="form.values.fullTitle" label="Full Title" required :rules="form.rules.fullTitleRule" />
+            <v-text-field v-model="form.values.shortTitle" label="Short Code" counter="8" required :rules="form.rules.shortTitleRule" />
+            <v-text-field v-model="form.values.fullTitle" label="Title" required :rules="form.rules.fullTitleRule" />
 
             <v-card-text class="px-0"><h3>Units/Hours</h3></v-card-text>
             <div class="d-flex">
-              <v-text-field v-model="form.values.units" label="Units" class="mx-3" type="number" />
-              <v-text-field v-model="form.values.inClassHours" label="In-Class Hours" class="mx-3" type="number" />
-              <v-text-field v-model="form.values.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" />
+              <v-text-field v-model="form.values.units" label="Units" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
+              <v-text-field v-model="form.values.inClassHours" label="In-Class Hours" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
+              <v-text-field v-model="form.values.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
             </div>
 
             <v-card-text class="px-0"><h3>Color</h3></v-card-text>
@@ -67,9 +67,16 @@ export default {
           colorChosen: undefined
         },
         rules: {
-          shortTitleRule: [v => v !== undefined && v.length <= 8 || 'Title must be less than 8 characters', v => v !== undefined && v.length > 0 || 'Input is Required'],
-          fullTitleRule: [v => v !== undefined && v.length > 0 || 'Input is Required'],
-          numberFormRule: [v => this.numberFormRule(v) || 'Negative Number is Invalid']
+          shortTitleRule: [
+            v => v !== undefined && v.length > 0 || 'Required',
+            v => v !== undefined && v.length <= 8 || 'Max 8 characters'
+          ],
+          fullTitleRule: [
+            v => v !== undefined && v.length > 0 || 'Required'
+          ],
+          numberFormRule: [
+            v => v === undefined || Number(v) >= 0 || 'Must be nonnegative'
+          ]
         }
       }
 
@@ -80,9 +87,9 @@ export default {
       const newClass = {
         subject_id: this.form.values.shortTitle,
         title: this.form.values.fullTitle,
-        units: this.form.values.units,
-        in_class_hours: this.form.values.inClassHours,
-        out_of_class_hours: this.form.values.outOfClassHours,
+        total_units: Number(this.form.values.units) || 0,
+        in_class_hours: Number(this.form.values.inClassHours) || 0,
+        out_of_class_hours: Number(this.form.values.outOfClassHours) || 0,
         custom_color: this.form.values.colorChosen,
         public: false,
         offered_fall: true,
@@ -95,13 +102,8 @@ export default {
     },
     validate: function () {
       if (this.$refs.form.validate()) {
-        // TODO Send to store results of form to create custom class
         this.addCustomClass();
       }
-    },
-    numberFormRule: function (value) {
-      const regex = new RegExp('(?!-).*');
-      return regex.test(value);
     }
   }
 };
