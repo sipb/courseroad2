@@ -107,6 +107,9 @@ export default {
   },
   computed: {
     oldID: function () {
+      if (this.classInfo.public === false) {
+        return undefined;
+      }
       const subjectIndex = this.$store.state.subjectsIndex[this.classInfo.subject_id];
       if (subjectIndex !== undefined) {
         const subject = this.$store.state.subjectsInfo[subjectIndex];

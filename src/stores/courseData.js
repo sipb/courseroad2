@@ -389,16 +389,7 @@ const store = new Vuex.Store({
     },
     addAtPlaceholder ({ commit, state }, index) {
       let newClass = {};
-      if (state.itemAdding.public !== false) {
-        // Class is in catalog
-        newClass = {
-          overrideWarnings: false,
-          semester: index,
-          title: state.itemAdding.title,
-          subject_id: state.itemAdding.subject_id,
-          units: state.itemAdding.total_units
-        };
-      } else {
+      if (state.itemAdding.public == false) {
         // Adding custom class
         newClass = {
           overrideWarnings: false,
@@ -410,6 +401,15 @@ const store = new Vuex.Store({
           out_of_class_hours: state.itemAdding.out_of_class_hours,
           custom_color: state.itemAdding.custom_color,
           public: false
+        };
+      } else {
+        // Class is in catalog
+        newClass = {
+          overrideWarnings: false,
+          semester: index,
+          title: state.itemAdding.title,
+          subject_id: state.itemAdding.subject_id,
+          units: state.itemAdding.total_units
         };
       }
       commit('addClass', newClass);

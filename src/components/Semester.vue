@@ -215,6 +215,10 @@ export default {
       const allWarnings = Array(this.semesterSubjects.length).fill([]);
       for (let i = 0; i < this.semesterSubjects.length; i++) {
         const subjectWarnings = [];
+        if (this.semesterSubjects[i].public === false) {
+          // Suppress warnings for custom subject
+          continue;
+        }
         const subjID = this.semesterSubjects[i].subject_id;
         let subj;
         if (subjID in this.$store.state.subjectsIndex) {
@@ -365,14 +369,14 @@ export default {
     },
     semesterInformation: function () {
       const classesInfo = this.semesterSubjects.map(function (subj) {
-        if (subj.subject_id in this.$store.state.subjectsIndex) {
+        if (subj.public === false) {
+          return Object.assign({}, subj, {
+            total_units: subj.units
+          });
+        } else if (subj.subject_id in this.$store.state.subjectsIndex) {
           return this.$store.state.subjectsInfo[this.$store.state.subjectsIndex[subj.subject_id]];
         } else if (subj.subject_id in this.$store.state.genericIndex) {
           return this.$store.state.genericCourses[this.$store.state.genericIndex[subj.subject_id]];
-        } else if (subj.public === false) {
-          return Object.assign({}, subj, {
-            total_units: subj.units
-          })
         } else {
           return undefined;
         }
