@@ -389,7 +389,7 @@ const store = new Vuex.Store({
     },
     addAtPlaceholder ({ commit, state }, index) {
       let newClass = {};
-      if (state.itemAdding.public == false) {
+      if (state.itemAdding.public === false) {
         // Adding custom class
         newClass = {
           overrideWarnings: false,

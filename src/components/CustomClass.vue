@@ -18,19 +18,23 @@
             <v-text-field v-model="form.values.shortTitle" label="Short Code" counter="8" required :rules="form.rules.shortTitleRule" />
             <v-text-field v-model="form.values.fullTitle" label="Title" required :rules="form.rules.fullTitleRule" />
 
-            <v-card-text class="px-0"><h3>Units/Hours</h3></v-card-text>
+            <v-card-text class="px-0">
+              <h3>Units/Hours</h3>
+            </v-card-text>
             <div class="d-flex">
               <v-text-field v-model="form.values.units" label="Units" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
               <v-text-field v-model="form.values.inClassHours" label="In-Class Hours" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
               <v-text-field v-model="form.values.outOfClassHours" label="Out-of-Class Hours" class="mx-3" type="number" :rules="form.rules.numberFormRule" />
             </div>
 
-            <v-card-text class="px-0"><h3>Color</h3></v-card-text>
+            <v-card-text class="px-0">
+              <h3>Color</h3>
+            </v-card-text>
             <center>
               <v-btn-toggle v-model="form.values.colorChosen" class="elevation-0">
                 <v-layout row wrap>
-                  <v-flex v-for="(_, i) in 7" :key="i">
-                    <v-btn v-for="(_, j) in 6" :key="j" :class="`px-4 ma-2 custom_color-${6*i + j}`" :value="`@${6*i + j}`">
+                  <v-flex v-for="(_i, i) in 7" :key="i">
+                    <v-btn v-for="(_j, j) in 6" :key="j" :class="`px-4 ma-2 custom_color-${6*i + j}`" :value="`@${6*i + j}`">
                       <font-awesome-icon icon="check" />
                     </v-btn>
                   </v-flex>
@@ -67,14 +71,14 @@ export default {
         },
         rules: {
           shortTitleRule: [
-            v => v !== undefined && v.length > 0 || 'Required',
-            v => v !== undefined && v.length <= 8 || 'Max 8 characters'
+            v => (v !== undefined && v.length > 0) || 'Required',
+            v => (v !== undefined && v.length <= 8) || 'Max 8 characters'
           ],
           fullTitleRule: [
-            v => v !== undefined && v.length > 0 || 'Required'
+            v => (v !== undefined && v.length > 0) || 'Required'
           ],
           numberFormRule: [
-            v => v === undefined || Number(v) >= 0 || 'Must be nonnegative'
+            v => (v === undefined || Number(v) >= 0) || 'Must be nonnegative'
           ]
         }
       }
@@ -89,7 +93,7 @@ export default {
         total_units: Number(this.form.values.units) || 0,
         in_class_hours: Number(this.form.values.inClassHours) || 0,
         out_of_class_hours: Number(this.form.values.outOfClassHours) || 0,
-        custom_color: this.form.values.colorChosen || "@40",
+        custom_color: this.form.values.colorChosen || '@40',
         public: false,
         offered_fall: true,
         offered_IAP: true,
