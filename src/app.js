@@ -9,13 +9,13 @@ import VueCookies from 'vue-cookies';
 import './css/app.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import store from './stores/courseData';
 import BrowserSupportPlugin from './plugins/browserSupport';
 
-library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt);
+library.add(faSignInAlt, faSignOutAlt, faCloudDownloadAlt, faCloudUploadAlt, faCheck);
 
 Vue.component('FontAwesomeIcon', FontAwesomeIcon);
 
