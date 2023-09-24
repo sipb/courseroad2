@@ -15,6 +15,7 @@ const getDefaultState = () => {
     addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
+    customClassEditing: undefined,
     fullSubjectsInfoLoaded: false,
     genericCourses: [],
     genericIndex: {},
@@ -113,6 +114,9 @@ const store = new Vuex.Store({
       state.addingFromCard = false;
       state.itemAdding = undefined;
     },
+    cancelEditCustomClass (state) {
+      state.customClassEditing = undefined;
+    },
     clearClassInfoStack (state) {
       state.classInfoStack = [];
     },
@@ -134,6 +138,9 @@ const store = new Vuex.Store({
       }
       state.itemAdding = classInfo;
       state.addingFromCard = false;
+    },
+    editCustomClass (state, classItem) {
+      state.customClassEditing = classItem;
     },
     moveClass (state, { currentClass, classIndex, semester }) {
       state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(classIndex, 1);

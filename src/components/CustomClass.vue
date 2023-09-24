@@ -1,17 +1,21 @@
 <template>
   <v-card>
     <center>
-      <v-btn class="white--text" color="#888" :block="true" @click="viewDialog = true">
+      <v-btn class="white--text" color="#888" :block="true" @click="open()">
         New Custom Activity
       </v-btn>
     </center>
     <v-dialog v-model="viewDialog" max-width="600">
       <v-card>
-        <v-btn icon flat style="float:right" @click="viewDialog=false">
+        <v-btn icon flat style="float:right" @click="close()">
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
-          <h2>New Custom Activity</h2>
+          <h2>
+            <span v-if="editing !== undefined">Edit </span>
+            <span v-else>New </span>
+            Custom Activity
+          </h2>
         </v-card-title>
         <v-form ref="form" lazy-validation>
           <div class="px-3">
@@ -31,7 +35,7 @@
               <h3>Color</h3>
             </v-card-text>
             <center>
-              <v-btn-toggle v-model="form.values.colorChosen" class="elevation-0">
+              <v-btn-toggle ref="colors" v-model="form.values.colorChosen" class="elevation-0">
                 <v-layout row wrap>
                   <v-flex v-for="(_i, i) in 7" :key="i">
                     <v-btn v-for="(_j, j) in 6" :key="j" :class="`px-4 ma-2 custom_color-${6*i + j}`" :value="`@${6*i + j}`">
@@ -45,7 +49,9 @@
           <v-card-actions class="mt-2">
             <v-spacer />
             <v-btn color="green" class="white--text" @click="validate">
-              Add Class
+              <span v-if="editing !== undefined">Save&nbsp;</span>
+              <span v-else>Add&nbsp;</span>
+              Class
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -85,6 +91,27 @@ export default {
 
     };
   },
+  computed: {
+    editing () {
+      return this.$store.state.customClassEditing;
+    }
+  },
+  watch: {
+    editing (classEditing, oldClassEditing) {
+      if (classEditing === undefined) {
+        return;
+      }
+      this.$refs.form.reset();
+      this.form.values.colorChosen = undefined;
+      this.form.values.shortTitle = classEditing.subject_id;
+      this.form.values.fullTitle = classEditing.title;
+      this.form.values.units = classEditing.units;
+      this.form.values.inClassHours = classEditing.in_class_hours;
+      this.form.values.outOfClassHours = classEditing.out_of_class_hours;
+      this.form.values.colorChosen = classEditing.custom_color;
+      this.viewDialog = true;
+    }
+  },
   methods: {
     addCustomClass: function () {
       const newClass = {
@@ -101,7 +128,23 @@ export default {
         offered_summer: true
       };
       this.viewDialog = false;
-      this.$store.commit('addFromCard', newClass);
+      if (this.editing !== undefined) {
+        this.$store.commit('cancelEditCustomClass');
+        console.log(newClass);
+      } else {
+        this.$store.commit('addFromCard', newClass);
+      }
+    },
+    close: function () {
+      this.viewDialog = false;
+      this.$store.commit('cancelEditCustomClass');
+    },
+    open: function () {
+      // Open the dialog for adding a new class
+      this.$store.commit('cancelEditCustomClass');
+      this.viewDialog = true;
+      this.$refs.form.reset();
+      this.form.values.colorChosen = undefined;
     },
     validate: function () {
       if (this.$refs.form.validate()) {
