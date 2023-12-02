@@ -101,8 +101,6 @@ export default {
       if (classEditing === undefined) {
         return;
       }
-      this.$refs.form.reset();
-      this.form.values.colorChosen = undefined;
       this.form.values.shortTitle = classEditing.subject_id;
       this.form.values.fullTitle = classEditing.title;
       this.form.values.units = classEditing.units;
