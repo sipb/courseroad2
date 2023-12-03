@@ -142,6 +142,16 @@ const store = new Vuex.Store({
     editCustomClass (state, classItem) {
       state.customClassEditing = classItem;
     },
+    finishEditCustomClass (state, newClass) {
+      for (const attr of [
+        "subject_id", "title", "total_units", "in_class_hours",
+        "out_of_class_hours", "custom_color", "public", "offered_fall",
+        "offered_IAP", "offered_spring", "offered_summer"
+      ]) {
+        state.customClassEditing[attr] = newClass[attr];
+      }
+      state.customClassEditing = undefined;
+    },
     moveClass (state, { currentClass, classIndex, semester }) {
       state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(classIndex, 1);
       currentClass.semester = semester;

@@ -127,8 +127,7 @@ export default {
       };
       this.viewDialog = false;
       if (this.editing !== undefined) {
-        this.$store.commit('cancelEditCustomClass');
-        console.log(newClass);
+        this.$store.commit('finishEditCustomClass', newClass);
       } else {
         this.$store.commit('addFromCard', newClass);
       }
