@@ -19,7 +19,7 @@
         </v-card-title>
         <v-form ref="form" lazy-validation>
           <div class="px-3">
-            <v-text-field v-model="form.values.shortTitle" label="Short Code" counter="8" required :rules="form.rules.shortTitleRule" />
+            <v-text-field v-model="form.values.shortTitle" label="Subject Number" counter="8" required :rules="form.rules.shortTitleRule" />
             <v-text-field v-model="form.values.fullTitle" label="Title" required :rules="form.rules.fullTitleRule" />
 
             <v-card-text class="px-0">
