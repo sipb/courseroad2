@@ -1,13 +1,13 @@
 <template>
   <v-card>
     <center>
-      <v-btn class="white--text" color="#888" :block="true" @click="open()">
+      <v-btn class="white--text" color="#888" :block="true" @click="openNewClass()">
         New Custom Activity
       </v-btn>
     </center>
-    <v-dialog v-model="viewDialog" max-width="600">
+    <v-dialog v-model="dialog" max-width="600">
       <v-card>
-        <v-btn icon flat style="float:right" @click="close()">
+        <v-btn icon flat style="float:right" @click="dialog = false">
           <v-icon>close</v-icon>
         </v-btn>
         <v-card-title>
@@ -65,7 +65,7 @@ export default {
   name: 'CustomClass',
   data: function () {
     return {
-      viewDialog: false,
+      dialog: false,
       form: {
         values: {
           shortTitle: undefined,
@@ -107,7 +107,12 @@ export default {
       this.form.values.inClassHours = classEditing.in_class_hours;
       this.form.values.outOfClassHours = classEditing.out_of_class_hours;
       this.form.values.colorChosen = classEditing.custom_color;
-      this.viewDialog = true;
+      this.dialog = true;
+    },
+    dialog (newDialog, oldDialog) {
+      if (!newDialog) {
+        this.$store.commit('cancelEditCustomClass');
+      }
     }
   },
   methods: {
@@ -125,23 +130,18 @@ export default {
         offered_spring: true,
         offered_summer: true
       };
-      this.viewDialog = false;
+      this.dialog = false;
       if (this.editing !== undefined) {
         this.$store.commit('finishEditCustomClass', newClass);
       } else {
         this.$store.commit('addFromCard', newClass);
       }
     },
-    close: function () {
-      this.viewDialog = false;
-      this.$store.commit('cancelEditCustomClass');
-    },
-    open: function () {
+    openNewClass: function () {
       // Open the dialog for adding a new class
-      this.$store.commit('cancelEditCustomClass');
-      this.viewDialog = true;
       this.$refs.form.reset();
       this.form.values.colorChosen = undefined;
+      this.dialog = true;
     },
     validate: function () {
       if (this.$refs.form.validate()) {

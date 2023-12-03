@@ -28,7 +28,7 @@
           :data-cy="'classInSemester' + semesterIndex + '_' + classInfo.subject_id.replace('.', '_')"
           draggable
           @dragstart="dragStart"
-          @click="clickClass(classInfo)"
+          @click.stop="clickClass(classInfo)"
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
