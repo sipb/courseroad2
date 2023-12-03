@@ -35,8 +35,13 @@
               <h3>Color</h3>
             </v-card-text>
             <center>
-              <v-btn-toggle ref="colors" v-model="form.values.colorChosen" class="elevation-0">
+              <v-btn-toggle v-model="form.values.colorChosen" mandatory class="elevation-0">
                 <v-layout row wrap>
+                  <v-flex class="xs12">
+                    <v-btn :class="`white--text px-4 ma-2 ${courseColorFromId(form.values.shortTitle)}`" value="default">
+                      Default
+                    </v-btn>
+                  </v-flex>
                   <v-flex v-for="(_i, i) in 7" :key="i">
                     <v-btn v-for="(_j, j) in 6" :key="j" :class="`px-4 ma-2 custom_color-${6*i + j}`" :value="`@${6*i + j}`">
                       <font-awesome-icon icon="check" />
@@ -61,8 +66,11 @@
 </template>
 
 <script>
+import colorMixin from './../mixins/colorMixin.js';
+
 export default {
   name: 'CustomClass',
+  mixins: [colorMixin],
   data: function () {
     return {
       dialog: false,
@@ -73,7 +81,7 @@ export default {
           units: undefined,
           inClassHours: undefined,
           outOfClassHours: undefined,
-          colorChosen: undefined
+          colorChosen: 'default'
         },
         rules: {
           shortTitleRule: [
@@ -106,7 +114,7 @@ export default {
       this.form.values.units = classEditing.units;
       this.form.values.inClassHours = classEditing.in_class_hours;
       this.form.values.outOfClassHours = classEditing.out_of_class_hours;
-      this.form.values.colorChosen = classEditing.custom_color;
+      this.form.values.colorChosen = classEditing.custom_color || 'default';
       this.dialog = true;
     },
     dialog (newDialog, oldDialog) {
@@ -117,13 +125,17 @@ export default {
   },
   methods: {
     addCustomClass: function () {
+      let color = this.form.values.colorChosen;
+      if (color == 'default') {
+        color = undefined;
+      }
       const newClass = {
         subject_id: this.form.values.shortTitle,
         title: this.form.values.fullTitle,
         total_units: Number(this.form.values.units) || 0,
         in_class_hours: Number(this.form.values.inClassHours) || 0,
         out_of_class_hours: Number(this.form.values.outOfClassHours) || 0,
-        custom_color: this.form.values.colorChosen || '@40',
+        custom_color: color,
         public: false,
         offered_fall: true,
         offered_IAP: true,
@@ -140,7 +152,7 @@ export default {
     openNewClass: function () {
       // Open the dialog for adding a new class
       this.$refs.form.reset();
-      this.form.values.colorChosen = undefined;
+      this.form.values.colorChosen = 'default';
       this.dialog = true;
     },
     validate: function () {
