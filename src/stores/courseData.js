@@ -15,6 +15,7 @@ const getDefaultState = () => {
     addingFromCard: false,
     classInfoStack: [],
     cookiesAllowed: undefined,
+    customClassEditing: undefined,
     fullSubjectsInfoLoaded: false,
     genericCourses: [],
     genericIndex: {},
@@ -113,6 +114,9 @@ const store = new Vuex.Store({
       state.addingFromCard = false;
       state.itemAdding = undefined;
     },
+    cancelEditCustomClass (state) {
+      state.customClassEditing = undefined;
+    },
     clearClassInfoStack (state) {
       state.classInfoStack = [];
     },
@@ -134,6 +138,19 @@ const store = new Vuex.Store({
       }
       state.itemAdding = classInfo;
       state.addingFromCard = false;
+    },
+    editCustomClass (state, classItem) {
+      state.customClassEditing = classItem;
+    },
+    finishEditCustomClass (state, newClass) {
+      for (const attr of [
+        "subject_id", "title", "total_units", "in_class_hours",
+        "out_of_class_hours", "custom_color", "public", "offered_fall",
+        "offered_IAP", "offered_spring", "offered_summer"
+      ]) {
+        state.customClassEditing[attr] = newClass[attr];
+      }
+      state.customClassEditing = undefined;
     },
     moveClass (state, { currentClass, classIndex, semester }) {
       state.roads[state.activeRoad].contents.selectedSubjects[currentClass.semester].splice(classIndex, 1);
@@ -388,13 +405,30 @@ const store = new Vuex.Store({
       commit('clearMigrationQueue');
     },
     addAtPlaceholder ({ commit, state }, index) {
-      const newClass = {
-        overrideWarnings: false,
-        semester: index,
-        title: state.itemAdding.title,
-        subject_id: state.itemAdding.subject_id,
-        units: state.itemAdding.total_units
-      };
+      let newClass = {};
+      if (state.itemAdding.public === false) {
+        // Adding custom class
+        newClass = {
+          overrideWarnings: false,
+          semester: index,
+          title: state.itemAdding.title,
+          subject_id: state.itemAdding.subject_id,
+          units: state.itemAdding.total_units,
+          in_class_hours: state.itemAdding.in_class_hours,
+          out_of_class_hours: state.itemAdding.out_of_class_hours,
+          custom_color: state.itemAdding.custom_color,
+          public: false
+        };
+      } else {
+        // Class is in catalog
+        newClass = {
+          overrideWarnings: false,
+          semester: index,
+          title: state.itemAdding.title,
+          subject_id: state.itemAdding.subject_id,
+          units: state.itemAdding.total_units
+        };
+      }
       commit('addClass', newClass);
       commit('cancelAddFromCard');
     },

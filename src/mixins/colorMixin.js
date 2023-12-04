@@ -20,7 +20,10 @@ export default {
         return 'custom_color-' + subject.custom_color.slice(1);
       }
       // Otherwise it's normal class which id determines color
-      const id = subject.id || subject.subject_id;
+      return this.courseColorFromId(subject.id || subject.subject_id);
+    },
+    // Takes a subject ID directly
+    courseColorFromId: function (id) {
       if (id !== undefined) {
         let course = id.split('.')[0];
         if (course.indexOf('GIR:') >= 0) {

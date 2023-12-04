@@ -20,6 +20,16 @@
       :hide-iap="hideIAP"
       @open-road-settings-dialog="openRoadSettings = true"
     />
+    <v-btn
+      v-if="addingFromCard"
+      fab
+      small
+      style="position:fixed;right:1em;bottom:1em;"
+      class="secondary"
+      @click="$store.commit('cancelAddFromCard')"
+    >
+      <v-icon>block</v-icon>
+    </v-btn>
     <v-dialog v-model="openRoadSettings" max-width="600">
       <v-card>
         <v-btn icon flat style="float:right" @click="openRoadSettings = false">

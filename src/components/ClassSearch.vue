@@ -42,6 +42,13 @@
               </tr>
             </v-hover>
           </template>
+          <template slot="footer">
+            <tr>
+              <td :colspan="2">
+                <custom-class />
+              </td>
+            </tr>
+          </template>
         </v-data-table>
       </div>
     </div>
@@ -49,6 +56,7 @@
 </template>
 
 <script>
+import CustomClass from './CustomClass.vue';
 import FilterSet from './FilterSet.vue';
 import $ from 'jquery';
 import Vue from 'vue';
@@ -87,7 +95,8 @@ var instructorFilter = new ArrayFilter('Instructor', 'Prof', RegexFilter, ['', '
 export default {
   name: 'ClassSearch',
   components: {
-    'filter-set': FilterSet
+    'filter-set': FilterSet,
+    'custom-class': CustomClass
   },
   props: {
     searchInput: {

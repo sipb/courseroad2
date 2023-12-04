@@ -5,7 +5,7 @@
     <v-hover>
       <v-badge slot-scope="{ hover }" overlap right color="rgba(0,0,0,0)" style="width:100%;">
         <v-card
-          v-if="classInfo == 'placeholder'"
+          v-if="classInfo === 'placeholder'"
           data-cy="placeholderClass"
           class="placeholder classbox"
         >
@@ -28,7 +28,7 @@
           :data-cy="'classInSemester' + semesterIndex + '_' + classInfo.subject_id.replace('.', '_')"
           draggable
           @dragstart="dragStart"
-          @click="$store.commit('pushClassStack', classInfo.subject_id)"
+          @click.stop="clickClass(classInfo)"
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
@@ -107,6 +107,9 @@ export default {
   },
   computed: {
     oldID: function () {
+      if (this.classInfo.public === false) {
+        return undefined;
+      }
       const subjectIndex = this.$store.state.subjectsIndex[this.classInfo.subject_id];
       if (subjectIndex !== undefined) {
         const subject = this.$store.state.subjectsInfo[subjectIndex];
@@ -127,7 +130,11 @@ export default {
       });
     },
     clickClass: function (classInfo) {
-      if (classInfo !== 'placeholder') {
+      if (classInfo === 'placeholder') {
+        return;
+      } else if (classInfo.public === false) {
+        this.$store.commit('editCustomClass', classInfo);
+      } else {
         this.$store.commit('pushClassStack', classInfo.subject_id);
       }
     },

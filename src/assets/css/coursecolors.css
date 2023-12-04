@@ -2,49 +2,49 @@
 https://github.com/venkatesh-sivaraman/fireroad-server/blob/develop/requirements/static/requirements/css/req_preview.css
 */
 
-.course-none { background-color: #999; }
+.course-none { background-color: #999 !important; }
 
-.course-1 { background-color: #DE4343; }
-.course-2 { background-color: #DE7643; }
-.course-3 { background-color: #4369DE; }
-.course-4 { background-color: #57B563; }
-.course-5 { background-color: #43DEAF; }
-.course-6 { background-color: #4390DE; }
-.course-7 { background-color: #5779B5; }
-.course-8 { background-color: #8157B5; }
-.course-9 { background-color: #8143DE; }
-.course-10 { background-color: #B55757; }
-.course-11 { background-color: #B55773; }
-.course-12 { background-color: #43DE4F; }
-.course-14 { background-color: #DE9043; }
-.course-15 { background-color: #B55C57; }
-.course-16 { background-color: #43B2DE; }
-.course-17 { background-color: #DE43B7; }
-.course-18 { background-color: #575DB5; }
-.course-20 { background-color: #57B56E; }
-.course-21 { background-color: #57B567; }
-.course-21A { background-color: #57B573; }
-.course-21W { background-color: #57B580; }
-.course-CMS { background-color: #57B58C; }
-.course-21G { background-color: #57B599; }
-.course-21H { background-color: #57B5A5; }
-.course-21L { background-color: #57B5B2; }
-.course-21M { background-color: #57ACB5; }
-.course-WGS { background-color: #579FB5; }
-.course-22 { background-color: #B55757; }
-.course-24 { background-color: #7657B5; }
-.course-CC { background-color: #4FDE43; }
-.course-CSB { background-color: #579AB5; }
-.course-EC { background-color: #76B557; }
-.course-EM { background-color: #576EB5; }
-.course-ES { background-color: #5A57B5; }
-.course-HST { background-color: #5779B5; }
-.course-IDS { background-color: #57B586; }
-.course-MAS { background-color: #57B55A; }
-.course-SCM { background-color: #57B573; }
-.course-STS { background-color: #8F57B5; }
-.course-SWE { background-color: #B56B57; }
-.course-SP { background-color: #4343DE; }
+.course-1 { background-color: #DE4343 !important; }
+.course-2 { background-color: #DE7643 !important; }
+.course-3 { background-color: #4369DE !important; }
+.course-4 { background-color: #57B563 !important; }
+.course-5 { background-color: #43DEAF !important; }
+.course-6 { background-color: #4390DE !important; }
+.course-7 { background-color: #5779B5 !important; }
+.course-8 { background-color: #8157B5 !important; }
+.course-9 { background-color: #8143DE !important; }
+.course-10 { background-color: #B55757 !important; }
+.course-11 { background-color: #B55773 !important; }
+.course-12 { background-color: #43DE4F !important; }
+.course-14 { background-color: #DE9043 !important; }
+.course-15 { background-color: #B55C57 !important; }
+.course-16 { background-color: #43B2DE !important; }
+.course-17 { background-color: #DE43B7 !important; }
+.course-18 { background-color: #575DB5 !important; }
+.course-20 { background-color: #57B56E !important; }
+.course-21 { background-color: #57B567 !important; }
+.course-21A { background-color: #57B573 !important; }
+.course-21W { background-color: #57B580 !important; }
+.course-CMS { background-color: #57B58C !important; }
+.course-21G { background-color: #57B599 !important; }
+.course-21H { background-color: #57B5A5 !important; }
+.course-21L { background-color: #57B5B2 !important; }
+.course-21M { background-color: #57ACB5 !important; }
+.course-WGS { background-color: #579FB5 !important; }
+.course-22 { background-color: #B55757 !important; }
+.course-24 { background-color: #7657B5 !important; }
+.course-CC { background-color: #4FDE43 !important; }
+.course-CSB { background-color: #579AB5 !important; }
+.course-EC { background-color: #76B557 !important; }
+.course-EM { background-color: #576EB5 !important; }
+.course-ES { background-color: #5A57B5 !important; }
+.course-HST { background-color: #5779B5 !important; }
+.course-IDS { background-color: #57B586 !important; }
+.course-MAS { background-color: #57B55A !important; }
+.course-SCM { background-color: #57B573 !important; }
+.course-STS { background-color: #8F57B5 !important; }
+.course-SWE { background-color: #B56B57 !important; }
+.course-SP { background-color: #4343DE !important; }
 
 .generic-GIR { background-color: #BF6139; }
 .generic-HASS { background-color: #39BF97; }
@@ -56,47 +56,47 @@ https://github.com/venkatesh-sivaraman/fireroad-server/blob/develop/requirements
 
 /* Custom Classes from https://github.com/venkatesh-sivaraman/FireRoad-Android/blob/cdb736aa1c77f6cb07e5bbb884e2482ce008e5be/app/src/main/java/com/base12innovations/android/fireroad/models/course/ColorManager.java */
 
-.custom_color-0{ background-color: #B55757; }
-.custom_color-1{ background-color: #B58657; }
-.custom_color-2{ background-color: #B5B557; }
-.custom_color-3{ background-color: #86B557; }
-.custom_color-4{ background-color: #57B557; }
-.custom_color-5{ background-color: #57B586; }
-.custom_color-6{ background-color: #DE4343; }
-.custom_color-7{ background-color: #DE9043; }
-.custom_color-8{ background-color: #DEDE43; }
-.custom_color-9{ background-color: #90DE43; }
-.custom_color-10{ background-color: #43DE43; }
-.custom_color-11{ background-color: #43DE90; }
-.custom_color-12{ background-color: #B51616; }
-.custom_color-13{ background-color: #B56516; }
-.custom_color-14{ background-color: #B5B516; }
-.custom_color-15{ background-color: #65B516; }
-.custom_color-16{ background-color: #16B516; }
-.custom_color-17{ background-color: #16B565; }
+.custom_color-0{ background-color: #B55757 !important; }
+.custom_color-1{ background-color: #B58657 !important; }
+.custom_color-2{ background-color: #B5B557 !important; }
+.custom_color-3{ background-color: #86B557 !important; }
+.custom_color-4{ background-color: #57B557 !important; }
+.custom_color-5{ background-color: #57B586 !important; }
+.custom_color-6{ background-color: #DE4343 !important; }
+.custom_color-7{ background-color: #DE9043 !important; }
+.custom_color-8{ background-color: #DEDE43 !important; }
+.custom_color-9{ background-color: #90DE43 !important; }
+.custom_color-10{ background-color: #43DE43 !important; }
+.custom_color-11{ background-color: #43DE90 !important; }
+.custom_color-12{ background-color: #B51616 !important; }
+.custom_color-13{ background-color: #B56516 !important; }
+.custom_color-14{ background-color: #B5B516 !important; }
+.custom_color-15{ background-color: #65B516 !important; }
+.custom_color-16{ background-color: #16B516 !important; }
+.custom_color-17{ background-color: #16B565 !important; }
 
-.custom_color-18{ background-color: #57B5B5; }
-.custom_color-19{ background-color: #5786B5; }
-.custom_color-20{ background-color: #5757B5; }
-.custom_color-21{ background-color: #8657B5; }
-.custom_color-22{ background-color: #B557B5; }
-.custom_color-23{ background-color: #B55786; }
-.custom_color-24{ background-color: #43DEDE; }
-.custom_color-25{ background-color: #4390DE; }
-.custom_color-26{ background-color: #4343DE; }
-.custom_color-27{ background-color: #9043DE; }
-.custom_color-28{ background-color: #DE43DE; }
-.custom_color-29{ background-color: #DE4390; }
-.custom_color-30{ background-color: #16B5B5; }
-.custom_color-31{ background-color: #1665B5; }
-.custom_color-32{ background-color: #1616B5; }
-.custom_color-33{ background-color: #6516B5; }
-.custom_color-34{ background-color: #B516B5; }
-.custom_color-35{ background-color: #B51665; }
+.custom_color-18{ background-color: #57B5B5 !important; }
+.custom_color-19{ background-color: #5786B5 !important; }
+.custom_color-20{ background-color: #5757B5 !important; }
+.custom_color-21{ background-color: #8657B5 !important; }
+.custom_color-22{ background-color: #B557B5 !important; }
+.custom_color-23{ background-color: #B55786 !important; }
+.custom_color-24{ background-color: #43DEDE !important; }
+.custom_color-25{ background-color: #4390DE !important; }
+.custom_color-26{ background-color: #4343DE !important; }
+.custom_color-27{ background-color: #9043DE !important; }
+.custom_color-28{ background-color: #DE43DE !important; }
+.custom_color-29{ background-color: #DE4390 !important; }
+.custom_color-30{ background-color: #16B5B5 !important; }
+.custom_color-31{ background-color: #1665B5 !important; }
+.custom_color-32{ background-color: #1616B5 !important; }
+.custom_color-33{ background-color: #6516B5 !important; }
+.custom_color-34{ background-color: #B516B5 !important; }
+.custom_color-35{ background-color: #B51665 !important; }
 
-.custom_color-36{ background-color: #000000; }
-.custom_color-37{ background-color: #262626; }
-.custom_color-38{ background-color: #4D4D4D; }
-.custom_color-39{ background-color: #737373; }
-.custom_color-40{ background-color: #999999; }
-.custom_color-41{ background-color: #BFBFBF; }
+.custom_color-36{ background-color: #000000 !important; }
+.custom_color-37{ background-color: #262626 !important; }
+.custom_color-38{ background-color: #4D4D4D !important; }
+.custom_color-39{ background-color: #737373 !important; }
+.custom_color-40{ background-color: #999999 !important; }
+.custom_color-41{ background-color: #BFBFBF !important; }
