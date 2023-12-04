@@ -46,13 +46,13 @@ https://github.com/venkatesh-sivaraman/fireroad-server/blob/develop/requirements
 .course-SWE { background-color: #B56B57 !important; }
 .course-SP { background-color: #4343DE !important; }
 
-.generic-GIR { background-color: #BF6139; }
-.generic-HASS { background-color: #39BF97; }
-.generic-HASS-A { background-color: #3997BF; }
-.generic-HASS-H { background-color: #3946BF; }
-.generic-HASS-S { background-color: #7C39BF; }
-.generic-CI-H { background-color: #BF39B1; }
-.generic-CI-HW { background-color: #BF3961; }
+.generic-GIR { background-color: #BF6139 !important; }
+.generic-HASS { background-color: #39BF97 !important; }
+.generic-HASS-A { background-color: #3997BF !important; }
+.generic-HASS-H { background-color: #3946BF !important; }
+.generic-HASS-S { background-color: #7C39BF !important; }
+.generic-CI-H { background-color: #BF39B1 !important; }
+.generic-CI-HW { background-color: #BF3961 !important; }
 
 /* Custom Classes from https://github.com/venkatesh-sivaraman/FireRoad-Android/blob/cdb736aa1c77f6cb07e5bbb884e2482ce008e5be/app/src/main/java/com/base12innovations/android/fireroad/models/course/ColorManager.java */
 
