@@ -1,8 +1,14 @@
 {
-  "plugins": ["jest", "cypress"],
+  "plugins": ["jest", "cypress", "promise"],
   "extends": [
+    "eslint:recommended",
     "plugin:vue/recommended",
-    "standard"
+    "standard",
+    "plugin:promise/recommended",
+    "plugin:cypress/recommended",
+    "plugin:import/recommended",
+    "plugin:node/recommended",
+    "plugin:jest/recommended"
   ],
   "rules": {
     "vue/max-attributes-per-line": [
@@ -26,9 +32,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "tests/unit/**/*.spec.js"
-      ],
+      "files": ["tests/unit/**/*.spec.js"],
       "env": {
         "jest": true
       },
@@ -46,11 +50,9 @@
       }
     },
     {
-      "files": [
-        "tests/e2e/**/*.js"
-      ],
+      "files": ["tests/e2e/**/*.js"],
       "env": {
-          "cypress/globals": true
+        "cypress/globals": true
       }
     }
   ]
