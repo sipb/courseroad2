@@ -6,5 +6,5 @@ export default {
       newObj[key] = obj[key];
     }
     return newObj;
-  }
+  },
 };

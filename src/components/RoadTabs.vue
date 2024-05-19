@@ -1,9 +1,7 @@
+<!-- eslint-disable vue/no-useless-template-attributes -->
 <template>
-  <v-layout row>
-    <v-tabs
-      v-model="tabRoad"
-      show-arrows
-    >
+  <v-layout>
+    <v-tabs v-model="tabRoad" show-arrows>
       <v-tabs-slider />
       <v-tab
         v-for="roadId in Object.keys(roads)"
@@ -13,14 +11,28 @@
         @click="$store.commit('setActiveRoad', roadId)"
       >
         {{ roads[roadId].name }}
-        <v-btn v-show="roadId == tabRoad" icon flat data-cy="editRoadButton" @click="newRoadName = roads[roadId].name; editDialog = true;">
-          <v-icon>edit</v-icon>
+        <v-btn
+          v-show="roadId == tabRoad"
+          icon
+          text
+          data-cy="editRoadButton"
+          @click="
+            newRoadName = roads[roadId].name;
+            editDialog = true;
+          "
+        >
+          <v-icon>mdi-pencil</v-icon>
         </v-btn>
       </v-tab>
-      <v-dialog v-model="editDialog" max-width="600" data-cy="editRoadDialog" @input="newRoadName = ''">
+      <v-dialog
+        v-model="editDialog"
+        max-width="600"
+        data-cy="editRoadDialog"
+        @input="newRoadName = ''"
+      >
         <v-card>
-          <v-btn icon flat style="float:right" @click="editDialog = false">
-            <v-icon>close</v-icon>
+          <v-btn icon text style="float: right" @click="editDialog = false">
+            <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-card-title>Edit Road</v-card-title>
           <v-card-text>
@@ -35,8 +47,15 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="error" data-cy="deleteRoadButton" @click="editDialog = false; deleteDialog = true;">
-              <v-icon>delete</v-icon>
+            <v-btn
+              color="error"
+              data-cy="deleteRoadButton"
+              @click="
+                editDialog = false;
+                deleteDialog = true;
+              "
+            >
+              <v-icon>mdi-delete</v-icon>
               Delete Road
             </v-btn>
             <v-btn
@@ -50,28 +69,54 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-if="tabRoad in roads" v-model="deleteDialog" max-width="600" data-cy="deleteRoadDialog">
+      <v-dialog
+        v-if="tabRoad in roads"
+        v-model="deleteDialog"
+        max-width="600"
+        data-cy="deleteRoadDialog"
+      >
         <v-card>
-          <v-btn icon flat style="float:right" @click="deleteDialog = false">
-            <v-icon>close</v-icon>
+          <v-btn icon text style="float: right" @click="deleteDialog = false">
+            <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-card-title>Permanently Delete {{ roads[tabRoad].name }}?</v-card-title>
+          <v-card-title
+            >Permanently Delete {{ roads[tabRoad].name }}?</v-card-title
+          >
           <v-card-text>This action cannot be undone.</v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn flat @click="deleteDialog = false; editDialog = true;">
+            <v-btn
+              text
+              @click="
+                deleteDialog = false;
+                editDialog = true;
+              "
+            >
               Cancel
             </v-btn>
-            <v-btn color="error" data-cy="deleteRoadConfirmButton" @click="deleteDialog = false; $emit('delete-road',tabRoad); newRoadName = ''">
+            <v-btn
+              color="error"
+              data-cy="deleteRoadConfirmButton"
+              @click="
+                deleteDialog = false;
+                $emit('delete-road', tabRoad);
+                newRoadName = '';
+              "
+            >
               Delete
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="addDialog" max-width="600" data-cy="addRoadDialog" @input="newRoadName = ''">
+      <v-dialog
+        v-model="addDialog"
+        max-width="600"
+        data-cy="addRoadDialog"
+        @input="newRoadName = ''"
+      >
         <v-card>
-          <v-btn icon flat style="float:right" @click="addDialog = false">
-            <v-icon>close</v-icon>
+          <v-btn icon text style="float: right" @click="addDialog = false">
+            <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-card-title>Create Road</v-card-title>
           <v-card-text>
@@ -82,18 +127,35 @@
               placeholder="New road name"
               data-cy="newRoadName"
               @keyup.enter="
-                if (validRoadName) createRoad()"
+                if (validRoadName) {
+                  createRoad();
+                }
+              "
             />
-            <v-layout row>
+            <v-layout>
               <v-flex xs6>
-                <v-switch v-model="duplicateRoad" label="Duplicate existing" data-cy="duplicateSwitch" />
+                <v-switch
+                  v-model="duplicateRoad"
+                  label="Duplicate existing"
+                  data-cy="duplicateSwitch"
+                />
               </v-flex>
               <v-flex>
-                <v-select v-model="duplicateRoadSource" :disabled="!duplicateRoad" :items="Object.keys(roads)" data-cy="selectDuplicateRoadSource">
-                  <template slot="item" slot-scope="{item}" :data-cy="'duplicateRoadSourceItem'+roads[item].id">
+                <v-select
+                  v-model="duplicateRoadSource"
+                  :disabled="!duplicateRoad"
+                  :items="Object.keys(roads)"
+                  data-cy="selectDuplicateRoadSource"
+                  autocomplete
+                >
+                  <template
+                    slot="item"
+                    slot-scope="{ item }"
+                    :data-cy="'duplicateRoadSourceItem' + roads[item].id"
+                  >
                     {{ roads[item].name }}
                   </template>
-                  <template slot="selection" slot-scope="{item}">
+                  <template slot="selection" slot-scope="{ item }">
                     {{ roads[item].name }}
                   </template>
                 </v-select>
@@ -102,7 +164,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn :disabled="!validRoadName" color="primary" data-cy="createRoadButton" @click="createRoad">
+            <v-btn
+              :disabled="!validRoadName"
+              color="primary"
+              data-cy="createRoadButton"
+              @click="createRoad"
+            >
               Create
             </v-btn>
           </v-card-actions>
@@ -113,12 +180,12 @@
       <v-btn
         type="submit"
         icon
-        flat
-        color="primary"
+        text
+        background-color="primary"
         data-cy="addRoadButton"
         @click="addDialog = true"
       >
-        <v-icon>add</v-icon>
+        <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-flex>
   </v-layout>
@@ -126,81 +193,101 @@
 
 <script>
 export default {
-  name: 'RoadTabs',
-  components: {
-  },
+  name: "RoadTabs",
+  components: {},
   data: function () {
     return {
       addDialog: false,
       deleteDialog: false,
       editDialog: false,
       duplicateRoad: false,
-      duplicateRoadSource: '$defaultroad$',
-      newRoadName: '',
-      tabRoad: this.$store.state.activeRoad
+      duplicateRoadSource: "$defaultroad$",
+      newRoadName: "",
+      tabRoad: this.$store.state.activeRoad,
     };
   },
   computed: {
-    activeRoad () {
+    activeRoad() {
       return this.$store.state.activeRoad;
     },
-    roads () {
+    roads() {
       return this.$store.state.roads;
     },
     validRoadName: function () {
-      return !(this.otherRoadHasName('', this.newRoadName) || this.newRoadName === '');
-    }
+      return !(
+        this.otherRoadHasName("", this.newRoadName) || this.newRoadName === ""
+      );
+    },
   },
   watch: {
     activeRoad: function (newRoad, oldRoad) {
       this.tabRoad = this.activeRoad;
     },
-    '$store.state.unretrieved': function (unretrieved) {
-      if (this.addDialog && this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) === -1) {
+    "$store.state.unretrieved": function (unretrieved) {
+      if (
+        this.addDialog &&
+        this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) === -1
+      ) {
         this.addRoadFromDuplicate();
       }
-    }
+    },
   },
   methods: {
     otherRoadHasName: function (roadID, roadName) {
-      const otherRoadNames = Object.keys(this.roads).map(function (road) {
-        return road === roadID ? undefined : this.roads[road].name.toLowerCase();
-      }.bind(this));
+      const otherRoadNames = Object.keys(this.roads).map(
+        function (road) {
+          return road === roadID
+            ? undefined
+            : this.roads[road].name.toLowerCase();
+        }.bind(this),
+      );
       return otherRoadNames.indexOf(roadName.toLowerCase()) >= 0;
     },
     createRoad: function () {
       if (!this.duplicateRoad) {
-        this.$emit('add-road', this.newRoadName);
+        this.$emit("add-road", this.newRoadName);
         this.addDialog = false;
-        this.newRoadName = '';
+        this.newRoadName = "";
       } else if (this.duplicateRoadSource in this.roads) {
-        if (this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) >= 0) {
-          this.$emit('retrieve', this.duplicateRoadSource);
+        if (
+          this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) >= 0
+        ) {
+          this.$emit("retrieve", this.duplicateRoadSource);
         } else {
           this.addRoadFromDuplicate();
         }
       }
     },
     addRoadFromDuplicate: function () {
-      this.$emit('add-road',
+      this.$emit(
+        "add-road",
         this.newRoadName,
         this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
-        this.roads[this.duplicateRoadSource].contents.selectedSubjects.map((semester) => semester.slice(0)),
-        Object.assign({}, this.roads[this.duplicateRoadSource].contents.progressOverrides)
+        this.roads[this.duplicateRoadSource].contents.selectedSubjects.map(
+          (semester) => semester.slice(0),
+        ),
+        Object.assign(
+          {},
+          this.roads[this.duplicateRoadSource].contents.progressOverrides,
+        ),
       );
       this.addDialog = false;
-      this.newRoadName = '';
+      this.newRoadName = "";
     },
     renameRoad: function () {
-      this.$store.commit('setRoadName', { id: this.tabRoad, name: this.newRoadName });
+      this.$store.commit("setRoadName", {
+        id: this.tabRoad,
+        name: this.newRoadName,
+      });
       this.editDialog = false;
-      this.newRoadName = '';
-    }
-  }
+      this.newRoadName = "";
+    },
+  },
 };
 </script>
 
-<style> /* CAREFUL! this is not scoped */
+<style>
+/* CAREFUL! this is not scoped */
 /*This is to prevent it from monopolizing all the space*/
 div.v-tabs__container {
   display: unset;
