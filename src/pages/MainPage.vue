@@ -109,6 +109,7 @@
               </v-icon>
               <h3 style="display: inline">C o u r s e R o a d</h3>
             </v-flex>
+            <theme-toggler />
             <v-flex>
               <router-link to="/about" style="float: right" data-cy="aboutLink">
                 About
@@ -284,6 +285,7 @@ import UAParser from "ua-parser-js";
 import Vue from "vue";
 import ClassInfo from "./../components/ClassInfo.vue";
 import ImportExport from "./../components/ImportExport.vue";
+import ThemeToggler from "./../components/ThemeToggler.vue";
 
 const DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z";
 
@@ -297,6 +299,7 @@ export default {
     auth: Auth,
     "class-info": ClassInfo,
     "import-export": ImportExport,
+    "theme-toggler": ThemeToggler,
   },
   data: function () {
     return {
