@@ -14,7 +14,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands';
+import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -23,6 +23,6 @@ beforeEach(() => {
 
   // Mock Fireroad get and post requests with empty response
   cy.server();
-  cy.route(Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
-  cy.route('POST', Cypress.env('VUE_APP_FIREROAD_URL') + '/**', {});
+  cy.route(Cypress.env("VUE_APP_FIREROAD_URL") + "/**", {});
+  cy.route("POST", Cypress.env("VUE_APP_FIREROAD_URL") + "/**", {});
 });

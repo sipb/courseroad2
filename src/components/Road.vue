@@ -1,22 +1,19 @@
 <template>
   <!-- more on expansion panels (and more examples): https://vuetifyjs.com/en/components/expansion-panels -->
   <!-- this is the example I copied: https://vuetifyjs.com/en/components/expansion-panels#expand -->
-  <v-expansion-panel
-    v-model="visibleList"
-    expand
-  >
+  <v-expansion-panels v-model="visibleList" multiple accordion>
     <!-- v-for index in N starts at 1... -->
     <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
     <semester
       v-for="index in numSems"
-      :key="index-1"
-      :index="index-1"
+      :key="index - 1"
+      :index="index - 1"
       :selected-subjects="selectedSubjects"
-      :semester-subjects="selectedSubjects[index-1]"
+      :semester-subjects="selectedSubjects[index - 1]"
       :road-i-d="roadID"
-      :is-open="visibleList[index-1]"
+      :is-open="visibleList.includes(index - 1)"
       :adding-from-card="addingFromCard"
-      :dragging-over="dragSemesterNum===index-1"
+      :dragging-over="dragSemesterNum === index - 1"
       :hide-iap="hideIAP"
       @open-road-settings-dialog="openRoadSettings = true"
     />
@@ -24,81 +21,106 @@
       v-if="addingFromCard"
       fab
       small
-      style="position:fixed;right:1em;bottom:1em;"
+      style="position: fixed; right: 1em; bottom: 1em"
       class="secondary"
       @click="$store.commit('cancelAddFromCard')"
     >
-      <v-icon>block</v-icon>
+      <v-icon>mdi-cancel</v-icon>
     </v-btn>
     <v-dialog v-model="openRoadSettings" max-width="600">
       <v-card>
-        <v-btn icon flat style="float:right" @click="openRoadSettings = false">
-          <v-icon>close</v-icon>
+        <v-btn icon text style="float: right" @click="openRoadSettings = false">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-card-title>
-          <h1>Road Settings</h1>
-        </v-card-title>
+        <v-card-title> Road Settings </v-card-title>
         <v-card-text>
           <v-select
             id="year-choices"
             v-model="year"
-            :items="[{value: 0,text:'First Year/Freshman'},{value: 1,text:'Sophomore'},{value:2,text:'Junior'},{value:3,text:'Senior'},{value:4,text:'Super Senior'}]"
+            autocomplete
+            :items="[
+              { value: 0, text: 'First Year/Freshman' },
+              { value: 1, text: 'Sophomore' },
+              { value: 2, text: 'Junior' },
+              { value: 3, text: 'Senior' },
+              { value: 4, text: 'Super Senior' },
+            ]"
             label="I am a..."
             outlined
             data-cy="selectClassYear"
           />
-          <v-switch
-            v-model="hideIAP"
-            label="Hide IAP"
-          />
+          <v-switch v-model="hideIAP" label="Hide IAP" />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn flat @click="openRoadSettings = false">
-            Cancel
-          </v-btn>
-          <v-btn id="change-year" color="primary" data-cy="submitRoadSettingsButton" @click="$emit('change-year',year); openRoadSettings = false;">
+          <v-btn text @click="openRoadSettings = false"> Cancel </v-btn>
+          <v-btn
+            id="change-year"
+            color="primary"
+            data-cy="submitRoadSettingsButton"
+            @click="
+              $emit('change-year', year);
+              openRoadSettings = false;
+            "
+          >
             Submit
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <script>
-import Semester from './Semester.vue';
+import Semester from "./Semester.vue";
 
 export default {
-  name: 'Semester',
+  name: "RoadComponent",
   components: {
-    semester: Semester
+    semester: Semester,
   },
   props: {
     selectedSubjects: {
       type: Array,
-      required: true
+      required: true,
     },
     roadID: {
       type: String,
-      required: true
+      required: true,
     },
     addingFromCard: {
       type: Boolean,
-      required: true
+      required: true,
     },
     dragSemesterNum: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   data: function () {
-    const defaultOpen = [false, true, false, true, true, false, true, true, false, true, true, false, true];
+    const defaultOpen = [
+      false,
+      true,
+      false,
+      true,
+      true,
+      false,
+      true,
+      true,
+      false,
+      true,
+      true,
+      false,
+      true,
+    ];
     const numSemesters = 16;
     return {
-      visibleList: numSemesters >= 13 ? defaultOpen.concat([true, false, true]) : defaultOpen,
+      visibleList: (numSemesters >= 13
+        ? defaultOpen.concat([true, false, true])
+        : defaultOpen
+      ).reduce((out, bool, index) => (bool ? out.concat(index) : out), []),
       openRoadSettings: false,
-      numSems: numSemesters
+      numSems: numSemesters,
     };
   },
   computed: {
@@ -107,34 +129,39 @@ export default {
         return this.$store.getters.userYear;
       },
       set: function (newYear) {
-        this.$emit('change-year', newYear);
-      }
+        this.$emit("change-year", newYear);
+      },
     },
     hideIAP: {
       get: function () {
         return this.$store.getters.hideIAP;
       },
       set: function (value) {
-        this.$store.commit('setHideIAP', value);
-      }
-    }
+        this.$store.commit("setHideIAP", value);
+      },
+    },
   },
   watch: {
     visibleList: function (newVisibleList) {
       if (this.$store.state.cookiesAllowed) {
-        this.$cookies.set('visibleList' + this.roadID, JSON.stringify(newVisibleList));
+        this.$cookies.set(
+          "visibleList" + this.roadID,
+          JSON.stringify(newVisibleList),
+        );
       }
-    }
+    },
   },
-  mounted () {
-    const visibleList = JSON.parse(this.$cookies.get('visibleList' + this.roadID));
+  mounted() {
+    const visibleList = JSON.parse(
+      this.$cookies.get("visibleList" + this.roadID),
+    );
     if (this.$store.state.cookiesAllowed && visibleList) {
       if (Array.isArray(visibleList) && visibleList.length === this.numSems) {
         this.visibleList = visibleList;
       } else {
-        this.$cookies.remove('visibleList' + this.roadID);
+        this.$cookies.remove("visibleList" + this.roadID);
       }
-    };
-  }
+    }
+  },
 };
 </script>

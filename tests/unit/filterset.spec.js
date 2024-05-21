@@ -1,66 +1,70 @@
-import FilterSet from '../../src/components/FilterSet.vue';
-import { Filter } from '../../src/utilities/filters.js';
+import FilterSet from "../../src/components/FilterSet.vue";
+import { Filter } from "../../src/utilities/filters.js";
 
 const localVue = createLocalVue();
 Vue.use(Vuetify);
 
-describe('Filter Set', () => {
-  it('emits an event when filter buttons are pressed', () => {
+describe("Filter Set", () => {
+  it("emits an event when filter buttons are pressed", () => {
     const propsData = {
       value: [false, false, false],
-      label: 'test',
-      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
-        new Filter('Test 2', '2', () => {}, ['attr']),
-        new Filter('Test 3', '3', () => {}, ['attr'])]
+      label: "test",
+      filters: [
+        new Filter("Test 1", "1", () => {}, ["attr"]),
+        new Filter("Test 2", "2", () => {}, ["attr"]),
+        new Filter("Test 3", "3", () => {}, ["attr"]),
+      ],
     };
 
     // Add fake search input so it is not null when it tries to focus on it
-    const fakeSearchInput = document.createElement('input');
-    fakeSearchInput.id = 'searchInputTF';
+    const fakeSearchInput = document.createElement("input");
+    fakeSearchInput.id = "searchInputTF";
     document.body.appendChild(fakeSearchInput);
 
-    const elem = document.createElement('div');
+    const elem = document.createElement("div");
     if (document.body) {
       document.body.appendChild(elem);
     }
     const wrapper = mount(FilterSet, { localVue, propsData, attachTo: elem });
 
-    const buttons = wrapper.findAll('.v-btn');
+    const buttons = wrapper.findAll(".v-btn");
     const button0 = wrapper.find('.v-btn[value="0"]');
     const button2 = wrapper.find('.v-btn[value="2"]');
 
     // Click some buttons and check output
     expect(buttons.length).toBe(3);
-    button0.trigger('click');
+    button0.trigger("click");
     expect(wrapper.emitted().input[0][0]).toEqual([true, false, false]);
-    button2.trigger('click');
+    button2.trigger("click");
     expect(wrapper.emitted().input[1][0]).toEqual([true, false, true]);
     wrapper.destroy();
   });
 
-  it('returns focus to searchbar after filter buttons are pressed', () => {
+  it("returns focus to searchbar after filter buttons are pressed", () => {
     const propsData = {
       value: [false, false, false],
-      label: 'test',
-      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
-        new Filter('Test 2', '2', () => {}, ['attr']),
-        new Filter('Test 3', '3', () => {}, ['attr'])]
+      label: "test",
+      filters: [
+        new Filter("Test 1", "1", () => {}, ["attr"]),
+        new Filter("Test 2", "2", () => {}, ["attr"]),
+        new Filter("Test 3", "3", () => {}, ["attr"]),
+      ],
     };
 
     // Construct fake search input with correct ID
-    const fakeSearchInput = document.createElement('input');
-    fakeSearchInput.id = 'searchInputTF';
+    const fakeSearchInput = document.createElement("input");
+    fakeSearchInput.id = "searchInputTF";
     document.body.appendChild(fakeSearchInput);
 
-    const elem = document.createElement('div');
+    const elem = document.createElement("div");
     if (document.body) {
       document.body.appendChild(elem);
     }
     const wrapper = mount(FilterSet, { localVue, propsData, attachTo: elem });
 
     // Click some button
-    const button = wrapper.findAll('.v-btn').at(0);
-    button.trigger('click');
+    const button = wrapper.findAll(".v-btn").at(0);
+    button.trigger("click");
 
     // Make sure search input still has focus
     expect(document.activeElement).toEqual(fakeSearchInput);
@@ -80,13 +84,13 @@ describe('Filter Set', () => {
 
   // covers filters.length = 0, selectionIndices.length = 0, indices in order,
   // indices have no gap
-  it('responds correctly to empty filter set', () => {
+  it("responds correctly to empty filter set", () => {
     // filters = [], selectionIndices = []
     // expected result = []
     const propsData = {
       value: [],
-      label: 'test',
-      filters: []
+      label: "test",
+      filters: [],
     };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([]);
@@ -98,15 +102,17 @@ describe('Filter Set', () => {
 
   // covers filters.length > 0, selectionIndices.length = 0, indices in order,
   // indices have no gap
-  it('responds correctly when no filters are selected', () => {
+  it("responds correctly when no filters are selected", () => {
     // filters = [1, 2, 3], selectionIndices = [],
     // expected result = [false, false, false]
     const propsData = {
       value: [false, false, false],
-      label: 'test',
-      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
-        new Filter('Test 2', '2', () => {}, ['attr']),
-        new Filter('Test 3', '3', () => {}, ['attr'])]
+      label: "test",
+      filters: [
+        new Filter("Test 1", "1", () => {}, ["attr"]),
+        new Filter("Test 2", "2", () => {}, ["attr"]),
+        new Filter("Test 3", "3", () => {}, ["attr"]),
+      ],
     };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([]);
@@ -118,17 +124,19 @@ describe('Filter Set', () => {
 
   // covers filters.length > 0, selectionIndices.length > 0, indices in order,
   // indices have no gap
-  it('responds correctly to range of in-order filters selected', () => {
+  it("responds correctly to range of in-order filters selected", () => {
     // filters = [1, 2, 3, 4, 5], selectionIndices = [2, 3, 4]
     // expected result = [false, false, true, true, true]
     const propsData = {
       value: [false, false, false, false, false],
-      label: 'test',
-      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
-        new Filter('Test 2', '2', () => {}, ['attr']),
-        new Filter('Test 3', '3', () => {}, ['attr']),
-        new Filter('Test 4', '4', () => {}, ['attr']),
-        new Filter('Test 5', '5', () => {}, ['attr'])]
+      label: "test",
+      filters: [
+        new Filter("Test 1", "1", () => {}, ["attr"]),
+        new Filter("Test 2", "2", () => {}, ["attr"]),
+        new Filter("Test 3", "3", () => {}, ["attr"]),
+        new Filter("Test 4", "4", () => {}, ["attr"]),
+        new Filter("Test 5", "5", () => {}, ["attr"]),
+      ],
     };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([2, 3, 4]);
@@ -140,18 +148,20 @@ describe('Filter Set', () => {
 
   // covers filters.length > 0, selectionIndices.length > 0, indices out of order,
   // indices have no gap
-  it('responds correctly to range of out-of-order filters selected', () => {
+  it("responds correctly to range of out-of-order filters selected", () => {
     // filters = [1, 2, 3, 4, 5, 6], selectionIndices = [2, 4, 1, 3]
     // expected = [false, true, true, true, true, false]
     const propsData = {
       value: [false, false, false, false, false, false],
-      label: 'test',
-      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
-        new Filter('Test 2', '2', () => {}, ['attr']),
-        new Filter('Test 3', '3', () => {}, ['attr']),
-        new Filter('Test 4', '4', () => {}, ['attr']),
-        new Filter('Test 5', '5', () => {}, ['attr']),
-        new Filter('Test 6', '6', () => {}, ['attr'])]
+      label: "test",
+      filters: [
+        new Filter("Test 1", "1", () => {}, ["attr"]),
+        new Filter("Test 2", "2", () => {}, ["attr"]),
+        new Filter("Test 3", "3", () => {}, ["attr"]),
+        new Filter("Test 4", "4", () => {}, ["attr"]),
+        new Filter("Test 5", "5", () => {}, ["attr"]),
+        new Filter("Test 6", "6", () => {}, ["attr"]),
+      ],
     };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([2, 4, 1, 3]);
@@ -163,17 +173,19 @@ describe('Filter Set', () => {
 
   // covers filters.length > 0, selectionIndices.length > 0, indices in order,
   // indices have gap
-  it('responds correctly to non-adjacent in-order filters selected', () => {
+  it("responds correctly to non-adjacent in-order filters selected", () => {
     // filters = [1, 2, 3, 4, 5], selectionIndices = [0, 2, 3]
     // expected = [true, false, true, true, false]
     const propsData = {
       value: [false, false, false, false, false],
-      label: 'test',
-      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
-        new Filter('Test 2', '2', () => {}, ['attr']),
-        new Filter('Test 3', '3', () => {}, ['attr']),
-        new Filter('Test 4', '4', () => {}, ['attr']),
-        new Filter('Test 5', '5', () => {}, ['attr'])]
+      label: "test",
+      filters: [
+        new Filter("Test 1", "1", () => {}, ["attr"]),
+        new Filter("Test 2", "2", () => {}, ["attr"]),
+        new Filter("Test 3", "3", () => {}, ["attr"]),
+        new Filter("Test 4", "4", () => {}, ["attr"]),
+        new Filter("Test 5", "5", () => {}, ["attr"]),
+      ],
     };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([0, 2, 3]);
@@ -185,18 +197,20 @@ describe('Filter Set', () => {
 
   // covers filters.length > 0, selectionIndices.length > 0, indices out of order,
   // indices have gap
-  it('responds correctly to non-adjacent out-of-order filters selected', () => {
+  it("responds correctly to non-adjacent out-of-order filters selected", () => {
     // filters = [1, 2, 3, 4, 5, 6], selectionIndices = [4, 0, 2, 5]
     // expected = [true, false, true, false, true, true]
     const propsData = {
       value: [false, false, false, false, false, false],
-      label: 'test',
-      filters: [new Filter('Test 1', '1', () => {}, ['attr']),
-        new Filter('Test 2', '2', () => {}, ['attr']),
-        new Filter('Test 3', '3', () => {}, ['attr']),
-        new Filter('Test 4', '4', () => {}, ['attr']),
-        new Filter('Test 5', '5', () => {}, ['attr']),
-        new Filter('Test 6', '6', () => {}, ['attr'])]
+      label: "test",
+      filters: [
+        new Filter("Test 1", "1", () => {}, ["attr"]),
+        new Filter("Test 2", "2", () => {}, ["attr"]),
+        new Filter("Test 3", "3", () => {}, ["attr"]),
+        new Filter("Test 4", "4", () => {}, ["attr"]),
+        new Filter("Test 5", "5", () => {}, ["attr"]),
+        new Filter("Test 6", "6", () => {}, ["attr"]),
+      ],
     };
     const wrapper = shallowMount(FilterSet, { localVue, propsData });
     wrapper.vm.changeFilter([4, 0, 2, 5]);

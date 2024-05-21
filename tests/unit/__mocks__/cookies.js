@@ -1,4 +1,4 @@
-var cookies = {};
+let cookies = {};
 
 export default {
   config: function (expireTimes) {},
@@ -19,5 +19,5 @@ export default {
   },
   clear: function () {
     cookies = {};
-  }
+  },
 };

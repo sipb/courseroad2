@@ -13,17 +13,17 @@ class Filter {
   mode: 'AND' if all attributes in attributeNames must match the filter,
         'OR' if only one must match
   */
-  constructor (name, shortName, filter, attributeNames, mode) {
+  constructor(name, shortName, filter, attributeNames, mode) {
     this.name = name;
     this.short = shortName;
     this.filter = filter;
     this.attributes = attributeNames;
     if (mode === undefined) {
-      mode = 'OR';
+      mode = "OR";
     }
     this.combine = {
       AND: (a, b) => a && b,
-      OR: (a, b) => a || b
+      OR: (a, b) => a || b,
     }[mode];
   }
 
@@ -31,7 +31,7 @@ class Filter {
   Set up inputs which can be used to adjust the filter.  Unimplemented for
   simple filter but used on subclasses
   */
-  setupInputs (input) {}
+  setupInputs(input) {}
 
   /*
   Test if a particular subject matches the filter
@@ -41,12 +41,12 @@ class Filter {
             the filter function; if mode is OR any attribute in attributes can
             match, otherwise all attributes must match
   */
-  matches (subject) {
+  matches(subject) {
     // starting value of true for and, false for or
-    var isMatch = !this.combine(true, false);
+    let isMatch = !this.combine(true, false);
     // check each attribute for a match
-    for (var a = 0; a < this.attributes.length; a++) {
-      var attribute = this.attributes[a];
+    for (let a = 0; a < this.attributes.length; a++) {
+      const attribute = this.attributes[a];
       isMatch = this.combine(isMatch, this.filter(subject[attribute]));
     }
     return isMatch;
@@ -61,8 +61,8 @@ class RegexFilter extends Filter {
   regex: a regex string that the subject's attributes must match
   requires: input which is required to adjust the regex
   */
-  constructor (name, shortName, regex, requires, attributeNames, mode) {
-    var testFunction = RegexFilter.getRegexTestFunction(regex);
+  constructor(name, shortName, regex, requires, attributeNames, mode) {
+    const testFunction = RegexFilter.getRegexTestFunction(regex);
     super(name, shortName, testFunction, attributeNames, mode);
     this.regex = regex;
     this.originalFilter = testFunction;
@@ -77,8 +77,8 @@ class RegexFilter extends Filter {
   return: A new regex string which escapes all special characters with a
           backslash
   */
-  static escapeRegex (regex) {
-    return regex.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  static escapeRegex(regex) {
+    return regex.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
   /*
@@ -88,12 +88,12 @@ class RegexFilter extends Filter {
   returns: a regex which is either represented by the given string, or by the
            given string as a literal if a regex cannot be constructed from it
   */
-  static constructRegex (regex) {
+  static constructRegex(regex) {
     try {
-      return new RegExp(regex, 'i');
+      return new RegExp(regex, "i");
     } catch (e) {
       // If a regex cannot be constructed, default to matching the literal
-      return new RegExp(RegexFilter.escapeRegex(regex), 'i');
+      return new RegExp(RegexFilter.escapeRegex(regex), "i");
     }
   }
 
@@ -106,12 +106,12 @@ class RegexFilter extends Filter {
           and false otherwise.  If the regex is not valid it will be escaped
           and matched literally.
   */
-  static getRegexTestFunction (regex, addon) {
+  static getRegexTestFunction(regex, addon) {
     let regexObject = RegexFilter.constructRegex(regex);
 
     if (addon !== undefined) {
       const addonObject = RegexFilter.constructRegex(addon);
-      regexObject = new RegExp(regexObject.source + addonObject.source, 'i');
+      regexObject = new RegExp(regexObject.source + addonObject.source, "i");
     }
 
     // Regex test function only works when bound to the regex object
@@ -126,9 +126,9 @@ class RegexFilter extends Filter {
   If this.requires is defined, changes the filter to test against the original
   regex plus the required field from the input
   */
-  setupInputs (inputs) {
+  setupInputs(inputs) {
     if (this.requires !== undefined) {
-      var regexAddOn = inputs[this.requires];
+      const regexAddOn = inputs[this.requires];
       this.filter = RegexFilter.getRegexTestFunction(this.regex, regexAddOn);
     } else {
       this.filter = this.originalFilter;
@@ -150,44 +150,46 @@ class RegexFilter extends Filter {
   functions to test against a subject's attributes, such that subjects passing
   the functions at higher indices in this list are of higher priority variants
   */
-  setupVariants (inputs, priorityDirections, priorityOrder) {
+  setupVariants(inputs, priorityDirections, priorityOrder) {
     // Set up the priorities of variants of the regex
-    var atStart = function (regex) {
-      return '^' + regex;
+    const atStart = function (regex) {
+      return "^" + regex;
     };
 
-    var asLiteral = function (regex) {
+    const asLiteral = function (regex) {
       return RegexFilter.escapeRegex(regex);
     };
 
     // Functions to transform regex by a priority
-    var priorityFunctions = {
-      atStart: atStart,
-      asLiteral: asLiteral
+    const priorityFunctions = {
+      atStart,
+      asLiteral,
     };
 
     // Order to apply functions (must add ^ after escaping, for example)
-    var applicationOrder = ['asLiteral', 'atStart'];
+    const applicationOrder = ["asLiteral", "atStart"];
 
     // Get regex from inputs
-    var regexAddOn = '';
+    let regexAddOn = "";
 
     if (this.requires !== undefined) {
       regexAddOn = inputs[this.requires];
     }
 
-    var regex = this.regex + regexAddOn;
+    const regex = this.regex + regexAddOn;
 
     // Create list of different combinations of functions to apply
     // Prioritized functions last; which priority to consider first by priority order
-    var regexPriorities = [[]];
+    const regexPriorities = [[]];
     let indexMap = [0];
 
     priorityOrder.reverse();
-    for (var p = 0; p < priorityOrder.length; p++) {
-      var isPrioritized = priorityDirections[priorityOrder[p]];
+    for (let p = 0; p < priorityOrder.length; p++) {
+      const isPrioritized = priorityDirections[priorityOrder[p]];
       // Create two lists; one with priority applied, the other without
-      var arrayWithPriority = regexPriorities.map((funcNames) => funcNames.concat([priorityOrder[p]]));
+      const arrayWithPriority = regexPriorities.map((funcNames) =>
+        funcNames.concat([priorityOrder[p]]),
+      );
 
       regexPriorities.push(...arrayWithPriority);
       const priorityIndices = indexMap.map((i) => i + indexMap.length);
@@ -202,11 +204,15 @@ class RegexFilter extends Filter {
     }
 
     // Apply these functions to the base regex, in the application order
-    var priorities = regexPriorities.map(function (priorityFuncs) {
-      return priorityFuncs
-        .sort((a, b) => applicationOrder.indexOf(a) - applicationOrder.indexOf(b))
-        .reduce((acc, func) => (priorityFunctions[func])(acc), regex);
-    }).map((r) => RegexFilter.getRegexTestFunction(r));
+    const priorities = regexPriorities
+      .map(function (priorityFuncs) {
+        return priorityFuncs
+          .sort(
+            (a, b) => applicationOrder.indexOf(a) - applicationOrder.indexOf(b),
+          )
+          .reduce((acc, func) => priorityFunctions[func](acc), regex);
+      })
+      .map((r) => RegexFilter.getRegexTestFunction(r));
 
     // Set member variable to use in future prioritization checks
     this.priorities = priorities;
@@ -221,14 +227,16 @@ class RegexFilter extends Filter {
         priority variant, as set up in setupVariants, and a value of -1
         indicates that it matches no variants at all
   */
-  compareByVariants (subject) {
+  compareByVariants(subject) {
     // List of sort numbers for different attributes
-    var orders = [];
+    let orders = [];
 
-    for (var a = 0; a < this.attributes.length; a++) {
+    for (let a = 0; a < this.attributes.length; a++) {
       // Get last index where the regex in the priority list matches
       // The priority list is in reverse order of priority
-      var matches = this.priorities.map((test) => test(subject[this.attributes[a]]));
+      const matches = this.priorities.map((test) =>
+        test(subject[this.attributes[a]]),
+      );
       orders.push(matches.lastIndexOf(true));
     }
 
@@ -256,9 +264,12 @@ class MathFilter extends Filter {
   inclusive: a boolean which is true if numbers equaling either bound should be
         counted as passing the filter
   */
-  constructor (name, shortName, range, inclusive, attributeNames, mode) {
-    var comparator = function (input) {
-      if ((range[0] === undefined || input > range[0]) && (range[1] === undefined || input < range[1])) {
+  constructor(name, shortName, range, inclusive, attributeNames, mode) {
+    const comparator = function (input) {
+      if (
+        (range[0] === undefined || input > range[0]) &&
+        (range[1] === undefined || input < range[1])
+      ) {
         return true;
       } else if (inclusive && (input === range[0] || input === range[1])) {
         return true;
@@ -276,8 +287,8 @@ class BooleanFilter extends Filter {
   negated: true if the filter should pass attributes are false, false if it
           should pass values which are true
   */
-  constructor (name, shortName, negated, attributeNames, mode) {
-    var match = (input) => input === !negated;
+  constructor(name, shortName, negated, attributeNames, mode) {
+    const match = (input) => input === !negated;
     super(name, shortName, match, attributeNames, mode);
   }
 }
@@ -291,12 +302,12 @@ class FilterGroup {
   combination: 'AND' if all filters in the group must match a subject for the
         group to match the subject, 'OR' if only one must match
   */
-  constructor (name, filters, combination) {
+  constructor(name, filters, combination) {
     this.name = name;
     this.filters = filters;
     this.combine = {
       AND: (a, b) => a && b,
-      OR: (a, b) => a || b
+      OR: (a, b) => a || b,
     }[combination];
   }
 
@@ -314,13 +325,13 @@ class FilterGroup {
           mode is OR then it only needs to match one filter, if the mode is AND
           it must match all filters; returns true if no filters are active
   */
-  matches (subject, active, inputs) {
+  matches(subject, active, inputs) {
     if (!active.some((a) => a)) {
       return true;
     }
     const baseCombinationValue = !this.combine(true, false);
-    var isMatch = baseCombinationValue;
-    for (var f = 0; f < this.filters.length; f++) {
+    let isMatch = baseCombinationValue;
+    for (let f = 0; f < this.filters.length; f++) {
       if (active[f]) {
         isMatch = this.combine(isMatch, this.filters[f].matches(subject));
         if (isMatch !== baseCombinationValue) {
@@ -336,21 +347,37 @@ class ArrayFilter extends Filter {
   /*
   Constructs a filter which tests if any of the elements of an attribute of an array matches the subfilter.
   */
-  constructor (name, shortName, SubfilterType, subfilterArguments, attributeNames, mode) {
-    var subfilter = new SubfilterType(name, shortName, ...subfilterArguments, attributeNames, mode);
-    var comparator = subfilter.filter;
+  constructor(
+    name,
+    shortName,
+    SubfilterType,
+    subfilterArguments,
+    attributeNames,
+    mode,
+  ) {
+    const subfilter = new SubfilterType(
+      name,
+      shortName,
+      ...subfilterArguments,
+      attributeNames,
+      mode,
+    );
+    const comparator = subfilter.filter;
     super(name, shortName, comparator, attributeNames, mode);
     this.subfilter = subfilter;
   }
 
-  matches (subject) {
+  matches(subject) {
     // starting value of true for and, false for or
-    var isMatch = !this.combine(true, false);
+    let isMatch = !this.combine(true, false);
     // check each attribute for a match
-    for (var a = 0; a < this.attributes.length; a++) {
-      var attribute = this.attributes[a];
+    for (let a = 0; a < this.attributes.length; a++) {
+      const attribute = this.attributes[a];
       if (Array.isArray(subject[attribute])) {
-        isMatch = this.combine(isMatch, this.subfilter.filter(subject[attribute]));
+        isMatch = this.combine(
+          isMatch,
+          this.subfilter.filter(subject[attribute]),
+        );
       } else {
         isMatch = false;
       }
@@ -358,9 +385,16 @@ class ArrayFilter extends Filter {
     return isMatch;
   }
 
-  setupInputs (inputs) {
+  setupInputs(inputs) {
     this.subfilter.setupInputs(inputs);
   }
 }
 
-export { FilterGroup, Filter, RegexFilter, MathFilter, BooleanFilter, ArrayFilter };
+export {
+  FilterGroup,
+  Filter,
+  RegexFilter,
+  MathFilter,
+  BooleanFilter,
+  ArrayFilter,
+};

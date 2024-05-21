@@ -1,6 +1,6 @@
-import { BooleanFilter } from '../../../src/utilities/filters.js';
+import { BooleanFilter } from "../../../src/utilities/filters.js";
 
-describe('BooleanFilter', () => {
+describe("BooleanFilter", () => {
   /*
   Testing strategy
 
@@ -9,26 +9,26 @@ describe('BooleanFilter', () => {
   */
 
   // covers negated, matches
-  it('passes false values with negated filter', () => {
-    const b = new BooleanFilter('test', 't', true, ['a']);
+  it("passes false values with negated filter", () => {
+    const b = new BooleanFilter("test", "t", true, ["a"]);
     expect(b.matches({ a: false })).toBe(true);
   });
 
   // covers negated, doesn't match
-  it('fails true values with negated filter', () => {
-    const b = new BooleanFilter('test', 't', true, ['a']);
+  it("fails true values with negated filter", () => {
+    const b = new BooleanFilter("test", "t", true, ["a"]);
     expect(b.matches({ a: true })).toBe(false);
   });
 
   // covers not negated, matches
-  it('passes true values with non-negated filter', () => {
-    const b = new BooleanFilter('test', 't', false, ['a']);
+  it("passes true values with non-negated filter", () => {
+    const b = new BooleanFilter("test", "t", false, ["a"]);
     expect(b.matches({ a: true })).toBe(true);
   });
 
   // covers not negated, doesn't match
-  it('fails false values with non-negated filter', () => {
-    const b = new BooleanFilter('test', 't', false, ['a']);
+  it("fails false values with non-negated filter", () => {
+    const b = new BooleanFilter("test", "t", false, ["a"]);
     expect(b.matches({ a: false })).toBe(false);
   });
 });

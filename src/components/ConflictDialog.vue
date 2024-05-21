@@ -1,12 +1,16 @@
 <template>
-  <v-dialog v-if="conflictInfo != undefined" v-model="conflictDialog" max-width="600">
+  <v-dialog
+    v-if="conflictInfo != undefined"
+    v-model="conflictDialog"
+    max-width="600"
+  >
     {{ conflictDialog }}
     <v-card>
-      <v-btn icon flat style="float:right" @click="conflictDialog = false">
-        <v-icon>close</v-icon>
+      <v-btn icon text style="float: right" @click="conflictDialog = false">
+        <v-icon>mdi-close</v-icon>
       </v-btn>
       <v-card-title>Save Conflict</v-card-title>
-      <v-layout row>
+      <v-layout>
         <!-- TODO: remove duplicate code? -->
         <v-flex id="cloud-column" xs6 style="padding: 2em">
           <b>Cloud</b>
@@ -22,13 +26,32 @@
             </v-card>
             <v-card style="padding: 1em">
               <b><p>Contents:</p></b>
-              <p>Courses of Study: <span v-for="req in conflictInfo.other_contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
+              <p>
+                Courses of Study:
+                <span
+                  v-for="req in conflictInfo.other_contents.coursesOfStudy"
+                  :key="req"
+                >
+                  {{ req }}
+                </span>
+              </p>
               <p id="selected-subjects-cloud">
-                Selected Subjects: <span v-for="(course, index) in conflictInfo.other_contents.selectedSubjects" :key="JSON.stringify(course)" :class="colorSubject(index, 'remote')"> {{ course.subject_id }} </span>
+                Selected Subjects:
+                <span
+                  v-for="(course, index) in conflictInfo.other_contents
+                    .selectedSubjects"
+                  :key="JSON.stringify(course)"
+                  :class="colorSubject(index, 'remote')"
+                >
+                  {{ course.subject_id }}
+                </span>
               </p>
             </v-card>
           </v-list>
-          <v-btn color="primary" @click="$emit('update-local', conflictInfo.id) ">
+          <v-btn
+            color="primary"
+            @click="$emit('update-local', conflictInfo.id)"
+          >
             Keep Remote
           </v-btn>
         </v-flex>
@@ -46,13 +69,33 @@
             </v-card>
             <v-card style="padding: 1em">
               <b><p>Contents:</p></b>
-              <p>Courses of Study: <span v-for="req in roads[conflictInfo.id].contents.coursesOfStudy" :key="req"> {{ req }} </span></p>
+              <p>
+                Courses of Study:
+                <span
+                  v-for="req in roads[conflictInfo.id].contents.coursesOfStudy"
+                  :key="req"
+                >
+                  {{ req }}
+                </span>
+              </p>
               <p id="selected-subjects-local">
-                Selected Subjects: <span v-for="(course, index) in flatten(roads[conflictInfo.id].contents.selectedSubjects)" :key="JSON.stringify(course)" :class="colorSubject(index, 'local')"> {{ course.subject_id }} </span>
+                Selected Subjects:
+                <span
+                  v-for="(course, index) in flatten(
+                    roads[conflictInfo.id].contents.selectedSubjects,
+                  )"
+                  :key="JSON.stringify(course)"
+                  :class="colorSubject(index, 'local')"
+                >
+                  {{ course.subject_id }}
+                </span>
               </p>
             </v-card>
           </v-list>
-          <v-btn color="primary" @click="$emit('update-remote', conflictInfo.id)">
+          <v-btn
+            color="primary"
+            @click="$emit('update-remote', conflictInfo.id)"
+          >
             Keep Local
           </v-btn>
         </v-flex>
@@ -63,24 +106,24 @@
 
 <script>
 export default {
-  name: 'ConflictDialog',
+  name: "ConflictDialog",
   props: {
     conflictInfo: {
       type: Object,
       default: function () {
         return undefined;
-      }
-    }
+      },
+    },
   },
   data: function () {
     return {
-      conflictDialog: false
+      conflictDialog: false,
     };
   },
   computed: {
-    roads () {
+    roads() {
       return this.$store.state.roads;
-    }
+    },
   },
   methods: {
     startConflict: function () {
@@ -90,25 +133,33 @@ export default {
       this.conflictDialog = false;
     },
     colorSubject: function (subjectIndex, subjectList) {
-      const remoteSubjects = this.renumberDuplicates(this.conflictInfo.other_contents.selectedSubjects.map(
-        s => s.subject_id + ' ' + s.semester
-      ));
-      const localSubjects = this.renumberDuplicates(this.flatten(this.roads[this.conflictInfo.id].contents.selectedSubjects).map(
-        s => s.subject_id + ' ' + s.semester
-      ));
+      const remoteSubjects = this.renumberDuplicates(
+        this.conflictInfo.other_contents.selectedSubjects.map(
+          (s) => s.subject_id + " " + s.semester,
+        ),
+      );
+      const localSubjects = this.renumberDuplicates(
+        this.flatten(
+          this.roads[this.conflictInfo.id].contents.selectedSubjects,
+        ).map((s) => s.subject_id + " " + s.semester),
+      );
       let currentSubject;
-      if (subjectList === 'remote') {
+      if (subjectList === "remote") {
         currentSubject = remoteSubjects[subjectIndex];
-        if (this.diff(remoteSubjects, localSubjects).indexOf(currentSubject) >= 0) {
-          return 'blue--text';
+        if (
+          this.diff(remoteSubjects, localSubjects).indexOf(currentSubject) >= 0
+        ) {
+          return "blue--text";
         }
-      } else if (subjectList === 'local') {
+      } else if (subjectList === "local") {
         currentSubject = localSubjects[subjectIndex];
-        if (this.diff(localSubjects, remoteSubjects).indexOf(currentSubject) >= 0) {
-          return 'blue--text';
+        if (
+          this.diff(localSubjects, remoteSubjects).indexOf(currentSubject) >= 0
+        ) {
+          return "blue--text";
         }
       }
-      return '';
+      return "";
     },
     diff: function (a1, a2) {
       return a1.filter(function (i) {
@@ -129,7 +180,7 @@ export default {
         if (this.count(arr, elem) > 1) {
           const appendNumber = this.count(arr.slice(0, index), elem);
           if (appendNumber > 0) {
-            return elem + '-' + appendNumber.toString();
+            return elem + "-" + appendNumber.toString();
           } else {
             return elem;
           }
@@ -137,10 +188,9 @@ export default {
           return elem;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
