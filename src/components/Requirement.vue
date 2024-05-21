@@ -214,6 +214,7 @@ export default {
 .requirement {
   font-size: 0.75em;
   flex: 1;
+  padding: 4px;
 }
 
 .p-bar {
