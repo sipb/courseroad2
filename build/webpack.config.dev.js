@@ -5,11 +5,17 @@ const { resolve } = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const cgi = require("cgi");
+const path = require("path");
 
 module.exports = (env) => {
   return {
     devtool: "eval-source-map",
     entry: ["@babel/polyfill", "./src/app.js"],
+    resolve: {
+      alias: {
+        "@": path.join(__dirname, "..", "src"),
+      },
+    },
     devServer: {
       historyApiFallback: true,
       hot: true,
@@ -82,17 +88,8 @@ module.exports = (env) => {
             "css-loader",
             {
               loader: "sass-loader",
-              // // Requires sass-loader@^7.0.0
-              // options: {
-              //   implementation: require("sass"),
-              //   indentedSyntax: true, // optional
-              // },
-              // Requires >= sass-loader@^8.0.0
               options: {
                 implementation: require("sass"),
-                sassOptions: {
-                  indentedSyntax: true, // optional
-                },
               },
             },
           ],
