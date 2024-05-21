@@ -60,7 +60,7 @@
             full-width
             single-line
             outlined
-          ></v-textarea>
+          />
 
           <v-spacer />
           <v-flex v-if="otherRoadHasName(roadtitle)">
