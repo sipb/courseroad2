@@ -14,3 +14,15 @@
 .v-treeview-node__label {
   overflow: visible !important;
 }
+
+.v-treeview-node__root:before {
+  background-color: transparent !important;
+}
+
+.v-treeview-node__level {
+  width: 8px !important;
+}
+
+.v-treeview--dense .v-treeview-node__root {
+  min-height: 36px !important;
+}

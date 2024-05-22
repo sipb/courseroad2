@@ -8,22 +8,24 @@
       @click="exportRoad"
     >
       <span class="hidden-sm-and-down">Export</span>
-      <!-- <font-awesome-icon class="hidden-md-and-up" icon="cloud-download-alt" /> -->
-      <v-icon class="hidden-md-and-up">mdi-cloud-download</v-icon>
+      <v-icon class="hidden-md-and-up"> mdi-cloud-download </v-icon>
     </v-btn>
 
     <v-dialog v-model="dialog" max-width="600">
-      <v-btn
-        slot="activator"
-        class="collapse-button"
-        outlined
-        color="primary"
-        data-cy="importRoadButton"
-      >
-        <span class="hidden-sm-and-down">Import</span>
-        <!-- <font-awesome-icon class="hidden-md-and-up" icon="cloud-upload-alt" /> -->
-        <v-icon class="hidden-md-and-up">mdi-cloud-upload</v-icon>
-      </v-btn>
+      <template #activator="{ on, attrs }">
+        <v-btn
+          slot="activator"
+          class="collapse-button"
+          outlined
+          color="primary"
+          data-cy="importRoadButton"
+          v-bind="attrs"
+          v-on="on"
+        >
+          <span class="hidden-sm-and-down">Import</span>
+          <v-icon class="hidden-md-and-up"> mdi-cloud-upload </v-icon>
+        </v-btn>
+      </template>
       <v-card>
         <v-btn icon text style="float: right" @click="dialog = false">
           <v-icon>mdi-close</v-icon>
@@ -41,10 +43,15 @@
             autofocus
             data-cy="importRoadTitle"
             @keyup.enter="importRoad"
-          />
+          ></v-text-field>
 
           <v-spacer />
-          <input id="file" type="file" data-cy="importRoadFileInput" />
+          <input
+            id="file"
+            type="file"
+            data-cy="importRoadFileInput"
+            @input="onFileChange"
+          />
 
           <v-textarea
             v-model="inputtext"
@@ -117,7 +124,9 @@ export default {
   },
   mounted() {
     // read uploaded files
-    const onFileChange = (event) => {
+  },
+  methods: {
+    onFileChange: function (event) {
       const reader = new FileReader();
       reader.onload = (event) => {
         this.inputtext = event.target.result;
@@ -142,11 +151,7 @@ export default {
           }, 7000);
         }
       }
-    };
-
-    document.getElementById("file").addEventListener("change", onFileChange);
-  },
-  methods: {
+    },
     exportRoad: function (event) {
       const filename = this.roads[this.activeRoad].name + ".road";
 

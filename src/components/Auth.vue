@@ -25,16 +25,19 @@
       <v-icon class="hidden-md-and-up">mdi-logout</v-icon>
     </v-btn>
     <v-tooltip bottom :disabled="saveWarnings.length === 0">
-      <v-icon
-        v-if="!currentlySaving && !gettingUserData"
-        id="save-icon"
-        slot="activator"
-        :color="saveColor"
-        style="user-select: none"
-        title="All changes saved!"
-      >
-        {{ saveIcon }}
-      </v-icon>
+      <template #activator="{ on, attrs }">
+        <div v-bind="attrs" v-on="on">
+          <v-icon
+            v-if="!currentlySaving && !gettingUserData"
+            id="save-icon"
+            :color="saveColor"
+            style="user-select: none"
+            title="All changes saved!"
+          >
+            {{ saveIcon }}
+          </v-icon>
+        </div>
+      </template>
       <div>
         <p
           v-for="saveWarning in saveWarnings"

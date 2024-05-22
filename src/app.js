@@ -2,27 +2,14 @@ import Vue from "vue";
 import App from "./App.vue";
 import MainPage from "./pages/MainPage.vue";
 import About from "./pages/About.vue";
-import Vuetify from "vuetify";
+import vuetify from "./plugins/vuetify";
 import VueRouter from "vue-router";
 import VueCookies from "vue-cookies";
 import "./css/app.css";
 
-import "@mdi/font/css/materialdesignicons.css";
-import "vuetify/dist/vuetify.min.css";
-
 import store from "./stores/courseData";
 import BrowserSupportPlugin from "./plugins/browserSupport";
 
-const opts = {
-  icons: {
-    iconfont: "mdi",
-  },
-  theme: {
-    dark: false,
-  },
-};
-
-Vue.use(Vuetify);
 Vue.use(VueCookies);
 Vue.use(VueRouter);
 Vue.use(BrowserSupportPlugin);
@@ -43,7 +30,7 @@ const router = new VueRouter({
 VueCookies.config(Infinity);
 
 const app = new Vue({
-  vuetify: new Vuetify(opts),
+  vuetify,
   el: "#app",
   router,
   render: (h) => h(App),

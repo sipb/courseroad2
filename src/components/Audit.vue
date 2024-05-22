@@ -30,6 +30,8 @@
       item-children="reqs"
       open-on-click
       dense
+      transition
+      :hoverable="false"
       :activatable="false"
     >
       <template slot="label" slot-scope="{ item, leaf }">
