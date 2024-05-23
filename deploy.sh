@@ -3,8 +3,8 @@
 # and 'sipb' and 'athena' written in ~/.xlog (both of these files should be in your athena locker).
 # Otherwise, you will not have permission to access the courseroad locker,
 # even if you are on courseroad-dev.
-
-#syntax: ./deploy.sh [dev or prod] [kerberos]
+# 
+# syntax: ./deploy.sh [dev or prod] [kerberos]
 npm run build-$1
 if [ "$1" = "prod" ]; then
   echo -n "You are about to deploy to the production site, are you sure? (y/n)? "
