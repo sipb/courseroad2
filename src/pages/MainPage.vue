@@ -208,13 +208,9 @@
       @click.native="$event.stopPropagation()"
     />
 
-    <v-footer v-if="!dismissedCookies" fixed style="height: unset">
+    <v-footer v-if="!dismissedCookies" fixed :color="'#34627d'" app>
       <v-layout column>
-        <v-flex
-          v-if="!dismissedCookies"
-          class="py-1 px-2"
-          style="background-color: #34627d !important"
-        >
+        <v-flex v-if="!dismissedCookies" class="py-1 px-2">
           <v-layout align-center>
             <v-flex style="color: white">
               This website uses cookies and session storage to store your data
@@ -234,13 +230,10 @@
               <v-btn
                 small
                 depressed
-                color="primary"
+                color="green"
                 class="ma-1"
                 data-cy="acceptCookies"
-                style="
-                  background-color: #06b300 !important;
-                  color: white !important;
-                "
+                style="color: rgb(255 255 255)"
                 @click="
                   $store.commit('allowCookies');
                   dismissCookies();
@@ -253,12 +246,10 @@
               <v-btn
                 small
                 depressed
+                text
+                outlined
                 class="ma-1"
-                style="
-                  background-color: #34627d !important;
-                  border: 1px solid rgb(255 255 255 / 70%) !important;
-                  color: rgb(255 255 255 / 70%) !important;
-                "
+                color="rgb(255 255 255 / 70%)"
                 @click="disallowCookies"
               >
                 Opt out

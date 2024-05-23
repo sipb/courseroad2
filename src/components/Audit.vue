@@ -17,7 +17,6 @@
         multiple
         chips
         deletable-chips
-        dense
         no-data-text="'No results found'"
         data-cy="auditMajorChips"
       />

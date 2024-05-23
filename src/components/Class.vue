@@ -58,11 +58,11 @@
             </v-btn>
 
             <v-card-text class="card-text">
-              <span style="font-weight: bold; font-size: 1.1em"
+              <span class="text-body-1 font-weight-bold"
                 >{{ classInfo.subject_id
                 }}<sub v-if="oldID != undefined">[{{ oldID }}]</sub></span
               >
-              {{ classInfo.title }}
+              <span class="text-body-2">{{ classInfo.title }}</span>
             </v-card-text>
             <v-btn
               v-if="
@@ -70,12 +70,7 @@
               "
               slot="badge"
               icon
-              style="
-                position: absolute;
-                right: -0.25em;
-                top: -0.25em;
-                z-index: 1;
-              "
+              style="position: absolute; right: -1em; top: -1em; z-index: 1"
               @click="warningDialog = true"
             >
               <v-icon medium> mdi-alert </v-icon>
@@ -207,7 +202,7 @@ export default {
   align-items: flex-start;
   height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
   overflow: hidden;
-  padding: 0.2em 0.4em 0.4em 0.2em;
+  /* padding: 0.2em 0.4em 0.4em 0.2em; */
   /* Multi-line truncation is not a supported feature of CSS right now.
        Optimally, we would have multi-line truncation within the cards, but
        currently extra words are clipped.
