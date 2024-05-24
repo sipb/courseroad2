@@ -7,30 +7,24 @@
           <v-layout column>
             <v-flex grow>
               <v-card-title primary-title>
-                <h1 style="font-size: 3em">Hello there!</h1>
+                <h1 class="text-h3">Hello there!</h1>
               </v-card-title>
               <v-card-text>
-                <p style="font-size: 1.5em">
+                <p class="text-h5">
                   It looks like you're browsing CourseRoad from mobile! For a
                   better mobile experience, consider downloading the FireRoad
                   app instead, available on Android and iOS.
                 </p>
               </v-card-text>
             </v-flex>
-            <v-flex shrink style="justify-content: center">
-              <v-btn
-                style="width: 100%; margin: 0 0 10% 0"
-                :href="appLink"
-                color="info"
-              >
-                <v-icon>mdi-download</v-icon> Download </v-btn
-              ><br />
-              <a
-                href="#"
-                style="font-size: 1.25em; display: block; text-align: center"
-                @click="showMobile = false"
-                >No thanks, take me to the desktop site.</a
-              >
+            <v-flex shrink align-self-center>
+              <v-btn block :href="appLink" color="info">
+                <v-icon>mdi-download</v-icon> Download
+              </v-btn>
+              <br />
+              <v-btn block href="#" @click="showMobile = false">
+                No thanks, take me to the desktop site.
+              </v-btn>
             </v-flex>
           </v-layout>
         </v-container>
