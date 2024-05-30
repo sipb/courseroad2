@@ -60,9 +60,9 @@
             <v-card-text class="card-text">
               <span class="text-body-1 font-weight-bold"
                 >{{ classInfo.subject_id
-                }}<sub v-if="oldID != undefined">[{{ oldID }}]</sub></span
-              >
-              <span class="text-body-2">{{ classInfo.title }}</span>
+                }}<sub v-if="oldID != undefined">[{{ oldID }}]</sub>
+              </span>
+              <span class="text-body-2"> {{ classInfo.title }} </span>
             </v-card-text>
             <v-btn
               v-if="

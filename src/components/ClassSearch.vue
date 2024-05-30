@@ -317,14 +317,14 @@ export default {
     searchInput(newVal) {
       this.nameInput = newVal;
     },
-    classStackExists: function (oldExists, newExists) {
+    classStackExists: function () {
       Vue.nextTick(
         function () {
           this.updateMenuStyle();
         }.bind(this),
       );
     },
-    "pagination.rowsPerPage": function (newRows, oldRows) {
+    "pagination.rowsPerPage": function (newRows) {
       if (this.cookiesAllowed) {
         this.$cookies.set("paginationRows", newRows);
       }

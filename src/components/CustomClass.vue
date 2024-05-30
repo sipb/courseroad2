@@ -151,7 +151,7 @@ export default {
     },
   },
   watch: {
-    editing(classEditing, oldClassEditing) {
+    editing(classEditing) {
       if (classEditing === undefined) {
         return;
       }
@@ -163,7 +163,7 @@ export default {
       this.form.values.colorChosen = classEditing.custom_color || "default";
       this.dialog = true;
     },
-    dialog(newDialog, oldDialog) {
+    dialog(newDialog) {
       if (!newDialog) {
         this.$store.commit("cancelEditCustomClass");
       }

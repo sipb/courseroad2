@@ -635,11 +635,11 @@ export default {
       });
       return beforeThisSemester.concat(previousQuarter);
     },
-    dragenter: function (event) {
+    dragenter: function () {
       this.draggingOver = true;
       this.dragCount++;
     },
-    dragleave: function (event) {
+    dragleave: function () {
       this.dragCount--;
       if (this.dragCount === 0) {
         this.draggingOver = false;

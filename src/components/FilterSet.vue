@@ -53,7 +53,7 @@ export default {
     Focuses the search input after a filter is selected so typing in searchbar
     can begin immediately after
     */
-    buttonClicked(event) {
+    buttonClicked() {
       document.getElementById("searchInputTF").focus();
     },
     cssID(name) {

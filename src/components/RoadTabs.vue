@@ -218,10 +218,10 @@ export default {
     },
   },
   watch: {
-    activeRoad: function (newRoad, oldRoad) {
+    activeRoad: function () {
       this.tabRoad = this.activeRoad;
     },
-    "$store.state.unretrieved": function (unretrieved) {
+    "$store.state.unretrieved": function () {
       if (
         this.addDialog &&
         this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) === -1

@@ -487,7 +487,7 @@ const store = new Vuex.Store({
   actions: {
     async loadAllSubjects({ commit, state }) {
       const promise = axios.get(
-        process.env.VUE_APP_FIREROAD_URL + "/courses/all?full=true",
+        import.meta.env.VITE_FIREROAD_URL + "/courses/all?full=true",
       );
       commit("setLoadSubjectsPromise", promise);
       const response = await promise;

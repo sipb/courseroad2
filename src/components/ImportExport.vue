@@ -152,7 +152,7 @@ export default {
         }
       }
     },
-    exportRoad: function (event) {
+    exportRoad: function () {
       const filename = this.roads[this.activeRoad].name + ".road";
 
       const roadSubjects = this.flatten(
@@ -182,7 +182,7 @@ export default {
 
       document.body.removeChild(element);
     },
-    importRoad: async function (event) {
+    importRoad: async function () {
       let fail = false;
       // check for legal input
       if (

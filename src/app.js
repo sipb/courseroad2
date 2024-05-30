@@ -22,7 +22,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  base: process.env.VUE_APP_URL.indexOf("dev") !== -1 ? "/dev/" : "/",
+  base: import.meta.env.VITE_URL.indexOf("dev") !== -1 ? "/dev/" : "/",
   mode: "history",
   routes,
 });

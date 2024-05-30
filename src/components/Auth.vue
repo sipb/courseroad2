@@ -136,7 +136,7 @@ export default {
         const endPoint = email.indexOf("@");
         const kerb = email.slice(0, endPoint);
         axios
-          .get(process.env.VUE_APP_URL + "/cgi-bin/people.py?kerb=" + kerb)
+          .get(import.meta.env.VITE_URL + "/cgi-bin/people.py?kerb=" + kerb)
           .then((response) => {
             if (response.status !== 200) {
               console.log("Failed to find user year");
@@ -220,15 +220,15 @@ export default {
     // window.cookies=this.$cookies;
   },
   methods: {
-    loginUser: function (event) {
+    loginUser: function () {
       window.setLocationHref(
-        `${process.env.VUE_APP_FIREROAD_URL}/login/?redirect=${process.env.VUE_APP_URL}`,
+        `${import.meta.env.VITE_FIREROAD_URL}/login/?redirect=${import.meta.env.VITE_URL}`,
       );
       if (this.cookiesAllowed) {
         this.$cookies.set("hasLoggedIn", true);
       }
     },
-    logoutUser: function (event) {
+    logoutUser: function () {
       this.$cookies.remove("accessInfo");
       if (this.cookiesAllowed) {
         this.$cookies.set("hasLoggedIn", false);
@@ -246,7 +246,7 @@ export default {
       };
       const currentMonth = new Date().getMonth();
       return axios
-        .get(process.env.VUE_APP_FIREROAD_URL + "/verify/", headerList)
+        .get(import.meta.env.VITE_FIREROAD_URL + "/verify/", headerList)
         .then(
           function (verifyResponse) {
             if (verifyResponse.data.success) {
@@ -276,11 +276,11 @@ export default {
         };
         return params
           ? axiosFunc(
-              process.env.VUE_APP_FIREROAD_URL + link,
+              import.meta.env.VITE_FIREROAD_URL + link,
               params,
               headerList,
             )
-          : axiosFunc(process.env.VUE_APP_FIREROAD_URL + link, headerList);
+          : axiosFunc(import.meta.env.VITE_FIREROAD_URL + link, headerList);
       } else {
         return Promise.reject(new Error("No auth information"));
       }
@@ -457,7 +457,7 @@ export default {
 
     getAuthorizationToken: function (code) {
       axios
-        .get(process.env.VUE_APP_FIREROAD_URL + "/fetch_token/?code=" + code)
+        .get(import.meta.env.VITE_FIREROAD_URL + "/fetch_token/?code=" + code)
         .then(
           function (response) {
             if (response.data.success) {

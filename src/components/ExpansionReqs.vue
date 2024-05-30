@@ -127,7 +127,7 @@ export default {
     },
   },
   watch: {
-    reqID: function (newReq, oldReq) {
+    reqID: function () {
       this.open = false;
     },
   },
@@ -169,10 +169,10 @@ export default {
         this.$emit("click-subject", subj);
       }
     },
-    closeMe: function (subj) {
+    closeMe: function () {
       this.$emit("close-expansion");
     },
-    closeMyExpansion: function (event) {
+    closeMyExpansion: function () {
       this.open = false;
       let scrollPoint;
       if (!this.doubleScroller) {
