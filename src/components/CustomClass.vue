@@ -1,15 +1,13 @@
 <template>
   <v-card>
-    <center>
-      <v-btn
-        class="white--text"
-        color="#888"
-        :block="true"
-        @click="openNewClass()"
-      >
-        New Custom Activity
-      </v-btn>
-    </center>
+    <v-btn
+      class="white--text"
+      color="grey"
+      :block="true"
+      @click="openNewClass()"
+    >
+      New Custom Activity
+    </v-btn>
     <v-dialog v-model="dialog" max-width="600">
       <v-card>
         <v-btn icon text style="float: right" @click="dialog = false">
@@ -68,7 +66,7 @@
             <v-card-text class="px-0">
               <h3>Color</h3>
             </v-card-text>
-            <center>
+            <div style="text-align: center">
               <v-btn-toggle
                 v-model="form.values.colorChosen"
                 mandatory
@@ -98,7 +96,7 @@
                   </v-flex>
                 </v-layout>
               </v-btn-toggle>
-            </center>
+            </div>
           </div>
           <v-card-actions class="mt-2">
             <v-spacer />

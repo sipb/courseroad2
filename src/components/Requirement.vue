@@ -9,7 +9,7 @@
   >
     <v-layout>
       <v-flex>
-        <div v-if="!isLeaf" style="display: inline">
+        <div v-if="!isLeaf" style="text-wrap: wrap">
           <span v-if="'title-no-degree' in req && req['title-no-degree'] != ''">
             {{ req["title-no-degree"] }}
           </span>
@@ -49,18 +49,6 @@
               <v-icon v-else small> mdi-tag-off </v-icon>
             </div>
           </span>
-          <span v-if="hoveringOver" style="float: right">
-            <v-icon
-              style="padding-left: 0.2em; padding-right: 0em"
-              small
-              :color="petitionColor"
-              @mouseover="petitionHover = true"
-              @mouseleave="petitionHover = false"
-              @click.stop="$emit('click-petition', $event)"
-            >
-              mdi-note-plus
-            </v-icon>
-          </span>
         </span>
         <span v-if="!req['plain-string']">
           <span v-if="!('title' in req) && 'req' in req">
@@ -98,33 +86,49 @@
         <span v-if="req.max === 0 && isLeaf" style="font-style: italic">
           (optional)
         </span>
-        <span
-          v-if="
-            hoveringOver &&
-            ('reqs' in req || 'threshold' in req) &&
-            'percent_fulfilled' in req &&
-            req.percent_fulfilled !== 'N/A'
-          "
-          :style="'float: right; color: ' + percentageTextColor"
-          :data-cy="'percentFulfilled' + req['list-id']"
-        >
-          &nbsp;{{ req.percent_fulfilled }}%
-          <v-icon
-            v-if="'reqs' in req && hoveringOver"
-            style="padding-left: 0.2em; padding-right: 0em"
-            small
-            :color="iconColor"
-            :data-cy="'auditInfoButton' + req['list-id']"
-            @mouseover="iconHover = true"
-            @mouseleave="iconHover = false"
-            @click.stop="$emit('click-info', $event)"
+      </v-flex>
+      <v-flex>
+        <div>
+          <span v-if="hoveringOver && isLeaf" style="float: right">
+            <v-icon
+              style="padding-left: 0.2em; padding-right: 0em"
+              small
+              :color="petitionColor"
+              @mouseover="petitionHover = true"
+              @mouseleave="petitionHover = false"
+              @click.stop="$emit('click-petition', $event)"
+            >
+              mdi-note-plus
+            </v-icon>
+          </span>
+          <span
+            v-if="
+              hoveringOver &&
+              ('reqs' in req || 'threshold' in req) &&
+              'percent_fulfilled' in req &&
+              req.percent_fulfilled !== 'N/A'
+            "
+            :style="'float: right; color: ' + percentageTextColor"
+            :data-cy="'percentFulfilled' + req['list-id']"
           >
-            mdi-information
-          </v-icon>
-        </span>
-        <div :class="percentage_bar" :style="percentage" />
+            &nbsp;{{ req.percent_fulfilled }}%
+            <v-icon
+              v-if="'reqs' in req && hoveringOver"
+              style="padding-left: 0.2em; padding-right: 0em"
+              small
+              :color="iconColor"
+              :data-cy="'auditInfoButton' + req['list-id']"
+              @mouseover="iconHover = true"
+              @mouseleave="iconHover = false"
+              @click.stop="$emit('click-info', $event)"
+            >
+              mdi-information
+            </v-icon>
+          </span>
+        </div>
       </v-flex>
     </v-layout>
+    <div :class="percentage_bar" :style="percentage"></div>
   </div>
 </template>
 

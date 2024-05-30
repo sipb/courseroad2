@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-useless-template-attributes -->
 <template>
   <v-layout>
     <v-tabs v-model="tabRoad" show-arrows>
@@ -148,12 +147,11 @@
                   data-cy="selectDuplicateRoadSource"
                   autocomplete
                 >
-                  <template
-                    slot="item"
-                    slot-scope="{ item }"
-                    :data-cy="'duplicateRoadSourceItem' + roads[item].id"
-                  >
-                    {{ roads[item].name }}
+                  <template slot="item" slot-scope="{ item }">
+                    <slot
+                      :data-cy="'duplicateRoadSourceItem' + roads[item].id"
+                      >{{ roads[item].name }}</slot
+                    >
                   </template>
                   <template slot="selection" slot-scope="{ item }">
                     {{ roads[item].name }}
