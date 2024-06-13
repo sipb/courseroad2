@@ -1,17 +1,26 @@
 <template>
   <v-layout align-center grow>
-    <v-btn
-      v-if="!loggedIn"
-      class="collapse-button"
-      outlined
-      color="primary"
-      data-cy="loginButton"
-      @click="loginUser"
-    >
-      <span class="hidden-sm-and-down">Login</span>
-      <!-- <font-awesome-icon class="hidden-md-and-up" icon="sign-in-alt" /> -->
-      <v-icon class="hidden-md-and-up">mdi-login</v-icon>
-    </v-btn>
+    <v-tooltip v-if="!loggedIn" bottom>
+      <template #activator="{ on }">
+        <v-btn
+          v-if="!loggedIn"
+          class="collapse-button"
+          outlined
+          color="primary"
+          data-cy="loginButton"
+          @click="loginUser"
+          v-on="on"
+        >
+          <span class="hidden-sm-and-down">Login</span>
+          <!-- <font-awesome-icon class="hidden-md-and-up" icon="sign-in-alt" /> -->
+          <v-icon class="hidden-md-and-up">mdi-login</v-icon>
+        </v-btn>
+      </template>
+      <span>
+        If you are experiencing difficulties logging in, please clear your
+        cookies or log in with an incognito tab.
+      </span>
+    </v-tooltip>
     <v-btn
       v-if="loggedIn"
       class="collapse-button"
