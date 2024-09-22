@@ -3,7 +3,13 @@
 <template>
   <v-flex lg2 md3 xs4>
     <v-hover>
-      <v-badge slot-scope="{ hover }" overlap right color="rgba(0,0,0,0)" style="width:100%;">
+      <v-badge
+        slot-scope="{ hover }"
+        overlap
+        right
+        color="rgba(0,0,0,0)"
+        style="width: 100%"
+      >
         <v-card
           v-if="classInfo === 'placeholder'"
           data-cy="placeholderClass"
@@ -14,9 +20,9 @@
               <v-btn
                 large
                 icon
-                @click="$store.dispatch('addAtPlaceholder',semesterIndex)"
+                @click="$store.dispatch('addAtPlaceholder', semesterIndex)"
               >
-                <v-icon>add</v-icon>
+                <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-layout>
           </v-container>
@@ -24,33 +30,59 @@
 
         <v-card
           v-else
-          :id="'class'+classInfo.subject_id.replace('.','')+semesterIndex"
-          :data-cy="'classInSemester' + semesterIndex + '_' + classInfo.subject_id.replace('.', '_')"
-          draggable
+          :id="'class' + classInfo.subject_id.replace('.', '') + semesterIndex"
+          :data-cy="
+            'classInSemester' +
+            semesterIndex +
+            '_' +
+            classInfo.subject_id.replace('.', '_')
+          "
+          draggable="true"
           @dragstart="dragStart"
           @click.stop="clickClass(classInfo)"
         >
           <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
           <div :class="cardClass(classInfo)">
-            <v-icon style="margin: 4px" small @click="$store.commit('removeClass', {classInfo: classInfo, classIndex: classIndex}); $event.stopPropagation();">
-              cancel
-            </v-icon>
+            <v-btn
+              icon
+              style="margin: -0.5em; pointer-events: auto"
+              @click="
+                $store.commit('removeClass', {
+                  classInfo: classInfo,
+                  classIndex: classIndex,
+                });
+                $event.stopPropagation();
+              "
+            >
+              <v-icon small> mdi-close-circle </v-icon>
+            </v-btn>
+
             <v-card-text class="card-text">
-              <span style="font-weight: bold; font-size: 1.1em;">{{ classInfo.subject_id }}<sub v-if="oldID != undefined">[{{ oldID }}]</sub></span> {{ classInfo.title }}
+              <span class="text-body-1 font-weight-bold"
+                >{{ classInfo.subject_id
+                }}<sub v-if="oldID != undefined">[{{ oldID }}]</sub></span
+              >
+              <span class="text-body-2">{{ classInfo.title }}</span>
             </v-card-text>
+            <v-btn
+              v-if="
+                warnings.length > 0 && (!classInfo.overrideWarnings || hover)
+              "
+              slot="badge"
+              icon
+              style="position: absolute; right: -1em; top: -1em; z-index: 1"
+              @click="warningDialog = true"
+            >
+              <v-icon medium> mdi-alert </v-icon>
+            </v-btn>
           </div>
         </v-card>
-        <v-btn v-if="warnings.length>0&&(!classInfo.overrideWarnings||hover)" slot="badge" icon @click="warningDialog = true">
-          <v-icon medium>
-            warning
-          </v-icon>
-        </v-btn>
       </v-badge>
     </v-hover>
     <v-dialog v-model="warningDialog" max-width="600">
       <v-card>
-        <v-btn icon flat style="float:right" @click="warningDialog = false">
-          <v-icon>close</v-icon>
+        <v-btn icon text style="float: right" @click="warningDialog = false">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-card-title>
           <h3>Warnings for {{ classInfo.subject_id }}</h3>
@@ -62,13 +94,16 @@
             v-model="shouldOverrideWarnings"
             label="Override warnings"
             color="orange darken-3"
-            @change="$store.commit('overrideWarnings', {override:shouldOverrideWarnings,classInfo:classInfo})"
+            @change="
+              $store.commit('overrideWarnings', {
+                override: shouldOverrideWarnings,
+                classInfo: classInfo,
+              })
+            "
           />
         </v-card-text>
-        <v-card-actions style="justify-content: flex-end;">
-          <v-btn flat @click="warningDialog = false">
-            Close
-          </v-btn>
+        <v-card-actions style="justify-content: flex-end">
+          <v-btn text @click="warningDialog = false"> Close </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -76,33 +111,33 @@
 </template>
 
 <script>
-import colorMixin from './../mixins/colorMixin.js';
+import colorMixin from "./../mixins/colorMixin.js";
 
 export default {
-  name: 'Class',
+  name: "ClassComponent",
   mixins: [colorMixin],
   props: {
     classIndex: {
       type: Number,
-      required: true
+      required: true,
     },
     classInfo: {
       type: [Object, String],
-      required: true
+      required: true,
     },
     semesterIndex: {
       type: Number,
-      required: true
+      required: true,
     },
     warnings: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {
       warningDialog: false,
-      shouldOverrideWarnings: this.classInfo.overrideWarnings
+      shouldOverrideWarnings: this.classInfo.overrideWarnings,
     };
   },
   computed: {
@@ -110,64 +145,72 @@ export default {
       if (this.classInfo.public === false) {
         return undefined;
       }
-      const subjectIndex = this.$store.state.subjectsIndex[this.classInfo.subject_id];
+      const subjectIndex =
+        this.$store.state.subjectsIndex[this.classInfo.subject_id];
       if (subjectIndex !== undefined) {
         const subject = this.$store.state.subjectsInfo[subjectIndex];
         return subject.old_id;
       } else {
         return undefined;
       }
-    }
+    },
   },
   methods: {
     dragStart: function (event) {
-      event.dataTransfer.setData('classData', JSON.stringify({ isNew: false, classInfo: this.classInfo, classIndex: this.classIndex }));
-      this.$store.commit('dragStartClass', {
+      event.dataTransfer.setData(
+        "classData",
+        JSON.stringify({
+          isNew: false,
+          classInfo: this.classInfo,
+          classIndex: this.classIndex,
+        }),
+      );
+      this.$store.commit("dragStartClass", {
         dragstart: event,
         basicClass: this.classInfo,
         isNew: false,
-        currentSem: this.semesterIndex
+        currentSem: this.semesterIndex,
       });
     },
     clickClass: function (classInfo) {
-      if (classInfo === 'placeholder') {
-        return;
+      if (classInfo === "placeholder") {
+        //
       } else if (classInfo.public === false) {
-        this.$store.commit('editCustomClass', classInfo);
+        this.$store.commit("editCustomClass", classInfo);
       } else {
-        this.$store.commit('pushClassStack', classInfo.subject_id);
+        this.$store.commit("pushClassStack", classInfo.subject_id);
       }
     },
     cardClass: function (classInfo) {
       return `classbox ${this.courseColor(classInfo)}`;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-  .card-text {
-    color: white;
-    font-size: 1.1em;
-    padding: 0;
-    margin: .2em .4em 0em .2em;
-    height: 100%;
-  }
+.card-text {
+  color: white;
+  font-size: 1.1em;
+  padding: 0;
+  margin: 0.2em 0.4em 0em 0.2em;
+  height: 100%;
+}
 
-  .classbox {
-    display: flex;
-    align-items: flex-start;
-    height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
-    overflow: hidden;
-    padding: .2em .4em .4em .2em;
-    /* Multi-line truncation is not a supported feature of CSS right now.
+.classbox {
+  display: flex;
+  align-items: flex-start;
+  height: 5.8em; /* Chosen for three lines in the card, working with the set padding and margins. */
+  overflow: hidden;
+  /* padding: 0.2em 0.4em 0.4em 0.2em; */
+  /* Multi-line truncation is not a supported feature of CSS right now.
        Optimally, we would have multi-line truncation within the cards, but
        currently extra words are clipped.
     text-overflow: ellipsis;
     white-space: nowrap; */
-  }
+}
 
-  .placeholder {
-    background: none;
-  }
+.placeholder {
+  background: none;
+}
 </style>

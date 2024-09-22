@@ -8,9 +8,6 @@ export default {
         'ES', 'HST', 'IDS', 'MAS', 'SCM', 'STS', 'WGS', 'SP', 'SWE', 'AS',
         'MS', 'NS'
       ],
-      validGeneric: ['PHY1', 'PHY2', 'CHEM', 'BIOL', 'CAL1', 'CAL2', 'LAB', 'REST',
-        'HASS-A', 'HASS-H', 'HASS-S', 'CI-H', 'CI-HW'
-      ]
     };
   },
   methods: {
@@ -18,7 +15,7 @@ export default {
     courseColor: function (subject) {
       // Custom course have custom_color component
       if (subject.custom_color) {
-        return 'custom_color-' + subject.custom_color.slice(1);
+        return "custom_color-" + subject.custom_color.slice(1);
       }
       // Otherwise it's normal class which id determines color
       return this.courseColorFromId(subject.id || subject.subject_id);
@@ -26,26 +23,30 @@ export default {
     // Takes a subject ID directly
     courseColorFromId: function (id) {
       if (id !== undefined) {
-        let course = id.split('.')[0];
-        if (course.indexOf('GIR:') >= 0) {
-          course = course.substring(0, course.indexOf('GIR:')) + course.substring(course.indexOf('GIR:') + 4);
+        let course = id.split(".")[0];
+        if (course.indexOf("GIR:") >= 0) {
+          course =
+            course.substring(0, course.indexOf("GIR:")) +
+            course.substring(course.indexOf("GIR:") + 4);
         }
-        const girAttrs = course.split(' ').filter((c) => (this.validGeneric.indexOf(c) >= 0));
+        const girAttrs = course
+          .split(" ")
+          .filter((c) => this.validGeneric.indexOf(c) >= 0);
         if (this.validCourses.indexOf(course) !== -1) {
-          return 'course-' + course;
+          return "course-" + course;
         } else if (girAttrs.length > 0) {
           if (girAttrs.length === 1) {
             const attr = girAttrs[0];
-            if (attr.indexOf('HASS') === 0) {
-              return 'generic-' + course;
-            } else if (attr.indexOf('CI') === 0) {
-              return 'generic-' + course;
+            if (attr.indexOf("HASS") === 0) {
+              return "generic-" + course;
+            } else if (attr.indexOf("CI") === 0) {
+              return "generic-" + course;
             }
           }
-          return 'generic-GIR';
+          return "generic-GIR";
         }
       }
-      return 'course-none';
-    }
-  }
+      return "course-none";
+    },
+  },
 };

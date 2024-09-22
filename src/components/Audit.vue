@@ -1,11 +1,15 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
 
-  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto;" data-cy="auditBox">
-    <div style="display: flex; align-content: space-between; margin: 12px 0px;">
+  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto" data-cy="auditBox">
+    <div style="display: flex; align-content: space-between; margin: 12px 0px">
       <v-autocomplete
         v-model="changeReqs"
-        :hint="'Your Programs'.concat(changeReqs.length < 2 ? ' -- click to add a major' : '')"
+        :hint="
+          'Your Programs'.concat(
+            changeReqs.length < 2 ? ' -- click to add a major' : '',
+          )
+        "
         :items="getCourses"
         item-text="medium-title"
         item-value="key"
@@ -13,7 +17,6 @@
         multiple
         chips
         deletable-chips
-        dense
         no-data-text="'No results found'"
         data-cy="auditMajorChips"
       />
@@ -25,15 +28,22 @@
       item-key="uniqueKey"
       item-children="reqs"
       open-on-click
+      dense
+      transition
+      :hoverable="false"
       :activatable="false"
     >
-      <template slot="label" slot-scope="{ item, leaf}">
+      <template slot="label" slot-scope="{ item, leaf }">
         <v-hover :disabled="!leaf || !canDrag(item)">
           <div
             slot-scope="{ hover }"
             class="req-container"
-            :class="{ 'elevation-3': hover, 'yellow lighten-3': isPetitioned(item), 'grey lighten-2': isIgnored(item)}"
-            :style="(leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer')"
+            :class="{
+              'elevation-3': hover,
+              'yellow lighten-3': isPetitioned(item),
+              'grey lighten-2': isIgnored(item),
+            }"
+            :style="leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer'"
             :data-cy="'auditItem' + item['list-id']"
           >
             <v-icon
@@ -42,11 +52,17 @@
               :style="fulfilledIcon(item)"
               @click="clickRequirement(item)"
             >
-              {{ item['plain-string'] ?
-                (item["list-id"] in progressOverrides ?
-                  (item.fulfilled ? "assignment_turned_in" : "assignment") :
-                  "assignment_late" ) :
-                item.fulfilled ? "done" : "remove" }}
+              {{
+                item["plain-string"]
+                  ? item["list-id"] in progressOverrides
+                    ? item.fulfilled
+                      ? "mdi-clipboard-check"
+                      : "mdi-clipboard-text"
+                    : "mdi-clipboard-alert"
+                  : item.fulfilled
+                    ? "mdi-check"
+                    : "mdi-minus"
+              }}
             </v-icon>
             <requirement
               :req="item"
@@ -60,8 +76,11 @@
       </template>
     </v-treeview>
 
-    <br>
-    <p v-for="courseLink in getCourseLinks(selectedReqs)" :key="courseLink.link">
+    <br />
+    <p
+      v-for="courseLink in getCourseLinks(selectedReqs)"
+      :key="courseLink.link"
+    >
       <a :href="courseLink.link">
         {{ courseLink.text }}
       </a>
@@ -72,8 +91,8 @@
 
     <v-dialog v-model="progressDialog" max-width="600" data-cy="progressDialog">
       <v-card v-if="progressReq !== undefined">
-        <v-btn icon flat style="float:right" @click="progressDialog=false">
-          <v-icon>close</v-icon>
+        <v-btn icon text style="float: right" @click="progressDialog = false">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-card-title>
           <h2>Manual Progress: {{ progressReq.title }}</h2>
@@ -81,12 +100,20 @@
         <v-card-text>
           <p>
             Because this requirement is custom to the individual, you have to
-            manually enter how many of these requirements you have completed for your degree.
+            manually enter how many of these requirements you have completed for
+            your degree.
           </p>
-          <h3>{{ capitalize(progressReq.threshold.criterion) }} Completed: {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}</h3>
-          <v-layout row justify-start style="width: 70%; margin: auto;">
-            <v-flex shrink style="width: 3em; margin-right: 1em;">
-              <v-text-field v-model="newManualProgress" type="number" @keyup.enter="updateManualProgress" />
+          <h3>
+            {{ capitalize(progressReq.threshold.criterion) }} Completed:
+            {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}
+          </h3>
+          <v-layout justify-start style="width: 70%; margin: auto">
+            <v-flex shrink style="width: 3em; margin-right: 1em">
+              <v-text-field
+                v-model="newManualProgress"
+                type="number"
+                @keyup.enter="updateManualProgress"
+              />
             </v-flex>
             <v-flex>
               <v-slider
@@ -100,7 +127,13 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn flat @click="progressDialog=false; progressReq=undefined;">
+          <v-btn
+            text
+            @click="
+              progressDialog = false;
+              progressReq = undefined;
+            "
+          >
             Cancel
           </v-btn>
           <v-btn color="primary" @click="updateManualProgress">
@@ -113,12 +146,14 @@
     <v-dialog v-model="viewDialog" max-width="600" data-cy="auditViewDialog">
       <div v-if="dialogReq !== undefined">
         <v-card>
-          <v-btn icon flat style="float:right" @click="viewDialog = false">
-            <v-icon>close</v-icon>
+          <v-btn icon text style="float: right" @click="viewDialog = false">
+            <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-card-title>{{ dialogReq["title"] }}</v-card-title>
           <v-card-text v-if="'url' in dialogReq">
-            <a target="_blank" :href="dialogReq['url']">Link to the real, up to date requirements</a>
+            <a target="_blank" :href="dialogReq['url']"
+              >Link to the real, up to date requirements</a
+            >
           </v-card-text>
           <v-card-text v-if="'desc' in dialogReq">
             {{ dialogReq["desc"] }}
@@ -147,9 +182,13 @@
               v-if="'title-no-degree' in dialogReq"
               color="error"
               data-cy="viewDialogRemoveButton"
-              @click="deleteReq(dialogReq); viewDialog = false; dialogReq = undefined"
+              @click="
+                deleteReq(dialogReq);
+                viewDialog = false;
+                dialogReq = undefined;
+              "
             >
-              <v-icon>delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
               Remove Requirement
             </v-btn>
           </v-card-actions>
@@ -160,16 +199,27 @@
     <v-dialog v-model="petitionDialog" max-width="600">
       <v-card>
         <div v-if="petitionReq !== undefined">
-          <v-btn icon flat style="float:right" @click="petitionDialog = false; petitionReq = undefined;">
-            <v-icon>close</v-icon>
+          <v-btn
+            icon
+            text
+            style="float: right"
+            @click="
+              petitionDialog = false;
+              petitionReq = undefined;
+            "
+          >
+            <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-card-title v-if="'title' in petitionReq">
-            <h2> Petition {{ petitionReq["title"] }} </h2>
+            <h2>Petition {{ petitionReq["title"] }}</h2>
           </v-card-title>
           <v-card-title v-else>
-            <h2> Petition {{ petitionReq["req"] }} </h2>
+            <h2>Petition {{ petitionReq["req"] }}</h2>
           </v-card-title>
-          <v-card-text v-if="reqPASubstitution !== undefined" class="petition-padding">
+          <v-card-text
+            v-if="reqPASubstitution !== undefined"
+            class="petition-padding"
+          >
             Requirement Petitioned by:
             <div v-for="course in reqPASubstitution" :key="course">
               {{ course }}
@@ -184,13 +234,11 @@
             no-data-text="No Courses Found"
             multiple
             chips
+            autocomplete
             class="petition-padding"
           />
           <v-card-actions class="petition-padding">
-            <v-checkbox
-              v-model="reqPAIgnore"
-              label="Ignore Petition"
-            />
+            <v-checkbox v-model="reqPAIgnore" label="Ignore Petition" />
             <v-spacer />
             <v-btn
               color="success"
@@ -214,36 +262,36 @@
 </template>
 
 <script>
-import Requirement from './Requirement.vue';
-import classInfoMixin from './../mixins/classInfo.js';
-import courseLinksMixin from './../mixins/courseLinks.js';
+import Requirement from "./Requirement.vue";
+import classInfoMixin from "./../mixins/classInfo.js";
+import courseLinksMixin from "./../mixins/courseLinks.js";
 export default {
-  name: 'Audit',
+  name: "AuditComponent",
   components: {
-    requirement: Requirement
+    requirement: Requirement,
   },
   mixins: [classInfoMixin, courseLinksMixin],
   props: {
     selectedSubjects: {
       type: Array,
-      required: true
+      required: true,
     },
     selectedReqs: {
       type: Array,
-      required: true
+      required: true,
     },
     reqTrees: {
       type: Object,
-      required: true
+      required: true,
     },
     reqList: {
       type: Array,
-      required: true
+      required: true,
     },
     progressOverrides: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data: function () {
     return {
@@ -255,7 +303,7 @@ export default {
       petitionDialog: false,
       petitionReq: undefined,
       petitionSelectCourses: [],
-      newManualProgress: 0
+      newManualProgress: 0,
     };
   },
   computed: {
@@ -266,34 +314,39 @@ export default {
       set: function (newReqs) {
         const currentReqs = this.selectedReqs;
         if (currentReqs.length > newReqs.length) {
-          const diff = currentReqs.find(x => !newReqs.includes(x));
-          this.$store.commit('removeReq', diff);
+          const diff = currentReqs.find((x) => !newReqs.includes(x));
+          this.$store.commit("removeReq", diff);
         } else {
           const newReq = newReqs[newReqs.length - 1];
-          this.$store.commit('addReq', newReq);
+          this.$store.commit("addReq", newReq);
         }
-      }
+      },
     },
     getCourses: function () {
       const courses = this.reqList.slice(0);
-      const sortKey = 'medium-title';
+      const sortKey = "medium-title";
       // NOTE: brute force way sorting the courses given the fields we have
       courses.sort(function (c1, c2) {
         const a = c1[sortKey].toLowerCase();
         const b = c2[sortKey].toLowerCase();
-        if ((a.includes('major') && b.includes('major')) || (a.includes('minor') && b.includes('minor'))) {
-          let n1 = a.split(' ')[0].split('-')[0];
-          let n2 = b.split(' ')[0].split('-')[0];
+        if (
+          (a.includes("major") && b.includes("major")) ||
+          (a.includes("minor") && b.includes("minor"))
+        ) {
+          let n1 = a.split(" ")[0].split("-")[0];
+          let n2 = b.split(" ")[0].split("-")[0];
           n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;
           n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;
           if (n1 === n2) return a.localeCompare(b);
           return (!isNaN(n1) && !isNaN(n2)) || (isNaN(n1) && isNaN(n2))
             ? n1 - n2
-            : (!isNaN(n1) ? -1 : 1);
-        } else if (a.includes('major') && b.includes('minor')) return -1;
-        else if (b.includes('major') && a.includes('minor')) return 1;
-        else if (a.includes('major') || a.includes('minor')) return -1;
-        else if (b.includes('major') || b.includes('minor')) return 1;
+            : !isNaN(n1)
+              ? -1
+              : 1;
+        } else if (a.includes("major") && b.includes("minor")) return -1;
+        else if (b.includes("major") && a.includes("minor")) return 1;
+        else if (a.includes("major") || a.includes("minor")) return -1;
+        else if (b.includes("major") || b.includes("minor")) return 1;
         else return a.localeCompare(b);
       });
       return courses;
@@ -303,31 +356,35 @@ export default {
         if (req in this.reqTrees) {
           return this.assignListIDs(
             Object.assign({}, this.reqTrees[req]),
-            index
+            index,
           );
         } else {
           return {
-            title: 'loading...',
+            title: "loading...",
             reqs: [],
-            uniqueKey: index
+            uniqueKey: index,
           };
         }
       }, this);
     },
     reqPASubstitution: {
       get: function () {
-        const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
+        const petitionReqPA =
+          this.$store.state.roads[this.$store.state.activeRoad].contents
+            .progressAssertions[this.petitionReq["list-id"]];
         // Checks if unique key in progressAssert, if it is, searches for substitution key
         if (petitionReqPA !== undefined) {
           return petitionReqPA.substitutions;
         } else {
           return undefined;
         }
-      }
+      },
     },
     reqPAIgnore: {
       get: function () {
-        const petitionReqPA = this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[this.petitionReq['list-id']];
+        const petitionReqPA =
+          this.$store.state.roads[this.$store.state.activeRoad].contents
+            .progressAssertions[this.petitionReq["list-id"]];
         if (petitionReqPA !== undefined) {
           return petitionReqPA.ignore;
         } else {
@@ -335,15 +392,19 @@ export default {
         }
       },
       set: function (ignoreVal) {
-        this.$store.commit('setPAIgnore', { uniqueKey: this.petitionReq['list-id'], isIgnored: ignoreVal });
-      }
-    }
+        this.$store.commit("setPAIgnore", {
+          uniqueKey: this.petitionReq["list-id"],
+          isIgnored: ignoreVal,
+        });
+      },
+    },
   },
   methods: {
     fulfilledIcon: function (req) {
-      return req.fulfilled && (req.req !== undefined || req.sat_courses.length > 0)
-        ? 'color: #00b300;'
-        : '';
+      return req.fulfilled &&
+        (req.req !== undefined || req.sat_courses.length > 0)
+        ? "color: #00b300;"
+        : "";
     },
     reqInfo: function (event, req) {
       event.preventDefault();
@@ -359,12 +420,12 @@ export default {
     },
     clickRequirement: function (item) {
       if (item.req !== undefined) {
-        if (!item['plain-string']) {
+        if (!item["plain-string"]) {
           let usedReq = item.req;
-          if (usedReq.indexOf('GIR:') === 0) {
+          if (usedReq.indexOf("GIR:") === 0) {
             usedReq = usedReq.substring(4);
           }
-          this.$store.commit('pushClassStack', usedReq);
+          this.$store.commit("pushClassStack", usedReq);
         } else {
           this.startProgressDialog(item);
         }
@@ -374,20 +435,20 @@ export default {
     // progress overrides are a dictionary where the keys are these list ids and the values are the manual progress
     // for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
     assignListIDs: function (req, index) {
-      if ('reqs' in req && 'list-id' in req) {
-        let currentListID = req['list-id'];
-        if (currentListID.indexOf('.reql') >= 0) {
+      if ("reqs" in req && "list-id" in req) {
+        let currentListID = req["list-id"];
+        if (currentListID.indexOf(".reql") >= 0) {
           // if the requirement is top level, it will have .reql at the end and this needs to be removed
-          req['list-id'] = req['list-id'].substring(
+          req["list-id"] = req["list-id"].substring(
             0,
-            req['list-id'].indexOf('.reql')
+            req["list-id"].indexOf(".reql"),
           );
-          currentListID = req['list-id'];
+          currentListID = req["list-id"];
         }
-        req.uniqueKey = index + '-' + req['list-id'];
+        req.uniqueKey = index + "-" + req["list-id"];
         for (let r = 0; r < req.reqs.length; r++) {
           // give each sub-requirement a list id of [parent list id].[index]
-          Object.assign(req.reqs[r], { 'list-id': currentListID + '.' + r });
+          Object.assign(req.reqs[r], { "list-id": currentListID + "." + r });
           // assign list ids to each of the children
           req.reqs[r] = this.assignListIDs(req.reqs[r], index);
         }
@@ -396,22 +457,23 @@ export default {
     },
     startProgressDialog: function (req) {
       this.progressReq = Object.assign(
-        { threshold: { criterion: 'subject', cutoff: 1, type: 'GTE' } },
-        req
+        { threshold: { criterion: "subject", cutoff: 1, type: "GTE" } },
+        req,
       );
       this.progressDialog = true;
-      if (this.progressReq['list-id'] in this.progressOverrides) {
-        this.newManualProgress = this.progressOverrides[this.progressReq['list-id']];
+      if (this.progressReq["list-id"] in this.progressOverrides) {
+        this.newManualProgress =
+          this.progressOverrides[this.progressReq["list-id"]];
       }
     },
     capitalize: function (word) {
       return word[0].toUpperCase() + word.substring(1);
     },
     updateManualProgress: function () {
-      if (this.progressReq['list-id'] !== undefined) {
-        this.$store.commit('updateProgress', {
-          listID: this.progressReq['list-id'],
-          progress: this.newManualProgress
+      if (this.progressReq["list-id"] !== undefined) {
+        this.$store.commit("updateProgress", {
+          listID: this.progressReq["list-id"],
+          progress: this.newManualProgress,
         });
       }
       this.progressReq = undefined;
@@ -421,38 +483,60 @@ export default {
     percentage: function (req) {
       const pfulfilled = req.percent_fulfilled;
       const pcolor = req.fulfilled
-        ? '#00b300'
+        ? "#00b300"
         : req.percent_fulfilled > 15
-          ? '#efce15'
-          : '#ef8214';
+          ? "#efce15"
+          : "#ef8214";
       return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: #fff`;
     },
     deleteReq: function (req) {
-      const reqName = req['list-id'];
-      this.$store.commit('removeReq', reqName);
+      const reqName = req["list-id"];
+      this.$store.commit("removeReq", reqName);
     },
     submitPetition: function () {
-      this.$store.commit('setPASubstitutions', { uniqueKey: this.petitionReq['list-id'], newReqs: this.petitionSelectCourses });
+      this.$store.commit("setPASubstitutions", {
+        uniqueKey: this.petitionReq["list-id"],
+        newReqs: this.petitionSelectCourses,
+      });
       this.petitionSelectCourses = [];
     },
     clearPetition: function () {
-      this.$store.commit('removeProgressAssertion', this.petitionReq['list-id']);
+      this.$store.commit(
+        "removeProgressAssertion",
+        this.petitionReq["list-id"],
+      );
     },
     isPetitioned: function (req) {
-      if (req['list-id'] in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions) {
-        return !('ignore' in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[req['list-id']]);
+      if (
+        req["list-id"] in
+        this.$store.state.roads[this.$store.state.activeRoad].contents
+          .progressAssertions
+      ) {
+        return !(
+          "ignore" in
+          this.$store.state.roads[this.$store.state.activeRoad].contents
+            .progressAssertions[req["list-id"]]
+        );
       } else {
         return false;
       }
     },
     isIgnored: function (req) {
-      if (req['list-id'] in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions) {
-        return 'ignore' in this.$store.state.roads[this.$store.state.activeRoad].contents.progressAssertions[req['list-id']];
+      if (
+        req["list-id"] in
+        this.$store.state.roads[this.$store.state.activeRoad].contents
+          .progressAssertions
+      ) {
+        return (
+          "ignore" in
+          this.$store.state.roads[this.$store.state.activeRoad].contents
+            .progressAssertions[req["list-id"]]
+        );
       } else {
         return false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

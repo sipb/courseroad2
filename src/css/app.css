@@ -1,5 +1,28 @@
-@import "~material-design-icons-iconfont/dist/material-design-icons.css";
-@import "~typeface-roboto/index.css";
-@import "~vuetify/dist/vuetify.min.css";
+@import "@fontsource/roboto/100.css";
+@import "@fontsource/roboto/300.css";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+@import "@fontsource/roboto/900.css";
 
 @import "../assets/css/coursecolors.css";
+
+.v-expansion-panel-content__wrap {
+  padding: 0 !important;
+}
+
+.v-treeview-node__label {
+  overflow: visible !important;
+}
+
+.v-treeview-node__root:before {
+  background-color: transparent !important;
+}
+
+.v-treeview-node__level {
+  width: 8px !important;
+}
+
+.v-treeview--dense .v-treeview-node__root {
+  min-height: 36px !important;
+}

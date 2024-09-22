@@ -1,15 +1,12 @@
 <template>
   <div class="filter-group" :data-cy="'filter_' + label">
     <span class="filter-title">{{ label }}</span>
-    <v-btn-toggle
-      multiple
-      @change="changeFilter"
-    >
+    <v-btn-toggle borderless dense multiple tile @change="changeFilter">
       <v-btn
         v-for="(filter, index) in filters"
         :id="cssID(filter.name)"
         :key="filter.name"
-        flat
+        text
         :value="index"
         :data-cy="'filterButton_' + filter.name"
         @click="buttonClicked"
@@ -22,20 +19,20 @@
 
 <script>
 export default {
-  name: 'FilterSet',
+  name: "FilterSet",
   props: {
     value: {
       type: Array,
-      required: true
+      required: true,
     },
     label: {
       type: String,
-      required: true
+      required: true,
     },
     filters: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     /* selectionIndices : a list of the indices of selected filters
@@ -46,21 +43,25 @@ export default {
 
     emits an input event with this array to let the search menu know
     */
-    changeFilter (selectionIndices) {
-      var filtersSelected = this.filters.map((f, i) => selectionIndices.indexOf(i) >= 0);
-      this.$emit('input', filtersSelected);
+    changeFilter(selectionIndices) {
+      const filtersSelected = this.filters.map(
+        (f, i) => selectionIndices.indexOf(i) >= 0,
+      );
+      this.$emit("input", filtersSelected);
     },
     /*
     Focuses the search input after a filter is selected so typing in searchbar
     can begin immediately after
     */
-    buttonClicked (event) {
-      document.getElementById('searchInputTF').focus();
+    buttonClicked(event) {
+      document.getElementById("searchInputTF").focus();
     },
-    cssID (name) {
-      return 'filter-' + name.replace(/[~!@$%^&*()+=,./';:"?><[\]\\{}|`#]/gi, '-');
-    }
-  }
+    cssID(name) {
+      return (
+        "filter-" + name.replace(/[~!@$%^&*()+=,./';:"?><[\]\\{}|`#]/gi, "-")
+      );
+    },
+  },
 };
 </script>
 

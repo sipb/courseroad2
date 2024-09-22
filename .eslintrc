@@ -1,36 +1,29 @@
 {
-  "plugins": ["jest", "cypress"],
+  "plugins": ["jest", "cypress", "promise"],
   "extends": [
+    "eslint:recommended",
     "plugin:vue/recommended",
-    "standard"
+    "standard",
+    // "plugin:promise/recommended",
+    // "plugin:cypress/recommended",
+    // "plugin:import/recommended",
+    // "plugin:jest/recommended",
+    "plugin:vuetify/base",
+    "plugin:prettier/recommended",
   ],
   "rules": {
-    "vue/max-attributes-per-line": [
+    "prettier/prettier": [
       "error",
       {
-        "singleline": 5,
-        "multiline": 1
-      }
+        "endOfLine": "auto",
+      },
     ],
-    "semi": [
-      2,
-      "always",
-      {
-        "omitLastInOneLineBlock": true
-      }
-    ],
-    "no-var": 0,
-    "prefer-const": 1,
-    "vue/multi-word-component-names": 0,
-    "vue/no-useless-template-attributes": 0
   },
   "overrides": [
     {
-      "files": [
-        "tests/unit/**/*.spec.js"
-      ],
+      "files": ["tests/unit/**/*.spec.js"],
       "env": {
-        "jest": true
+        "jest": true,
       },
       "globals": {
         "mount": "readonly",
@@ -42,16 +35,17 @@
         "VueRouter": "readonly",
         "VueCookies": "readonly",
         "BrowserSupportPlugin": "readonly",
-        "regeneratorRuntime": "readonly"
-      }
+        "regeneratorRuntime": "readonly",
+      },
     },
     {
-      "files": [
-        "tests/e2e/**/*.js"
-      ],
+      "files": ["tests/e2e/**/*.js"],
       "env": {
-          "cypress/globals": true
-      }
-    }
-  ]
+        "cypress/globals": true,
+      },
+    },
+  ],
+  "parserOptions": {
+    "sourceType": "module",
+  },
 }
