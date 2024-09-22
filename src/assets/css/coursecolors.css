@@ -6,50 +6,138 @@ https://github.com/venkatesh-sivaraman/fireroad-server/blob/develop/requirements
   background-color: #999 !important;
 }
 
-.course-1 { background-color: #D10D23 !important; }
-.course-2 { background-color: #F16024 !important; }
-.course-3 { background-color: #2816CD !important; }
-.course-4 { background-color: #BDE788 !important; }
-.course-5 { background-color: #9EABD0 !important; }
-.course-6 { background-color: #499EDA !important; }
-.course-7 { background-color: #4365A2 !important; }
-.course-8 { background-color: #7A36BF !important; }
-.course-9 { background-color: #482C7D !important; }
-.course-10 { background-color: #C96B52 !important; }
-.course-11 { background-color: #81235B !important; }
-.course-12 { background-color: #4BCB4A !important; }
-.course-14 { background-color: #F5A623 !important; }
-.course-15 { background-color: #A40052 !important; }
-.course-16 { background-color: #7BE1F0 !important; }
-.course-17 { background-color: #C80DB9 !important; }
-.course-18 { background-color: #13007D !important; }
-.course-20 { background-color: #64A518 !important; }
-.course-21 { background-color: #A18CD3 !important; }
-.course-21A { background-color: #9162D0 !important; }
-.course-21G { background-color: #764E8D !important; }
-.course-21H { background-color: #B560C3 !important; }
-.course-21L { background-color: #D574D7 !important; }
-.course-21M { background-color: #F1A7E5 !important; }
-.course-21W { background-color: #D16CA4 !important; }
-.course-22 { background-color: #734954 !important; }
-.course-24 { background-color: #4d007B !important; }
-.course-CC { background-color: #398486 !important; }
-.course-CMS { background-color: #8AAFB1 !important; }
-.course-CSB { background-color: #F5889C !important; }
-.course-EC { background-color: #8B1D17 !important; }
-.course-EM { background-color: #E1D059 !important; }
-.course-ES { background-color: #B0B02E !important; }
-.course-HST { background-color: #90CDD0 !important; }
-.course-IDS { background-color: #8ABD6D !important; }
-.course-MAS { background-color: #64696D !important; }
-.course-SCM { background-color: #152348 !important; }
-.course-STS { background-color: #155410 !important; }
-.course-WGS { background-color: #44CF9D !important; }
-.course-SP { background-color: #F4DC26 !important; }
-.course-SWE { background-color: #B82165 !important; }
-.course-AS { background-color: #B0B0B0 !important; }
-.course-MS { background-color: #B0B0B0 !important; }
-.course-NS { background-color: #B0B0B0 !important; }
+.course-1 {
+  background-color: #d10d23 !important;
+}
+.course-2 {
+  background-color: #f16024 !important;
+}
+.course-3 {
+  background-color: #2816cd !important;
+}
+.course-4 {
+  background-color: #bde788 !important;
+}
+.course-5 {
+  background-color: #9eabd0 !important;
+}
+.course-6 {
+  background-color: #499eda !important;
+}
+.course-7 {
+  background-color: #4365a2 !important;
+}
+.course-8 {
+  background-color: #7a36bf !important;
+}
+.course-9 {
+  background-color: #482c7d !important;
+}
+.course-10 {
+  background-color: #c96b52 !important;
+}
+.course-11 {
+  background-color: #81235b !important;
+}
+.course-12 {
+  background-color: #4bcb4a !important;
+}
+.course-14 {
+  background-color: #f5a623 !important;
+}
+.course-15 {
+  background-color: #a40052 !important;
+}
+.course-16 {
+  background-color: #7be1f0 !important;
+}
+.course-17 {
+  background-color: #c80db9 !important;
+}
+.course-18 {
+  background-color: #13007d !important;
+}
+.course-20 {
+  background-color: #64a518 !important;
+}
+.course-21 {
+  background-color: #a18cd3 !important;
+}
+.course-21A {
+  background-color: #9162d0 !important;
+}
+.course-21G {
+  background-color: #764e8d !important;
+}
+.course-21H {
+  background-color: #b560c3 !important;
+}
+.course-21L {
+  background-color: #d574d7 !important;
+}
+.course-21M {
+  background-color: #f1a7e5 !important;
+}
+.course-21W {
+  background-color: #d16ca4 !important;
+}
+.course-22 {
+  background-color: #734954 !important;
+}
+.course-24 {
+  background-color: #4d007b !important;
+}
+.course-CC {
+  background-color: #398486 !important;
+}
+.course-CMS {
+  background-color: #8aafb1 !important;
+}
+.course-CSB {
+  background-color: #f5889c !important;
+}
+.course-EC {
+  background-color: #8b1d17 !important;
+}
+.course-EM {
+  background-color: #e1d059 !important;
+}
+.course-ES {
+  background-color: #b0b02e !important;
+}
+.course-HST {
+  background-color: #90cdd0 !important;
+}
+.course-IDS {
+  background-color: #8abd6d !important;
+}
+.course-MAS {
+  background-color: #64696d !important;
+}
+.course-SCM {
+  background-color: #152348 !important;
+}
+.course-STS {
+  background-color: #155410 !important;
+}
+.course-WGS {
+  background-color: #44cf9d !important;
+}
+.course-SP {
+  background-color: #f4dc26 !important;
+}
+.course-SWE {
+  background-color: #b82165 !important;
+}
+.course-AS {
+  background-color: #b0b0b0 !important;
+}
+.course-MS {
+  background-color: #b0b0b0 !important;
+}
+.course-NS {
+  background-color: #b0b0b0 !important;
+}
 
 .generic-GIR {
   background-color: #bf6139 !important;
