@@ -14,6 +14,7 @@ Vue.use(VueCookies);
 Vue.use(VueRouter);
 Vue.use(BrowserSupportPlugin);
 
+/** @type import("vue-router").RouteConfig[] */
 const routes = [
   { path: "/", redirect: "/road" },
   { path: "/about", component: About },
