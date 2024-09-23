@@ -73,7 +73,14 @@
           v-if="warnings.length > 0 && (!classInfo.overrideWarnings || hover)"
           slot="badge"
           icon
-          style="position: absolute; right: -0.5em; top: -0.5em; z-index: 1"
+          :color="gray"
+          style="
+            position: absolute;
+            right: -0.5em;
+            top: -0.5em;
+            z-index: 1;
+            opacity: 0.8;
+          "
           @click="warningDialog = true"
         >
           <v-icon medium> mdi-alert </v-icon>
