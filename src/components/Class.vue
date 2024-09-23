@@ -45,7 +45,8 @@
         >
           <v-btn
             icon
-            style="margin: -0.5em; pointer-events: auto"
+            :color="cardTextColor(classInfo)"
+            style="margin: -0.5em; pointer-events: auto; opacity: 0.8"
             @click="
               $store.commit('removeClass', {
                 classInfo: classInfo,
