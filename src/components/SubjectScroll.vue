@@ -14,10 +14,16 @@
             "
           >
             <div
-              :class="[courseColor(subject), shouldLighten(subject)]"
-              style="height: 100%"
+              :class="[shouldLighten(subject)]"
+              :style="
+                'height: 100%; background-color: ' +
+                getRawColor(courseColor(subject))
+              "
             >
-              <v-card-text class="cardtext pa-1">
+              <v-card-text
+                class="cardtext pa-1"
+                :style="'color: ' + getRawTextColor(courseColor(subject))"
+              >
                 <div>
                   <b
                     >{{ subject.subject_id

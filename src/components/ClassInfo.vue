@@ -10,14 +10,18 @@
         height="40%"
         min-width="23em"
       >
-        <v-card-title :class="['card-header', courseColor(currentSubject)]">
+        <v-card-title
+          class="card-header"
+          :style="'background-color: ' + cardColor(classInfo)"
+        >
           <v-flex
             style="display: flex; flex-direction: row; align-items: center"
           >
             <div style="padding: 0; margin: 0; display: block">
               <v-btn
                 v-if="classInfoStack.length > 1"
-                style="padding: 0; margin: 0; color: white"
+                style="padding: 0; margin: 0"
+                :color="cardTextColor(currentSubject)"
                 icon
                 data-cy="cardPreviousButton"
                 @click="$store.commit('popClassStack')"
@@ -25,7 +29,11 @@
                 <v-icon>mdi-arrow-left</v-icon>
               </v-btn>
             </div>
-            <div style="padding: 0 0.5em 0 0">
+            <div
+              :style="
+                'padding: 0 0.5em 0 0; color: ' + cardTextColor(currentSubject)
+              "
+            >
               <h3>
                 {{ currentSubject.subject_id
                 }}<sub v-if="currentSubject.old_id !== undefined"
@@ -40,7 +48,10 @@
                 data-cy="closeClassInfoButton"
                 @click="$store.commit('clearClassInfoStack')"
               >
-                <v-icon style="margin: 0; padding: 0; color: white">
+                <v-icon
+                  style="margin: 0; padding: 0"
+                  :color="cardTextColor(currentSubject)"
+                >
                   mdi-close
                 </v-icon>
               </v-btn>
@@ -598,6 +609,12 @@ export default {
     },
     addClass: function () {
       this.$store.commit("addFromCard", this.currentSubject);
+    },
+    cardColor: function (classInfo) {
+      return `${this.getRawColor(this.courseColor(this.currentSubject))}`;
+    },
+    cardTextColor: function (classInfo) {
+      return `${this.getRawTextColor(this.courseColor(this.currentSubject))}`;
     },
   },
 };

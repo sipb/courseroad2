@@ -75,10 +75,11 @@
                 <v-layout wrap>
                   <v-flex class="xs12">
                     <v-btn
-                      :class="`white--text px-6 ma-2 ${courseColorFromId(
-                        form.values.shortTitle,
-                      )}`"
+                      class="white--text px-6 ma-2"
                       value="default"
+                      :color="
+                        getRawColor(courseColorFromId(form.values.shortTitle))
+                      "
                     >
                       Default
                     </v-btn>
@@ -87,11 +88,15 @@
                     <v-btn
                       v-for="(_j, j) in 6"
                       :key="j"
-                      :class="`px-4 ma-2 custom_color-${6 * i + j}`"
+                      class="px-4 ma-2"
+                      :color="getRawColor(`custom_color-${6 * i + j}`)"
                       :value="`@${6 * i + j}`"
                     >
                       <!-- <font-awesome-icon icon="check" /> -->
-                      <v-icon>mdi-check</v-icon>
+                      <v-icon
+                        :color="getRawTextColor(`custom_color-${6 * i + j}`)"
+                        >mdi-check</v-icon
+                      >
                     </v-btn>
                   </v-flex>
                 </v-layout>

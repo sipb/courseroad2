@@ -5,8 +5,6 @@
 @import "@fontsource/roboto/700.css";
 @import "@fontsource/roboto/900.css";
 
-@import "../assets/css/coursecolors.css";
-
 .v-expansion-panel-content__wrap {
   padding: 0 !important;
 }

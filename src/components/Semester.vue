@@ -136,12 +136,12 @@
               :key="subject.subject_id + '-' + subjindex + '-' + index"
               xs3
             >
-              <v-card>
-                <div
-                  v-if="subject !== 'placeholder'"
-                  :class="courseColor(subject)"
-                >
-                  <v-card-text class="mini-course">
+              <v-card :color="getRawColor(courseColor(subject))">
+                <div v-if="subject !== 'placeholder'">
+                  <v-card-text
+                    class="mini-course"
+                    :style="'color: ' + getRawTextColor(courseColor(subject))"
+                  >
                     <b>{{ subject.subject_id }}</b>
                   </v-card-text>
                 </div>
