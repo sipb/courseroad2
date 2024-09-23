@@ -9,7 +9,7 @@
     "test:e2e-headless": "vue-cli-service test:e2e --headless",
     "test:e2e-record": "vue-cli-service test:e2e --headless --record",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore",
-    "build-dev": "vite build --mode staging",
+    "build-dev": "vite build --mode staging --base /dev",
     "build-prod": "vite build",
     "dev": "vite dev",
     "devdev": "vite dev --mode devdev",
