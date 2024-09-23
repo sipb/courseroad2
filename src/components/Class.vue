@@ -68,16 +68,16 @@
             </span>
             <span class="text-body-2"> {{ classInfo.title }} </span>
           </v-card-text>
-          <v-btn
-            v-if="warnings.length > 0 && (!classInfo.overrideWarnings || hover)"
-            slot="badge"
-            icon
-            style="position: absolute; right: -1em; top: -1em; z-index: 1"
-            @click="warningDialog = true"
-          >
-            <v-icon medium> mdi-alert </v-icon>
-          </v-btn>
         </v-card>
+        <v-btn
+          v-if="warnings.length > 0 && (!classInfo.overrideWarnings || hover)"
+          slot="badge"
+          icon
+          style="position: absolute; right: -0.5em; top: -0.5em; z-index: 1"
+          @click="warningDialog = true"
+        >
+          <v-icon medium> mdi-alert </v-icon>
+        </v-btn>
       </v-badge>
     </v-hover>
     <v-dialog v-model="warningDialog" max-width="600">
