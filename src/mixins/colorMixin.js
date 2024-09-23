@@ -105,7 +105,7 @@ export default {
         "course-SCM": "#152348",
         "course-STS": "#155410",
         "course-WGS": "#44cf9d",
-        "course-SP": "#f4dc26",
+        "course-SP": "#deb821",
         "course-SWE": "#b82165",
         "course-AS": "#b0b0b0",
         "course-MS": "#b0b0b0",
