@@ -146,12 +146,14 @@ export default {
         const endPoint = email.indexOf("@");
         const kerb = email.slice(0, endPoint);
         axios
-          .get(import.meta.env.VITE_URL + "/cgi-bin/people.py?kerb=" + kerb)
+          .get(`${import.meta.env.VITE_FIREROAD_URL}/user_info/`)
           .then((response) => {
             if (response.status !== 200) {
               console.log("Failed to find user year");
             } else {
-              const year = response.data.year;
+              const year = response.data.current_semester
+                ? Math.floor(response.data.current_semester / 2) + 1
+                : undefined;
               if (year === undefined) {
                 console.log("Failed to find user year");
               } else {
