@@ -5,15 +5,26 @@ export default {
         {
           courses: [
             "major6-1",
+            "major6-1-8-flex",
             "major6-2",
+            "major6-2new",
             "major6-3",
+            "major6-3new",
+            "major6-4",
             "major6-7",
             "major6-14",
+            "major11-6",
             "minor6",
             "master6-P",
+            "meng6-14",
           ],
-          link: "http://eecsappsrv.mit.edu/students/",
-          text: "Course 6 Student Portal (+Audit)",
+          link: "https://eecsis.mit.edu/checklist.cgi",
+          text: "Course 6 Checklist",
+        },
+        {
+          courses: ["major11"],
+          link: "https://duspsis.mit.edu/",
+          text: "Course 11 Student Status",
         },
         {
           courses: [
