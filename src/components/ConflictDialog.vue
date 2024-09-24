@@ -105,7 +105,9 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "ConflictDialog",
   props: {
     conflictInfo: {
@@ -190,7 +192,7 @@ export default {
       });
     },
   },
-};
+});
 </script>
 
 <style scoped></style>

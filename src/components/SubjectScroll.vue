@@ -49,8 +49,9 @@
 </template>
 <script>
 import colorMixin from "./../mixins/colorMixin.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "SubjectScroll",
   mixins: [colorMixin],
   props: {
@@ -68,8 +69,9 @@ export default {
       }
     },
   },
-};
+});
 </script>
+
 <style scoped>
 .overflow-x {
   overflow-x: auto;

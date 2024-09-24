@@ -21,14 +21,16 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "ThemeToggler",
   methods: {
     darkMode: function () {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
     },
   },
-};
+});
 </script>
 
 <style scoped>

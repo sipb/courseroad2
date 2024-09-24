@@ -190,7 +190,9 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "RoadTabs",
   components: {},
   data: function () {
@@ -281,7 +283,7 @@ export default {
       this.newRoadName = "";
     },
   },
-};
+});
 </script>
 
 <style>

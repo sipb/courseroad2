@@ -68,6 +68,7 @@ import axios from "axios";
 import moment from "moment";
 import UAParser from "ua-parser-js";
 import simpleSSMixin from "./../mixins/sanitizeSubjects.js";
+import { defineComponent } from "vue";
 
 const DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z";
 
@@ -82,7 +83,7 @@ function getQueryObject() {
   return queryObject;
 }
 
-export default {
+export default defineComponent({
   name: "AuthComponent",
   components: {},
   mixins: [simpleSSMixin],
@@ -142,9 +143,9 @@ export default {
     loggedIn(newLoggedIn) {
       this.$store.commit("setLoggedIn", newLoggedIn);
       if (newLoggedIn && this.$cookies.get("has_set_year") !== "true") {
-        const email = this.accessInfo.academic_id;
-        const endPoint = email.indexOf("@");
-        const kerb = email.slice(0, endPoint);
+        // const email = this.accessInfo.academic_id;
+        // const endPoint = email.indexOf("@");
+        // const kerb = email.slice(0, endPoint);
         axios
           .get(`${import.meta.env.VITE_FIREROAD_URL}/user_info/`)
           .then((response) => {
@@ -818,7 +819,7 @@ export default {
         );
     },
   },
-};
+});
 </script>
 
 <style scoped>

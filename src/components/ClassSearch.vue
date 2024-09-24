@@ -97,6 +97,7 @@ import {
   BooleanFilter,
   ArrayFilter,
 } from "../utilities/filters.js";
+import { defineComponent } from "vue";
 
 const girAny = new RegexFilter("GIR:Any", "Any", ".+", undefined, [
   "gir_attribute",
@@ -188,7 +189,7 @@ const instructorFilter = new ArrayFilter(
   "OR",
 );
 
-export default {
+export default defineComponent({
   name: "ClassSearch",
   components: {
     "filter-set": FilterSet,
@@ -391,5 +392,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

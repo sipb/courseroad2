@@ -12,7 +12,7 @@
       >
         <v-card-title
           class="card-header"
-          :style="'background-color: ' + cardColor(classInfo)"
+          :style="'background-color: ' + cardColor()"
         >
           <v-flex
             style="display: flex; flex-direction: row; align-items: center"
@@ -29,11 +29,7 @@
                 <v-icon>mdi-arrow-left</v-icon>
               </v-btn>
             </div>
-            <div
-              :style="
-                'padding: 0 0.5em 0 0; color: ' + cardTextColor(currentSubject)
-              "
-            >
+            <div :style="'padding: 0 0.5em 0 0; color: ' + cardTextColor()">
               <h3>
                 {{ currentSubject.subject_id
                 }}<sub v-if="currentSubject.old_id !== undefined"
@@ -317,8 +313,9 @@ import ExpansionReqs from "../components/ExpansionReqs.vue";
 import colorMixin from "./../mixins/colorMixin.js";
 import schedule from "./../mixins/schedule.js";
 import reqFulfillment from "./../mixins/reqFulfillment.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "ClassInfo",
   components: {
     "subject-scroll": SubjectScroll,
@@ -610,14 +607,14 @@ export default {
     addClass: function () {
       this.$store.commit("addFromCard", this.currentSubject);
     },
-    cardColor: function (classInfo) {
+    cardColor: function () {
       return `${this.getRawColor(this.courseColor(this.currentSubject))}`;
     },
-    cardTextColor: function (classInfo) {
+    cardTextColor: function () {
       return `${this.getRawTextColor(this.courseColor(this.currentSubject))}`;
     },
   },
-};
+});
 </script>
 
 <style scoped>

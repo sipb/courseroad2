@@ -119,8 +119,9 @@
 
 <script>
 import colorMixin from "./../mixins/colorMixin.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "CustomClass",
   mixins: [colorMixin],
   data: function () {
@@ -214,7 +215,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style scoped>

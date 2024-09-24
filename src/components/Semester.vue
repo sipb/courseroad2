@@ -197,8 +197,9 @@ import Class from "./Class.vue";
 import colorMixin from "./../mixins/colorMixin.js";
 import reqFulfillment from "./../mixins/reqFulfillment.js";
 import schedule from "./../mixins/schedule.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "SemesterComponent",
   components: {
     class: Class,
@@ -677,7 +678,7 @@ export default {
       this.dragCount = 0;
     },
   },
-};
+});
 </script>
 
 <style scoped>

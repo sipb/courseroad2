@@ -78,8 +78,9 @@
 import SubjectScroll from "../components/SubjectScroll.vue";
 import $ from "jquery";
 import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "ExpansionReqs",
   components: {
     "subject-scroll": SubjectScroll,
@@ -193,7 +194,7 @@ export default {
       );
     },
   },
-};
+});
 </script>
 
 <style scoped>

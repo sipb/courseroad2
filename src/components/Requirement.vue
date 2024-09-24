@@ -133,9 +133,10 @@
 </template>
 
 <script>
-import classInfoMixin from "./../mixins/classInfo.js";
+import classInfoMixin from "../mixins/classInfo.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "RequirementComponent",
   mixins: [classInfoMixin],
   props: {
@@ -211,7 +212,7 @@ export default {
       });
     },
   },
-};
+});
 </script>
 
 <style scoped>

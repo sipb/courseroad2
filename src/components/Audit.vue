@@ -263,9 +263,11 @@
 
 <script>
 import Requirement from "./Requirement.vue";
-import classInfoMixin from "./../mixins/classInfo.js";
+import classInfoMixin from "../mixins/classInfo.js";
 import courseLinksMixin from "./../mixins/courseLinks.js";
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "AuditComponent",
   components: {
     requirement: Requirement,
@@ -537,7 +539,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style scoped>

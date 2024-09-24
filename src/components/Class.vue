@@ -120,8 +120,9 @@
 
 <script>
 import colorMixin from "./../mixins/colorMixin.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "ClassComponent",
   mixins: [colorMixin],
   props: {
@@ -199,7 +200,7 @@ export default {
       return `${this.getRawTextColor(this.courseColor(classInfo))}`;
     },
   },
-};
+});
 </script>
 
 <style scoped>

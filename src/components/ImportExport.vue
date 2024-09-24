@@ -101,8 +101,9 @@
 
 <script>
 import simpleSSMixin from "./../mixins/sanitizeSubjects.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "ImportExport",
   components: {},
   mixins: [simpleSSMixin],
@@ -309,7 +310,7 @@ export default {
       return otherRoadNames.length > 0;
     },
   },
-};
+});
 </script>
 
 <style scoped>
