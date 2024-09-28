@@ -49,6 +49,7 @@ const getDefaultState = () => {
     loadSubjectsPromise: undefined,
     loadedSubjects: false,
     roadsToMigrate: [],
+    isDarkMode: JSON.parse(localStorage.courseRoadStore).isDarkMode,
   };
 };
 
@@ -482,6 +483,9 @@ const store = new Vuex.Store({
     },
     clearMigrationQueue(state) {
       state.roadsToMigrate = [];
+    },
+    changeTheme(state) {
+      state.isDarkMode = !state.isDarkMode;
     },
   },
   actions: {

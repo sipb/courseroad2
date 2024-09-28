@@ -73,7 +73,7 @@
           v-if="warnings.length > 0 && (!classInfo.overrideWarnings || hover)"
           slot="badge"
           icon
-          :color="gray"
+          color="gray"
           style="
             position: absolute;
             right: -0.5em;
