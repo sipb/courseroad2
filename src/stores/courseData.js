@@ -49,7 +49,7 @@ const getDefaultState = () => {
     loadSubjectsPromise: undefined,
     loadedSubjects: false,
     roadsToMigrate: [],
-    isDarkMode: JSON.parse(localStorage.courseRoadStore).isDarkMode,
+    isDarkMode: JSON.parse(localStorage.courseRoadStore ?? "{}").isDarkMode,
   };
 };
 
