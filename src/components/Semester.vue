@@ -136,12 +136,12 @@
               :key="subject.subject_id + '-' + subjindex + '-' + index"
               xs3
             >
-              <v-card>
-                <div
-                  v-if="subject !== 'placeholder'"
-                  :class="courseColor(subject)"
-                >
-                  <v-card-text class="mini-course">
+              <v-card :color="getRawColor(courseColor(subject))">
+                <div v-if="subject !== 'placeholder'">
+                  <v-card-text
+                    class="mini-course"
+                    :style="'color: ' + getRawTextColor(courseColor(subject))"
+                  >
                     <b>{{ subject.subject_id }}</b>
                   </v-card-text>
                 </div>
@@ -197,8 +197,9 @@ import Class from "./Class.vue";
 import colorMixin from "./../mixins/colorMixin.js";
 import reqFulfillment from "./../mixins/reqFulfillment.js";
 import schedule from "./../mixins/schedule.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "SemesterComponent",
   components: {
     class: Class,
@@ -635,11 +636,11 @@ export default {
       });
       return beforeThisSemester.concat(previousQuarter);
     },
-    dragenter: function (event) {
+    dragenter: function () {
       this.draggingOver = true;
       this.dragCount++;
     },
-    dragleave: function (event) {
+    dragleave: function () {
       this.dragCount--;
       if (this.dragCount === 0) {
         this.draggingOver = false;
@@ -677,7 +678,7 @@ export default {
       this.dragCount = 0;
     },
   },
-};
+});
 </script>
 
 <style scoped>

@@ -18,7 +18,9 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "FilterSet",
   props: {
     value: {
@@ -53,7 +55,7 @@ export default {
     Focuses the search input after a filter is selected so typing in searchbar
     can begin immediately after
     */
-    buttonClicked(event) {
+    buttonClicked() {
       document.getElementById("searchInputTF").focus();
     },
     cssID(name) {
@@ -62,7 +64,7 @@ export default {
       );
     },
   },
-};
+});
 </script>
 
 <style scoped>

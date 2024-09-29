@@ -31,7 +31,7 @@ class Filter {
   Set up inputs which can be used to adjust the filter.  Unimplemented for
   simple filter but used on subclasses
   */
-  setupInputs(input) {}
+  setupInputs() {}
 
   /*
   Test if a particular subject matches the filter
@@ -325,7 +325,7 @@ class FilterGroup {
           mode is OR then it only needs to match one filter, if the mode is AND
           it must match all filters; returns true if no filters are active
   */
-  matches(subject, active, inputs) {
+  matches(subject, active) {
     if (!active.some((a) => a)) {
       return true;
     }

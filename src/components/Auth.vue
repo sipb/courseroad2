@@ -68,6 +68,7 @@ import axios from "axios";
 import moment from "moment";
 import UAParser from "ua-parser-js";
 import simpleSSMixin from "./../mixins/sanitizeSubjects.js";
+import { defineComponent } from "vue";
 
 const DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z";
 
@@ -82,7 +83,7 @@ function getQueryObject() {
   return queryObject;
 }
 
-export default {
+export default defineComponent({
   name: "AuthComponent",
   components: {},
   mixins: [simpleSSMixin],
@@ -142,16 +143,18 @@ export default {
     loggedIn(newLoggedIn) {
       this.$store.commit("setLoggedIn", newLoggedIn);
       if (newLoggedIn && this.$cookies.get("has_set_year") !== "true") {
-        const email = this.accessInfo.academic_id;
-        const endPoint = email.indexOf("@");
-        const kerb = email.slice(0, endPoint);
+        // const email = this.accessInfo.academic_id;
+        // const endPoint = email.indexOf("@");
+        // const kerb = email.slice(0, endPoint);
         axios
-          .get(process.env.VUE_APP_URL + "/cgi-bin/people.py?kerb=" + kerb)
+          .get(`${import.meta.env.VITE_FIREROAD_URL}/user_info/`)
           .then((response) => {
             if (response.status !== 200) {
               console.log("Failed to find user year");
             } else {
-              const year = response.data.year;
+              const year = response.data.current_semester
+                ? Math.floor(response.data.current_semester / 2) + 1
+                : undefined;
               if (year === undefined) {
                 console.log("Failed to find user year");
               } else {
@@ -230,15 +233,15 @@ export default {
     // window.cookies=this.$cookies;
   },
   methods: {
-    loginUser: function (event) {
+    loginUser: function () {
       window.setLocationHref(
-        `${process.env.VUE_APP_FIREROAD_URL}/login/?redirect=${process.env.VUE_APP_URL}`,
+        `${import.meta.env.VITE_FIREROAD_URL}/login/?redirect=${import.meta.env.VITE_URL}`,
       );
       if (this.cookiesAllowed) {
         this.$cookies.set("hasLoggedIn", true);
       }
     },
-    logoutUser: function (event) {
+    logoutUser: function () {
       this.$cookies.remove("accessInfo");
       if (this.cookiesAllowed) {
         this.$cookies.set("hasLoggedIn", false);
@@ -256,7 +259,7 @@ export default {
       };
       const currentMonth = new Date().getMonth();
       return axios
-        .get(process.env.VUE_APP_FIREROAD_URL + "/verify/", headerList)
+        .get(import.meta.env.VITE_FIREROAD_URL + "/verify/", headerList)
         .then(
           function (verifyResponse) {
             if (verifyResponse.data.success) {
@@ -286,11 +289,11 @@ export default {
         };
         return params
           ? axiosFunc(
-              process.env.VUE_APP_FIREROAD_URL + link,
+              import.meta.env.VITE_FIREROAD_URL + link,
               params,
               headerList,
             )
-          : axiosFunc(process.env.VUE_APP_FIREROAD_URL + link, headerList);
+          : axiosFunc(import.meta.env.VITE_FIREROAD_URL + link, headerList);
       } else {
         return Promise.reject(new Error("No auth information"));
       }
@@ -467,7 +470,7 @@ export default {
 
     getAuthorizationToken: function (code) {
       axios
-        .get(process.env.VUE_APP_FIREROAD_URL + "/fetch_token/?code=" + code)
+        .get(import.meta.env.VITE_FIREROAD_URL + "/fetch_token/?code=" + code)
         .then(
           function (response) {
             if (response.data.success) {
@@ -816,7 +819,7 @@ export default {
         );
     },
   },
-};
+});
 </script>
 
 <style scoped>

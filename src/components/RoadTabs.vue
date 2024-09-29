@@ -190,7 +190,9 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "RoadTabs",
   components: {},
   data: function () {
@@ -218,10 +220,10 @@ export default {
     },
   },
   watch: {
-    activeRoad: function (newRoad, oldRoad) {
+    activeRoad: function () {
       this.tabRoad = this.activeRoad;
     },
-    "$store.state.unretrieved": function (unretrieved) {
+    "$store.state.unretrieved": function () {
       if (
         this.addDialog &&
         this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) === -1
@@ -281,7 +283,7 @@ export default {
       this.newRoadName = "";
     },
   },
-};
+});
 </script>
 
 <style>

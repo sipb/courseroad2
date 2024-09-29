@@ -31,52 +31,60 @@
         <v-card
           v-else
           :id="'class' + classInfo.subject_id.replace('.', '') + semesterIndex"
+          class="classbox"
           :data-cy="
             'classInSemester' +
             semesterIndex +
             '_' +
             classInfo.subject_id.replace('.', '_')
           "
+          :color="cardColor(classInfo)"
           draggable="true"
           @dragstart="dragStart"
           @click.stop="clickClass(classInfo)"
         >
-          <!-- This extra div is necessary because we can't set style with background-color on the v-card. -->
-          <div :class="cardClass(classInfo)">
-            <v-btn
-              icon
-              style="margin: -0.5em; pointer-events: auto"
-              @click="
-                $store.commit('removeClass', {
-                  classInfo: classInfo,
-                  classIndex: classIndex,
-                });
-                $event.stopPropagation();
-              "
-            >
-              <v-icon small> mdi-close-circle </v-icon>
-            </v-btn>
+          <v-btn
+            icon
+            :color="cardTextColor(classInfo)"
+            style="margin: -0.5em; pointer-events: auto; opacity: 0.8"
+            @click="
+              $store.commit('removeClass', {
+                classInfo: classInfo,
+                classIndex: classIndex,
+              });
+              $event.stopPropagation();
+            "
+          >
+            <v-icon small> mdi-close-circle </v-icon>
+          </v-btn>
 
-            <v-card-text class="card-text">
-              <span class="text-body-1 font-weight-bold"
-                >{{ classInfo.subject_id
-                }}<sub v-if="oldID != undefined">[{{ oldID }}]</sub></span
-              >
-              <span class="text-body-2">{{ classInfo.title }}</span>
-            </v-card-text>
-            <v-btn
-              v-if="
-                warnings.length > 0 && (!classInfo.overrideWarnings || hover)
-              "
-              slot="badge"
-              icon
-              style="position: absolute; right: -1em; top: -1em; z-index: 1"
-              @click="warningDialog = true"
-            >
-              <v-icon medium> mdi-alert </v-icon>
-            </v-btn>
-          </div>
+          <v-card-text
+            class="card-text"
+            :style="'color: ' + cardTextColor(classInfo)"
+          >
+            <span class="text-body-1 font-weight-bold"
+              >{{ classInfo.subject_id
+              }}<sub v-if="oldID != undefined">[{{ oldID }}]</sub>
+            </span>
+            <span class="text-body-2"> {{ classInfo.title }} </span>
+          </v-card-text>
         </v-card>
+        <v-btn
+          v-if="warnings.length > 0 && (!classInfo.overrideWarnings || hover)"
+          slot="badge"
+          icon
+          color="gray"
+          style="
+            position: absolute;
+            right: -0.5em;
+            top: -0.5em;
+            z-index: 1;
+            opacity: 0.8;
+          "
+          @click="warningDialog = true"
+        >
+          <v-icon medium> mdi-alert </v-icon>
+        </v-btn>
       </v-badge>
     </v-hover>
     <v-dialog v-model="warningDialog" max-width="600">
@@ -112,8 +120,9 @@
 
 <script>
 import colorMixin from "./../mixins/colorMixin.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "ClassComponent",
   mixins: [colorMixin],
   props: {
@@ -184,13 +193,18 @@ export default {
     cardClass: function (classInfo) {
       return `classbox ${this.courseColor(classInfo)}`;
     },
+    cardColor: function (classInfo) {
+      return `${this.getRawColor(this.courseColor(classInfo))}`;
+    },
+    cardTextColor: function (classInfo) {
+      return `${this.getRawTextColor(this.courseColor(classInfo))}`;
+    },
   },
-};
+});
 </script>
 
 <style scoped>
 .card-text {
-  color: white;
   font-size: 1.1em;
   padding: 0;
   margin: 0.2em 0.4em 0em 0.2em;

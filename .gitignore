@@ -117,3 +117,6 @@ env.sh
 
 # VSCode Debugging Configurations
 .vscode
+
+# Local .env files
+*.local

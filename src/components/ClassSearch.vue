@@ -97,6 +97,7 @@ import {
   BooleanFilter,
   ArrayFilter,
 } from "../utilities/filters.js";
+import { defineComponent } from "vue";
 
 const girAny = new RegexFilter("GIR:Any", "Any", ".+", undefined, [
   "gir_attribute",
@@ -188,7 +189,7 @@ const instructorFilter = new ArrayFilter(
   "OR",
 );
 
-export default {
+export default defineComponent({
   name: "ClassSearch",
   components: {
     "filter-set": FilterSet,
@@ -317,14 +318,14 @@ export default {
     searchInput(newVal) {
       this.nameInput = newVal;
     },
-    classStackExists: function (oldExists, newExists) {
+    classStackExists: function () {
       Vue.nextTick(
         function () {
           this.updateMenuStyle();
         }.bind(this),
       );
     },
-    "pagination.rowsPerPage": function (newRows, oldRows) {
+    "pagination.rowsPerPage": function (newRows) {
       if (this.cookiesAllowed) {
         this.$cookies.set("paginationRows", newRows);
       }
@@ -391,5 +392,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

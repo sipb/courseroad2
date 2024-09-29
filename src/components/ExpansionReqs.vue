@@ -78,8 +78,9 @@
 import SubjectScroll from "../components/SubjectScroll.vue";
 import $ from "jquery";
 import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "ExpansionReqs",
   components: {
     "subject-scroll": SubjectScroll,
@@ -127,7 +128,7 @@ export default {
     },
   },
   watch: {
-    reqID: function (newReq, oldReq) {
+    reqID: function () {
       this.open = false;
     },
   },
@@ -169,10 +170,10 @@ export default {
         this.$emit("click-subject", subj);
       }
     },
-    closeMe: function (subj) {
+    closeMe: function () {
       this.$emit("close-expansion");
     },
-    closeMyExpansion: function (event) {
+    closeMyExpansion: function () {
       this.open = false;
       let scrollPoint;
       if (!this.doubleScroller) {
@@ -193,7 +194,7 @@ export default {
       );
     },
   },
-};
+});
 </script>
 
 <style scoped>

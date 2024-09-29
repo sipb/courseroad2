@@ -14,6 +14,7 @@ Vue.use(VueCookies);
 Vue.use(VueRouter);
 Vue.use(BrowserSupportPlugin);
 
+/** @type import("vue-router").RouteConfig[] */
 const routes = [
   { path: "/", redirect: "/road" },
   { path: "/about", component: About },
@@ -22,7 +23,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  base: process.env.VUE_APP_URL.indexOf("dev") !== -1 ? "/dev/" : "/",
+  base: import.meta.env.VITE_URL.indexOf("dev") !== -1 ? "/dev/" : "/",
   mode: "history",
   routes,
 });

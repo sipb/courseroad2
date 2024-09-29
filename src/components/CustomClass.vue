@@ -75,10 +75,11 @@
                 <v-layout wrap>
                   <v-flex class="xs12">
                     <v-btn
-                      :class="`white--text px-6 ma-2 ${courseColorFromId(
-                        form.values.shortTitle,
-                      )}`"
+                      class="white--text px-6 ma-2"
                       value="default"
+                      :color="
+                        getRawColor(courseColorFromId(form.values.shortTitle))
+                      "
                     >
                       Default
                     </v-btn>
@@ -87,11 +88,15 @@
                     <v-btn
                       v-for="(_j, j) in 6"
                       :key="j"
-                      :class="`px-4 ma-2 custom_color-${6 * i + j}`"
+                      class="px-4 ma-2"
+                      :color="getRawColor(`custom_color-${6 * i + j}`)"
                       :value="`@${6 * i + j}`"
                     >
                       <!-- <font-awesome-icon icon="check" /> -->
-                      <v-icon>mdi-check</v-icon>
+                      <v-icon
+                        :color="getRawTextColor(`custom_color-${6 * i + j}`)"
+                        >mdi-check</v-icon
+                      >
                     </v-btn>
                   </v-flex>
                 </v-layout>
@@ -114,8 +119,9 @@
 
 <script>
 import colorMixin from "./../mixins/colorMixin.js";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "CustomClass",
   mixins: [colorMixin],
   data: function () {
@@ -151,7 +157,7 @@ export default {
     },
   },
   watch: {
-    editing(classEditing, oldClassEditing) {
+    editing(classEditing) {
       if (classEditing === undefined) {
         return;
       }
@@ -163,7 +169,7 @@ export default {
       this.form.values.colorChosen = classEditing.custom_color || "default";
       this.dialog = true;
     },
-    dialog(newDialog, oldDialog) {
+    dialog(newDialog) {
       if (!newDialog) {
         this.$store.commit("cancelEditCustomClass");
       }
@@ -209,7 +215,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style scoped>

@@ -49,6 +49,7 @@ const getDefaultState = () => {
     loadSubjectsPromise: undefined,
     loadedSubjects: false,
     roadsToMigrate: [],
+    isDarkMode: JSON.parse(localStorage.courseRoadStore ?? "{}").isDarkMode,
   };
 };
 
@@ -483,11 +484,14 @@ const store = new Vuex.Store({
     clearMigrationQueue(state) {
       state.roadsToMigrate = [];
     },
+    changeTheme(state) {
+      state.isDarkMode = !state.isDarkMode;
+    },
   },
   actions: {
     async loadAllSubjects({ commit, state }) {
       const promise = axios.get(
-        process.env.VUE_APP_FIREROAD_URL + "/courses/all?full=true",
+        import.meta.env.VITE_FIREROAD_URL + "/courses/all?full=true",
       );
       commit("setLoadSubjectsPromise", promise);
       const response = await promise;

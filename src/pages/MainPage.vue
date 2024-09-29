@@ -101,7 +101,7 @@
               <v-icon size="1.3em" color="#00b300">
                 mdi-checkbox-marked
               </v-icon>
-              <h3 style="display: inline">C o u r s e R o a d</h3>
+              <h3 style="display: inline">{{ " C o u r s e R o a d " }}</h3>
             </v-flex>
             <theme-toggler />
             <v-flex>
@@ -432,7 +432,7 @@ export default {
     this.setActiveRoad();
 
     axios
-      .get(process.env.VUE_APP_FIREROAD_URL + "/requirements/list_reqs/")
+      .get(import.meta.env.VITE_FIREROAD_URL + "/requirements/list_reqs/")
       .then((response) => {
         this.reqList = Object.keys(response.data)
           .map((m) => {
@@ -446,7 +446,7 @@ export default {
 
     document.body.addEventListener(
       "click",
-      function (e) {
+      function () {
         this.searchOpen = false;
       }.bind(this),
     );
@@ -515,7 +515,7 @@ export default {
           );
           axios
             .post(
-              process.env.VUE_APP_FIREROAD_URL +
+              import.meta.env.VITE_FIREROAD_URL +
                 "/requirements/progress/" +
                 req +
                 "/",
@@ -610,7 +610,7 @@ export default {
         this.$cookies.set("dismissedCookies", true);
       }
     },
-    clickSearch: function (event) {
+    clickSearch: function () {
       this.searchOpen = !this.searchOpen;
     },
     typeSearch: function (searchString) {

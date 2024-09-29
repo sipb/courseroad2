@@ -1,5 +1,5 @@
 const BrowserSupportPlugin = {
-  install(Vue, options) {
+  install(Vue) {
     Vue.mixin({
       methods: {
         flatten: function (array) {
