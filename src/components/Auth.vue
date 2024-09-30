@@ -761,7 +761,7 @@ export default defineComponent({
           this.tabID = sessionStorage.tabID;
           const tabNum = parseInt(this.tabID);
           if (this.$cookies.isKey("tabs")) {
-            const tabs = this.$cookies.get("tabs").ids;
+            var tabs = this.$cookies.get("tabs").ids;
             if (tabs.indexOf(tabNum) === -1) {
               tabs.push(tabNum);
               this.$cookies.set("tabs", { ids: tabs });
