@@ -186,7 +186,7 @@ export default {
         (Gs / 255.0) ** trc * Gco +
         (Bs / 255.0) ** trc * Bco;
 
-      return Ys < flipYs ? "#ffffffee" : "#000000cc";
+      return Ys < flipYs ? "#ffffffee" : "#000000dd";
     },
     // courseColor takes in subject
     courseColor: function (subject) {
