@@ -105,8 +105,10 @@
             </v-flex>
             <theme-toggler />
             <v-flex>
-              <router-link to="/about" style="float: right" data-cy="aboutLink">
-                About
+              <router-link to="/about" data-cy="aboutLink">
+                <v-btn fab small dark color="primary" style="float: right">
+                  <v-icon dark> mdi-information-variant </v-icon>
+                </v-btn>
               </router-link>
             </v-flex>
           </v-layout>

@@ -40,8 +40,10 @@
             class="req-container"
             :class="{
               'elevation-3': hover,
-              'yellow lighten-3': isPetitioned(item),
-              'grey lighten-2': isIgnored(item),
+              'yellow lighten-3': isPetitioned(item) && !$vuetify.theme.dark,
+              'yellow darken-3': isPetitioned(item) && $vuetify.theme.dark,
+              'grey lighten-2': isIgnored(item) && !$vuetify.theme.dark,
+              'grey darken-2': isIgnored(item) && $vuetify.theme.dark,
             }"
             :style="leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer'"
             :data-cy="'auditItem' + item['list-id']"
@@ -489,7 +491,7 @@ export default defineComponent({
         : req.percent_fulfilled > 15
           ? "#efce15"
           : "#ef8214";
-      return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: #fff`;
+      return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: ${this.$vuetify.theme.dark ? "#1e1e1e" : "#fff"}`;
     },
     deleteReq: function (req) {
       const reqName = req["list-id"];
