@@ -105,9 +105,34 @@
             </v-flex>
             <theme-toggler />
             <v-flex>
-              <router-link to="/about" style="float: right" data-cy="aboutLink">
-                About
-              </router-link>
+              <v-dialog
+                v-model="aboutDialog"
+                fullscreen
+                hide-overlay
+                transition="dialog-bottom-transition"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-btn
+                    fab
+                    small
+                    dark
+                    color="primary"
+                    style="float: right"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon dark> mdi-information-variant </v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-container>
+                    <v-btn icon text @click="aboutDialog = false">
+                      <v-icon>mdi-arrow-left</v-icon>
+                    </v-btn>
+                    <about />
+                  </v-container>
+                </v-card>
+              </v-dialog>
             </v-flex>
           </v-layout>
           <audit
@@ -271,6 +296,7 @@ import Vue from "vue";
 import ClassInfo from "./../components/ClassInfo.vue";
 import ImportExport from "./../components/ImportExport.vue";
 import ThemeToggler from "./../components/ThemeToggler.vue";
+import About from "./../components/About.vue";
 
 const DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z";
 
@@ -285,9 +311,11 @@ export default {
     "class-info": ClassInfo,
     "import-export": ImportExport,
     "theme-toggler": ThemeToggler,
+    about: About,
   },
   data: function () {
     return {
+      aboutDialog: false,
       reqTrees: {},
       reqList: [],
       dragSemesterNum: -1,

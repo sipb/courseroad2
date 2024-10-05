@@ -1,7 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
 import MainPage from "./pages/MainPage.vue";
-import About from "./pages/About.vue";
 import vuetify from "./plugins/vuetify";
 import VueRouter from "vue-router";
 import VueCookies from "vue-cookies";
@@ -17,7 +16,6 @@ Vue.use(BrowserSupportPlugin);
 /** @type import("vue-router").RouteConfig[] */
 const routes = [
   { path: "/", redirect: "/road" },
-  { path: "/about", component: About },
   { path: "/road/:road?", component: MainPage },
   { path: "*", redirect: "/road" },
 ];

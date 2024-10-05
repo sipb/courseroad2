@@ -140,7 +140,7 @@
                 <div v-if="subject !== 'placeholder'">
                   <v-card-text
                     class="mini-course"
-                    :style="'color: ' + getRawTextColor(courseColor(subject))"
+                    :style="{ color: getRawTextColor(courseColor(subject)) }"
                   >
                     <b>{{ subject.subject_id }}</b>
                   </v-card-text>
@@ -378,7 +378,8 @@ export default defineComponent({
             bgColor: "red",
             message: "Loading subjects... give us a minute",
             textColor: "DarkRed",
-            bgColorHeader: "red lighten-5",
+            bgColorHeader:
+              "red " + (this.$vuetify.theme.dark ? "darken-5" : "lighten-5"),
           };
         } else if (this.itemAdding === undefined) {
           return {
@@ -386,42 +387,48 @@ export default defineComponent({
             message:
               'If you see this message, contact courseroad@mit.edu and tell them "710".',
             textColor: "DarkRed",
-            bgColorHeader: "red lighten-5",
+            bgColorHeader:
+              "red" + (this.$vuetify.theme.dark ? "darken-5" : "lighten-5"),
           };
         } else if (this.index === 0 || this.offeredNow) {
           return {
             bgColor: "green",
             message: "Add class here",
             textColor: "DarkGreen",
-            bgColorHeader: "green lighten-5",
+            bgColorHeader:
+              "green " + (this.$vuetify.theme.dark ? "darken-5" : "lighten-5"),
           };
         } else if (this.itemAddingNoLongerOffered) {
           return {
             bgColor: "yellow",
             message: "Subject no longer offered",
             textColor: "DarkGoldenRod",
-            bgColorHeader: "yellow lighten-5",
+            bgColorHeader:
+              "yellow " + (this.$vuetify.theme.dark ? "darken-5" : "lighten-5"),
           };
         } else if (this.itemAddingNotCurrentlyOffered) {
           return {
             bgColor: "yellow",
             message: "Subject not offered this year",
             textColor: "DarkGoldenRod",
-            bgColorHeader: "yellow lighten-5",
+            bgColorHeader:
+              "yellow " + (this.$vuetify.theme.dark ? "darken-5" : "lighten-5"),
           };
         } else if (this.isSameYear) {
           return {
             bgColor: "red",
             message: "Subject not available this semester",
             textColor: "DarkRed",
-            bgColorHeader: "red lighten-5",
+            bgColorHeader:
+              "red " + (this.$vuetify.theme.dark ? "darken-5" : "lighten-5"),
           };
         } else {
           return {
             bgColor: "yellow",
             message: "Subject may not be available this semester",
             textColor: "DarkGoldenRod",
-            bgColorHeader: "yellow lighten-5",
+            bgColorHeader:
+              "yellow " + (this.$vuetify.theme.dark ? "darken-5" : "lighten-5"),
           };
         }
       }
