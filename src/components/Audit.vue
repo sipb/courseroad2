@@ -161,13 +161,13 @@
             {{ dialogReq["desc"] }}
           </v-card-text>
           <v-card-text>
-            <div
-              class="percentage-bar p-block"
-              :style="percentage(dialogReq)"
-              data-cy="auditDialogPercentage"
+            <v-progress-linear
+              :value="dialogReq['percent_fulfilled']"
+              height="25"
+              :color="percentage(dialogReq)"
             >
               {{ dialogReq["percent_fulfilled"] }}% fulfilled
-            </div>
+            </v-progress-linear>
           </v-card-text>
           <v-card-text v-if="'req' in dialogReq">
             {{ dialogReq["req"] }}
@@ -485,13 +485,11 @@ export default defineComponent({
       this.newManualProgress = 0;
     },
     percentage: function (req) {
-      const pfulfilled = req.percent_fulfilled;
-      const pcolor = req.fulfilled
+      return req.fulfilled
         ? "#00b300"
         : req.percent_fulfilled > 15
           ? "#efce15"
           : "#ef8214";
-      return `--percent: ${pfulfilled}%; --bar-color: ${pcolor}; --bg-color: ${this.$vuetify.theme.dark ? "#1e1e1e" : "#fff"}`;
     },
     deleteReq: function (req) {
       const reqName = req["list-id"];
@@ -552,20 +550,6 @@ export default defineComponent({
 }
 .req-container {
   display: flex;
-}
-.percentage-bar {
-  background: linear-gradient(
-    90deg,
-    var(--bar-color) var(--percent),
-    var(--bg-color) var(--percent)
-  );
-}
-.p-block {
-  height: 30px;
-  border: 1px solid gray;
-  padding-left: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
 }
 .petition-padding {
   padding-left: 5%;
