@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-tabs v-model="tabRoad" show-arrows>
+    <v-tabs v-model="tabRoad" background-color="transparent" show-arrows>
       <v-tabs-slider />
       <v-tab
         v-for="roadId in Object.keys(roads)"
