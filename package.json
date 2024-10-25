@@ -47,7 +47,7 @@
     "eslint-plugin-vuetify": "^1.1.0",
     "prettier": "3.2.5",
     "sass": "~1.32",
-    "vue": "^2.7.0"
+    "vue": "^3.0.0"
   },
   "bugs": {
     "url": "https://github.com/npfoss/courseroad2/issues"
