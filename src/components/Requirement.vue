@@ -29,7 +29,7 @@
             <div
               v-if="
                 req['list-id'] in
-                $store.state.roads[$store.state.activeRoad].contents
+                store.state.roads[store.state.activeRoad].contents
                   .progressAssertions
               "
               style="display: inline-block"
@@ -38,7 +38,7 @@
                 v-if="
                   !(
                     'ignore' in
-                    $store.state.roads[$store.state.activeRoad].contents
+                    store.state.roads[store.state.activeRoad].contents
                       .progressAssertions[req['list-id']]
                   )
                 "
@@ -59,7 +59,7 @@
             <span
               v-if="
                 req['list-id'] in
-                $store.state.roads[$store.state.activeRoad].contents
+                store.state.roads[store.state.activeRoad].contents
                   .progressAssertions
               "
             >
@@ -67,7 +67,7 @@
                 v-if="
                   !(
                     'ignore' in
-                    $store.state.roads[$store.state.activeRoad].contents
+                    store.state.roads[store.state.activeRoad].contents
                       .progressAssertions[req['list-id']]
                   )
                 "
@@ -133,86 +133,82 @@
 </template>
 
 <script>
-import classInfoMixin from "../mixins/classInfo.js";
-import { defineComponent } from "vue";
-
-export default defineComponent({
+export default {
   name: "RequirementComponent",
-  mixins: [classInfoMixin],
-  props: {
-    req: {
-      type: Object,
-      required: true,
-    },
-    isLeaf: {
-      type: Boolean,
-      required: true,
-    },
+};
+</script>
+
+<script setup>
+import { canDrag, classInfo } from "../mixins/classInfo.js";
+import { useStore } from "../plugins/composition.js";
+import { ref, computed } from "vue";
+
+const store = useStore();
+
+const props = defineProps({
+  req: {
+    type: Object,
+    required: true,
   },
-  data: function () {
-    return {
-      open: [],
-      hoveringOver: false,
-      iconHover: false,
-      petitionHover: false,
-    };
-  },
-  computed: {
-    iconColor: function () {
-      return this.iconHover ? "info" : "grey";
-    },
-    petitionColor: function () {
-      return this.petitionHover ? "info" : "grey";
-    },
-    reqFulfilled: function () {
-      return {
-        fulfilled: !!this.req.fulfilled,
-      };
-    },
-    percentageTextColor: function () {
-      return this.req.fulfilled
-        ? "#008400"
-        : this.req.percent_fulfilled > 15
-          ? "#d1b82b"
-          : "#d3701f";
-    },
-    percentageColor: function () {
-      return this.req.fulfilled
-        ? "#00b300"
-        : this.req.percent_fulfilled > 15
-          ? "#efce15"
-          : "#ef8214";
-    },
-    percentage: function () {
-      const pfulfilled = this.req.percent_fulfilled;
-      return `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
-    },
-    percentage_bar: function () {
-      const showPBar = "reqs" in this.req || "threshold" in this.req;
-      return {
-        "percentage-bar": showPBar,
-        "p-bar": showPBar,
-      };
-    },
-  },
-  methods: {
-    dragStart: function (event) {
-      let usedInfo = this.classInfo(this.req);
-      if (usedInfo === undefined) {
-        usedInfo = { subject_id: this.req.req };
-      }
-      event.dataTransfer.setData(
-        "classData",
-        JSON.stringify({ isNew: true, classIndex: -1 }),
-      );
-      this.$store.commit("dragStartClass", {
-        dragstart: event,
-        classInfo: usedInfo,
-        isNew: true,
-      });
-    },
+  isLeaf: {
+    type: Boolean,
+    required: true,
   },
 });
+
+const open = ref([]);
+const hoveringOver = ref(false);
+const iconHover = ref(false);
+const petitionHover = ref(false);
+
+const iconColor = computed(() => (iconHover.value ? "info" : "grey"));
+const petitionColor = computed(() => (petitionHover.value ? "info" : "grey"));
+const reqFulfilled = computed(() => {
+  return {
+    fulfilled: !!props.req.fulfilled,
+  };
+});
+const percentageTextColor = computed(() => {
+  return props.req.fulfilled
+    ? "#008400"
+    : props.req.percent_fulfilled > 15
+      ? "#d1b82b"
+      : "#d3701f";
+});
+const percentageColor = computed(() => {
+  return props.req.fulfilled
+    ? "#00b300"
+    : props.req.percent_fulfilled > 15
+      ? "#efce15"
+      : "#ef8214";
+});
+const percentage = computed(() => {
+  const pfulfilled = props.req.percent_fulfilled;
+  return `--percent: ${pfulfilled}%; --bar-color: ${percentageColor.value}; --bg-color: lightgrey`;
+});
+const percentage_bar = computed(() => {
+  const showPBar = "reqs" in props.req || "threshold" in props.req;
+  return {
+    "percentage-bar": showPBar,
+    "p-bar": showPBar,
+  };
+});
+
+const dragStart = (event) => {
+  let usedInfo = classInfo(props.req);
+  if (usedInfo === undefined) {
+    usedInfo = { subject_id: props.req.req };
+  }
+  event.dataTransfer.setData(
+    "classData",
+    JSON.stringify({ isNew: true, classIndex: -1 }),
+  );
+  store.commit("dragStartClass", {
+    dragstart: event,
+    classInfo: usedInfo,
+    isNew: true,
+  });
+};
 </script>
 
 <style scoped>

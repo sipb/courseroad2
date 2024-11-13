@@ -20,26 +20,24 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { computed, onMounted } from "vue";
+import { useStore, useVuetify } from "../plugins/composition.js";
 
-export default defineComponent({
-  name: "ThemeToggler",
+const store = useStore();
+const vuetify = useVuetify();
 
-  computed: {
-    isDarkMode() {
-      return this.$store.state.isDarkMode;
-    },
-  },
-  mounted() {
-    this.$vuetify.theme.dark = this.$store.state.isDarkMode;
-  },
-  methods: {
-    changeTheme() {
-      this.$store.commit("changeTheme");
-      this.$vuetify.theme.dark = this.$store.state.isDarkMode;
-    },
-  },
+function changeTheme() {
+  store.commit("changeTheme");
+  vuetify.theme.dark = store.state.isDarkMode;
+}
+
+const isDarkMode = computed(() => {
+  return store.state.isDarkMode;
+});
+
+onMounted(() => {
+  vuetify.theme.dark = store.state.isDarkMode;
 });
 </script>
 

@@ -7,7 +7,7 @@
         :key="roadId"
         :href="`#${roadId}`"
         :data-cy="'roadTab' + roadId"
-        @click="$store.commit('setActiveRoad', roadId)"
+        @click="store.commit('setActiveRoad', roadId)"
       >
         {{ roads[roadId].name }}
         <v-btn
@@ -189,101 +189,89 @@
   </v-layout>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref, computed, watch } from "vue";
+import { useStore } from "../plugins/composition.js";
 
-export default defineComponent({
-  name: "RoadTabs",
-  components: {},
-  data: function () {
-    return {
-      addDialog: false,
-      deleteDialog: false,
-      editDialog: false,
-      duplicateRoad: false,
-      duplicateRoadSource: "$defaultroad$",
-      newRoadName: "",
-      tabRoad: this.$store.state.activeRoad,
-    };
-  },
-  computed: {
-    activeRoad() {
-      return this.$store.state.activeRoad;
-    },
-    roads() {
-      return this.$store.state.roads;
-    },
-    validRoadName: function () {
-      return !(
-        this.otherRoadHasName("", this.newRoadName) || this.newRoadName === ""
-      );
-    },
-  },
-  watch: {
-    activeRoad: function () {
-      this.tabRoad = this.activeRoad;
-    },
-    "$store.state.unretrieved": function () {
-      if (
-        this.addDialog &&
-        this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) === -1
-      ) {
-        this.addRoadFromDuplicate();
-      }
-    },
-  },
-  methods: {
-    otherRoadHasName: function (roadID, roadName) {
-      const otherRoadNames = Object.keys(this.roads).map(
-        function (road) {
-          return road === roadID
-            ? undefined
-            : this.roads[road].name.toLowerCase();
-        }.bind(this),
-      );
-      return otherRoadNames.indexOf(roadName.toLowerCase()) >= 0;
-    },
-    createRoad: function () {
-      if (!this.duplicateRoad) {
-        this.$emit("add-road", this.newRoadName);
-        this.addDialog = false;
-        this.newRoadName = "";
-      } else if (this.duplicateRoadSource in this.roads) {
-        if (
-          this.$store.state.unretrieved.indexOf(this.duplicateRoadSource) >= 0
-        ) {
-          this.$emit("retrieve", this.duplicateRoadSource);
-        } else {
-          this.addRoadFromDuplicate();
-        }
-      }
-    },
-    addRoadFromDuplicate: function () {
-      this.$emit(
-        "add-road",
-        this.newRoadName,
-        this.roads[this.duplicateRoadSource].contents.coursesOfStudy.slice(0),
-        this.roads[this.duplicateRoadSource].contents.selectedSubjects.map(
-          (semester) => semester.slice(0),
-        ),
-        Object.assign(
-          {},
-          this.roads[this.duplicateRoadSource].contents.progressOverrides,
-        ),
-      );
-      this.addDialog = false;
-      this.newRoadName = "";
-    },
-    renameRoad: function () {
-      this.$store.commit("setRoadName", {
-        id: this.tabRoad,
-        name: this.newRoadName,
-      });
-      this.editDialog = false;
-      this.newRoadName = "";
-    },
-  },
+const store = useStore();
+
+const emit = defineEmits(["delete-road", "add-road", "retrieve"]);
+
+const addDialog = ref(false);
+const deleteDialog = ref(false);
+const editDialog = ref(false);
+const duplicateRoad = ref(false);
+const duplicateRoadSource = ref("$defaultroad$");
+const newRoadName = ref("");
+const tabRoad = ref(store.state.activeRoad);
+
+const activeRoad = computed(() => store.state.activeRoad);
+const roads = computed(() => store.state.roads);
+const validRoadName = computed(() => {
+  return !(otherRoadHasName("", newRoadName.value) || newRoadName.value === "");
 });
+
+watch(activeRoad, () => {
+  tabRoad.value = activeRoad.value;
+});
+
+watch(store.state.unretrieved, () => {
+  if (
+    addDialog.value &&
+    store.state.unretrieved.value.indexOf(duplicateRoadSource.value) === -1
+  ) {
+    addRoadFromDuplicate();
+  }
+});
+
+const otherRoadHasName = (roadID, roadName) => {
+  const otherRoadNames = Object.keys(roads.value).map(
+    function (road) {
+      return road === roadID ? undefined : roads.value[road].name.toLowerCase();
+    }.bind(this),
+  );
+  return otherRoadNames.indexOf(roadName.toLowerCase()) >= 0;
+};
+
+const createRoad = () => {
+  if (!duplicateRoad.value) {
+    emit("add-road", newRoadName.value);
+    addDialog.value = false;
+    newRoadName.value = "";
+  } else if (duplicateRoadSource.value in roads.value) {
+    if (store.state.unretrieved.indexOf(duplicateRoadSource.value) >= 0) {
+      emit("retrieve", duplicateRoadSource.value);
+    } else {
+      addRoadFromDuplicate();
+    }
+  }
+};
+
+const addRoadFromDuplicate = () => {
+  emit(
+    "add-road",
+    newRoadName.value,
+    roads.value[duplicateRoadSource.value].contents.coursesOfStudy.slice(0),
+    roads.value[duplicateRoadSource.value].contents.selectedSubjects.map(
+      (semester) => semester.slice(0),
+    ),
+    Object.assign(
+      {},
+      roads.value[duplicateRoadSource.value].contents.progressOverrides,
+    ),
+  );
+  addDialog.value = false;
+  newRoadName.value = "";
+};
+
+const renameRoad = () => {
+  store.commit("setRoadName", {
+    id: tabRoad.value,
+    name: newRoadName.value,
+  });
+  editDialog.value = false;
+  newRoadName.value = "";
+};
 </script>
 
 <style>

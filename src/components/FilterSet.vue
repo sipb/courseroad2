@@ -17,54 +17,49 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "FilterSet",
-  props: {
-    value: {
-      type: Array,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    filters: {
-      type: Array,
-      required: true,
-    },
+<script setup>
+const props = defineProps({
+  value: {
+    type: Array,
+    required: true,
   },
-  methods: {
-    /* selectionIndices : a list of the indices of selected filters
-
-    produces an array of booleans filtersSelected, such that for
-    0 <= i < filters.length, filtersSelected[i] is true iff
-    i is in selectionIndices
-
-    emits an input event with this array to let the search menu know
-    */
-    changeFilter(selectionIndices) {
-      const filtersSelected = this.filters.map(
-        (f, i) => selectionIndices.indexOf(i) >= 0,
-      );
-      this.$emit("input", filtersSelected);
-    },
-    /*
-    Focuses the search input after a filter is selected so typing in searchbar
-    can begin immediately after
-    */
-    buttonClicked() {
-      document.getElementById("searchInputTF").focus();
-    },
-    cssID(name) {
-      return (
-        "filter-" + name.replace(/[~!@$%^&*()+=,./';:"?><[\]\\{}|`#]/gi, "-")
-      );
-    },
+  label: {
+    type: String,
+    required: true,
+  },
+  filters: {
+    type: Array,
+    required: true,
   },
 });
+
+const emit = defineEmits(["input"]);
+
+/* selectionIndices : a list of the indices of selected filters
+
+  produces an array of booleans filtersSelected, such that for
+  0 <= i < filters.length, filtersSelected[i] is true iff
+  i is in selectionIndices
+
+  emits an input event with this array to let the search menu know
+  */
+const changeFilter = (selectionIndices) => {
+  const filtersSelected = props.filters.map(
+    (f, i) => selectionIndices.indexOf(i) >= 0,
+  );
+  emit("input", filtersSelected);
+};
+/*
+  Focuses the search input after a filter is selected so typing in searchbar
+  can begin immediately after
+  */
+const buttonClicked = () => {
+  document.getElementById("searchInputTF").focus();
+};
+
+const cssID = (name) => {
+  return "filter-" + name.replace(/[~!@$%^&*()+=,./';:"?><[\]\\{}|`#]/gi, "-");
+};
 </script>
 
 <style scoped>

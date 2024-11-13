@@ -47,29 +47,30 @@
     </v-layout>
   </v-container>
 </template>
-<script>
-import colorMixin from "./../mixins/colorMixin.js";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "SubjectScroll",
-  mixins: [colorMixin],
-  props: {
-    subjects: {
-      type: Array,
-      required: true,
-    },
-  },
-  methods: {
-    shouldLighten: function (subject) {
-      if (subject.fulfilled === true) {
-        return "lightened";
-      } else {
-        return "";
-      }
-    },
+<script setup>
+import {
+  courseColor,
+  getRawColor,
+  getRawTextColor,
+} from "../mixins/colorMixin.js";
+
+const props = defineProps({
+  subjects: {
+    type: Array,
+    required: true,
   },
 });
+
+const emit = defineEmits(["click-subject"]);
+
+const shouldLighten = (subject) => {
+  if (subject.fulfilled === true) {
+    return "lightened";
+  } else {
+    return "";
+  }
+};
 </script>
 
 <style scoped>
