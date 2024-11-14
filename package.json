@@ -39,6 +39,7 @@
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.14.0",
     "@mdi/font": "^7.4.47",
+    "@types/jquery": "^3.5.32",
     "@vue/test-utils": "^1.2.2",
     "cypress-file-upload": "^5.0.8",
     "deepmerge": "^4.3.1",
