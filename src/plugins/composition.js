@@ -1,3 +1,6 @@
+// this file can be removed once we're using vue 3
+// everything here can be done with new apis in later versions
+
 import { getCurrentInstance } from "vue";
 
 export const useVuetify = () => {

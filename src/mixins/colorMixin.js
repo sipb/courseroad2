@@ -160,7 +160,11 @@ export const colors = {
 };
 
 export const getRawColor = (courseColor) => {
-  return colors[courseColor];
+  if (courseColor) {
+    return colors[courseColor];
+  } else {
+    return colors["course-none"];
+  }
 };
 
 export const getRawTextColor = () => {
