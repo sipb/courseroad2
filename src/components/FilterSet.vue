@@ -45,7 +45,7 @@ const emit = defineEmits(["input"]);
   */
 const changeFilter = (selectionIndices) => {
   const filtersSelected = props.filters.map(
-    (f, i) => selectionIndices.indexOf(i) >= 0,
+    (_f, i) => selectionIndices.indexOf(i) >= 0,
   );
   emit("input", filtersSelected);
 };

@@ -47,27 +47,28 @@
           :items-per-page-text="'Results per page:\xa0'"
           :hide-default-header="true"
         >
-          <template slot="item" slot-scope="props">
+          <template slot="item" slot-scope="searchProps">
             <v-hover>
               <tr
                 slot-scope="{ hover }"
                 :data-cy="
-                  'classInSearch' + props.item.subject_id.replace('.', '_')
+                  'classInSearch' +
+                  searchProps.item.subject_id.replace('.', '_')
                 "
                 :class="{ 'elevation-3': hover }"
                 draggable="true"
                 style="cursor: grab; margin: 4px"
-                @dragstart="dragStart($event, props)"
-                @click="viewClassInfo(props)"
+                @dragstart="dragStart($event, searchProps)"
+                @click="viewClassInfo(searchProps)"
               >
                 <td style="padding: 0px; white-space: nowrap; width: 30%">
                   <v-icon style="vertical-align: middle"> mdi-drag </v-icon>
                   <span style="vertical-align: middle">
-                    {{ props.item.subject_id }}</span
+                    {{ searchProps.item.subject_id }}</span
                   >
                 </td>
                 <td style="padding: 2px 4px 2px 0px; width: 60%">
-                  {{ props.item.title }}
+                  {{ searchProps.item.title }}
                 </td>
               </tr>
             </v-hover>
@@ -97,10 +98,9 @@ import {
   ArrayFilter,
 } from "../utilities/filters.js";
 import { ref, computed, watch, nextTick, onMounted } from "vue";
-import { useStore, useVuetify, useCookies } from "../plugins/composition.js";
+import { useStore, useCookies } from "../plugins/composition.js";
 
 const store = useStore();
-const vuetify = useVuetify();
 const cookies = useCookies();
 
 const props = defineProps({
@@ -200,7 +200,7 @@ const instructorFilter = new ArrayFilter(
   "OR",
 );
 
-const dragSemesterNum = ref(-1);
+// const dragSemesterNum = ref(-1);
 const searchHeight = ref("");
 const menuMargin = ref(20);
 // lists of the filters turned on in each filter group
@@ -378,9 +378,9 @@ const updateMenuStyle = () => {
 const viewClassInfo = (item) => {
   store.commit("pushClassStack", item.item.subject_id);
 };
-const openFirstClass = () => {
-  if (autocomplete.value.length > 0) {
-    store.commit("pushClassStack", autocomplete.value[0].subject_id);
-  }
-};
+// const openFirstClass = () => {
+//   if (autocomplete.value.length > 0) {
+//     store.commit("pushClassStack", autocomplete.value[0].subject_id);
+//   }
+// };
 </script>

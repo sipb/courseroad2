@@ -158,7 +158,7 @@ const props = defineProps({
   },
 });
 
-const open = ref([]);
+// const open = ref([]);
 const hoveringOver = ref(false);
 const iconHover = ref(false);
 const petitionHover = ref(false);

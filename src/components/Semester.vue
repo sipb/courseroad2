@@ -203,20 +203,11 @@ export default defineComponent({
 <script setup>
 import Class from "./Class.vue";
 import {
-  validCourses,
-  validGeneric,
-  colors,
   getRawColor,
   getRawTextColor,
   courseColor,
-  courseColorFromId,
 } from "./../mixins/colorMixin.js";
-import {
-  classSatisfies,
-  reqsFulfilled,
-  convertReqToID,
-  checkForNumRequired,
-} from "./../mixins/reqFulfillment.js";
+import { reqsFulfilled } from "./../mixins/reqFulfillment.js";
 import { flatten } from "./../plugins/browserSupport.js";
 import { lateSchedule } from "./../mixins/schedule.js";
 import { useStore, useVuetify } from "../plugins/composition.js";

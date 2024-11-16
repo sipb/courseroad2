@@ -116,11 +116,7 @@
 </template>
 
 <script setup>
-import {
-  getRawColor,
-  getRawTextColor,
-  courseColorFromId,
-} from "../mixins/colorMixin.js";
+import { getRawColor, getRawTextColor } from "../mixins/colorMixin.js";
 import { ref, watch, computed, reactive } from "vue";
 import { useStore } from "../plugins/composition.js";
 

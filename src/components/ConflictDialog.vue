@@ -118,19 +118,20 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update-local", "update-remote"]);
+// const emit = defineEmits(["update-local", "update-remote"]);
+defineEmits(["update-local", "update-remote"]);
 
 const conflictDialog = ref(false);
 
 const roads = computed(() => store.state.roads);
 
-const startConflict = function () {
-  conflictDialog.value = true;
-};
+// const startConflict = function () {
+//   conflictDialog.value = true;
+// };
 
-const resolveConflict = function () {
-  conflictDialog.value = false;
-};
+// const resolveConflict = function () {
+//   conflictDialog.value = false;
+// };
 
 const colorSubject = (subjectIndex, subjectList) => {
   const remoteSubjects = renumberDuplicates(

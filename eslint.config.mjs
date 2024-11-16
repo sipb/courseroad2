@@ -1,33 +1,41 @@
 import globals from "globals";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
-
-import pluginVue from "eslint-plugin-vue";
+import eslintPluginVue from "eslint-plugin-vue";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+import ts from "typescript-eslint";
 
-export default [
-  // js.configs.recommended,
-  ...pluginVue.configs["flat/recommended"],
-  ...pluginVue.configs["flat/vue2-recommended"],
-  ...compat.extends("plugin:vuetify/base"),
+export default ts.config(
+  js.configs.recommended,
+  ...ts.configs.recommended,
+  ...eslintPluginVue.configs["flat/vue2-recommended"],
   eslintPluginPrettierRecommended,
   {
+    files: ["*.vue", "**/*.vue"],
+
     languageOptions: {
       globals: {
         ...globals.node,
       },
+      parserOptions: {
+        parser: "@typescript-eslint/parser",
+      },
     },
 
-    rules: {},
+    rules: {
+      "vue/script-setup-uses-vars": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          args: "all",
+          argsIgnorePattern: "^_",
+          caughtErrors: "all",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
+    },
   },
-];
+);

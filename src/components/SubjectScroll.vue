@@ -1,7 +1,10 @@
 <template>
   <v-container grid-list-md style="padding: 0.5em">
     <v-layout overflow-x>
-      <v-flex v-for="(subject, index) in subjects" :key="subject.subject_id">
+      <v-flex
+        v-for="(subject, index) in props.subjects"
+        :key="subject.subject_id"
+      >
         <v-badge right overlap color="rgba(0,0,0,0)">
           <v-card
             class="subject"
@@ -62,7 +65,8 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["click-subject"]);
+// const emit = defineEmits(["click-subject"]);
+defineEmits(["click-subject"]);
 
 const shouldLighten = (subject) => {
   if (subject.fulfilled === true) {
