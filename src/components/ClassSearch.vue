@@ -85,11 +85,10 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
 import CustomClass from "./CustomClass.vue";
 import FilterSet from "./FilterSet.vue";
 import $ from "jquery";
-import Vue from "vue";
 import {
   FilterGroup,
   RegexFilter,
@@ -97,7 +96,19 @@ import {
   BooleanFilter,
   ArrayFilter,
 } from "../utilities/filters.js";
-import { defineComponent } from "vue";
+import { ref, computed, watch, nextTick, onMounted } from "vue";
+import { useStore, useVuetify, useCookies } from "../plugins/composition.js";
+
+const store = useStore();
+const vuetify = useVuetify();
+const cookies = useCookies();
+
+const props = defineProps({
+  searchInput: {
+    type: String,
+    required: true,
+  },
+});
 
 const girAny = new RegexFilter("GIR:Any", "Any", ".+", undefined, [
   "gir_attribute",
@@ -189,208 +200,187 @@ const instructorFilter = new ArrayFilter(
   "OR",
 );
 
-export default defineComponent({
-  name: "ClassSearch",
-  components: {
-    "filter-set": FilterSet,
-    "custom-class": CustomClass,
-  },
-  props: {
-    searchInput: {
-      type: String,
-      required: true,
-    },
-  },
-  data: function () {
-    return {
-      dragSemesterNum: -1,
-      searchHeight: "",
-      menuMargin: 20,
-      // lists of the filters turned on in each filter group
-      nameInput: "",
-      chosenFilters: {
-        girs: [false, false, false],
-        hass: [false, false, false, false, false],
-        ci: [false, false, false],
-        level: [false, false],
-        units: [false, false, false, false, false, false, false],
-        terms: [false, false, false],
-        virtual: [false, false, false],
-      },
-      allFilters: {
-        girs: new FilterGroup("GIR", [girAny, girLab, girRest], "OR"),
-        hass: new FilterGroup(
-          "HASS",
-          [hassAny, hassArt, hassSocialScience, hassHumanity, hassElective],
-          "OR",
-        ),
-        ci: new FilterGroup("CI", [ciAny, ciH, ciHW, ciNone], "OR"),
-        level: new FilterGroup("Level", [levelUG, levelG], "OR"),
-        units: new FilterGroup(
-          "Units",
-          [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15],
-          "OR",
-        ),
-        terms: new FilterGroup("Term", [termFall, termIAP, termSpring], "OR"),
-        virtual: new FilterGroup(
-          "Virtual",
-          [virtual, notVirtual, partlyVirtual],
-          "OR",
-        ),
-      },
-      rowsPerPageItems: [
-        5,
-        10,
-        20,
-        50,
-        { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 },
-      ],
-      pagination: {
-        rowsPerPage: 20,
-      },
-    };
-  },
-  computed: {
-    allSubjects: function () {
-      return this.$store.state.genericCourses.concat(
-        this.$store.state.subjectsInfo,
-      );
-    },
-    autocomplete: function () {
-      // Only display subjects if you are filtering by something
-      let returnAny = this.nameInput.length > 0;
-      for (const filterName in this.chosenFilters) {
-        returnAny = returnAny || this.chosenFilters[filterName].some((f) => f);
-      }
-      if (!returnAny) {
-        return [];
-      }
+const dragSemesterNum = ref(-1);
+const searchHeight = ref("");
+const menuMargin = ref(20);
+// lists of the filters turned on in each filter group
+const nameInput = ref("");
+const chosenFilters = ref({
+  girs: [false, false, false],
+  hass: [false, false, false, false, false],
+  ci: [false, false, false],
+  level: [false, false],
+  units: [false, false, false, false, false, false, false],
+  terms: [false, false, false],
+  virtual: [false, false, false],
+});
+const allFilters = ref({
+  girs: new FilterGroup("GIR", [girAny, girLab, girRest], "OR"),
+  hass: new FilterGroup(
+    "HASS",
+    [hassAny, hassArt, hassSocialScience, hassHumanity, hassElective],
+    "OR",
+  ),
+  ci: new FilterGroup("CI", [ciAny, ciH, ciHW, ciNone], "OR"),
+  level: new FilterGroup("Level", [levelUG, levelG], "OR"),
+  units: new FilterGroup(
+    "Units",
+    [unitsLt6, units6, units9, units12, units15, units6To15, unitsGte15],
+    "OR",
+  ),
+  terms: new FilterGroup("Term", [termFall, termIAP, termSpring], "OR"),
+  virtual: new FilterGroup(
+    "Virtual",
+    [virtual, notVirtual, partlyVirtual],
+    "OR",
+  ),
+});
 
-      textFilter.setupInputs({ nameInput: this.nameInput });
-      instructorFilter.setupInputs({ nameInput: this.nameInput });
+const rowsPerPageItems = ref([
+  5,
+  10,
+  20,
+  50,
+  { text: "$vuetify.dataIterator.rowsPerPageAll", value: -1 },
+]);
+const pagination = ref({
+  rowsPerPage: 20,
+});
 
-      // Filter subjects that match all filter sets and the text filter
-      const filteredSubjects = this.allSubjects.filter((subject) => {
-        const matches =
-          textFilter.matches(subject) || instructorFilter.matches(subject);
-        return (
-          matches &&
-          Object.keys(this.allFilters).every((filterGroup) => {
-            return this.allFilters[filterGroup].matches(
-              subject,
-              this.chosenFilters[filterGroup],
-            );
-          })
+const allSubjects = computed(() =>
+  store.state.genericCourses.concat(store.state.subjectsInfo),
+);
+
+const autocomplete = computed(() => {
+  // Only display subjects if you are filtering by something
+  let returnAny = nameInput.value.length > 0;
+  for (const filterName in chosenFilters.value) {
+    returnAny = returnAny || chosenFilters.value[filterName].some((f) => f);
+  }
+  if (!returnAny) {
+    return [];
+  }
+  textFilter.setupInputs({ nameInput: nameInput.value });
+  instructorFilter.setupInputs({ nameInput: nameInput.value });
+  // Filter subjects that match all filter sets and the text filter
+  const filteredSubjects = allSubjects.value.filter((subject) => {
+    const matches =
+      textFilter.matches(subject) || instructorFilter.matches(subject);
+    return (
+      matches &&
+      Object.keys(allFilters.value).every((filterGroup) => {
+        return allFilters.value[filterGroup].matches(
+          subject,
+          chosenFilters.value[filterGroup],
         );
-      });
-
-      // Sort subjects by priority order
-      if (this.nameInput.length) {
-        // Sort first by if it's a literal string vs regex match, then by if it starts with the search
-        textFilter.setupVariants(
-          { nameInput: this.nameInput },
-          { atStart: true, asLiteral: true },
-          ["asLiteral", "atStart"],
-        );
-
-        // Compare by variants for each subject
-        return filteredSubjects.sort(function (subject1, subject2) {
-          return (
-            textFilter.compareByVariants(subject2) -
-            textFilter.compareByVariants(subject1)
-          );
-        });
-      } else {
-        return filteredSubjects;
-      }
-    },
-    classInfoStack() {
-      return this.$store.state.classInfoStack;
-    },
-    classStackExists: function () {
-      return this.classInfoStack.length > 0;
-    },
-    cookiesAllowed() {
-      return this.$store.state.cookiesAllowed;
-    },
-  },
-  watch: {
-    searchInput(newVal) {
-      this.nameInput = newVal;
-    },
-    classStackExists: function () {
-      Vue.nextTick(
-        function () {
-          this.updateMenuStyle();
-        }.bind(this),
-      );
-    },
-    "pagination.rowsPerPage": function (newRows) {
-      if (this.cookiesAllowed) {
-        this.$cookies.set("paginationRows", newRows);
-      }
-    },
-    cookiesAllowed: function (newCA) {
-      if (newCA) {
-        this.$cookies.set("paginationRows", this.pagination.rowsPerPage);
-      }
-    },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.updateMenuStyle();
-    });
-
-    window.cookies = this.$cookies;
-    $(window).resize(
-      function () {
-        this.updateMenuStyle();
-      }.bind(this),
+      })
     );
-
-    if (this.$cookies.isKey("paginationRows")) {
-      this.pagination.rowsPerPage = parseInt(
-        this.$cookies.get("paginationRows"),
+  });
+  // Sort subjects by priority order
+  if (nameInput.value.length) {
+    // Sort first by if it's a literal string vs regex match, then by if it starts with the search
+    textFilter.setupVariants(
+      { nameInput: nameInput.value },
+      { atStart: true, asLiteral: true },
+      ["asLiteral", "atStart"],
+    );
+    // Compare by variants for each subject
+    return filteredSubjects.sort(function (subject1, subject2) {
+      return (
+        textFilter.compareByVariants(subject2) -
+        textFilter.compareByVariants(subject1)
       );
+    });
+  } else {
+    return filteredSubjects;
+  }
+});
+
+const classInfoStack = computed(() => {
+  return store.state.classInfoStack;
+});
+const classStackExists = computed(() => {
+  return classInfoStack.value.length > 0;
+});
+const cookiesAllowed = computed(() => {
+  return store.state.cookiesAllowed;
+});
+
+watch(
+  () => props.searchInput,
+  (newVal) => {
+    nameInput.value = newVal;
+  },
+);
+watch(classStackExists, () => {
+  nextTick(
+    function () {
+      updateMenuStyle();
+    }.bind(this),
+  );
+});
+
+watch(
+  () => pagination.value.rowsPerPage,
+  (newRows) => {
+    if (cookiesAllowed.value) {
+      cookies.set("paginationRows", newRows);
     }
   },
-  methods: {
-    dragStart: function (event, classItem) {
-      event.dataTransfer.setData(
-        "classData",
-        JSON.stringify({ isNew: true, classIndex: -1 }),
-      );
-      this.$store.commit("dragStartClass", {
-        dragstart: event,
-        classInfo: classItem.item,
-        isNew: true,
-      });
-    },
-    updateMenuStyle: function () {
-      const searchInputElem = document.getElementById("searchInputTF");
-      const searchInputRect = searchInputElem.getBoundingClientRect();
-      const searchMenuTop = searchInputRect.top + searchInputRect.height;
-      const searchInput = $("#searchInputTF");
-      const menuWidth = searchInput.outerWidth();
-      const classInfoCard = $("#classInfoCard");
-      let menuBottom;
-      if (classInfoCard.length) {
-        menuBottom = classInfoCard.position().top;
-      } else {
-        menuBottom = $(window).innerHeight();
-      }
-      const maxHeight = menuBottom - searchMenuTop - this.menuMargin;
-      this.searchHeight =
-        "max-height: " + maxHeight + "px;width: " + menuWidth + "px;";
-    },
-    viewClassInfo: function (item) {
-      this.$store.commit("pushClassStack", item.item.subject_id);
-    },
-    openFirstClass: function () {
-      if (this.autocomplete.length > 0) {
-        this.$store.commit("pushClassStack", this.autocomplete[0].subject_id);
-      }
-    },
-  },
+);
+watch(cookiesAllowed, (newCA) => {
+  if (newCA) {
+    cookies.set("paginationRows", pagination.value.rowsPerPage);
+  }
 });
+
+onMounted(() => {
+  nextTick(() => {
+    updateMenuStyle();
+  });
+  window.cookies = cookies;
+  $(window).resize(() => {
+    updateMenuStyle();
+  });
+  if (cookies.isKey("paginationRows")) {
+    pagination.value.rowsPerPage = parseInt(cookies.get("paginationRows"));
+  }
+});
+
+const dragStart = (event, classItem) => {
+  event.dataTransfer.setData(
+    "classData",
+    JSON.stringify({ isNew: true, classIndex: -1 }),
+  );
+  store.commit("dragStartClass", {
+    dragstart: event,
+    classInfo: classItem.item,
+    isNew: true,
+  });
+};
+const updateMenuStyle = () => {
+  const searchInputElem = document.getElementById("searchInputTF");
+  const searchInputRect = searchInputElem.getBoundingClientRect();
+  const searchMenuTop = searchInputRect.top + searchInputRect.height;
+  const searchInput = $("#searchInputTF");
+  const menuWidth = searchInput.outerWidth();
+  const classInfoCard = $("#classInfoCard");
+  let menuBottom;
+  if (classInfoCard.length) {
+    menuBottom = classInfoCard.position().top;
+  } else {
+    menuBottom = $(window).innerHeight();
+  }
+  const maxHeight = menuBottom - searchMenuTop - menuMargin.value;
+  searchHeight.value =
+    "max-height: " + maxHeight + "px;width: " + menuWidth + "px;";
+};
+const viewClassInfo = (item) => {
+  store.commit("pushClassStack", item.item.subject_id);
+};
+const openFirstClass = () => {
+  if (autocomplete.value.length > 0) {
+    store.commit("pushClassStack", autocomplete.value[0].subject_id);
+  }
+};
 </script>
