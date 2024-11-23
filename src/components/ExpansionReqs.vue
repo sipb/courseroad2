@@ -121,9 +121,12 @@ const getNextReqs = computed(() => {
   }
 });
 
-watch(props.reqID, () => {
-  open.value = false;
-});
+watch(
+  () => props.reqID,
+  () => {
+    open.value = false;
+  },
+);
 
 const clickSubject = (subj, scroller) => {
   scrollerClicked.value = scroller;

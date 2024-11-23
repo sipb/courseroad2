@@ -119,88 +119,93 @@
 </template>
 
 <script>
-import colorMixin from "./../mixins/colorMixin.js";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "ClassComponent",
-  mixins: [colorMixin],
-  props: {
-    classIndex: {
-      type: Number,
-      required: true,
-    },
-    classInfo: {
-      type: [Object, String],
-      required: true,
-    },
-    semesterIndex: {
-      type: Number,
-      required: true,
-    },
-    warnings: {
-      type: Array,
-      required: true,
-    },
+});
+</script>
+
+<script setup>
+import { useStore } from "../plugins/composition.js";
+import {
+  getRawColor,
+  getRawTextColor,
+  courseColor,
+} from "./../mixins/colorMixin.js";
+import { computed, ref } from "vue";
+
+const props = defineProps({
+  classIndex: {
+    type: Number,
+    required: true,
   },
-  data() {
-    return {
-      warningDialog: false,
-      shouldOverrideWarnings: this.classInfo.overrideWarnings,
-    };
+  classInfo: {
+    type: [Object, String],
+    required: true,
   },
-  computed: {
-    oldID: function () {
-      if (this.classInfo.public === false) {
-        return undefined;
-      }
-      const subjectIndex =
-        this.$store.state.subjectsIndex[this.classInfo.subject_id];
-      if (subjectIndex !== undefined) {
-        const subject = this.$store.state.subjectsInfo[subjectIndex];
-        return subject.old_id;
-      } else {
-        return undefined;
-      }
-    },
+  semesterIndex: {
+    type: Number,
+    required: true,
   },
-  methods: {
-    dragStart: function (event) {
-      event.dataTransfer.setData(
-        "classData",
-        JSON.stringify({
-          isNew: false,
-          classInfo: this.classInfo,
-          classIndex: this.classIndex,
-        }),
-      );
-      this.$store.commit("dragStartClass", {
-        dragstart: event,
-        basicClass: this.classInfo,
-        isNew: false,
-        currentSem: this.semesterIndex,
-      });
-    },
-    clickClass: function (classInfo) {
-      if (classInfo === "placeholder") {
-        //
-      } else if (classInfo.public === false) {
-        this.$store.commit("editCustomClass", classInfo);
-      } else {
-        this.$store.commit("pushClassStack", classInfo.subject_id);
-      }
-    },
-    cardClass: function (classInfo) {
-      return `classbox ${this.courseColor(classInfo)}`;
-    },
-    cardColor: function (classInfo) {
-      return `${this.getRawColor(this.courseColor(classInfo))}`;
-    },
-    cardTextColor: function (classInfo) {
-      return `${this.getRawTextColor(this.courseColor(classInfo))}`;
-    },
+  warnings: {
+    type: Array,
+    required: true,
   },
 });
+
+const store = useStore();
+
+const warningDialog = ref(false);
+const shouldOverrideWarnings = ref(props.classInfo.overrideWarnings);
+
+const oldID = computed(() => {
+  if (props.classInfo.public === false) {
+    return undefined;
+  }
+  const subjectIndex = store.state.subjectsIndex[props.classInfo.subject_id];
+  if (subjectIndex !== undefined) {
+    const subject = store.state.subjectsInfo[subjectIndex];
+    return subject.old_id;
+  } else {
+    return undefined;
+  }
+});
+
+const dragStart = (event) => {
+  event.dataTransfer.setData(
+    "classData",
+    JSON.stringify({
+      isNew: false,
+      classInfo: props.classInfo,
+      classIndex: props.classIndex,
+    }),
+  );
+  store.commit("dragStartClass", {
+    dragstart: event,
+    basicClass: props.classInfo,
+    isNew: false,
+    currentSem: props.semesterIndex,
+  });
+};
+const clickClass = (classInfo) => {
+  if (classInfo === "placeholder") {
+    //
+  } else if (classInfo.public === false) {
+    store.commit("editCustomClass", classInfo);
+  } else {
+    store.commit("pushClassStack", classInfo.subject_id);
+  }
+};
+// const cardClass = (classInfo) => {
+//   return `classbox ${this.courseColor(classInfo)}`;
+// };
+const cardColor = (classInfo) => {
+  return `${getRawColor(courseColor(classInfo))}`;
+};
+const cardTextColor = (classInfo) => {
+  return `${getRawTextColor(courseColor(classInfo))}`;
+};
 </script>
 
 <style scoped>

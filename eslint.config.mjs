@@ -12,7 +12,6 @@ export default ts.config(
   eslintPluginPrettierRecommended,
   {
     files: ["*.vue", "**/*.vue"],
-
     languageOptions: {
       globals: {
         ...globals.node,

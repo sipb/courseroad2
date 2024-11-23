@@ -54,7 +54,7 @@ const getDefaultState = () => {
 };
 
 const store = new Vuex.Store({
-  strict: process.env.NODE_ENV !== "production",
+  strict: !import.meta.env.PROD,
   state: getDefaultState(),
   getters: {
     userYear(state) {
