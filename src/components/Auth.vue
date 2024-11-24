@@ -761,19 +761,12 @@ const setTabID = () => {
       }
     } else {
       // TODO: look into whether this = sign is acting correctly?
-      if (
-        cookies.isKey("tabs") &&
-        // eslint-disable-next-line no-undef
-        (tabs = cookies.get("tabs").ids)
-      ) {
-        // eslint-disable-next-line no-undef
+      if (cookies.isKey("tabs") && (tabs = cookies.get("tabs").ids)) {
         const maxTab = Math.max(...tabs);
         const newTab = (maxTab + 1).toString();
         sessionStorage.tabID = newTab;
         tabID.value = newTab;
-        // eslint-disable-next-line no-undef
         tabs.push(maxTab + 1);
-        // eslint-disable-next-line no-undef
         cookies.set("tabs", { ids: tabs });
       } else {
         sessionStorage.tabID = "1";
