@@ -473,25 +473,23 @@ const offeredNow = computed(() => {
 
 const semesterInformation = computed(() => {
   const classesInfo = props.semesterSubjects
-    .map(
-      function (subj) {
-        if (subj.public === false) {
-          return Object.assign({}, subj, {
-            total_units: subj.units,
-          });
-        } else if (subj.subject_id in store.state.subjectsIndex) {
-          return store.state.subjectsInfo[
-            store.state.subjectsIndex[subj.subject_id]
-          ];
-        } else if (subj.subject_id in store.state.genericIndex) {
-          return store.state.genericCourses[
-            store.state.genericIndex[subj.subject_id]
-          ];
-        } else {
-          return undefined;
-        }
-      }.bind(this),
-    )
+    .map((subj) => {
+      if (subj.public === false) {
+        return Object.assign({}, subj, {
+          total_units: subj.units,
+        });
+      } else if (subj.subject_id in store.state.subjectsIndex) {
+        return store.state.subjectsInfo[
+          store.state.subjectsIndex[subj.subject_id]
+        ];
+      } else if (subj.subject_id in store.state.genericIndex) {
+        return store.state.genericCourses[
+          store.state.genericIndex[subj.subject_id]
+        ];
+      } else {
+        return undefined;
+      }
+    })
     .filter(function (subj) {
       return subj !== undefined;
     });

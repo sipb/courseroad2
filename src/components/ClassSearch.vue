@@ -313,11 +313,9 @@ watch(
   },
 );
 watch(classStackExists, () => {
-  nextTick(
-    function () {
-      updateMenuStyle();
-    }.bind(this),
-  );
+  nextTick(() => {
+    updateMenuStyle();
+  });
 });
 
 watch(

@@ -225,11 +225,9 @@ watch(store.state.unretrieved, () => {
 });
 
 const otherRoadHasName = (roadID, roadName) => {
-  const otherRoadNames = Object.keys(roads.value).map(
-    function (road) {
-      return road === roadID ? undefined : roads.value[road].name.toLowerCase();
-    }.bind(this),
-  );
+  const otherRoadNames = Object.keys(roads.value).map((road) => {
+    return road === roadID ? undefined : roads.value[road].name.toLowerCase();
+  });
   return otherRoadNames.indexOf(roadName.toLowerCase()) >= 0;
 };
 
