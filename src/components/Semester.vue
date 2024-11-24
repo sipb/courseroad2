@@ -170,7 +170,7 @@
         @drop="ondrop"
       >
         <v-layout wrap align-center justify-center>
-          <class
+          <Class
             v-for="(subject, subjindex) in semesterSubjects"
             :key="subject.subject_id + '-' + subjindex + '-' + index"
             :class-info="subject"
@@ -178,7 +178,7 @@
             :warnings="warnings[subjindex]"
             :class-index="subjindex"
           />
-          <class
+          <Class
             v-if="isActiveRoad && addingFromCard && (offeredNow || !isSameYear)"
             key="placeholder"
             class-info="placeholder"
@@ -284,12 +284,17 @@ const warnings = computed(() => {
       let coreqsfulfilled = true;
       if (prereqString !== undefined) {
         prereqsfulfilled = reqsFulfilled(
+          store,
           prereqString,
           props.index > 0 ? previousSubjects(subj) : concurrentSubjects.value,
         );
       }
       if (coreqString !== undefined) {
-        coreqsfulfilled = reqsFulfilled(coreqString, concurrentSubjects.value);
+        coreqsfulfilled = reqsFulfilled(
+          store,
+          coreqString,
+          concurrentSubjects.value,
+        );
       }
       if (subj.either_prereq_or_coreq) {
         if (!(prereqsfulfilled || coreqsfulfilled)) {

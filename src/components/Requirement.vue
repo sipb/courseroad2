@@ -1,7 +1,7 @@
 <template>
   <div
     class="requirement"
-    :draggable="canDrag(req)"
+    :draggable="canDrag(store, req)"
     :data-cy="'requirement' + req['list-id']"
     @dragstart="dragStart"
     @mouseover="hoveringOver = true"
@@ -197,7 +197,7 @@ const percentage_bar = computed(() => {
 });
 
 const dragStart = (event) => {
-  let usedInfo = classInfo(props.req);
+  let usedInfo = classInfo(store, props.req);
   if (usedInfo === undefined) {
     usedInfo = { subject_id: props.req.req };
   }

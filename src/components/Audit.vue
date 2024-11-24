@@ -34,7 +34,7 @@
       :activatable="false"
     >
       <template slot="label" slot-scope="{ item, leaf }">
-        <v-hover :disabled="!leaf || !canDrag(item)">
+        <v-hover :disabled="!leaf || !canDrag(store, item)">
           <div
             slot-scope="{ hover }"
             class="req-container"
@@ -45,7 +45,9 @@
               'grey lighten-2': isIgnored(item) && !vuetify.theme.dark,
               'grey darken-2': isIgnored(item) && vuetify.theme.dark,
             }"
-            :style="leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer'"
+            :style="
+              leaf && canDrag(store, item) ? 'cursor: grab' : 'cursor: pointer'
+            "
             :data-cy="'auditItem' + item['list-id']"
           >
             <v-icon
@@ -66,7 +68,7 @@
                     : "mdi-minus"
               }}
             </v-icon>
-            <requirement
+            <Requirement
               :req="item"
               :is-leaf="leaf"
               @click.native="clickRequirement(item)"

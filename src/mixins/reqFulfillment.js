@@ -1,7 +1,4 @@
-import { useStore } from "../plugins/composition";
-
-export const classSatisfies = (req, id, allSubjects) => {
-  const store = useStore();
+export const classSatisfies = (store, req, id, allSubjects) => {
   if (req === id) {
     return true;
   }
@@ -52,7 +49,7 @@ export const classSatisfies = (req, id, allSubjects) => {
   return false;
 };
 
-export const reqsFulfilled = (reqString, subjects) => {
+export const reqsFulfilled = (store, reqString, subjects) => {
   const allIDs = subjects.map((s) => s.subject_id);
   reqString = reqString.replace(/''/g, '"').replace(/,[\s]+/g, ",");
   const splitReq = reqString.split(/(,|\(|\)|\/)/);
@@ -114,7 +111,7 @@ export const reqsFulfilled = (reqString, subjects) => {
         splitReq[i] = "true";
       } else {
         const anyClassSatisfies = subjects.some((s) =>
-          classSatisfies(splitReq[i], s.subject_id, allIDs),
+          classSatisfies(store, splitReq[i], s.subject_id, allIDs),
         );
         splitReq[i] = anyClassSatisfies ? "true" : "false";
       }

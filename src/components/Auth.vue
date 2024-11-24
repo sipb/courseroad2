@@ -648,21 +648,21 @@ const saveRemote = (roadID, override) => {
     });
 };
 
-const saveLocal = () => {
-  currentlySaving.value = true;
-  if (cookiesAllowed.value) {
-    cookies.set("newRoads", getNewRoadData());
-  }
-  for (const roadID in roads.value) {
-    store.commit("setRoadProp", {
-      id: roadID,
-      prop: "downloaded",
-      value: moment().format(DATE_FORMAT),
-      ignoreSet: true,
-    });
-  }
-  currentlySaving.value = false;
-};
+// const saveLocal = () => {
+//   currentlySaving.value = true;
+//   if (cookiesAllowed.value) {
+//     cookies.set("newRoads", getNewRoadData());
+//   }
+//   for (const roadID in roads.value) {
+//     store.commit("setRoadProp", {
+//       id: roadID,
+//       prop: "downloaded",
+//       value: moment().format(DATE_FORMAT),
+//       ignoreSet: true,
+//     });
+//   }
+//   currentlySaving.value = false;
+// };
 
 const getNewRoadData = () => {
   const newRoadData = {};
@@ -802,16 +802,12 @@ const changeSemester = (year) => {
 // TODO: expose everything, probably not needed but will fix later
 defineExpose({
   save,
-  saveLocal,
-  updateRemote,
   updateLocal,
+  updateRemote,
   deleteRoad,
-  changeSemester,
-  saveWarnings,
-  loggedIn,
-  currentlySaving,
+  retrieveRoad,
   gettingUserData,
-  tabID,
+  newRoads: newRoadsRef,
 });
 </script>
 

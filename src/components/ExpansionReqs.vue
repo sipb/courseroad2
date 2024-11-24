@@ -29,7 +29,7 @@
         >
           {{ requirement.reqs[0].expansionDesc }}
         </span>
-        <subject-scroll
+        <SubjectScroll
           :subjects="requirement.reqs[0].reqs"
           :data-cy="'doubleScroller0' + reqID"
           @click-subject="clickSubject($event, 0)"
@@ -45,14 +45,14 @@
         >
           {{ requirement.reqs[1].expansionDesc }}
         </span>
-        <subject-scroll
+        <SubjectScroll
           :subjects="requirement.reqs[1].reqs"
           :data-cy="'doubleScroller1' + reqID"
           @click-subject="clickSubject($event, 1)"
         />
       </div>
     </div>
-    <subject-scroll
+    <SubjectScroll
       v-else
       :subjects="requirement.reqs"
       :data-cy="'singleScroller' + reqID"

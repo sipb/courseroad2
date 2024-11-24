@@ -1,7 +1,4 @@
-import { useStore } from "../plugins/composition";
-
-export const classInfo = (req) => {
-  const store = useStore();
+export const classInfo = (store, req) => {
   if ("req" in req) {
     if (req.req in store.state.subjectsIndex) {
       return store.state.subjectsInfo[store.state.subjectsIndex[req.req]];
@@ -17,10 +14,9 @@ export const classInfo = (req) => {
   return undefined;
 };
 
-export const canDrag = (req) => {
-  const store = useStore();
+export const canDrag = (store, req) => {
   return (
-    classInfo(req) !== undefined ||
+    classInfo(store, req) !== undefined ||
     ("req" in req && Object.keys(store.state.subjectsIndex).length === 0)
   );
 };

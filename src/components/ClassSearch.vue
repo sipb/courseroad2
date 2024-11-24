@@ -1,37 +1,37 @@
 <template>
   <v-container :style="searchHeight + 'display: flex; flex-direction:column;'">
     <div>
-      <filter-set
+      <FilterSet
         v-model="chosenFilters.girs"
         :label="'GIR'"
         :filters="allFilters.girs.filters"
       />
-      <filter-set
+      <FilterSet
         v-model="chosenFilters.hass"
         :label="'HASS'"
         :filters="allFilters.hass.filters"
       />
-      <filter-set
+      <FilterSet
         v-model="chosenFilters.ci"
         :label="'CI'"
         :filters="allFilters.ci.filters"
       />
-      <filter-set
+      <FilterSet
         v-model="chosenFilters.level"
         :label="'Level'"
         :filters="allFilters.level.filters"
       />
-      <filter-set
+      <FilterSet
         v-model="chosenFilters.units"
         :label="'Units'"
         :filters="allFilters.units.filters"
       />
-      <filter-set
+      <FilterSet
         v-model="chosenFilters.terms"
         :label="'Term'"
         :filters="allFilters.terms.filters"
       />
-      <filter-set
+      <FilterSet
         v-model="chosenFilters.virtual"
         :label="'Virtual'"
         :filters="allFilters.virtual.filters"
@@ -76,7 +76,7 @@
           <template slot="body.append">
             <tr>
               <td colspan="2">
-                <custom-class />
+                <CustomClass />
               </td>
             </tr>
           </template>

@@ -4,7 +4,7 @@
   <v-expansion-panels v-model="visibleList" multiple accordion>
     <!-- v-for index in N starts at 1... -->
     <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
-    <semester
+    <Semester
       v-for="index in numSems"
       :key="index - 1"
       :index="index - 1"

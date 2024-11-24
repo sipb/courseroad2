@@ -250,21 +250,21 @@
             </p>
             <div v-if="currentSubject.joint_subjects !== undefined">
               <h3>Joint Subjects</h3>
-              <subject-scroll
+              <SubjectScroll
                 :subjects="currentSubject.joint_subjects.map(classInfo)"
                 @click-subject="clickRelatedSubject"
               />
             </div>
             <div v-if="currentSubject.equivalent_subjects !== undefined">
               <h3>Equivalent Subjects</h3>
-              <subject-scroll
+              <SubjectScroll
                 :subjects="currentSubject.equivalent_subjects.map(classInfo)"
                 @click-subject="clickRelatedSubject"
               />
             </div>
             <div v-if="parsedPrereqs.reqs.length > 0">
               <h3 id="prereq0">Prerequisites</h3>
-              <expansion-reqs
+              <ExpansionReqs
                 :requirement="parsedPrereqs"
                 :req-i-d="currentSubject.subject_id + 'prereq0'"
                 data-cy="cardPrereqs"
@@ -274,7 +274,7 @@
             <h4 v-if="currentSubject.either_prereq_or_coreq">OR</h4>
             <div v-if="parsedCoreqs.reqs.length > 0">
               <h3 id="coreq0">Corequisites</h3>
-              <expansion-reqs
+              <ExpansionReqs
                 :requirement="parsedCoreqs"
                 :req-i-d="currentSubject.subject_id + 'coreq0'"
                 @click-subject="clickRelatedSubject"
@@ -285,7 +285,7 @@
               data-cy="cardRelatedSubjects"
             >
               <h3>Related Subjects</h3>
-              <subject-scroll
+              <SubjectScroll
                 :subjects="currentSubject.related_subjects.map(classInfo)"
                 @click-subject="clickRelatedSubject"
               />
@@ -294,7 +294,7 @@
               <h3>
                 Subjects with {{ currentSubject.subject_id }} as Prerequisite
               </h3>
-              <subject-scroll
+              <SubjectScroll
                 :subjects="subjectsWithPrereq"
                 @click-subject="clickRelatedSubject"
               />
@@ -499,7 +499,11 @@ const parseRequirements = (requirements) => {
               store.state.activeRoad
             ].contents.selectedSubjects.slice(0, firstAppearance.value),
           );
-          subRequirement.fulfilled = reqsFulfilled(onereq, allPreviousSubjects);
+          subRequirement.fulfilled = reqsFulfilled(
+            store,
+            onereq,
+            allPreviousSubjects,
+          );
         } else {
           subRequirement.fulfilled = true;
         }
