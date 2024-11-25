@@ -4,10 +4,10 @@ export const classSatisfies = (store, req, id, allSubjects) => {
   }
 
   let subj;
-  if (id in store.state.subjectsIndex) {
-    subj = store.state.subjectsInfo[store.state.subjectsIndex[id]];
-  } else if (id in store.state.genericIndex) {
-    subj = store.state.genericCourses[store.state.genericIndex[id]];
+  if (id in store.subjectsIndex) {
+    subj = store.subjectsInfo[store.subjectsIndex[id]];
+  } else if (id in store.genericIndex) {
+    subj = store.genericCourses[store.genericIndex[id]];
   } else {
     // subj not found in known courses
     return false;
@@ -27,8 +27,7 @@ export const classSatisfies = (store, req, id, allSubjects) => {
 
   // ex: 6.0001 and 6.0002 together satisfy the 6.00 requirement
   if (subj.parent !== undefined && req === subj.parent) {
-    const parentCourse =
-      store.state.subjectsInfo[store.state.subjectsIndex[subj.parent]];
+    const parentCourse = store.subjectsInfo[store.subjectsIndex[subj.parent]];
     if (parentCourse !== undefined) {
       if (parentCourse.children.every((sid) => allSubjects.indexOf(sid) >= 0)) {
         return true;

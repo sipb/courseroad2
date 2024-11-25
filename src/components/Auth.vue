@@ -123,9 +123,9 @@ const gettingUserData = ref(false);
 const currentlySaving = ref(false);
 const tabID = ref(Math.floor(Math.random() * 16 ** 10).toString(16));
 
-const activeRoad = computed(() => store.state.activeRoad);
-const cookiesAllowed = computed(() => store.state.cookiesAllowed);
-const roads = computed(() => store.state.roads);
+const activeRoad = computed(() => store.activeRoad);
+const cookiesAllowed = computed(() => store.cookiesAllowed);
+const roads = computed(() => store.roads);
 const saveColor = computed(() => {
   if (!cookiesAllowed.value && !loggedIn.value) {
     return "gray";
@@ -147,7 +147,7 @@ watch(cookiesAllowed, (newCA) => {
 });
 
 watch(loggedIn, (newLoggedIn) => {
-  store.commit("setLoggedIn", newLoggedIn);
+  store.setLoggedIn(newLoggedIn);
   if (newLoggedIn && cookies.get("has_set_year") !== "true") {
     const email = accessInfo.value.academic_id;
     const endPoint = email.indexOf("@");
@@ -193,21 +193,21 @@ onMounted(() => {
       }
       if (props.justLoaded) {
         if (!(activeRoad.value in newRoads)) {
-          store.commit("setActiveRoad", Object.keys(newRoads)[0]);
+          store.setActiveRoad(Object.keys(newRoads)[0]);
         }
-        store.commit("setRoads", newRoads);
+        store.setRoads(newRoads);
       } else {
-        store.commit("setRoads", Object.assign(newRoads, roads.value));
+        store.setRoads(Object.assign(newRoads, roads.value));
       }
       newRoadsRef.value = Object.keys(newRoads);
     }
-    store.commit("allowCookies");
+    store.allowCookies();
   }
 
   if (cookies.isKey("accessInfo")) {
     accessInfo.value = cookies.get("accessInfo");
     loggedIn.value = true;
-    store.commit("allowCookies");
+    store.allowCookies();
     verify().then(() => {
       getUserData();
     });
@@ -270,8 +270,7 @@ const verify = () => {
     .get(import.meta.env.VITE_FIREROAD_URL + "/verify/", headerList)
     .then((verifyResponse) => {
       if (verifyResponse.data.success) {
-        store.commit(
-          "setCurrentSemester",
+        store.setCurrentSemester(
           verifyResponse.data.current_semester - (currentMonth === 4 ? 1 : 0),
         );
         return verifyResponse.data;
@@ -319,15 +318,15 @@ const retrieveRoad = (roadID) => {
 
     sanitizeRoad(roadData.data.file);
 
-    store.commit("setRoad", {
+    store.setRoad({
       id: roadID,
       road: roadData.data.file,
       ignoreSet: true,
     });
 
-    store.commit("setRetrieved", roadID);
+    store.setRetrieved(roadID);
 
-    store.dispatch("waitAndMigrateOldSubjects", roadID);
+    store.waitAndMigrateOldSubjects(roadID);
 
     gettingUserData.value = false;
     return roadData;
@@ -391,26 +390,26 @@ const getUserData = () => {
             progressAssertions: {},
           },
         };
-        store.commit("setRoad", {
+        store.setRoad({
           id: fileKeys[i],
           road: blankRoad,
           ignoreSet: true,
         });
       }
       if (props.justLoaded && fileKeys.length > 0) {
-        store.commit("deleteRoad", "$defaultroad$");
+        store.deleteRoad("$defaultroad$");
       }
       if (fileKeys.includes(route.params.road)) {
-        store.commit("setActiveRoad", route.params.road);
+        store.setActiveRoad(route.params.road);
       } else {
         // Redirect to first road if road cannot be found
-        store.commit("setActiveRoad", Object.keys(roads.value)[0]);
+        store.setActiveRoad(Object.keys(roads.value)[0]);
         router.push({
           path: `/road/${Object.keys(roads.value)[0]}`,
         });
       }
       // Set list of unretrieved roads to all but first road ID
-      store.commit("setUnretrieved", fileKeys);
+      store.setUnretrieved(fileKeys);
       if (fileKeys.length) {
         // Retrieves based on url and defaults to first road if unable to find it
         if (fileKeys.includes(route.params.road)) {
@@ -459,7 +458,7 @@ const renumberRoads = (cloudFiles) => {
     const localName = roads.value[roadID].name;
     if (cloudNames.indexOf(localName) >= 0) {
       const renumberedName = renumber(localName, cloudNames);
-      store.commit("setRoadName", {
+      store.setRoadName({
         id: roadID,
         name: renumberedName,
       });
@@ -559,7 +558,7 @@ const saveRemote = (roadID, override) => {
             this_agent: response.data.this_agent,
             this_date: response.data.this_date,
           };
-          store.commit("setRoadProp", {
+          store.setRoadProp({
             id: roadID,
             prop: "agent",
             value: getAgent(),
@@ -583,7 +582,7 @@ const saveRemote = (roadID, override) => {
 
           sanitizeRoad(updatedRoad);
 
-          store.commit("setRoad", {
+          store.setRoad({
             id: newid,
             road: updatedRoad,
             ignoreSet: true,
@@ -595,7 +594,7 @@ const saveRemote = (roadID, override) => {
             state: "same",
           });
         } else {
-          store.commit("setRoadProp", {
+          store.setRoadProp({
             id: roadID,
             prop: "downloaded",
             value: moment().format(DATE_FORMAT),
@@ -608,7 +607,7 @@ const saveRemote = (roadID, override) => {
             // i suspect this is because the three events required were not happening
             // in the correct order or something
             if (roadID !== response.data.id.toString()) {
-              store.commit("resetID", {
+              store.resetID({
                 oldid: roadID,
                 newid: response.data.id,
               });
@@ -654,7 +653,7 @@ const saveRemote = (roadID, override) => {
 //     cookies.set("newRoads", getNewRoadData());
 //   }
 //   for (const roadID in roads.value) {
-//     store.commit("setRoadProp", {
+//     store.setRoadProp({
 //       id: roadID,
 //       prop: "downloaded",
 //       value: moment().format(DATE_FORMAT),
@@ -702,7 +701,7 @@ const updateLocal = (roadID) => {
     downloaded: moment().format(DATE_FORMAT),
   };
   sanitizeRoad(remoteRoad);
-  store.commit("setRoad", {
+  store.setRoad({
     id: roadID,
     road: remoteRoad,
     ignoreSet: false,
@@ -718,15 +717,15 @@ const deleteRoad = (roadID) => {
       .concat(Object.keys(roads.value).slice(roadIndex + 1));
     if (withoutRoad.length) {
       if (withoutRoad.length > roadIndex) {
-        store.commit("setActiveRoad", withoutRoad[roadIndex]);
+        store.setActiveRoad(withoutRoad[roadIndex]);
       } else {
-        store.commit("setActiveRoad", withoutRoad[roadIndex - 1]);
+        store.setActiveRoad(withoutRoad[roadIndex - 1]);
       }
     } else {
-      store.commit("setActiveRoad", "");
+      store.setActiveRoad("");
     }
   }
-  store.commit("deleteRoad", roadID);
+  store.deleteRoad(roadID);
 
   if (roadID in newRoadsRef.value) {
     const roadIndex = newRoadsRef.value.indexOf(roadID);
@@ -789,17 +788,16 @@ const changeSemester = (year) => {
   })
     .then((res) => {
       if (res.status === 200 && res.data.success) {
-        store.commit("setCurrentSemester", sem);
+        store.setCurrentSemester(sem);
       }
     })
     .catch((err) => {
       if (err.message === "No auth information") {
-        store.commit("setCurrentSemester", sem);
+        store.setCurrentSemester(sem);
       }
     });
 };
 
-// TODO: expose everything, probably not needed but will fix later
 defineExpose({
   save,
   updateLocal,

@@ -145,7 +145,7 @@ const form = reactive({
 // template ref
 const formElement = ref(null);
 
-const editing = computed(() => store.state.customClassEditing);
+const editing = computed(() => store.customClassEditing);
 
 watch(editing, (classEditing) => {
   if (classEditing === undefined) {
@@ -162,7 +162,7 @@ watch(editing, (classEditing) => {
 
 watch(dialog, (newDialog) => {
   if (!newDialog) {
-    store.commit("cancelEditCustomClass");
+    store.cancelEditCustomClass();
   }
 });
 
@@ -186,9 +186,9 @@ const addCustomClass = () => {
   };
   dialog.value = false;
   if (editing.value !== undefined) {
-    store.commit("finishEditCustomClass", newClass);
+    store.finishEditCustomClass(newClass);
   } else {
-    store.commit("addFromCard", newClass);
+    store.addFromCard(newClass);
   }
 };
 

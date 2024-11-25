@@ -223,7 +223,7 @@
     </v-card>
 
     <ClassInfo
-      v-if="$store.state.classInfoStack.length"
+      v-if="store.classInfoStack.length"
       @click.native="$event.stopPropagation()"
     />
 
@@ -254,7 +254,7 @@
                 data-cy="acceptCookies"
                 style="color: rgb(255 255 255)"
                 @click="
-                  $store.commit('allowCookies');
+                  store.allowCookies();
                   dismissCookies();
                 "
               >
@@ -354,10 +354,10 @@ const searchMenu = ref(null);
 const conflictdialog = ref(null);
 
 const activeRoad = computed({
-  get: () => store.state.activeRoad,
-  set: (value) => store.commit("setActiveRoad", value),
+  get: () => store.activeRoad,
+  set: (value) => store.setActiveRoad(value),
 });
-const addingFromCard = computed(() => store.state.addingFromCard);
+const addingFromCard = computed(() => store.addingFromCard);
 const appLink = computed(() => {
   switch (new UAParser(navigator.userAgent).getOS().name) {
     case "Android":
@@ -368,20 +368,20 @@ const appLink = computed(() => {
       return null;
   }
 });
-const cookiesAllowed = computed(() => store.state.cookiesAllowed);
-const roads = computed(() => store.state.roads);
+const cookiesAllowed = computed(() => store.cookiesAllowed);
+const roads = computed(() => store.roads);
 // const roadref = computed(() => "#road" + activeRoad.value);
 
 watch(activeRoad, (newRoad) => {
   if (
-    store.state.unretrieved.indexOf(newRoad) >= 0 &&
+    store.unretrieved.indexOf(newRoad) >= 0 &&
     !authcomponent.value.gettingUserData
   ) {
     authcomponent.value.retrieveRoad(newRoad).then(() => {
-      store.commit("setRetrieved", newRoad);
+      store.setRetrieved(newRoad);
     });
   } else if (newRoad !== "") {
-    updateFulfillment(store.state.fulfillmentNeeded);
+    updateFulfillment(store.fulfillmentNeeded);
   }
   // If just loaded, store isn't loaded yet
   // and so we can't overwrite the router just yet
@@ -400,17 +400,17 @@ watch(
   () => {
     justLoaded.value = false;
     if (cookiesAllowed.value === undefined) {
-      store.commit("allowCookies");
+      store.allowCookies();
     }
     if (activeRoad.value !== "") {
-      updateFulfillment(store.state.fulfillmentNeeded);
+      updateFulfillment(store.fulfillmentNeeded);
     }
-    store.commit("resetFulfillmentNeeded");
+    store.resetFulfillmentNeeded();
 
-    if (!store.state.ignoreRoadChanges) {
+    if (!store.ignoreRoadChanges) {
       authcomponent.value.save(activeRoad.value);
     } else {
-      store.commit("watchRoadChanges");
+      store.watchRoadChanges();
     }
   },
   { deep: true },
@@ -419,29 +419,26 @@ watch(
 onBeforeMount(() => {
   if (
     cookiesAllowed.value &&
-    cookies.get("versionNumber") !== store.state.versionNumber
+    cookies.get("versionNumber") !== store.versionNumber
   ) {
     console.log("Warning: the version number has changed.");
     // do whatever needs to happen when the version changed, probably including clearing local storage
     // then update the version number cookie
     localStorage.clear();
-    cookies.set("versionNumber", store.state.versionNumber);
+    cookies.set("versionNumber", store.versionNumber);
   }
 });
 
 onMounted(() => {
   const today = new Date();
   const month = today.getMonth();
-  store.commit("setCurrentSemester", month >= 4 && month <= 10 ? 1 : 3);
+  store.setCurrentSemester(month >= 4 && month <= 10 ? 1 : 3);
   if (
     localStorage.courseRoadStore !== undefined &&
     cookiesAllowed.value &&
-    store.state.loggedIn
+    store.loggedIn
   ) {
-    store.commit(
-      "setFromLocalStorage",
-      JSON.parse(localStorage.courseRoadStore),
-    );
+    store.setFromLocalStorage(JSON.parse(localStorage.courseRoadStore));
   }
   const borders = $(".v-navigation-drawer__border");
   const scrollers = $(".scroller");
@@ -473,16 +470,16 @@ onMounted(() => {
   });
 
   window.addEventListener("beforeunload", () => {
-    if (cookiesAllowed.value && store.state.loggedIn) {
-      const subjectsInfoNoDescriptions = store.state.subjectsInfo.map((x) => ({
+    if (cookiesAllowed.value && store.loggedIn) {
+      const subjectsInfoNoDescriptions = store.subjectsInfo.map((x) => ({
         subject_id: x.subject_id,
         title: x.title,
         offered_fall: x.offered_fall,
         offered_spring: x.offered_spring,
         offered_iap: x.offered_iap,
       }));
-      store.commit("setSubjectsInfo", subjectsInfoNoDescriptions);
-      localStorage.courseRoadStore = JSON.stringify(store.state);
+      store.setSubjectsInfo(subjectsInfoNoDescriptions);
+      localStorage.courseRoadStore = JSON.stringify(store.$state);
     }
   });
 
@@ -490,12 +487,12 @@ onMounted(() => {
     dismissedAndroidWarning.value = JSON.parse(
       cookies.get("dismissedAndroidWarning"),
     );
-    store.commit("allowCookies");
+    store.allowCookies();
   }
 
   if (cookies.isKey("dismissedCookies")) {
     dismissedCookies.value = JSON.parse(cookies.get("dismissedCookies"));
-    store.commit("allowCookies");
+    store.allowCookies();
   }
 
   // developer.mit.edu version commented out because I couldn't get it to work. filed an issue to resolve it.
@@ -503,7 +500,7 @@ onMounted(() => {
   // , 'Accept': 'application/json'} ?
   // full=true is ~3x bigger but has some great info like "in_class_hours" and "rating"
   store
-    .dispatch("loadAllSubjects")
+    .loadAllSubjects()
     .then(() => {
       console.log("Subjects were loaded successfully!");
     })
@@ -552,11 +549,11 @@ const updateFulfillment = (fulfillmentNeeded) => {
 const setActiveRoad = () => {
   const roadRequested = route.params.road;
   if (route.params.road in roads.value) {
-    store.commit("setActiveRoad", roadRequested);
+    store.setActiveRoad(roadRequested);
     return true;
   } else if (!cookies.isKey("accessInfo")) {
     // If user isn't logged in, and bad road id in url, then redirect to default road
-    const defaultRoadId = store.state.activeRoad;
+    const defaultRoadId = store.activeRoad;
     router.replace({ path: `/road/${defaultRoadId}` });
   }
   return false;
@@ -582,13 +579,13 @@ const addRoad = (
     agent: "",
     contents: newContents,
   };
-  store.commit("setRoad", {
+  store.setRoad({
     id: tempRoadID,
     road: newRoad,
     ignoreSet: false,
   });
-  store.commit("resetFulfillmentNeeded");
-  store.commit("setActiveRoad", tempRoadID);
+  store.resetFulfillmentNeeded();
+  store.setActiveRoad(tempRoadID);
   authcomponent.value.newRoads.push(tempRoadID);
 };
 
@@ -603,7 +600,7 @@ const resolveConflict = () => {
 };
 
 const disallowCookies = () => {
-  store.commit("disallowCookies");
+  store.disallowCookies();
   dismissCookies();
   const cookieKeys = cookies.keys();
   for (let k = 0; k < cookieKeys.length; k++) {

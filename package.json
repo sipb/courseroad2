@@ -25,6 +25,7 @@
     "cgi": "^0.3.1",
     "jquery": "^3.6.0",
     "moment": "^2.29.4",
+    "pinia": "^2.2.6",
     "ua-parser-js": "^1.0.1",
     "url-loader": "^4.1.1",
     "vite": "^5.2.11",
@@ -32,8 +33,7 @@
     "vue-cookies": "^1.7.4",
     "vue-router": "^3.5.2",
     "vue-scrolling-table": "^1.0.4",
-    "vuetify": "^2.7.2",
-    "vuex": "^3.6.0"
+    "vuetify": "^2.7.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",

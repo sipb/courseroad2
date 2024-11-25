@@ -5,13 +5,16 @@ import vuetify from "./plugins/vuetify";
 import VueRouter from "vue-router";
 import VueCookies from "vue-cookies";
 import "./css/app.css";
+import { createPinia, PiniaVuePlugin } from "pinia";
 
-import store from "./stores/courseData";
 import BrowserSupportPlugin from "./plugins/browserSupport";
 
 Vue.use(VueCookies);
 Vue.use(VueRouter);
 Vue.use(BrowserSupportPlugin);
+Vue.use(PiniaVuePlugin);
+
+const pinia = createPinia();
 
 /** @type import("vue-router").RouteConfig[] */
 const routes = [
@@ -33,7 +36,7 @@ const app = new Vue({
   el: "#app",
   router,
   render: (h) => h(App),
-  store,
+  pinia,
 });
 
 if (window.Cypress) {

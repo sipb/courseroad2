@@ -322,10 +322,10 @@ const changeReqs = computed({
     const currentReqs = props.selectedReqs;
     if (currentReqs.length > newReqs.length) {
       const diff = currentReqs.find((x) => !newReqs.includes(x));
-      store.commit("removeReq", diff);
+      store.removeReq(diff);
     } else {
       const newReq = newReqs[newReqs.length - 1];
-      store.commit("addReq", newReq);
+      store.addReq(newReq);
     }
   },
 });
@@ -377,7 +377,7 @@ const selectedTrees = computed(() => {
 const reqPASubstitution = computed({
   get: () => {
     const petitionReqPA =
-      store.state.roads[store.state.activeRoad].contents.progressAssertions[
+      store.roads[store.activeRoad].contents.progressAssertions[
         petitionReq.value["list-id"]
       ];
     // Checks if unique key in progressAssert, if it is, searches for substitution key
@@ -392,7 +392,7 @@ const reqPASubstitution = computed({
 const reqPAIgnore = computed({
   get: () => {
     const petitionReqPA =
-      store.state.roads[store.state.activeRoad].contents.progressAssertions[
+      store.roads[store.activeRoad].contents.progressAssertions[
         petitionReq.value["list-id"]
       ];
     if (petitionReqPA !== undefined) {
@@ -402,7 +402,7 @@ const reqPAIgnore = computed({
     }
   },
   set: (ignoreVal) => {
-    store.commit("setPAIgnore", {
+    store.setPAIgnore({
       uniqueKey: petitionReq.value["list-id"],
       isIgnored: ignoreVal,
     });
@@ -436,7 +436,7 @@ const clickRequirement = (item) => {
       if (usedReq.indexOf("GIR:") === 0) {
         usedReq = usedReq.substring(4);
       }
-      store.commit("pushClassStack", usedReq);
+      store.pushClassStack(usedReq);
     } else {
       startProgressDialog(item);
     }
@@ -486,7 +486,7 @@ const capitalize = (word) => {
 
 const updateManualProgress = () => {
   if (progressReq.value["list-id"] !== undefined) {
-    store.commit("updateProgress", {
+    store.updateProgress({
       listID: progressReq.value["list-id"],
       progress: newManualProgress.value,
     });
@@ -506,11 +506,11 @@ const percentage = (req) => {
 
 const deleteReq = (req) => {
   const reqName = req["list-id"];
-  store.commit("removeReq", reqName);
+  store.removeReq(reqName);
 };
 
 const submitPetition = () => {
-  store.commit("setPASubstitutions", {
+  store.setPASubstitutions({
     uniqueKey: petitionReq.value["list-id"],
     newReqs: petitionSelectCourses.value,
   });
@@ -518,19 +518,16 @@ const submitPetition = () => {
 };
 
 const clearPetition = () => {
-  store.commit("removeProgressAssertion", petitionReq.value["list-id"]);
+  store.removeProgressAssertion(petitionReq.value["list-id"]);
 };
 
 const isPetitioned = (req) => {
   if (
-    req["list-id"] in
-    store.state.roads[store.state.activeRoad].contents.progressAssertions
+    req["list-id"] in store.roads[store.activeRoad].contents.progressAssertions
   ) {
     return !(
       "ignore" in
-      store.state.roads[store.state.activeRoad].contents.progressAssertions[
-        req["list-id"]
-      ]
+      store.roads[store.activeRoad].contents.progressAssertions[req["list-id"]]
     );
   } else {
     return false;
@@ -539,14 +536,11 @@ const isPetitioned = (req) => {
 
 const isIgnored = (req) => {
   if (
-    req["list-id"] in
-    store.state.roads[store.state.activeRoad].contents.progressAssertions
+    req["list-id"] in store.roads[store.activeRoad].contents.progressAssertions
   ) {
     return (
       "ignore" in
-      store.state.roads[store.state.activeRoad].contents.progressAssertions[
-        req["list-id"]
-      ]
+      store.roads[store.activeRoad].contents.progressAssertions[req["list-id"]]
     );
   } else {
     return false;

@@ -23,7 +23,7 @@
       small
       style="position: fixed; right: 1em; bottom: 1em"
       class="secondary"
-      @click="store.commit('cancelAddFromCard')"
+      @click="store.cancelAddFromCard()"
     >
       <v-icon>mdi-cancel</v-icon>
     </v-btn>
@@ -137,7 +137,7 @@ const numSems = ref(numSemesters);
 
 const year = computed({
   get: function () {
-    return store.getters.userYear;
+    return store.userYear;
   },
   set: function (newYear) {
     emit("change-year", newYear);
@@ -146,15 +146,15 @@ const year = computed({
 
 const hideIAP = computed({
   get: function () {
-    return store.getters.hideIAP;
+    return store.hideIAP;
   },
   set: function (value) {
-    store.commit("setHideIAP", value);
+    store.setHideIAP(value);
   },
 });
 
 watch(visibleList, (newVisibleList) => {
-  if (store.state.cookiesAllowed) {
+  if (store.cookiesAllowed) {
     cookies.set("visibleList" + props.roadID, JSON.stringify(newVisibleList));
   }
 });
@@ -163,7 +163,7 @@ onMounted(() => {
   const visibleListCookie = JSON.parse(
     cookies.get("visibleList" + props.roadID),
   );
-  if (store.state.cookiesAllowed && visibleListCookie) {
+  if (store.cookiesAllowed && visibleListCookie) {
     if (
       Array.isArray(visibleListCookie) &&
       visibleListCookie.length === numSems.value

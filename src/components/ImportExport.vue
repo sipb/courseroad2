@@ -114,8 +114,8 @@ const inputtext = ref("");
 const roadtitle = ref("");
 const badinput = ref(false);
 
-const activeRoad = computed(() => store.state.activeRoad);
-const roads = computed(() => store.state.roads);
+const activeRoad = computed(() => store.activeRoad);
+const roads = computed(() => store.roads);
 
 const onFileChange = (event) => {
   const reader = new FileReader();
@@ -218,18 +218,14 @@ const importRoad = async () => {
         .map((s) => {
           // make sure it has everything, if not fill in from subjectsIndex or genericCourses
           let subject;
-          if (store.state.subjectsIndex[s.subject_id] !== undefined) {
-            subject =
-              store.state.subjectsInfo[store.state.subjectsIndex[s.subject_id]];
-          } else if (store.state.genericIndex[s.subject_id] !== undefined) {
-            subject =
-              store.state.genericCourses[
-                store.state.genericIndex[s.subject_id]
-              ];
+          if (store.subjectsIndex[s.subject_id] !== undefined) {
+            subject = store.subjectsInfo[store.subjectsIndex[s.subject_id]];
+          } else if (store.genericIndex[s.subject_id] !== undefined) {
+            subject = store.genericCourses[store.genericIndex[s.subject_id]];
           }
 
           if (subject === undefined) {
-            const oldSubjects = store.state.subjectsInfo.filter((subj) => {
+            const oldSubjects = store.subjectsInfo.filter((subj) => {
               return subj.old_id === s.subject_id;
             });
 

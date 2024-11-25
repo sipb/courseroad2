@@ -123,7 +123,7 @@ defineEmits(["update-local", "update-remote"]);
 
 const conflictDialog = ref(false);
 
-const roads = computed(() => store.state.roads);
+const roads = computed(() => store.roads);
 
 // const startConflict = function () {
 //   conflictDialog.value = true;

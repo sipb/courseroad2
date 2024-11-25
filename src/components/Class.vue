@@ -17,11 +17,7 @@
         >
           <v-container fill-height>
             <v-layout align-center justify-center>
-              <v-btn
-                large
-                icon
-                @click="$store.dispatch('addAtPlaceholder', semesterIndex)"
-              >
+              <v-btn large icon @click="store.addAtPlaceholder(semesterIndex)">
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-layout>
@@ -48,7 +44,7 @@
             :color="cardTextColor(classInfo)"
             style="margin: -0.5em; pointer-events: auto; opacity: 0.8"
             @click="
-              $store.commit('removeClass', {
+              store.removeClass({
                 classInfo: classInfo,
                 classIndex: classIndex,
               });
@@ -103,7 +99,7 @@
             label="Override warnings"
             color="orange darken-3"
             @change="
-              $store.commit('overrideWarnings', {
+              store.overrideWarnings({
                 override: shouldOverrideWarnings,
                 classInfo: classInfo,
               })
@@ -163,9 +159,9 @@ const oldID = computed(() => {
   if (props.classInfo.public === false) {
     return undefined;
   }
-  const subjectIndex = store.state.subjectsIndex[props.classInfo.subject_id];
+  const subjectIndex = store.subjectsIndex[props.classInfo.subject_id];
   if (subjectIndex !== undefined) {
-    const subject = store.state.subjectsInfo[subjectIndex];
+    const subject = store.subjectsInfo[subjectIndex];
     return subject.old_id;
   } else {
     return undefined;
@@ -181,7 +177,7 @@ const dragStart = (event) => {
       classIndex: props.classIndex,
     }),
   );
-  store.commit("dragStartClass", {
+  store.dragStartClass({
     dragstart: event,
     basicClass: props.classInfo,
     isNew: false,
@@ -192,9 +188,9 @@ const clickClass = (classInfo) => {
   if (classInfo === "placeholder") {
     //
   } else if (classInfo.public === false) {
-    store.commit("editCustomClass", classInfo);
+    store.editCustomClass(classInfo);
   } else {
-    store.commit("pushClassStack", classInfo.subject_id);
+    store.pushClassStack(classInfo.subject_id);
   }
 };
 // const cardClass = (classInfo) => {

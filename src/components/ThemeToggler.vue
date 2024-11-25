@@ -28,16 +28,16 @@ const store = useStore();
 const vuetify = useVuetify();
 
 function changeTheme() {
-  store.commit("changeTheme");
-  vuetify.theme.dark = store.state.isDarkMode;
+  store.changeTheme();
+  vuetify.theme.dark = store.isDarkMode;
 }
 
 const isDarkMode = computed(() => {
-  return store.state.isDarkMode;
+  return store.isDarkMode;
 });
 
 onMounted(() => {
-  vuetify.theme.dark = store.state.isDarkMode;
+  vuetify.theme.dark = store.isDarkMode;
 });
 </script>
 

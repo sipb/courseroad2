@@ -29,8 +29,7 @@
             <div
               v-if="
                 req['list-id'] in
-                store.state.roads[store.state.activeRoad].contents
-                  .progressAssertions
+                store.roads[store.activeRoad].contents.progressAssertions
               "
               style="display: inline-block"
             >
@@ -38,8 +37,9 @@
                 v-if="
                   !(
                     'ignore' in
-                    store.state.roads[store.state.activeRoad].contents
-                      .progressAssertions[req['list-id']]
+                    store.roads[store.activeRoad].contents.progressAssertions[
+                      req['list-id']
+                    ]
                   )
                 "
                 small
@@ -59,16 +59,16 @@
             <span
               v-if="
                 req['list-id'] in
-                store.state.roads[store.state.activeRoad].contents
-                  .progressAssertions
+                store.roads[store.activeRoad].contents.progressAssertions
               "
             >
               <v-icon
                 v-if="
                   !(
                     'ignore' in
-                    store.state.roads[store.state.activeRoad].contents
-                      .progressAssertions[req['list-id']]
+                    store.roads[store.activeRoad].contents.progressAssertions[
+                      req['list-id']
+                    ]
                   )
                 "
                 small
@@ -205,7 +205,7 @@ const dragStart = (event) => {
     "classData",
     JSON.stringify({ isNew: true, classIndex: -1 }),
   );
-  store.commit("dragStartClass", {
+  store.dragStartClass({
     dragstart: event,
     classInfo: usedInfo,
     isNew: true,

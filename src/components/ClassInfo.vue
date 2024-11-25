@@ -24,7 +24,7 @@
                 :color="cardTextColor(currentSubject)"
                 icon
                 data-cy="cardPreviousButton"
-                @click="$store.commit('popClassStack')"
+                @click="store.popClassStack()"
               >
                 <v-icon>mdi-arrow-left</v-icon>
               </v-btn>
@@ -42,7 +42,7 @@
                 icon
                 style="margin: 0"
                 data-cy="closeClassInfoButton"
-                @click="store.commit('clearClassInfoStack')"
+                @click="store.clearClassInfoStack()"
               >
                 <v-icon
                   style="margin: 0; padding: 0"
@@ -81,7 +81,7 @@
                 small
                 style="margin-left: auto"
                 class="secondary"
-                @click="store.commit('cancelAddFromCard')"
+                @click="store.cancelAddFromCard()"
               >
                 <v-icon>mdi-cancel</v-icon>
               </v-btn>
@@ -202,7 +202,7 @@
               >
                 <td>
                   <b>{{
-                    currentSubject.subject_id in store.state.genericIndex
+                    currentSubject.subject_id in store.genericIndex
                       ? "Average* hours"
                       : "Hours"
                   }}</b>
@@ -225,7 +225,7 @@
                 </td>
               </tr>
             </table>
-            <p v-if="currentSubject.subject_id in store.state.genericIndex">
+            <p v-if="currentSubject.subject_id in store.genericIndex">
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
@@ -237,7 +237,7 @@
                 >View in Course Catalog</a
               >
             </p>
-            <p v-if="currentSubject.subject_id in store.state.subjectsIndex">
+            <p v-if="currentSubject.subject_id in store.subjectsIndex">
               <a
                 target="_blank"
                 :href="
@@ -322,13 +322,13 @@ import { flatten } from "../plugins/browserSupport.js";
 
 const store = useStore();
 
-const addingFromCard = computed(() => store.state.addingFromCard);
-const classInfoStack = computed(() => store.state.classInfoStack);
+const addingFromCard = computed(() => store.addingFromCard);
+const classInfoStack = computed(() => store.classInfoStack);
 const currentSubject = computed(() => {
   const currentID = classInfoStack.value[classInfoStack.value.length - 1];
-  return currentID in store.state.subjectsIndex
-    ? store.state.subjectsInfo[store.state.subjectsIndex[currentID]]
-    : store.state.genericCourses[store.state.genericIndex[currentID]];
+  return currentID in store.subjectsIndex
+    ? store.subjectsInfo[store.subjectsIndex[currentID]]
+    : store.genericCourses[store.genericIndex[currentID]];
 });
 const parsedPrereqs = computed(() => {
   return currentSubject.value.prerequisites !== undefined
@@ -368,7 +368,7 @@ const subjectsWithPrereq = computed(() => {
         "(?![\\da-zA-Z])",
     );
   }
-  return store.state.subjectsInfo
+  return store.subjectsInfo
     .filter(function (s) {
       return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
     })
@@ -385,7 +385,7 @@ const subjectsWithPrereq = computed(() => {
 });
 const firstAppearance = computed(() => {
   const currentSubjects =
-    store.state.roads[store.state.activeRoad].contents.selectedSubjects;
+    store.roads[store.activeRoad].contents.selectedSubjects;
   const currentID = currentSubject.value.subject_id;
 
   const subjectInSemesters = currentSubjects.map((semesterSubjects) => {
@@ -398,7 +398,7 @@ const firstAppearance = computed(() => {
 });
 
 const classInfo = (subjectID) => {
-  const subj = store.state.subjectsInfo[store.state.subjectsIndex[subjectID]];
+  const subj = store.subjectsInfo[store.subjectsIndex[subjectID]];
   return (
     subj || {
       subject_id: subjectID,
@@ -408,7 +408,7 @@ const classInfo = (subjectID) => {
 };
 
 const clickRelatedSubject = (subject) => {
-  store.commit("pushClassStack", subject.subject_id);
+  store.pushClassStack(subject.subject_id);
   $("#cardBody").animate({ scrollTop: 0 });
 };
 
@@ -495,9 +495,10 @@ const parseRequirements = (requirements) => {
         }
         if (firstAppearance.value >= -1) {
           const allPreviousSubjects = flatten(
-            store.state.roads[
-              store.state.activeRoad
-            ].contents.selectedSubjects.slice(0, firstAppearance.value),
+            store.roads[store.activeRoad].contents.selectedSubjects.slice(
+              0,
+              firstAppearance.value,
+            ),
           );
           subRequirement.fulfilled = reqsFulfilled(
             store,
@@ -587,7 +588,7 @@ const parseRequirements = (requirements) => {
 };
 
 const addClass = () => {
-  store.commit("addFromCard", currentSubject.value);
+  store.addFromCard(currentSubject.value);
 };
 const cardColor = () => {
   return `${getRawColor(courseColor(currentSubject.value))}`;

@@ -248,7 +248,7 @@ const pagination = ref({
 });
 
 const allSubjects = computed(() =>
-  store.state.genericCourses.concat(store.state.subjectsInfo),
+  store.genericCourses.concat(store.subjectsInfo),
 );
 
 const autocomplete = computed(() => {
@@ -297,13 +297,13 @@ const autocomplete = computed(() => {
 });
 
 const classInfoStack = computed(() => {
-  return store.state.classInfoStack;
+  return store.classInfoStack;
 });
 const classStackExists = computed(() => {
   return classInfoStack.value.length > 0;
 });
 const cookiesAllowed = computed(() => {
-  return store.state.cookiesAllowed;
+  return store.cookiesAllowed;
 });
 
 watch(
@@ -350,7 +350,7 @@ const dragStart = (event, classItem) => {
     "classData",
     JSON.stringify({ isNew: true, classIndex: -1 }),
   );
-  store.commit("dragStartClass", {
+  store.dragStartClass({
     dragstart: event,
     classInfo: classItem.item,
     isNew: true,
@@ -374,11 +374,11 @@ const updateMenuStyle = () => {
     "max-height: " + maxHeight + "px;width: " + menuWidth + "px;";
 };
 const viewClassInfo = (item) => {
-  store.commit("pushClassStack", item.item.subject_id);
+  store.pushClassStack(item.item.subject_id);
 };
 // const openFirstClass = () => {
 //   if (autocomplete.value.length > 0) {
-//     store.commit("pushClassStack", autocomplete.value[0].subject_id);
+//     store.pushClassStack(autocomplete.value[0].subject_id);
 //   }
 // };
 </script>

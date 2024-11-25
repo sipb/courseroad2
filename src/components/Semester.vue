@@ -248,18 +248,18 @@ const emit = defineEmits(["open-road-settings-dialog"]);
 const draggingOver = ref(false);
 const dragCount = ref(0);
 
-const isActiveRoad = computed(() => store.state.activeRoad === props.roadID);
+const isActiveRoad = computed(() => store.activeRoad === props.roadID);
 const baseYear = computed(() => {
   const today = new Date(Date.now());
   const currentYear = today.getFullYear();
   const baseYear = today.getMonth() >= 5 ? currentYear + 1 : currentYear;
-  return baseYear - store.getters.userYear;
+  return baseYear - store.userYear;
 });
-const currentSemester = computed(() => store.state.currentSemester);
-const itemAdding = computed(() => store.state.itemAdding);
-const addingFromCard = computed(() => store.state.addingFromCard);
+const currentSemester = computed(() => store.currentSemester);
+const itemAdding = computed(() => store.itemAdding);
+const addingFromCard = computed(() => store.addingFromCard);
 const subjectsLoaded = computed(
-  () => Object.keys(store.state.subjectsIndex).length > 0,
+  () => Object.keys(store.subjectsIndex).length > 0,
 );
 
 const warnings = computed(() => {
@@ -272,14 +272,12 @@ const warnings = computed(() => {
     }
     const subjID = props.semesterSubjects[i].subject_id;
     let subj;
-    if (subjID in store.state.subjectsIndex) {
-      subj = store.state.subjectsInfo[store.state.subjectsIndex[subjID]];
+    if (subjID in store.subjectsIndex) {
+      subj = store.subjectsInfo[store.subjectsIndex[subjID]];
       const prereqString =
-        store.state.subjectsInfo[store.state.subjectsIndex[subjID]]
-          .prerequisites;
+        store.subjectsInfo[store.subjectsIndex[subjID]].prerequisites;
       const coreqString =
-        store.state.subjectsInfo[store.state.subjectsIndex[subjID]]
-          .corequisites;
+        store.subjectsInfo[store.subjectsIndex[subjID]].corequisites;
       let prereqsfulfilled = true;
       let coreqsfulfilled = true;
       if (prereqString !== undefined) {
@@ -314,16 +312,13 @@ const warnings = computed(() => {
           );
         }
       }
-      if (
-        isScheduledSemester.value &&
-        lateSchedule(subj, store.state.genericIndex)
-      ) {
+      if (isScheduledSemester.value && lateSchedule(subj, store.genericIndex)) {
         subjectWarnings.push(
           "<b>No schedule</b> - Classes that do not yet have a schedule may not be offered.",
         );
       }
-    } else if (subjID in store.state.genericIndex) {
-      subj = store.state.genericCourses[store.state.genericIndex[subjID]];
+    } else if (subjID in store.genericIndex) {
+      subj = store.genericCourses[store.genericIndex[subjID]];
     }
     if (subj !== undefined) {
       const semType = (props.index - 1) % 3;
@@ -483,14 +478,10 @@ const semesterInformation = computed(() => {
         return Object.assign({}, subj, {
           total_units: subj.units,
         });
-      } else if (subj.subject_id in store.state.subjectsIndex) {
-        return store.state.subjectsInfo[
-          store.state.subjectsIndex[subj.subject_id]
-        ];
-      } else if (subj.subject_id in store.state.genericIndex) {
-        return store.state.genericCourses[
-          store.state.genericIndex[subj.subject_id]
-        ];
+      } else if (subj.subject_id in store.subjectsIndex) {
+        return store.subjectsInfo[store.subjectsIndex[subj.subject_id]];
+      } else if (subj.subject_id in store.genericIndex) {
+        return store.genericCourses[store.genericIndex[subj.subject_id]];
       } else {
         return undefined;
       }
@@ -614,8 +605,7 @@ const previousSubjects = (subj) => {
     props.selectedSubjects.slice(0, props.index),
   );
   const previousQuarter = props.selectedSubjects[props.index].filter((s) => {
-    const subj2 =
-      store.state.subjectsInfo[store.state.subjectsIndex[s.subject_id]];
+    const subj2 = store.subjectsInfo[store.subjectsIndex[s.subject_id]];
     let inPreviousQuarter = false;
     if (subj2 !== undefined) {
       inPreviousQuarter =
@@ -657,9 +647,9 @@ const ondrop = (event) => {
         subject_id: itemAdding.value.subject_id,
         units: itemAdding.value.total_units,
       };
-      store.commit("addClass", newClass);
+      store.addClass(newClass);
     } else {
-      store.commit("moveClass", {
+      store.moveClass({
         currentClass: eventData.classInfo,
         classIndex: eventData.classIndex,
         semester: props.index,

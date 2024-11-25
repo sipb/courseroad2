@@ -7,7 +7,7 @@
         :key="roadId"
         :href="`#${roadId}`"
         :data-cy="'roadTab' + roadId"
-        @click="store.commit('setActiveRoad', roadId)"
+        @click="store.setActiveRoad(roadId)"
       >
         {{ roads[roadId].name }}
         <v-btn
@@ -203,10 +203,10 @@ const editDialog = ref(false);
 const duplicateRoad = ref(false);
 const duplicateRoadSource = ref("$defaultroad$");
 const newRoadName = ref("");
-const tabRoad = ref(store.state.activeRoad);
+const tabRoad = ref(store.activeRoad);
 
-const activeRoad = computed(() => store.state.activeRoad);
-const roads = computed(() => store.state.roads);
+const activeRoad = computed(() => store.activeRoad);
+const roads = computed(() => store.roads);
 const validRoadName = computed(() => {
   return !(otherRoadHasName("", newRoadName.value) || newRoadName.value === "");
 });
@@ -215,10 +215,10 @@ watch(activeRoad, () => {
   tabRoad.value = activeRoad.value;
 });
 
-watch(store.state.unretrieved, () => {
+watch(store.unretrieved, () => {
   if (
     addDialog.value &&
-    store.state.unretrieved.value.indexOf(duplicateRoadSource.value) === -1
+    store.unretrieved.value.indexOf(duplicateRoadSource.value) === -1
   ) {
     addRoadFromDuplicate();
   }
@@ -237,7 +237,7 @@ const createRoad = () => {
     addDialog.value = false;
     newRoadName.value = "";
   } else if (duplicateRoadSource.value in roads.value) {
-    if (store.state.unretrieved.indexOf(duplicateRoadSource.value) >= 0) {
+    if (store.unretrieved.indexOf(duplicateRoadSource.value) >= 0) {
       emit("retrieve", duplicateRoadSource.value);
     } else {
       addRoadFromDuplicate();
@@ -263,7 +263,7 @@ const addRoadFromDuplicate = () => {
 };
 
 const renameRoad = () => {
-  store.commit("setRoadName", {
+  store.setRoadName({
     id: tabRoad.value,
     name: newRoadName.value,
   });
