@@ -1,14 +1,14 @@
 <template>
   <div
     class="requirement"
-    :draggable="canDrag(req)"
+    :draggable="canDrag(store, req)"
     :data-cy="'requirement' + req['list-id']"
     @dragstart="dragStart"
     @mouseover="hoveringOver = true"
     @mouseleave="hoveringOver = false"
   >
-    <v-layout>
-      <v-flex>
+    <v-row no-gutters>
+      <v-col class="grow">
         <div v-if="!isLeaf" style="text-wrap: wrap">
           <span v-if="'title-no-degree' in req && req['title-no-degree'] != ''">
             {{ req["title-no-degree"] }}
@@ -29,8 +29,7 @@
             <div
               v-if="
                 req['list-id'] in
-                $store.state.roads[$store.state.activeRoad].contents
-                  .progressAssertions
+                store.roads[store.activeRoad].contents.progressAssertions
               "
               style="display: inline-block"
             >
@@ -38,8 +37,9 @@
                 v-if="
                   !(
                     'ignore' in
-                    $store.state.roads[$store.state.activeRoad].contents
-                      .progressAssertions[req['list-id']]
+                    store.roads[store.activeRoad].contents.progressAssertions[
+                      req['list-id']
+                    ]
                   )
                 "
                 small
@@ -59,16 +59,16 @@
             <span
               v-if="
                 req['list-id'] in
-                $store.state.roads[$store.state.activeRoad].contents
-                  .progressAssertions
+                store.roads[store.activeRoad].contents.progressAssertions
               "
             >
               <v-icon
                 v-if="
                   !(
                     'ignore' in
-                    $store.state.roads[$store.state.activeRoad].contents
-                      .progressAssertions[req['list-id']]
+                    store.roads[store.activeRoad].contents.progressAssertions[
+                      req['list-id']
+                    ]
                   )
                 "
                 small
@@ -86,8 +86,8 @@
         <span v-if="req.max === 0 && isLeaf" style="font-style: italic">
           (optional)
         </span>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col class="shrink" style="min-width: 7.8ch">
         <div>
           <span v-if="hoveringOver && isLeaf" style="float: right">
             <v-icon
@@ -126,93 +126,91 @@
             </v-icon>
           </span>
         </div>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     <div :class="percentage_bar" :style="percentage"></div>
   </div>
 </template>
 
 <script>
-import classInfoMixin from "../mixins/classInfo.js";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "RequirementComponent",
-  mixins: [classInfoMixin],
-  props: {
-    req: {
-      type: Object,
-      required: true,
-    },
-    isLeaf: {
-      type: Boolean,
-      required: true,
-    },
+});
+</script>
+
+<script setup>
+import { canDrag, classInfo } from "../mixins/classInfo.js";
+import { useStore } from "../plugins/composition.js";
+import { ref, computed } from "vue";
+
+const store = useStore();
+
+const props = defineProps({
+  req: {
+    type: Object,
+    required: true,
   },
-  data: function () {
-    return {
-      open: [],
-      hoveringOver: false,
-      iconHover: false,
-      petitionHover: false,
-    };
-  },
-  computed: {
-    iconColor: function () {
-      return this.iconHover ? "info" : "grey";
-    },
-    petitionColor: function () {
-      return this.petitionHover ? "info" : "grey";
-    },
-    reqFulfilled: function () {
-      return {
-        fulfilled: !!this.req.fulfilled,
-      };
-    },
-    percentageTextColor: function () {
-      return this.req.fulfilled
-        ? "#008400"
-        : this.req.percent_fulfilled > 15
-          ? "#d1b82b"
-          : "#d3701f";
-    },
-    percentageColor: function () {
-      return this.req.fulfilled
-        ? "#00b300"
-        : this.req.percent_fulfilled > 15
-          ? "#efce15"
-          : "#ef8214";
-    },
-    percentage: function () {
-      const pfulfilled = this.req.percent_fulfilled;
-      return `--percent: ${pfulfilled}%; --bar-color: ${this.percentageColor}; --bg-color: lightgrey`;
-    },
-    percentage_bar: function () {
-      const showPBar = "reqs" in this.req || "threshold" in this.req;
-      return {
-        "percentage-bar": showPBar,
-        "p-bar": showPBar,
-      };
-    },
-  },
-  methods: {
-    dragStart: function (event) {
-      let usedInfo = this.classInfo(this.req);
-      if (usedInfo === undefined) {
-        usedInfo = { subject_id: this.req.req };
-      }
-      event.dataTransfer.setData(
-        "classData",
-        JSON.stringify({ isNew: true, classIndex: -1 }),
-      );
-      this.$store.commit("dragStartClass", {
-        dragstart: event,
-        classInfo: usedInfo,
-        isNew: true,
-      });
-    },
+  isLeaf: {
+    type: Boolean,
+    required: true,
   },
 });
+
+// const open = ref([]);
+const hoveringOver = ref(false);
+const iconHover = ref(false);
+const petitionHover = ref(false);
+
+const iconColor = computed(() => (iconHover.value ? "info" : "grey"));
+const petitionColor = computed(() => (petitionHover.value ? "info" : "grey"));
+const reqFulfilled = computed(() => {
+  return {
+    fulfilled: !!props.req.fulfilled,
+  };
+});
+const percentageTextColor = computed(() => {
+  return props.req.fulfilled
+    ? "#008400"
+    : props.req.percent_fulfilled > 15
+      ? "#d1b82b"
+      : "#d3701f";
+});
+const percentageColor = computed(() => {
+  return props.req.fulfilled
+    ? "#00b300"
+    : props.req.percent_fulfilled > 15
+      ? "#efce15"
+      : "#ef8214";
+});
+const percentage = computed(() => {
+  const pfulfilled = props.req.percent_fulfilled;
+  return `--percent: ${pfulfilled}%; --bar-color: ${percentageColor.value}; --bg-color: lightgrey`;
+});
+const percentage_bar = computed(() => {
+  const showPBar = "reqs" in props.req || "threshold" in props.req;
+  return {
+    "percentage-bar": showPBar,
+    "p-bar": showPBar,
+  };
+});
+
+const dragStart = (event) => {
+  let usedInfo = classInfo(store, props.req);
+  if (usedInfo === undefined) {
+    usedInfo = { subject_id: props.req.req };
+  }
+  event.dataTransfer.setData(
+    "classData",
+    JSON.stringify({ isNew: true, classIndex: -1 }),
+  );
+  store.dragStartClass({
+    dragstart: event,
+    classInfo: usedInfo,
+    isNew: true,
+  });
+};
 </script>
 
 <style scoped>

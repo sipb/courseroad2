@@ -1,7 +1,7 @@
 <!-- this is a cool idea for class info on click: https://vuetifyjs.com/en/components/expansion-panels#popout-inset -->
 
 <template>
-  <v-flex lg2 md3 xs4>
+  <v-col lg="2" md="3" cols="4">
     <v-hover>
       <v-badge
         slot-scope="{ hover }"
@@ -15,16 +15,12 @@
           data-cy="placeholderClass"
           class="placeholder classbox"
         >
-          <v-container fill-height>
-            <v-layout align-center justify-center>
-              <v-btn
-                large
-                icon
-                @click="$store.dispatch('addAtPlaceholder', semesterIndex)"
-              >
+          <v-container class="fill-height">
+            <v-row align="center" justify="center">
+              <v-btn large icon @click="store.addAtPlaceholder(semesterIndex)">
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
-            </v-layout>
+            </v-row>
           </v-container>
         </v-card>
 
@@ -48,7 +44,7 @@
             :color="cardTextColor(classInfo)"
             style="margin: -0.5em; pointer-events: auto; opacity: 0.8"
             @click="
-              $store.commit('removeClass', {
+              store.removeClass({
                 classInfo: classInfo,
                 classIndex: classIndex,
               });
@@ -103,7 +99,7 @@
             label="Override warnings"
             color="orange darken-3"
             @change="
-              $store.commit('overrideWarnings', {
+              store.overrideWarnings({
                 override: shouldOverrideWarnings,
                 classInfo: classInfo,
               })
@@ -115,92 +111,97 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-flex>
+  </v-col>
 </template>
 
 <script>
-import colorMixin from "./../mixins/colorMixin.js";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "ClassComponent",
-  mixins: [colorMixin],
-  props: {
-    classIndex: {
-      type: Number,
-      required: true,
-    },
-    classInfo: {
-      type: [Object, String],
-      required: true,
-    },
-    semesterIndex: {
-      type: Number,
-      required: true,
-    },
-    warnings: {
-      type: Array,
-      required: true,
-    },
+});
+</script>
+
+<script setup>
+import { useStore } from "../plugins/composition.js";
+import {
+  getRawColor,
+  getRawTextColor,
+  courseColor,
+} from "./../mixins/colorMixin.js";
+import { computed, ref } from "vue";
+
+const props = defineProps({
+  classIndex: {
+    type: Number,
+    required: true,
   },
-  data() {
-    return {
-      warningDialog: false,
-      shouldOverrideWarnings: this.classInfo.overrideWarnings,
-    };
+  classInfo: {
+    type: [Object, String],
+    required: true,
   },
-  computed: {
-    oldID: function () {
-      if (this.classInfo.public === false) {
-        return undefined;
-      }
-      const subjectIndex =
-        this.$store.state.subjectsIndex[this.classInfo.subject_id];
-      if (subjectIndex !== undefined) {
-        const subject = this.$store.state.subjectsInfo[subjectIndex];
-        return subject.old_id;
-      } else {
-        return undefined;
-      }
-    },
+  semesterIndex: {
+    type: Number,
+    required: true,
   },
-  methods: {
-    dragStart: function (event) {
-      event.dataTransfer.setData(
-        "classData",
-        JSON.stringify({
-          isNew: false,
-          classInfo: this.classInfo,
-          classIndex: this.classIndex,
-        }),
-      );
-      this.$store.commit("dragStartClass", {
-        dragstart: event,
-        basicClass: this.classInfo,
-        isNew: false,
-        currentSem: this.semesterIndex,
-      });
-    },
-    clickClass: function (classInfo) {
-      if (classInfo === "placeholder") {
-        //
-      } else if (classInfo.public === false) {
-        this.$store.commit("editCustomClass", classInfo);
-      } else {
-        this.$store.commit("pushClassStack", classInfo.subject_id);
-      }
-    },
-    cardClass: function (classInfo) {
-      return `classbox ${this.courseColor(classInfo)}`;
-    },
-    cardColor: function (classInfo) {
-      return `${this.getRawColor(this.courseColor(classInfo))}`;
-    },
-    cardTextColor: function (classInfo) {
-      return `${this.getRawTextColor(this.courseColor(classInfo))}`;
-    },
+  warnings: {
+    type: Array,
+    required: true,
   },
 });
+
+const store = useStore();
+
+const warningDialog = ref(false);
+const shouldOverrideWarnings = ref(props.classInfo.overrideWarnings);
+
+const oldID = computed(() => {
+  if (props.classInfo.public === false) {
+    return undefined;
+  }
+  const subjectIndex = store.subjectsIndex[props.classInfo.subject_id];
+  if (subjectIndex !== undefined) {
+    const subject = store.subjectsInfo[subjectIndex];
+    return subject.old_id;
+  } else {
+    return undefined;
+  }
+});
+
+const dragStart = (event) => {
+  event.dataTransfer.setData(
+    "classData",
+    JSON.stringify({
+      isNew: false,
+      classInfo: props.classInfo,
+      classIndex: props.classIndex,
+    }),
+  );
+  store.dragStartClass({
+    dragstart: event,
+    basicClass: props.classInfo,
+    isNew: false,
+    currentSem: props.semesterIndex,
+  });
+};
+const clickClass = (classInfo) => {
+  if (classInfo === "placeholder") {
+    //
+  } else if (classInfo.public === false) {
+    store.editCustomClass(classInfo);
+  } else {
+    store.pushClassStack(classInfo.subject_id);
+  }
+};
+// const cardClass = (classInfo) => {
+//   return `classbox ${this.courseColor(classInfo)}`;
+// };
+const cardColor = (classInfo) => {
+  return `${getRawColor(courseColor(classInfo))}`;
+};
+const cardTextColor = (classInfo) => {
+  return `${getRawTextColor(courseColor(classInfo))}`;
+};
 </script>
 
 <style scoped>

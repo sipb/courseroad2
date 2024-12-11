@@ -1,14 +1,12 @@
+import { defineStore, acceptHMRUpdate } from "pinia";
 import axios from "axios";
 import moment from "moment";
 import Vue from "vue";
-import Vuex from "vuex";
-
-Vue.use(Vuex);
 
 const DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.SSS000Z";
 
-const getDefaultState = () => {
-  return {
+const useCourseDataStore = defineStore("courseData", {
+  state: () => ({
     versionNumber: "1.0.0", // change when making backwards-incompatible changes
     currentSemester: 1,
     activeRoad: "$defaultroad$",
@@ -50,60 +48,97 @@ const getDefaultState = () => {
     loadedSubjects: false,
     roadsToMigrate: [],
     isDarkMode: JSON.parse(localStorage.courseRoadStore ?? "{}").isDarkMode,
-  };
-};
-
-const store = new Vuex.Store({
-  strict: process.env.NODE_ENV !== "production",
-  state: getDefaultState(),
+  }),
   getters: {
-    userYear(state) {
+    userYear: (state) => {
       return Math.floor((state.currentSemester - 1) / 3);
     },
-    hideIAP: (state) => {
-      return state.hideIAP;
-    },
   },
-  mutations: {
-    resetState(state) {
-      Object.assign(state, getDefaultState());
+  actions: {
+    getMatchingAttributes(gir, hass, ci) {
+      const matchingClasses = this.subjectsInfo.filter(function (subject) {
+        if (gir !== undefined && subject.gir_attribute !== gir) {
+          return false;
+        }
+        if (hass !== undefined && subject.hass_attribute !== hass) {
+          return false;
+        }
+        return !(ci !== undefined && subject.communication_requirement !== ci);
+      });
+
+      const totalObject = matchingClasses.reduce(
+        function (accumObject, nextClass) {
+          return {
+            offered_spring:
+              accumObject.offered_spring || nextClass.offered_spring,
+            offered_summer:
+              accumObject.offered_summer || nextClass.offered_summer,
+            offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
+            offered_fall: accumObject.offered_fall || nextClass.offered_fall,
+            in_class_hours:
+              accumObject.in_class_hours +
+              (nextClass.in_class_hours !== undefined
+                ? nextClass.in_class_hours
+                : 0),
+            out_of_class_hours:
+              accumObject.out_of_class_hours +
+              (nextClass.out_of_class_hours !== undefined
+                ? nextClass.out_of_class_hours
+                : 0),
+          };
+        },
+        {
+          offered_spring: false,
+          offered_summer: false,
+          offered_IAP: false,
+          offered_fall: false,
+          in_class_hours: 0,
+          out_of_class_hours: 0,
+        },
+      );
+      totalObject.in_class_hours /= matchingClasses.length;
+      totalObject.out_of_class_hours /= matchingClasses.length;
+      return totalObject;
     },
-    addClass(state, newClass) {
-      state.roads[state.activeRoad].contents.selectedSubjects[
+    resetState() {
+      this.$reset();
+    },
+    addClass(newClass) {
+      this.roads[this.activeRoad].contents.selectedSubjects[
         newClass.semester
       ].push(newClass);
-      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
+      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
     },
-    addFromCard(state, classItem) {
-      state.addingFromCard = true;
-      state.itemAdding = classItem;
+    addFromCard(classItem) {
+      this.addingFromCard = true;
+      this.itemAdding = classItem;
     },
-    addReq(state, event) {
-      state.roads[state.activeRoad].contents.coursesOfStudy.push(event);
-      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
-      state.fulfillmentNeeded = event;
+    addReq(event) {
+      this.roads[this.activeRoad].contents.coursesOfStudy.push(event);
+      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
+      this.fulfillmentNeeded = event;
     },
-    migrateOldSubjects(state, roadID) {
+    migrateOldSubjects(roadID) {
       for (let i = 0; i < 16; i++) {
         for (
           let j = 0;
-          j < state.roads[roadID].contents.selectedSubjects[i].length;
+          j < this.roads[roadID].contents.selectedSubjects[i].length;
           j++
         ) {
-          const subject = state.roads[roadID].contents.selectedSubjects[i][j];
+          const subject = this.roads[roadID].contents.selectedSubjects[i][j];
 
-          const subjectIndex = state.subjectsIndex[subject.subject_id];
-          const genericIndex = state.genericIndex[subject.subject_id];
+          const subjectIndex = this.subjectsIndex[subject.subject_id];
+          const genericIndex = this.genericIndex[subject.subject_id];
 
           const notInCatalog =
             subjectIndex === undefined && genericIndex === undefined;
           const isHistorical =
             subjectIndex !== undefined &&
-            state.subjectsInfo[subjectIndex].is_historical;
+            this.subjectsInfo[subjectIndex].is_historical;
 
           if (notInCatalog || isHistorical) {
             // Look for subject with old ID
-            const oldSubjects = state.subjectsInfo.filter((subj) => {
+            const oldSubjects = this.subjectsInfo.filter((subj) => {
               return subj.old_id === subject.subject_id;
             });
 
@@ -117,48 +152,44 @@ const store = new Vuex.Store({
         }
       }
     },
-    allowCookies(state) {
-      state.cookiesAllowed = true;
+    allowCookies() {
+      this.cookiesAllowed = true;
     },
-    cancelAddFromCard(state) {
-      state.addingFromCard = false;
-      state.itemAdding = undefined;
+    cancelAddFromCard() {
+      this.addingFromCard = false;
+      this.itemAdding = undefined;
     },
-    cancelEditCustomClass(state) {
-      state.customClassEditing = undefined;
+    cancelEditCustomClass() {
+      this.customClassEditing = undefined;
     },
-    clearClassInfoStack(state) {
-      state.classInfoStack = [];
+    clearClassInfoStack() {
+      this.classInfoStack = [];
     },
-    disallowCookies(state) {
-      state.cookiesAllowed = false;
+    disallowCookies() {
+      this.cookiesAllowed = false;
     },
-    deleteRoad(state, id) {
-      state.ignoreRoadChanges = true;
-      Vue.delete(state.roads, id);
+    deleteRoad(id) {
+      this.ignoreRoadChanges = true;
+      Vue.delete(this.roads, id);
     },
-    dragStartClass(state, event) {
+    dragStartClass(event) {
       let classInfo = event.classInfo;
       if (classInfo === undefined) {
-        if (event.basicClass.subject_id in state.subjectsIndex) {
+        if (event.basicClass.subject_id in this.subjectsIndex) {
           classInfo =
-            state.subjectsInfo[
-              state.subjectsIndex[event.basicClass.subject_id]
-            ];
-        } else if (event.basicClass.subject_id in state.genericIndex) {
+            this.subjectsInfo[this.subjectsIndex[event.basicClass.subject_id]];
+        } else if (event.basicClass.subject_id in this.genericIndex) {
           classInfo =
-            state.genericCourses[
-              state.genericIndex[event.basicClass.subject_id]
-            ];
+            this.genericCourses[this.genericIndex[event.basicClass.subject_id]];
         }
       }
-      state.itemAdding = classInfo;
-      state.addingFromCard = false;
+      this.itemAdding = classInfo;
+      this.addingFromCard = false;
     },
-    editCustomClass(state, classItem) {
-      state.customClassEditing = classItem;
+    editCustomClass(classItem) {
+      this.customClassEditing = classItem;
     },
-    finishEditCustomClass(state, newClass) {
+    finishEditCustomClass(newClass) {
       for (const attr of [
         "subject_id",
         "title",
@@ -171,50 +202,48 @@ const store = new Vuex.Store({
         "offered_spring",
         "offered_summer",
       ]) {
-        state.customClassEditing[attr] = newClass[attr];
+        this.customClassEditing[attr] = newClass[attr];
       }
-      state.customClassEditing.units = newClass.total_units;
-      state.customClassEditing = undefined;
+      this.customClassEditing.units = newClass.total_units;
+      this.customClassEditing = undefined;
     },
-    moveClass(state, { currentClass, classIndex, semester }) {
-      state.roads[state.activeRoad].contents.selectedSubjects[
+    moveClass({ currentClass, classIndex, semester }) {
+      this.roads[this.activeRoad].contents.selectedSubjects[
         currentClass.semester
       ].splice(classIndex, 1);
       currentClass.semester = semester;
-      state.roads[state.activeRoad].contents.selectedSubjects[semester].push(
+      this.roads[this.activeRoad].contents.selectedSubjects[semester].push(
         currentClass,
       );
-      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
+      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
     },
-    overrideWarnings(state, payload) {
-      const classIndex = state.roads[
-        state.activeRoad
-      ].contents.selectedSubjects[payload.classInfo.semester].indexOf(
-        payload.classInfo,
-      );
-      state.roads[state.activeRoad].contents.selectedSubjects[
+    overrideWarnings(payload) {
+      const classIndex = this.roads[this.activeRoad].contents.selectedSubjects[
+        payload.classInfo.semester
+      ].indexOf(payload.classInfo);
+      this.roads[this.activeRoad].contents.selectedSubjects[
         payload.classInfo.semester
       ][classIndex].overrideWarnings = payload.override;
     },
-    setPASubstitutions(state, { uniqueKey, newReqs }) {
+    setPASubstitutions({ uniqueKey, newReqs }) {
       Vue.set(
-        state.roads[state.activeRoad].contents.progressAssertions,
+        this.roads[this.activeRoad].contents.progressAssertions,
         uniqueKey,
         { substitutions: newReqs },
       );
       Vue.set(
-        state.roads[state.activeRoad],
+        this.roads[this.activeRoad],
         "changed",
         moment().format(DATE_FORMAT),
       );
     },
-    setPAIgnore(state, { uniqueKey, isIgnored }) {
+    setPAIgnore({ uniqueKey, isIgnored }) {
       const progressAssertion =
-        state.roads[state.activeRoad].contents.progressAssertions[uniqueKey];
+        this.roads[this.activeRoad].contents.progressAssertions[uniqueKey];
       if (isIgnored === true) {
         if (progressAssertion === undefined) {
           Vue.set(
-            state.roads[state.activeRoad].contents.progressAssertions,
+            this.roads[this.activeRoad].contents.progressAssertions,
             uniqueKey,
             { ignore: isIgnored },
           );
@@ -223,28 +252,28 @@ const store = new Vuex.Store({
         }
       } else {
         if (progressAssertion.substitutions === undefined) {
-          this.commit("removeProgressAssertion", uniqueKey);
+          this.removeProgressAssertion(uniqueKey);
         } else {
           Vue.delete(progressAssertion, "ignore");
         }
       }
       Vue.set(
-        state.roads[state.activeRoad],
+        this.roads[this.activeRoad],
         "changed",
         moment().format(DATE_FORMAT),
       );
     },
-    setUnretrieved(state, roadIDs) {
-      state.unretrieved = roadIDs;
+    setUnretrieved(roadIDs) {
+      this.unretrieved = roadIDs;
     },
-    setRetrieved(state, roadID) {
+    setRetrieved(roadID) {
       // Remove from unretrieved list when a road is retrieved
-      const roadIDIndex = state.unretrieved.indexOf(roadID);
+      const roadIDIndex = this.unretrieved.indexOf(roadID);
       if (roadIDIndex >= 0) {
-        state.unretrieved.splice(roadIDIndex, 1);
+        this.unretrieved.splice(roadIDIndex, 1);
       }
     },
-    parseGenericCourses(state) {
+    parseGenericCourses() {
       const girAttributes = {
         PHY1: ["Physics 1 GIR", "p1"],
         PHY2: ["Physics 2 GIR", "p2"],
@@ -276,7 +305,11 @@ const store = new Vuex.Store({
       const baseurl =
         "http://student.mit.edu/catalog/search.cgi?search=&style=verbatim&when=*&termleng=4&days_offered=*&start_time=*&duration=*&total_units=*";
       for (const gir in girAttributes) {
-        const offeredGir = getMatchingAttributes(gir, undefined, undefined);
+        const offeredGir = this.getMatchingAttributes(
+          gir,
+          undefined,
+          undefined,
+        );
         genericCourses.push(
           Object.assign({}, baseGeneric, offeredGir, {
             gir_attribute: gir,
@@ -287,7 +320,11 @@ const store = new Vuex.Store({
         );
       }
       for (const hass in hassAttributes) {
-        const offeredHass = getMatchingAttributes(undefined, hass, undefined);
+        const offeredHass = this.getMatchingAttributes(
+          undefined,
+          hass,
+          undefined,
+        );
         genericCourses.push(
           Object.assign({}, baseGeneric, offeredHass, {
             hass_attribute: hass,
@@ -296,7 +333,11 @@ const store = new Vuex.Store({
             url: baseurl + "&cred=" + hassAttributes[hass][1] + "&commun_int=*",
           }),
         );
-        const offeredHassCI = getMatchingAttributes(undefined, hass, "CI-H");
+        const offeredHassCI = this.getMatchingAttributes(
+          undefined,
+          hass,
+          "CI-H",
+        );
         genericCourses.push(
           Object.assign({}, baseGeneric, offeredHassCI, {
             hass_attribute: hass,
@@ -313,7 +354,7 @@ const store = new Vuex.Store({
         );
       }
       for (const ci in ciAttributes) {
-        const offeredCI = getMatchingAttributes(undefined, undefined, ci);
+        const offeredCI = this.getMatchingAttributes(undefined, undefined, ci);
         genericCourses.push(
           Object.assign({}, baseGeneric, offeredCI, {
             communication_requirement: ci,
@@ -324,10 +365,10 @@ const store = new Vuex.Store({
           }),
         );
       }
-      state.genericCourses = genericCourses;
+      this.genericCourses = genericCourses;
     },
-    parseGenericIndex(state) {
-      state.genericIndex = state.genericCourses.reduce(function (
+    parseGenericIndex() {
+      this.genericIndex = this.genericCourses.reduce(function (
         obj,
         item,
         index,
@@ -336,8 +377,8 @@ const store = new Vuex.Store({
         return obj;
       }, {});
     },
-    parseSubjectsIndex(state) {
-      state.subjectsIndex = state.subjectsInfo.reduce(function (
+    parseSubjectsIndex() {
+      this.subjectsIndex = this.subjectsInfo.reduce(function (
         obj,
         item,
         index,
@@ -346,179 +387,174 @@ const store = new Vuex.Store({
         return obj;
       }, {});
     },
-    popClassStack(state) {
-      state.classInfoStack.pop();
+    popClassStack() {
+      this.classInfoStack.pop();
     },
-    pushClassStack(state, id) {
-      if (id in state.subjectsIndex || id in state.genericIndex) {
+    pushClassStack(id) {
+      if (id in this.subjectsIndex || id in this.genericIndex) {
         if (
-          state.classInfoStack.length === 0 ||
-          id !== state.classInfoStack[state.classInfoStack.length - 1]
+          this.classInfoStack.length === 0 ||
+          id !== this.classInfoStack[this.classInfoStack.length - 1]
         ) {
           // we don't want to push to the stack if we click the same class over and over again
-          state.classInfoStack.push(id);
+          this.classInfoStack.push(id);
         }
       }
     },
-    removeClass(state, { classInfo, classIndex }) {
-      state.roads[state.activeRoad].contents.selectedSubjects[
+    removeClass({ classInfo, classIndex }) {
+      this.roads[this.activeRoad].contents.selectedSubjects[
         classInfo.semester
       ].splice(classIndex, 1);
-      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
+      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
     },
-    removeReq(state, event) {
+    removeReq(event) {
       const reqIndex =
-        state.roads[state.activeRoad].contents.coursesOfStudy.indexOf(event);
+        this.roads[this.activeRoad].contents.coursesOfStudy.indexOf(event);
       if (reqIndex === -1) {
         console.log(
           "Attempted to remove a requirement not in the requirements list.",
         );
       } else {
-        state.roads[state.activeRoad].contents.coursesOfStudy.splice(
-          reqIndex,
-          1,
-        );
-        state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
-        state.fulfillmentNeeded = "none";
+        this.roads[this.activeRoad].contents.coursesOfStudy.splice(reqIndex, 1);
+        this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
+        this.fulfillmentNeeded = "none";
       }
     },
-    removeProgressAssertion(state, uniqueKey) {
+    removeProgressAssertion(uniqueKey) {
       Vue.delete(
-        state.roads[state.activeRoad].contents.progressAssertions,
+        this.roads[this.activeRoad].contents.progressAssertions,
         uniqueKey,
       );
       Vue.set(
-        state.roads[state.activeRoad],
+        this.roads[this.activeRoad],
         "changed",
         moment().format(DATE_FORMAT),
       );
     },
-    resetID(state, { oldid, newid }) {
+    resetID({ oldid, newid }) {
       newid = newid.toString();
-      Vue.set(state.roads, newid, state.roads[oldid]);
-      if (state.activeRoad === oldid) {
-        state.activeRoad = newid;
+      Vue.set(this.roads, newid, this.roads[oldid]);
+      if (this.activeRoad === oldid) {
+        this.activeRoad = newid;
       }
-      Vue.delete(state.roads, oldid);
-      state.ignoreRoadChanges = true;
-      state.fulfillmentNeeded = "none";
-      const migrationIndex = state.roadsToMigrate.indexOf(oldid);
+      Vue.delete(this.roads, oldid);
+      this.ignoreRoadChanges = true;
+      this.fulfillmentNeeded = "none";
+      const migrationIndex = this.roadsToMigrate.indexOf(oldid);
       if (migrationIndex >= 0) {
-        state.roadsToMigrate.splice(migrationIndex, 1, newid);
+        this.roadsToMigrate.splice(migrationIndex, 1, newid);
       }
     },
-    setActiveRoad(state, activeRoad) {
-      state.activeRoad = activeRoad;
+    setActiveRoad(activeRoad) {
+      this.activeRoad = activeRoad;
     },
-    setFullSubjectsInfoLoaded(state, isFull) {
-      state.fullSubjectsInfoLoaded = isFull;
+    setFullSubjectsInfoLoaded(isFull) {
+      this.fullSubjectsInfoLoaded = isFull;
     },
-    setLoggedIn(state, newLoggedIn) {
-      state.loggedIn = newLoggedIn;
+    setLoggedIn(newLoggedIn) {
+      this.loggedIn = newLoggedIn;
     },
-    setHideIAP: (state, value) => {
-      state.hideIAP = value;
+    setHideIAP(value) {
+      this.hideIAP = value;
       localStorage.hideIAP = value;
     },
-    setRoadProp(state, { id, prop, value, ignoreSet }) {
+    setRoadProp({ id, prop, value, ignoreSet }) {
       if (ignoreSet) {
-        state.ignoreRoadChanges = true;
+        this.ignoreRoadChanges = true;
       }
       if (prop !== "contents") {
-        state.fulfillmentNeeded = "none";
+        this.fulfillmentNeeded = "none";
       }
-      Vue.set(state.roads[id], prop, value);
+      Vue.set(this.roads[id], prop, value);
     },
-    setRoad(state, { id, road, ignoreSet }) {
+    setRoad({ id, road, ignoreSet }) {
       if (ignoreSet) {
-        state.ignoreRoadChanges = true;
+        this.ignoreRoadChanges = true;
       }
-      if (state.activeRoad !== id) {
-        state.fulfillmentNeeded = "none";
+      if (this.activeRoad !== id) {
+        this.fulfillmentNeeded = "none";
       }
-      Vue.set(state.roads, id, road);
+      Vue.set(this.roads, id, road);
     },
-    setRoads(state, roads) {
-      state.roads = roads;
+    setRoads(roads) {
+      this.roads = roads;
     },
-    setRoadName(state, { id, name }) {
-      state.roads[id].name = name;
-      state.roads[id].changed = moment().format(DATE_FORMAT);
+    setRoadName({ id, name }) {
+      this.roads[id].name = name;
+      this.roads[id].changed = moment().format(DATE_FORMAT);
     },
-    setSubjectsInfo(state, data) {
-      state.subjectsInfo = data;
+    setSubjectsInfo(data) {
+      this.subjectsInfo = data;
     },
-    setCurrentSemester(state, sem) {
-      state.currentSemester = Math.max(1, sem);
+    setCurrentSemester(sem) {
+      this.currentSemester = Math.max(1, sem);
     },
-    updateProgress(state, progress) {
+    updateProgress(progress) {
       Vue.set(
-        state.roads[state.activeRoad].contents.progressOverrides,
+        this.roads[this.activeRoad].contents.progressOverrides,
         progress.listID,
         progress.progress,
       );
-      state.roads[state.activeRoad].changed = moment().format(DATE_FORMAT);
+      this.roads[this.activeRoad].changed = moment().format(DATE_FORMAT);
     },
-    setFromLocalStorage(state, localStore) {
-      store.replaceState(localStore);
+    setFromLocalStorage(localStore) {
+      this.$patch(localStore);
     },
-    updateRoad(state, id, road) {
-      Object.assign(state.roads[id], road);
+    updateRoad(id, road) {
+      Object.assign(this.roads[id], road);
     },
-    watchRoadChanges(state) {
-      state.ignoreRoadChanges = false;
+    watchRoadChanges() {
+      this.ignoreRoadChanges = false;
     },
     // Reset fulfillment needed to default of all
-    resetFulfillmentNeeded(state) {
-      state.fulfillmentNeeded = "all";
+    resetFulfillmentNeeded() {
+      this.fulfillmentNeeded = "all";
     },
-    setLoadSubjectsPromise(state, promise) {
-      state.loadSubjectsPromise = promise;
+    setLoadSubjectsPromise(promise) {
+      this.loadSubjectsPromise = promise;
     },
-    setSubjectsLoaded(state) {
-      state.subjectsLoaded = true;
+    setSubjectsLoaded() {
+      this.subjectsLoaded = true;
     },
-    queueRoadMigration(state, roadID) {
-      state.roadsToMigrate.push(roadID);
+    queueRoadMigration(roadID) {
+      this.roadsToMigrate.push(roadID);
     },
-    clearMigrationQueue(state) {
-      state.roadsToMigrate = [];
+    clearMigrationQueue() {
+      this.roadsToMigrate = [];
     },
-    changeTheme(state) {
-      state.isDarkMode = !state.isDarkMode;
+    changeTheme() {
+      this.isDarkMode = !this.isDarkMode;
     },
-  },
-  actions: {
-    async loadAllSubjects({ commit, state }) {
+    async loadAllSubjects() {
       const promise = axios.get(
         import.meta.env.VITE_FIREROAD_URL + "/courses/all?full=true",
       );
-      commit("setLoadSubjectsPromise", promise);
+      this.setLoadSubjectsPromise(promise);
       const response = await promise;
-      commit("setSubjectsLoaded");
-      commit("setSubjectsInfo", response.data);
-      commit("setFullSubjectsInfoLoaded", true);
-      commit("parseGenericCourses");
-      commit("parseGenericIndex");
-      commit("parseSubjectsIndex");
-      for (const roadID of state.roadsToMigrate) {
-        commit("migrateOldSubjects", roadID);
+      this.setSubjectsLoaded();
+      this.setSubjectsInfo(response.data);
+      this.setFullSubjectsInfoLoaded(true);
+      this.parseGenericCourses();
+      this.parseGenericIndex();
+      this.parseSubjectsIndex();
+      for (const roadID of this.roadsToMigrate) {
+        this.migrateOldSubjects(roadID);
       }
-      commit("clearMigrationQueue");
+      this.clearMigrationQueue();
     },
-    addAtPlaceholder({ commit, state }, index) {
+    addAtPlaceholder(index) {
       let newClass = {};
-      if (state.itemAdding.public === false) {
+      if (this.itemAdding.public === false) {
         // Adding custom class
         newClass = {
           overrideWarnings: false,
           semester: index,
-          title: state.itemAdding.title,
-          subject_id: state.itemAdding.subject_id,
-          units: state.itemAdding.total_units,
-          in_class_hours: state.itemAdding.in_class_hours,
-          out_of_class_hours: state.itemAdding.out_of_class_hours,
-          custom_color: state.itemAdding.custom_color,
+          title: this.itemAdding.title,
+          subject_id: this.itemAdding.subject_id,
+          units: this.itemAdding.total_units,
+          in_class_hours: this.itemAdding.in_class_hours,
+          out_of_class_hours: this.itemAdding.out_of_class_hours,
+          custom_color: this.itemAdding.custom_color,
           public: false,
         };
       } else {
@@ -526,74 +562,34 @@ const store = new Vuex.Store({
         newClass = {
           overrideWarnings: false,
           semester: index,
-          title: state.itemAdding.title,
-          subject_id: state.itemAdding.subject_id,
-          units: state.itemAdding.total_units,
+          title: this.itemAdding.title,
+          subject_id: this.itemAdding.subject_id,
+          units: this.itemAdding.total_units,
         };
       }
-      commit("addClass", newClass);
-      commit("cancelAddFromCard");
+      this.addClass(newClass);
+      this.cancelAddFromCard();
     },
-    async waitLoadSubjects({ dispatch, state }) {
-      if (state.loadSubjectsPromise !== undefined) {
-        return state.loadSubjectsPromise;
+    async waitLoadSubjects() {
+      if (this.loadSubjectsPromise !== undefined) {
+        return this.loadSubjectsPromise;
       } else {
-        return dispatch("loadAllSubjects");
+        return this.loadAllSubjects();
       }
     },
-    waitAndMigrateOldSubjects({ dispatch, commit, state }, roadID) {
-      if (state.subjectsLoaded) {
-        commit("migrateOldSubjects", roadID);
+    waitAndMigrateOldSubjects(roadID) {
+      if (this.subjectsLoaded) {
+        this.migrateOldSubjects(roadID);
       } else {
-        commit("queueRoadMigration", roadID);
-        dispatch("waitLoadSubjects");
+        this.queueRoadMigration(roadID);
+        this.waitLoadSubjects();
       }
     },
   },
 });
 
-function getMatchingAttributes(gir, hass, ci) {
-  const matchingClasses = store.state.subjectsInfo.filter(function (subject) {
-    if (gir !== undefined && subject.gir_attribute !== gir) {
-      return false;
-    }
-    if (hass !== undefined && subject.hass_attribute !== hass) {
-      return false;
-    }
-    return !(ci !== undefined && subject.communication_requirement !== ci);
-  });
-
-  const totalObject = matchingClasses.reduce(
-    function (accumObject, nextClass) {
-      return {
-        offered_spring: accumObject.offered_spring || nextClass.offered_spring,
-        offered_summer: accumObject.offered_summer || nextClass.offered_summer,
-        offered_IAP: accumObject.offered_IAP || nextClass.offered_IAP,
-        offered_fall: accumObject.offered_fall || nextClass.offered_fall,
-        in_class_hours:
-          accumObject.in_class_hours +
-          (nextClass.in_class_hours !== undefined
-            ? nextClass.in_class_hours
-            : 0),
-        out_of_class_hours:
-          accumObject.out_of_class_hours +
-          (nextClass.out_of_class_hours !== undefined
-            ? nextClass.out_of_class_hours
-            : 0),
-      };
-    },
-    {
-      offered_spring: false,
-      offered_summer: false,
-      offered_IAP: false,
-      offered_fall: false,
-      in_class_hours: 0,
-      out_of_class_hours: 0,
-    },
-  );
-  totalObject.in_class_hours /= matchingClasses.length;
-  totalObject.out_of_class_hours /= matchingClasses.length;
-  return totalObject;
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useCourseDataStore, import.meta.hot));
 }
 
-export default store;
+export default useCourseDataStore;

@@ -1,5 +1,5 @@
 <template>
-  <v-layout grow>
+  <v-row class="grow" no-gutters>
     <v-btn
       class="collapse-button"
       outlined
@@ -63,15 +63,15 @@
           />
 
           <v-spacer />
-          <v-flex v-if="otherRoadHasName(roadtitle)">
+          <v-col v-if="otherRoadHasName(roadtitle)">
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
                 There's already a road with this name.
               </v-card-text>
             </v-card>
-          </v-flex>
-          <v-flex v-if="badinput">
+          </v-col>
+          <v-col v-if="badinput">
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
@@ -79,7 +79,7 @@
                 uploaded/pasted a valid '.road' file.
               </v-card-text>
             </v-card>
-          </v-flex>
+          </v-col>
         </v-card-text>
 
         <v-card-actions>
@@ -96,221 +96,200 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </v-row>
 </template>
 
-<script>
-import simpleSSMixin from "./../mixins/sanitizeSubjects.js";
-import { defineComponent } from "vue";
+<script setup>
+import { ref, computed } from "vue";
+import { useStore } from "../plugins/composition.js";
+import { getSimpleSelectedSubjects } from "../mixins/sanitizeSubjects.js";
+import { flatten } from "../plugins/browserSupport.js";
 
-export default defineComponent({
-  name: "ImportExport",
-  components: {},
-  mixins: [simpleSSMixin],
-  data: function () {
-    return {
-      dialog: false,
-      inputtext: "",
-      roadtitle: "",
-      badinput: false,
-    };
-  },
-  computed: {
-    activeRoad() {
-      return this.$store.state.activeRoad;
-    },
-    roads() {
-      return this.$store.state.roads;
-    },
-  },
-  mounted() {
-    // read uploaded files
-  },
-  methods: {
-    onFileChange: function (event) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        this.inputtext = event.target.result;
-      };
+const store = useStore();
 
-      if (event.target.files[0]) {
-        // would have been undefined if user exited file select dialog
-        const name = event.target.files[0].name;
-        // check for valid type hopefully
-        if (name.substr(name.length - 5) === ".road") {
-          // update title unless they already input one
-          if (this.roadtitle === "") {
-            this.roadtitle = name.substr(0, name.length - 5);
-          }
-          // finally, read the file
-          reader.readAsText(event.target.files[0]);
-        } else {
-          // wrong file type
-          this.badinput = true;
-          setTimeout(() => {
-            this.badinput = false;
-          }, 7000);
+const emit = defineEmits(["add-road"]);
+
+const dialog = ref(false);
+const inputtext = ref("");
+const roadtitle = ref("");
+const badinput = ref(false);
+
+const activeRoad = computed(() => store.activeRoad);
+const roads = computed(() => store.roads);
+
+const onFileChange = (event) => {
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    inputtext.value = event.target.result;
+  };
+
+  if (event.target.files[0]) {
+    // would have been undefined if user exited file select dialog
+    const name = event.target.files[0].name;
+    // check for valid type hopefully
+    if (name.substr(name.length - 5) === ".road") {
+      // update title unless they already input one
+      if (roadtitle.value === "") {
+        roadtitle.value = name.substr(0, name.length - 5);
+      }
+      // finally, read the file
+      reader.readAsText(event.target.files[0]);
+    } else {
+      // wrong file type
+      badinput.value = true;
+      setTimeout(() => {
+        badinput.value = false;
+      }, 7000);
+    }
+  }
+};
+
+const exportRoad = () => {
+  const filename = roads.value[activeRoad.value].name + ".road";
+
+  const roadSubjects = flatten(
+    roads.value[activeRoad.value].contents.selectedSubjects,
+  );
+  const formattedRoadContents = Object.assign(
+    { coursesOfStudy: ["girs"], progressOverrides: [] },
+    roads.value[activeRoad.value].contents,
+    { selectedSubjects: roadSubjects },
+  );
+
+  const text = JSON.stringify(formattedRoadContents);
+
+  // for some reason this is the way you download files...
+  //    create an element, click it, and remove it
+  const element = document.createElement("a");
+  element.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text),
+  );
+  element.setAttribute("download", filename);
+
+  element.style.display = "none";
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+};
+
+const importRoad = async () => {
+  let fail = false;
+  // check for legal input
+  if (
+    inputtext.value === "" ||
+    roadtitle.value === "" ||
+    otherRoadHasName(roadtitle.value)
+  ) {
+    fail = true;
+  }
+
+  const expectedFields = [
+    "index",
+    "title",
+    "overrideWarnings",
+    "semester",
+    "units",
+    "subject_id",
+  ];
+
+  if (!fail) {
+    try {
+      // parse text and add to roads
+      const obj = JSON.parse(inputtext.value);
+      // sanitize
+      // progressOverrides must be defined
+      if (obj.progressOverrides === undefined) {
+        obj.progressOverrides = {};
+      }
+      // subject_id issue
+      const newss = obj.selectedSubjects.map((s) => {
+        if ("id" in s) {
+          s.subject_id = s.id;
+          delete s.id;
         }
-      }
-    },
-    exportRoad: function () {
-      const filename = this.roads[this.activeRoad].name + ".road";
+        return s;
+      });
+      obj.selectedSubjects = newss;
 
-      const roadSubjects = this.flatten(
-        this.roads[this.activeRoad].contents.selectedSubjects,
-      );
-      const formattedRoadContents = Object.assign(
-        { coursesOfStudy: ["girs"], progressOverrides: [] },
-        this.roads[this.activeRoad].contents,
-        { selectedSubjects: roadSubjects },
-      );
-
-      const text = JSON.stringify(formattedRoadContents);
-
-      // for some reason this is the way you download files...
-      //    create an element, click it, and remove it
-      const element = document.createElement("a");
-      element.setAttribute(
-        "href",
-        "data:text/plain;charset=utf-8," + encodeURIComponent(text),
-      );
-      element.setAttribute("download", filename);
-
-      element.style.display = "none";
-      document.body.appendChild(element);
-
-      element.click();
-
-      document.body.removeChild(element);
-    },
-    importRoad: async function () {
-      let fail = false;
-      // check for legal input
-      if (
-        this.inputtext === "" ||
-        this.roadtitle === "" ||
-        this.otherRoadHasName(this.roadtitle)
-      ) {
-        fail = true;
-      }
-
-      const expectedFields = [
-        "index",
-        "title",
-        "overrideWarnings",
-        "semester",
-        "units",
-        "subject_id",
-      ];
-
-      if (!fail) {
-        try {
-          // parse text and add to roads
-          const obj = JSON.parse(this.inputtext);
-          // sanitize
-          // progressOverrides must be defined
-          if (obj.progressOverrides === undefined) {
-            obj.progressOverrides = {};
+      const ss = obj.selectedSubjects
+        .map((s) => {
+          // make sure it has everything, if not fill in from subjectsIndex or genericCourses
+          let subject;
+          if (store.subjectsIndex[s.subject_id] !== undefined) {
+            subject = store.subjectsInfo[store.subjectsIndex[s.subject_id]];
+          } else if (store.genericIndex[s.subject_id] !== undefined) {
+            subject = store.genericCourses[store.genericIndex[s.subject_id]];
           }
-          // subject_id issue
-          const newss = obj.selectedSubjects.map((s) => {
-            if ("id" in s) {
-              s.subject_id = s.id;
-              delete s.id;
-            }
-            return s;
-          });
-          obj.selectedSubjects = newss;
 
-          const ss = obj.selectedSubjects
-            .map((s) => {
-              // make sure it has everything, if not fill in from subjectsIndex or genericCourses
-              let subject;
-              if (this.$store.state.subjectsIndex[s.subject_id] !== undefined) {
-                subject =
-                  this.$store.state.subjectsInfo[
-                    this.$store.state.subjectsIndex[s.subject_id]
-                  ];
-              } else if (
-                this.$store.state.genericIndex[s.subject_id] !== undefined
-              ) {
-                subject =
-                  this.$store.state.genericCourses[
-                    this.$store.state.genericIndex[s.subject_id]
-                  ];
-              }
-
-              if (subject === undefined) {
-                const oldSubjects = this.$store.state.subjectsInfo.filter(
-                  (subj) => {
-                    return subj.old_id === s.subject_id;
-                  },
-                );
-
-                if (oldSubjects.length > 0) {
-                  subject = oldSubjects[0];
-                  s.subject_id = subject.subject_id;
-                }
-              }
-
-              if (subject !== undefined) {
-                expectedFields.forEach((f) => {
-                  if (s[f] === undefined) {
-                    // right now (4/16/19) 'units' is the only one that doesn't match and needs an exception
-                    if (f === "units") {
-                      s[f] = subject.total_units;
-                    } else {
-                      s[f] = subject[f];
-                    }
-                  }
-                });
-                return s;
-              }
-              console.log("ignoring " + s.subject_id);
-              return undefined;
-            })
-            .filter((s) => {
-              return s !== undefined;
+          if (subject === undefined) {
+            const oldSubjects = store.subjectsInfo.filter((subj) => {
+              return subj.old_id === s.subject_id;
             });
 
-          // convert selected subjects to more convenient format
-          const simpless = await this.getSimpleSelectedSubjects(ss);
+            if (oldSubjects.length > 0) {
+              subject = oldSubjects[0];
+              s.subject_id = subject.subject_id;
+            }
+          }
 
-          this.$emit(
-            "add-road",
-            this.roadtitle,
-            obj.coursesOfStudy,
-            simpless,
-            obj.progressOverrides,
-          );
-        } catch (error) {
-          fail = true;
-          console.log("import failed with error:");
-          console.error(error);
-        }
-      }
+          if (subject !== undefined) {
+            expectedFields.forEach((f) => {
+              if (s[f] === undefined) {
+                // right now (4/16/19) 'units' is the only one that doesn't match and needs an exception
+                if (f === "units") {
+                  s[f] = subject.total_units;
+                } else {
+                  s[f] = subject[f];
+                }
+              }
+            });
+            return s;
+          }
+          console.log("ignoring " + s.subject_id);
+          return undefined;
+        })
+        .filter((s) => {
+          return s !== undefined;
+        });
 
-      if (fail) {
-        this.badinput = true;
-        // make warning go away after 7 seconds
-        setTimeout(() => {
-          this.badinput = false;
-        }, 7000);
-      } else {
-        this.badinput = false;
-        this.dialog = false;
-      }
-    },
-    otherRoadHasName: function (roadName) {
-      const otherRoadNames = Object.keys(this.roads).filter(
-        function (road) {
-          return this.roads[road].name.toLowerCase() === roadName.toLowerCase();
-        }.bind(this),
+      // convert selected subjects to more convenient format
+      const simpless = await getSimpleSelectedSubjects(ss);
+
+      emit(
+        "add-road",
+        roadtitle.value,
+        obj.coursesOfStudy,
+        simpless,
+        obj.progressOverrides,
       );
-      return otherRoadNames.length > 0;
-    },
-  },
-});
+    } catch (error) {
+      fail = true;
+      console.log("import failed with error:");
+      console.error(error);
+    }
+  }
+
+  if (fail) {
+    badinput.value = true;
+    // make warning go away after 7 seconds
+    setTimeout(() => {
+      badinput.value = false;
+    }, 7000);
+  } else {
+    badinput.value = false;
+    dialog.value = false;
+  }
+};
+
+const otherRoadHasName = (roadName) => {
+  const otherRoadNames = Object.keys(roads.value).filter((road) => {
+    return roads.value[road].name.toLowerCase() === roadName.toLowerCase();
+  });
+  return otherRoadNames.length > 0;
+};
 </script>
 
 <style scoped>

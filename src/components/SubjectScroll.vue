@@ -1,7 +1,11 @@
 <template>
-  <v-container grid-list-md style="padding: 0.5em">
-    <v-layout overflow-x>
-      <v-flex v-for="(subject, index) in subjects" :key="subject.subject_id">
+  <v-container style="padding: 0.5em">
+    <v-row class="overflow-x flex-nowrap" dense>
+      <v-col
+        v-for="(subject, index) in props.subjects"
+        :key="subject.subject_id"
+        class="shrink"
+      >
         <v-badge right overlap color="rgba(0,0,0,0)">
           <v-card
             class="subject"
@@ -42,34 +46,36 @@
             <v-icon color="green" medium> mdi-check </v-icon>
           </template>
         </v-badge>
-      </v-flex>
-      <v-flex style="width: 500px" />
-    </v-layout>
+      </v-col>
+      <v-col style="width: 500px" />
+    </v-row>
   </v-container>
 </template>
-<script>
-import colorMixin from "./../mixins/colorMixin.js";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "SubjectScroll",
-  mixins: [colorMixin],
-  props: {
-    subjects: {
-      type: Array,
-      required: true,
-    },
-  },
-  methods: {
-    shouldLighten: function (subject) {
-      if (subject.fulfilled === true) {
-        return "lightened";
-      } else {
-        return "";
-      }
-    },
+<script setup>
+import {
+  courseColor,
+  getRawColor,
+  getRawTextColor,
+} from "../mixins/colorMixin.js";
+
+const props = defineProps({
+  subjects: {
+    type: Array,
+    required: true,
   },
 });
+
+// const emit = defineEmits(["click-subject"]);
+defineEmits(["click-subject"]);
+
+const shouldLighten = (subject) => {
+  if (subject.fulfilled === true) {
+    return "lightened";
+  } else {
+    return "";
+  }
+};
 </script>
 
 <style scoped>

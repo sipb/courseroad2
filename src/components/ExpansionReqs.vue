@@ -29,7 +29,7 @@
         >
           {{ requirement.reqs[0].expansionDesc }}
         </span>
-        <subject-scroll
+        <SubjectScroll
           :subjects="requirement.reqs[0].reqs"
           :data-cy="'doubleScroller0' + reqID"
           @click-subject="clickSubject($event, 0)"
@@ -45,14 +45,14 @@
         >
           {{ requirement.reqs[1].expansionDesc }}
         </span>
-        <subject-scroll
+        <SubjectScroll
           :subjects="requirement.reqs[1].reqs"
           :data-cy="'doubleScroller1' + reqID"
           @click-subject="clickSubject($event, 1)"
         />
       </div>
     </div>
-    <subject-scroll
+    <SubjectScroll
       v-else
       :subjects="requirement.reqs"
       :data-cy="'singleScroller' + reqID"
@@ -74,115 +74,79 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import SubjectScroll from "../components/SubjectScroll.vue";
 import $ from "jquery";
-import Vue from "vue";
-import { defineComponent } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 
-export default defineComponent({
-  name: "ExpansionReqs",
-  components: {
-    "subject-scroll": SubjectScroll,
+const props = defineProps({
+  requirement: {
+    type: Object,
+    required: true,
   },
-  props: {
-    requirement: {
-      type: Object,
-      required: true,
-    },
-    reqID: {
-      type: String,
-      required: true,
-    },
+  reqID: {
+    type: String,
+    required: true,
   },
-  data: function () {
-    return {
-      open: false,
-      expansionIndex: 0,
-      whichScroller: 0,
-      scrollerClicked: undefined,
-      subjectClicked: undefined,
-    };
-  },
-  computed: {
-    doubleScroller: function () {
-      if (this.requirement.reqs.length === 2) {
-        return this.requirement.reqs.reduce(function (acc, nxt) {
-          return acc && nxt.reqs !== undefined;
-        }, true);
-      }
-      return false;
-    },
-    getNextReqs: function () {
-      if (!this.open) {
-        return undefined;
-      }
+});
 
-      if (this.scrollerClicked !== undefined) {
-        return this.requirement.reqs[this.scrollerClicked].reqs[
-          this.subjectClicked.index
-        ];
-      } else {
-        return this.requirement.reqs[this.subjectClicked.index];
-      }
-    },
-  },
-  watch: {
-    reqID: function () {
-      this.open = false;
-    },
-  },
-  methods: {
-    clickSubject: function (subj, scroller) {
-      this.scrollerClicked = scroller;
-      this.subjectClicked = subj;
+const emit = defineEmits(["click-subject", "close-expansion"]);
 
-      let scrollPointID;
-      let nextReqs;
-      if (scroller !== undefined) {
-        scrollPointID =
-          this.reqID + "." + this.whichScroller + "." + subj.index;
-        nextReqs = this.requirement.reqs[scroller].reqs[subj.index];
-      } else {
-        scrollPointID = this.reqID + "." + subj.index;
-        nextReqs = this.requirement.reqs[subj.index];
-      }
+const open = ref(false);
+const expansionIndex = ref(0);
+const whichScroller = ref(0);
+const scrollerClicked = ref(undefined);
+const subjectClicked = ref(undefined);
 
-      if (nextReqs.reqs !== undefined) {
-        this.expansionIndex = subj.index;
-        this.open = true;
-        Vue.nextTick(function () {
-          const scrollPoint = $("#" + $.escapeSelector(scrollPointID));
-          const topPoint = scrollPoint.offset().top;
-          const cardBody = $("#cardBody");
-          cardBody.animate(
-            {
-              scrollTop:
-                topPoint - cardBody.offset().top + cardBody.scrollTop() - 10,
-            },
-            200,
-          );
-        });
-      } else {
-        if (subj.subject_id.indexOf("GIR:") >= 0) {
-          subj.subject_id = subj.subject_id.substring(4);
-        }
-        this.$emit("click-subject", subj);
-      }
-    },
-    closeMe: function () {
-      this.$emit("close-expansion");
-    },
-    closeMyExpansion: function () {
-      this.open = false;
-      let scrollPoint;
-      if (!this.doubleScroller) {
-        scrollPoint = $("#" + $.escapeSelector(this.reqID));
-      } else {
-        scrollPoint = $(
-          "#ds" + this.whichScroller + $.escapeSelector(this.reqID),
-        );
-      }
+const doubleScroller = computed(() => {
+  if (props.requirement.reqs.length === 2) {
+    return props.requirement.reqs.reduce(function (acc, nxt) {
+      return acc && nxt.reqs !== undefined;
+    }, true);
+  }
+  return false;
+});
+
+const getNextReqs = computed(() => {
+  if (!open.value) {
+    return undefined;
+  }
+
+  if (scrollerClicked.value !== undefined) {
+    return props.requirement.reqs[scrollerClicked.value].reqs[
+      subjectClicked.value.index
+    ];
+  } else {
+    return props.requirement.reqs[subjectClicked.value.index];
+  }
+});
+
+watch(
+  () => props.reqID,
+  () => {
+    open.value = false;
+  },
+);
+
+const clickSubject = (subj, scroller) => {
+  scrollerClicked.value = scroller;
+  subjectClicked.value = subj;
+
+  let scrollPointID;
+  let nextReqs;
+  if (scroller !== undefined) {
+    scrollPointID = props.reqID + "." + whichScroller.value + "." + subj.index;
+    nextReqs = props.requirement.reqs[scroller].reqs[subj.index];
+  } else {
+    scrollPointID = props.reqID + "." + subj.index;
+    nextReqs = props.requirement.reqs[subj.index];
+  }
+
+  if (nextReqs.reqs !== undefined) {
+    expansionIndex.value = subj.index;
+    open.value = true;
+    nextTick(function () {
+      const scrollPoint = $("#" + $.escapeSelector(scrollPointID));
       const topPoint = scrollPoint.offset().top;
       const cardBody = $("#cardBody");
       cardBody.animate(
@@ -190,11 +154,40 @@ export default defineComponent({
           scrollTop:
             topPoint - cardBody.offset().top + cardBody.scrollTop() - 10,
         },
-        350,
+        200,
       );
+    });
+  } else {
+    if (subj.subject_id.indexOf("GIR:") >= 0) {
+      subj.subject_id = subj.subject_id.substring(4);
+    }
+    emit("click-subject", subj);
+  }
+};
+
+const closeMe = () => {
+  emit("close-expansion");
+};
+
+const closeMyExpansion = () => {
+  open.value = false;
+  let scrollPoint;
+  if (!doubleScroller.value) {
+    scrollPoint = $("#" + $.escapeSelector(props.reqID));
+  } else {
+    scrollPoint = $(
+      "#ds" + whichScroller.value + $.escapeSelector(props.reqID),
+    );
+  }
+  const topPoint = scrollPoint.offset().top;
+  const cardBody = $("#cardBody");
+  cardBody.animate(
+    {
+      scrollTop: topPoint - cardBody.offset().top + cardBody.scrollTop() - 10,
     },
-  },
-});
+    350,
+  );
+};
 </script>
 
 <style scoped>

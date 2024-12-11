@@ -1,7 +1,7 @@
 <template>
   <!-- useful for adding dropdown: https://vuejs.org/v2/guide/forms.html -->
 
-  <v-flex style="padding: 0px 18px 0px 18px; overflow: auto" data-cy="auditBox">
+  <v-col style="padding: 0px 18px 0px 18px; overflow: auto" data-cy="auditBox">
     <div style="display: flex; align-content: space-between; margin: 12px 0px">
       <v-autocomplete
         v-model="changeReqs"
@@ -34,18 +34,20 @@
       :activatable="false"
     >
       <template slot="label" slot-scope="{ item, leaf }">
-        <v-hover :disabled="!leaf || !canDrag(item)">
+        <v-hover :disabled="!leaf || !canDrag(store, item)">
           <div
             slot-scope="{ hover }"
             class="req-container"
             :class="{
               'elevation-3': hover,
-              'yellow lighten-3': isPetitioned(item) && !$vuetify.theme.dark,
-              'yellow darken-3': isPetitioned(item) && $vuetify.theme.dark,
-              'grey lighten-2': isIgnored(item) && !$vuetify.theme.dark,
-              'grey darken-2': isIgnored(item) && $vuetify.theme.dark,
+              'yellow lighten-3': isPetitioned(item) && !vuetify.theme.dark,
+              'yellow darken-3': isPetitioned(item) && vuetify.theme.dark,
+              'grey lighten-2': isIgnored(item) && !vuetify.theme.dark,
+              'grey darken-2': isIgnored(item) && vuetify.theme.dark,
             }"
-            :style="leaf && canDrag(item) ? 'cursor: grab' : 'cursor: pointer'"
+            :style="
+              leaf && canDrag(store, item) ? 'cursor: grab' : 'cursor: pointer'
+            "
             :data-cy="'auditItem' + item['list-id']"
           >
             <v-icon
@@ -66,7 +68,7 @@
                     : "mdi-minus"
               }}
             </v-icon>
-            <requirement
+            <Requirement
               :req="item"
               :is-leaf="leaf"
               @click.native="clickRequirement(item)"
@@ -109,23 +111,23 @@
             {{ capitalize(progressReq.threshold.criterion) }} Completed:
             {{ newManualProgress }}/{{ progressReq.threshold.cutoff }}
           </h3>
-          <v-layout justify-start style="width: 70%; margin: auto">
-            <v-flex shrink style="width: 3em; margin-right: 1em">
+          <v-row justify="start" style="width: 70%; margin: auto">
+            <v-col class="shrink" style="width: 3em; margin-right: 1em">
               <v-text-field
                 v-model="newManualProgress"
                 type="number"
                 @keyup.enter="updateManualProgress"
               />
-            </v-flex>
-            <v-flex>
+            </v-col>
+            <v-col>
               <v-slider
                 v-model="newManualProgress"
                 :max="progressReq.threshold.cutoff"
                 :min="0"
                 :step="1"
               />
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -260,286 +262,290 @@
         </div>
       </v-card>
     </v-dialog>
-  </v-flex>
+  </v-col>
 </template>
 
 <script>
-import Requirement from "./Requirement.vue";
-import classInfoMixin from "../mixins/classInfo.js";
-import courseLinksMixin from "./../mixins/courseLinks.js";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "AuditComponent",
-  components: {
-    requirement: Requirement,
+});
+</script>
+
+<script setup>
+import Requirement from "./Requirement.vue";
+import { canDrag } from "../mixins/classInfo.js";
+import { getCourseLinks } from "./../mixins/courseLinks.js";
+import { ref, computed } from "vue";
+import { useStore, useVuetify } from "../plugins/composition.js";
+
+const store = useStore();
+const vuetify = useVuetify();
+
+const props = defineProps({
+  selectedSubjects: {
+    type: Array,
+    required: true,
   },
-  mixins: [classInfoMixin, courseLinksMixin],
-  props: {
-    selectedSubjects: {
-      type: Array,
-      required: true,
-    },
-    selectedReqs: {
-      type: Array,
-      required: true,
-    },
-    reqTrees: {
-      type: Object,
-      required: true,
-    },
-    reqList: {
-      type: Array,
-      required: true,
-    },
-    progressOverrides: {
-      type: Object,
-      required: true,
-    },
+  selectedReqs: {
+    type: Array,
+    required: true,
   },
-  data: function () {
-    return {
-      tree: [],
-      viewDialog: false,
-      dialogReq: undefined,
-      progressDialog: false,
-      progressReq: undefined,
-      petitionDialog: false,
-      petitionReq: undefined,
-      petitionSelectCourses: [],
-      newManualProgress: 0,
-    };
+  reqTrees: {
+    type: Object,
+    required: true,
   },
-  computed: {
-    changeReqs: {
-      get: function () {
-        return this.selectedReqs;
-      },
-      set: function (newReqs) {
-        const currentReqs = this.selectedReqs;
-        if (currentReqs.length > newReqs.length) {
-          const diff = currentReqs.find((x) => !newReqs.includes(x));
-          this.$store.commit("removeReq", diff);
-        } else {
-          const newReq = newReqs[newReqs.length - 1];
-          this.$store.commit("addReq", newReq);
-        }
-      },
-    },
-    getCourses: function () {
-      const courses = this.reqList.slice(0);
-      const sortKey = "medium-title";
-      // NOTE: brute force way sorting the courses given the fields we have
-      courses.sort(function (c1, c2) {
-        const a = c1[sortKey].toLowerCase();
-        const b = c2[sortKey].toLowerCase();
-        if (
-          (a.includes("major") && b.includes("major")) ||
-          (a.includes("minor") && b.includes("minor"))
-        ) {
-          let n1 = a.split(" ")[0].split("-")[0];
-          let n2 = b.split(" ")[0].split("-")[0];
-          n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;
-          n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;
-          if (n1 === n2) return a.localeCompare(b);
-          return (!isNaN(n1) && !isNaN(n2)) || (isNaN(n1) && isNaN(n2))
-            ? n1 - n2
-            : !isNaN(n1)
-              ? -1
-              : 1;
-        } else if (a.includes("major") && b.includes("minor")) return -1;
-        else if (b.includes("major") && a.includes("minor")) return 1;
-        else if (a.includes("major") || a.includes("minor")) return -1;
-        else if (b.includes("major") || b.includes("minor")) return 1;
-        else return a.localeCompare(b);
-      });
-      return courses;
-    },
-    selectedTrees: function () {
-      return this.selectedReqs.map(function (req, index) {
-        if (req in this.reqTrees) {
-          return this.assignListIDs(
-            Object.assign({}, this.reqTrees[req]),
-            index,
-          );
-        } else {
-          return {
-            title: "loading...",
-            reqs: [],
-            uniqueKey: index,
-          };
-        }
-      }, this);
-    },
-    reqPASubstitution: {
-      get: function () {
-        const petitionReqPA =
-          this.$store.state.roads[this.$store.state.activeRoad].contents
-            .progressAssertions[this.petitionReq["list-id"]];
-        // Checks if unique key in progressAssert, if it is, searches for substitution key
-        if (petitionReqPA !== undefined) {
-          return petitionReqPA.substitutions;
-        } else {
-          return undefined;
-        }
-      },
-    },
-    reqPAIgnore: {
-      get: function () {
-        const petitionReqPA =
-          this.$store.state.roads[this.$store.state.activeRoad].contents
-            .progressAssertions[this.petitionReq["list-id"]];
-        if (petitionReqPA !== undefined) {
-          return petitionReqPA.ignore;
-        } else {
-          return false; // So checkbox properly updates when resetPetition is used
-        }
-      },
-      set: function (ignoreVal) {
-        this.$store.commit("setPAIgnore", {
-          uniqueKey: this.petitionReq["list-id"],
-          isIgnored: ignoreVal,
-        });
-      },
-    },
+  reqList: {
+    type: Array,
+    required: true,
   },
-  methods: {
-    fulfilledIcon: function (req) {
-      return req.fulfilled &&
-        (req.req !== undefined || req.sat_courses.length > 0)
-        ? "color: #00b300;"
-        : "";
-    },
-    reqInfo: function (event, req) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.viewDialog = true;
-      this.dialogReq = req;
-    },
-    reqPetition: function (event, req) {
-      event.preventDefault();
-      event.stopPropagation();
-      this.petitionDialog = true;
-      this.petitionReq = req;
-    },
-    clickRequirement: function (item) {
-      if (item.req !== undefined) {
-        if (!item["plain-string"]) {
-          let usedReq = item.req;
-          if (usedReq.indexOf("GIR:") === 0) {
-            usedReq = usedReq.substring(4);
-          }
-          this.$store.commit("pushClassStack", usedReq);
-        } else {
-          this.startProgressDialog(item);
-        }
-      }
-    },
-    // gives each list and sublist an id
-    // progress overrides are a dictionary where the keys are these list ids and the values are the manual progress
-    // for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
-    assignListIDs: function (req, index) {
-      if ("reqs" in req && "list-id" in req) {
-        let currentListID = req["list-id"];
-        if (currentListID.indexOf(".reql") >= 0) {
-          // if the requirement is top level, it will have .reql at the end and this needs to be removed
-          req["list-id"] = req["list-id"].substring(
-            0,
-            req["list-id"].indexOf(".reql"),
-          );
-          currentListID = req["list-id"];
-        }
-        req.uniqueKey = index + "-" + req["list-id"];
-        for (let r = 0; r < req.reqs.length; r++) {
-          // give each sub-requirement a list id of [parent list id].[index]
-          Object.assign(req.reqs[r], { "list-id": currentListID + "." + r });
-          // assign list ids to each of the children
-          req.reqs[r] = this.assignListIDs(req.reqs[r], index);
-        }
-      }
-      return req;
-    },
-    startProgressDialog: function (req) {
-      this.progressReq = Object.assign(
-        { threshold: { criterion: "subject", cutoff: 1, type: "GTE" } },
-        req,
-      );
-      this.progressDialog = true;
-      if (this.progressReq["list-id"] in this.progressOverrides) {
-        this.newManualProgress =
-          this.progressOverrides[this.progressReq["list-id"]];
-      }
-    },
-    capitalize: function (word) {
-      return word[0].toUpperCase() + word.substring(1);
-    },
-    updateManualProgress: function () {
-      if (this.progressReq["list-id"] !== undefined) {
-        this.$store.commit("updateProgress", {
-          listID: this.progressReq["list-id"],
-          progress: this.newManualProgress,
-        });
-      }
-      this.progressReq = undefined;
-      this.progressDialog = false;
-      this.newManualProgress = 0;
-    },
-    percentage: function (req) {
-      return req.fulfilled
-        ? "#00b300"
-        : req.percent_fulfilled > 15
-          ? "#efce15"
-          : "#ef8214";
-    },
-    deleteReq: function (req) {
-      const reqName = req["list-id"];
-      this.$store.commit("removeReq", reqName);
-    },
-    submitPetition: function () {
-      this.$store.commit("setPASubstitutions", {
-        uniqueKey: this.petitionReq["list-id"],
-        newReqs: this.petitionSelectCourses,
-      });
-      this.petitionSelectCourses = [];
-    },
-    clearPetition: function () {
-      this.$store.commit(
-        "removeProgressAssertion",
-        this.petitionReq["list-id"],
-      );
-    },
-    isPetitioned: function (req) {
-      if (
-        req["list-id"] in
-        this.$store.state.roads[this.$store.state.activeRoad].contents
-          .progressAssertions
-      ) {
-        return !(
-          "ignore" in
-          this.$store.state.roads[this.$store.state.activeRoad].contents
-            .progressAssertions[req["list-id"]]
-        );
-      } else {
-        return false;
-      }
-    },
-    isIgnored: function (req) {
-      if (
-        req["list-id"] in
-        this.$store.state.roads[this.$store.state.activeRoad].contents
-          .progressAssertions
-      ) {
-        return (
-          "ignore" in
-          this.$store.state.roads[this.$store.state.activeRoad].contents
-            .progressAssertions[req["list-id"]]
-        );
-      } else {
-        return false;
-      }
-    },
+  progressOverrides: {
+    type: Object,
+    required: true,
   },
 });
+
+const tree = ref([]);
+const viewDialog = ref(false);
+const dialogReq = ref(undefined);
+const progressDialog = ref(false);
+const progressReq = ref(undefined);
+const petitionDialog = ref(false);
+const petitionReq = ref(undefined);
+const petitionSelectCourses = ref([]);
+const newManualProgress = ref(0);
+
+const changeReqs = computed({
+  get: () => props.selectedReqs,
+  set: (newReqs) => {
+    const currentReqs = props.selectedReqs;
+    if (currentReqs.length > newReqs.length) {
+      const diff = currentReqs.find((x) => !newReqs.includes(x));
+      store.removeReq(diff);
+    } else {
+      const newReq = newReqs[newReqs.length - 1];
+      store.addReq(newReq);
+    }
+  },
+});
+
+const getCourses = computed(() => {
+  const courses = props.reqList.slice(0);
+  const sortKey = "medium-title";
+  // NOTE: brute force way sorting the courses given the fields we have
+  courses.sort(function (c1, c2) {
+    const a = c1[sortKey].toLowerCase();
+    const b = c2[sortKey].toLowerCase();
+    if (
+      (a.includes("major") && b.includes("major")) ||
+      (a.includes("minor") && b.includes("minor"))
+    ) {
+      let n1 = a.split(" ")[0].split("-")[0];
+      let n2 = b.split(" ")[0].split("-")[0];
+      n1 = isNaN(n1) && !isNaN(n1.slice(0, -1)) ? n1.slice(0, -1) : n1;
+      n2 = isNaN(n2) && !isNaN(n2.slice(0, -1)) ? n2.slice(0, -1) : n2;
+      if (n1 === n2) return a.localeCompare(b);
+      return (!isNaN(n1) && !isNaN(n2)) || (isNaN(n1) && isNaN(n2))
+        ? n1 - n2
+        : !isNaN(n1)
+          ? -1
+          : 1;
+    } else if (a.includes("major") && b.includes("minor")) return -1;
+    else if (b.includes("major") && a.includes("minor")) return 1;
+    else if (a.includes("major") || a.includes("minor")) return -1;
+    else if (b.includes("major") || b.includes("minor")) return 1;
+    else return a.localeCompare(b);
+  });
+  return courses;
+});
+
+const selectedTrees = computed(() => {
+  return props.selectedReqs.map((req, index) => {
+    if (req in props.reqTrees) {
+      return assignListIDs(Object.assign({}, props.reqTrees[req]), index);
+    } else {
+      return {
+        title: "loading...",
+        reqs: [],
+        uniqueKey: index,
+      };
+    }
+  });
+});
+
+const reqPASubstitution = computed({
+  get: () => {
+    const petitionReqPA =
+      store.roads[store.activeRoad].contents.progressAssertions[
+        petitionReq.value["list-id"]
+      ];
+    // Checks if unique key in progressAssert, if it is, searches for substitution key
+    if (petitionReqPA !== undefined) {
+      return petitionReqPA.substitutions;
+    } else {
+      return undefined;
+    }
+  },
+});
+
+const reqPAIgnore = computed({
+  get: () => {
+    const petitionReqPA =
+      store.roads[store.activeRoad].contents.progressAssertions[
+        petitionReq.value["list-id"]
+      ];
+    if (petitionReqPA !== undefined) {
+      return petitionReqPA.ignore;
+    } else {
+      return false; // So checkbox properly updates when resetPetition is used
+    }
+  },
+  set: (ignoreVal) => {
+    store.setPAIgnore({
+      uniqueKey: petitionReq.value["list-id"],
+      isIgnored: ignoreVal,
+    });
+  },
+});
+
+const fulfilledIcon = (req) => {
+  return req.fulfilled && (req.req !== undefined || req.sat_courses.length > 0)
+    ? "color: #00b300;"
+    : "";
+};
+
+const reqInfo = (event, req) => {
+  event.preventDefault();
+  event.stopPropagation();
+  viewDialog.value = true;
+  dialogReq.value = req;
+};
+
+const reqPetition = (event, req) => {
+  event.preventDefault();
+  event.stopPropagation();
+  petitionDialog.value = true;
+  petitionReq.value = req;
+};
+
+const clickRequirement = (item) => {
+  if (item.req !== undefined) {
+    if (!item["plain-string"]) {
+      let usedReq = item.req;
+      if (usedReq.indexOf("GIR:") === 0) {
+        usedReq = usedReq.substring(4);
+      }
+      store.pushClassStack(usedReq);
+    } else {
+      startProgressDialog(item);
+    }
+  }
+};
+
+// gives each list and sublist an id
+// progress overrides are a dictionary where the keys are these list ids and the values are the manual progress
+// for example, the 3rd requirement of the 1st requirement of GIRs (CAL1) would have id gir.0.2
+const assignListIDs = (req, index) => {
+  if ("reqs" in req && "list-id" in req) {
+    let currentListID = req["list-id"];
+    if (currentListID.indexOf(".reql") >= 0) {
+      // if the requirement is top level, it will have .reql at the end and this needs to be removed
+      req["list-id"] = req["list-id"].substring(
+        0,
+        req["list-id"].indexOf(".reql"),
+      );
+      currentListID = req["list-id"];
+    }
+    req.uniqueKey = index + "-" + req["list-id"];
+    for (let r = 0; r < req.reqs.length; r++) {
+      // give each sub-requirement a list id of [parent list id].[index]
+      Object.assign(req.reqs[r], { "list-id": currentListID + "." + r });
+      // assign list ids to each of the children
+      req.reqs[r] = assignListIDs(req.reqs[r], index);
+    }
+  }
+  return req;
+};
+
+const startProgressDialog = (req) => {
+  progressReq.value = Object.assign(
+    { threshold: { criterion: "subject", cutoff: 1, type: "GTE" } },
+    req,
+  );
+  progressDialog.value = true;
+  if (progressReq.value["list-id"] in props.progressOverrides) {
+    newManualProgress.value =
+      props.progressOverrides[progressReq.value["list-id"]];
+  }
+};
+
+const capitalize = (word) => {
+  return word[0].toUpperCase() + word.substring(1);
+};
+
+const updateManualProgress = () => {
+  if (progressReq.value["list-id"] !== undefined) {
+    store.updateProgress({
+      listID: progressReq.value["list-id"],
+      progress: newManualProgress.value,
+    });
+  }
+  progressReq.value = undefined;
+  progressDialog.value = false;
+  newManualProgress.value = 0;
+};
+
+const percentage = (req) => {
+  return req.fulfilled
+    ? "#00b300"
+    : req.percent_fulfilled > 15
+      ? "#efce15"
+      : "#ef8214";
+};
+
+const deleteReq = (req) => {
+  const reqName = req["list-id"];
+  store.removeReq(reqName);
+};
+
+const submitPetition = () => {
+  store.setPASubstitutions({
+    uniqueKey: petitionReq.value["list-id"],
+    newReqs: petitionSelectCourses.value,
+  });
+  petitionSelectCourses.value = [];
+};
+
+const clearPetition = () => {
+  store.removeProgressAssertion(petitionReq.value["list-id"]);
+};
+
+const isPetitioned = (req) => {
+  if (
+    req["list-id"] in store.roads[store.activeRoad].contents.progressAssertions
+  ) {
+    return !(
+      "ignore" in
+      store.roads[store.activeRoad].contents.progressAssertions[req["list-id"]]
+    );
+  } else {
+    return false;
+  }
+};
+
+const isIgnored = (req) => {
+  if (
+    req["list-id"] in store.roads[store.activeRoad].contents.progressAssertions
+  ) {
+    return (
+      "ignore" in
+      store.roads[store.activeRoad].contents.progressAssertions[req["list-id"]]
+    );
+  } else {
+    return false;
+  }
+};
 </script>
 
 <style scoped>

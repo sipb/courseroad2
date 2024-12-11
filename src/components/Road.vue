@@ -4,7 +4,7 @@
   <v-expansion-panels v-model="visibleList" multiple accordion>
     <!-- v-for index in N starts at 1... -->
     <!-- FYI can't use key as prop: https://stackoverflow.com/questions/47783396/access-key-from-child-component-in-vue -->
-    <semester
+    <Semester
       v-for="index in numSems"
       :key="index - 1"
       :index="index - 1"
@@ -23,7 +23,7 @@
       small
       style="position: fixed; right: 1em; bottom: 1em"
       class="secondary"
-      @click="$store.commit('cancelAddFromCard')"
+      @click="store.cancelAddFromCard()"
     >
       <v-icon>mdi-cancel</v-icon>
     </v-btn>
@@ -72,97 +72,106 @@
 </template>
 
 <script>
-import Semester from "./Semester.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "RoadComponent",
-  components: {
-    semester: Semester,
+});
+</script>
+
+<script setup>
+import Semester from "./Semester.vue";
+import { ref, watch, computed, onMounted } from "vue";
+import { useStore, useCookies } from "../plugins/composition.js";
+
+const store = useStore();
+const cookies = useCookies();
+
+const props = defineProps({
+  selectedSubjects: {
+    type: Array,
+    required: true,
   },
-  props: {
-    selectedSubjects: {
-      type: Array,
-      required: true,
-    },
-    roadID: {
-      type: String,
-      required: true,
-    },
-    addingFromCard: {
-      type: Boolean,
-      required: true,
-    },
-    dragSemesterNum: {
-      type: Number,
-      required: true,
-    },
+  roadID: {
+    type: String,
+    required: true,
   },
-  data: function () {
-    const defaultOpen = [
-      false,
-      true,
-      false,
-      true,
-      true,
-      false,
-      true,
-      true,
-      false,
-      true,
-      true,
-      false,
-      true,
-    ];
-    const numSemesters = 16;
-    return {
-      visibleList: (numSemesters >= 13
-        ? defaultOpen.concat([true, false, true])
-        : defaultOpen
-      ).reduce((out, bool, index) => (bool ? out.concat(index) : out), []),
-      openRoadSettings: false,
-      numSems: numSemesters,
-    };
+  addingFromCard: {
+    type: Boolean,
+    required: true,
   },
-  computed: {
-    year: {
-      get: function () {
-        return this.$store.getters.userYear;
-      },
-      set: function (newYear) {
-        this.$emit("change-year", newYear);
-      },
-    },
-    hideIAP: {
-      get: function () {
-        return this.$store.getters.hideIAP;
-      },
-      set: function (value) {
-        this.$store.commit("setHideIAP", value);
-      },
-    },
+  dragSemesterNum: {
+    type: Number,
+    required: true,
   },
-  watch: {
-    visibleList: function (newVisibleList) {
-      if (this.$store.state.cookiesAllowed) {
-        this.$cookies.set(
-          "visibleList" + this.roadID,
-          JSON.stringify(newVisibleList),
-        );
-      }
-    },
+});
+
+const emit = defineEmits(["change-year"]);
+
+const defaultOpen = [
+  false,
+  true,
+  false,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false,
+  true,
+];
+const numSemesters = 16;
+
+const visibleList = ref(
+  (numSemesters >= 13
+    ? defaultOpen.concat([true, false, true])
+    : defaultOpen
+  ).reduce((out, bool, index) => (bool ? out.concat(index) : out), []),
+);
+
+const openRoadSettings = ref(false);
+const numSems = ref(numSemesters);
+
+const year = computed({
+  get: function () {
+    return store.userYear;
   },
-  mounted() {
-    const visibleList = JSON.parse(
-      this.$cookies.get("visibleList" + this.roadID),
-    );
-    if (this.$store.state.cookiesAllowed && visibleList) {
-      if (Array.isArray(visibleList) && visibleList.length === this.numSems) {
-        this.visibleList = visibleList;
-      } else {
-        this.$cookies.remove("visibleList" + this.roadID);
-      }
+  set: function (newYear) {
+    emit("change-year", newYear);
+  },
+});
+
+const hideIAP = computed({
+  get: function () {
+    return store.hideIAP;
+  },
+  set: function (value) {
+    store.setHideIAP(value);
+  },
+});
+
+watch(visibleList, (newVisibleList) => {
+  if (store.cookiesAllowed) {
+    cookies.set("visibleList" + props.roadID, JSON.stringify(newVisibleList));
+  }
+});
+
+onMounted(() => {
+  const visibleListCookie = JSON.parse(
+    cookies.get("visibleList" + props.roadID),
+  );
+  if (store.cookiesAllowed && visibleListCookie) {
+    if (
+      Array.isArray(visibleListCookie) &&
+      visibleListCookie.length === numSems.value
+    ) {
+      visibleList.value = visibleListCookie;
+    } else {
+      cookies.remove("visibleList" + props.roadID);
     }
-  },
+  }
 });
 </script>

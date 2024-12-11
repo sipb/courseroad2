@@ -10,9 +10,9 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
       <v-card-title>Save Conflict</v-card-title>
-      <v-layout>
+      <v-row>
         <!-- TODO: remove duplicate code? -->
-        <v-flex id="cloud-column" xs6 style="padding: 2em">
+        <v-col id="cloud-column" cols="6" style="padding: 2em">
           <b>Cloud</b>
           <v-list>
             <v-card style="padding: 1em">
@@ -54,8 +54,8 @@
           >
             Keep Remote
           </v-btn>
-        </v-flex>
-        <v-flex id="local-column" xs6 style="padding: 2em">
+        </v-col>
+        <v-col id="local-column" cols="6" style="padding: 2em">
           <b>Local</b>
           <v-list>
             <v-card style="padding: 1em">
@@ -98,101 +98,95 @@
           >
             Keep Local
           </v-btn>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref, computed } from "vue";
+import { useStore } from "../plugins/composition.js";
+import { flatten } from "../plugins/browserSupport.js";
 
-export default defineComponent({
-  name: "ConflictDialog",
-  props: {
-    conflictInfo: {
-      type: Object,
-      default: function () {
-        return undefined;
-      },
-    },
-  },
-  data: function () {
-    return {
-      conflictDialog: false,
-    };
-  },
-  computed: {
-    roads() {
-      return this.$store.state.roads;
-    },
-  },
-  methods: {
-    startConflict: function () {
-      this.conflictDialog = true;
-    },
-    resolveConflict: function () {
-      this.conflictDialog = false;
-    },
-    colorSubject: function (subjectIndex, subjectList) {
-      const remoteSubjects = this.renumberDuplicates(
-        this.conflictInfo.other_contents.selectedSubjects.map(
-          (s) => s.subject_id + " " + s.semester,
-        ),
-      );
-      const localSubjects = this.renumberDuplicates(
-        this.flatten(
-          this.roads[this.conflictInfo.id].contents.selectedSubjects,
-        ).map((s) => s.subject_id + " " + s.semester),
-      );
-      let currentSubject;
-      if (subjectList === "remote") {
-        currentSubject = remoteSubjects[subjectIndex];
-        if (
-          this.diff(remoteSubjects, localSubjects).indexOf(currentSubject) >= 0
-        ) {
-          return "blue--text";
-        }
-      } else if (subjectList === "local") {
-        currentSubject = localSubjects[subjectIndex];
-        if (
-          this.diff(localSubjects, remoteSubjects).indexOf(currentSubject) >= 0
-        ) {
-          return "blue--text";
-        }
-      }
-      return "";
-    },
-    diff: function (a1, a2) {
-      return a1.filter(function (i) {
-        return a2.indexOf(i) === -1;
-      });
-    },
-    count: function (arr, elem) {
-      let countElem = 0;
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === elem) {
-          countElem++;
-        }
-      }
-      return countElem;
-    },
-    renumberDuplicates: function (arr) {
-      return arr.map((elem, index) => {
-        if (this.count(arr, elem) > 1) {
-          const appendNumber = this.count(arr.slice(0, index), elem);
-          if (appendNumber > 0) {
-            return elem + "-" + appendNumber.toString();
-          } else {
-            return elem;
-          }
-        } else {
-          return elem;
-        }
-      });
-    },
+const store = useStore();
+
+const props = defineProps({
+  conflictInfo: {
+    type: Object,
+    default: undefined,
   },
 });
+
+// const emit = defineEmits(["update-local", "update-remote"]);
+defineEmits(["update-local", "update-remote"]);
+
+const conflictDialog = ref(false);
+
+const roads = computed(() => store.roads);
+
+// const startConflict = function () {
+//   conflictDialog.value = true;
+// };
+
+// const resolveConflict = function () {
+//   conflictDialog.value = false;
+// };
+
+const colorSubject = (subjectIndex, subjectList) => {
+  const remoteSubjects = renumberDuplicates(
+    props.conflictInfo.other_contents.selectedSubjects.map(
+      (s) => s.subject_id + " " + s.semester,
+    ),
+  );
+  const localSubjects = renumberDuplicates(
+    flatten(roads[props.conflictInfo.id].contents.selectedSubjects).map(
+      (s) => s.subject_id + " " + s.semester,
+    ),
+  );
+  let currentSubject;
+  if (subjectList === "remote") {
+    currentSubject = remoteSubjects[subjectIndex];
+    if (diff(remoteSubjects, localSubjects).indexOf(currentSubject) >= 0) {
+      return "blue--text";
+    }
+  } else if (subjectList === "local") {
+    currentSubject = localSubjects[subjectIndex];
+    if (diff(localSubjects, remoteSubjects).indexOf(currentSubject) >= 0) {
+      return "blue--text";
+    }
+  }
+  return "";
+};
+
+const diff = (a1, a2) => {
+  return a1.filter((i) => a2.indexOf(i) === -1);
+};
+
+const count = (arr, elem) => {
+  let countElem = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === elem) {
+      countElem++;
+    }
+  }
+  return countElem;
+};
+
+const renumberDuplicates = (arr) => {
+  return arr.map((elem, index) => {
+    if (count(arr, elem) > 1) {
+      const appendNumber = count(arr.slice(0, index), elem);
+      if (appendNumber > 0) {
+        return elem + "-" + appendNumber.toString();
+      } else {
+        return elem;
+      }
+    } else {
+      return elem;
+    }
+  });
+};
 </script>
 
 <style scoped></style>

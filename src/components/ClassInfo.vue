@@ -1,6 +1,6 @@
 <template>
-  <v-layout>
-    <v-flex>
+  <v-row no-gutters>
+    <v-col>
       <v-card
         id="classInfoCard"
         data-cy="classInfoCard"
@@ -14,7 +14,7 @@
           class="card-header"
           :style="'background-color: ' + cardColor()"
         >
-          <v-flex
+          <v-col
             style="display: flex; flex-direction: row; align-items: center"
           >
             <div style="padding: 0; margin: 0; display: block">
@@ -24,7 +24,7 @@
                 :color="cardTextColor(currentSubject)"
                 icon
                 data-cy="cardPreviousButton"
-                @click="$store.commit('popClassStack')"
+                @click="store.popClassStack()"
               >
                 <v-icon>mdi-arrow-left</v-icon>
               </v-btn>
@@ -42,7 +42,7 @@
                 icon
                 style="margin: 0"
                 data-cy="closeClassInfoButton"
-                @click="$store.commit('clearClassInfoStack')"
+                @click="store.clearClassInfoStack()"
               >
                 <v-icon
                   style="margin: 0; padding: 0"
@@ -52,12 +52,12 @@
                 </v-icon>
               </v-btn>
             </div>
-          </v-flex>
+          </v-col>
         </v-card-title>
 
         <v-card-text class="card-body">
           <div id="cardBody" class="card-body-container">
-            <v-layout>
+            <v-row no-gutters>
               <div style="padding: 0 0 0.5em 0">
                 <h3 data-cy="cardSubjectTitle">
                   {{ currentSubject.title }}
@@ -81,11 +81,11 @@
                 small
                 style="margin-left: auto"
                 class="secondary"
-                @click="$store.commit('cancelAddFromCard')"
+                @click="store.cancelAddFromCard()"
               >
                 <v-icon>mdi-cancel</v-icon>
               </v-btn>
-            </v-layout>
+            </v-row>
             <h4 v-if="currentSubject.is_historical">
               <v-icon small> mdi-alert </v-icon>
               This subject is no longer offered (last offered
@@ -202,7 +202,7 @@
               >
                 <td>
                   <b>{{
-                    currentSubject.subject_id in $store.state.genericIndex
+                    currentSubject.subject_id in store.genericIndex
                       ? "Average* hours"
                       : "Hours"
                   }}</b>
@@ -225,7 +225,7 @@
                 </td>
               </tr>
             </table>
-            <p v-if="currentSubject.subject_id in $store.state.genericIndex">
+            <p v-if="currentSubject.subject_id in store.genericIndex">
               *Hours averaged over all {{ currentSubject.subject_id }} classes
             </p>
             <h3>Description</h3>
@@ -237,7 +237,7 @@
                 >View in Course Catalog</a
               >
             </p>
-            <p v-if="currentSubject.subject_id in $store.state.subjectsIndex">
+            <p v-if="currentSubject.subject_id in store.subjectsIndex">
               <a
                 target="_blank"
                 :href="
@@ -250,21 +250,21 @@
             </p>
             <div v-if="currentSubject.joint_subjects !== undefined">
               <h3>Joint Subjects</h3>
-              <subject-scroll
+              <SubjectScroll
                 :subjects="currentSubject.joint_subjects.map(classInfo)"
                 @click-subject="clickRelatedSubject"
               />
             </div>
             <div v-if="currentSubject.equivalent_subjects !== undefined">
               <h3>Equivalent Subjects</h3>
-              <subject-scroll
+              <SubjectScroll
                 :subjects="currentSubject.equivalent_subjects.map(classInfo)"
                 @click-subject="clickRelatedSubject"
               />
             </div>
             <div v-if="parsedPrereqs.reqs.length > 0">
               <h3 id="prereq0">Prerequisites</h3>
-              <expansion-reqs
+              <ExpansionReqs
                 :requirement="parsedPrereqs"
                 :req-i-d="currentSubject.subject_id + 'prereq0'"
                 data-cy="cardPrereqs"
@@ -274,7 +274,7 @@
             <h4 v-if="currentSubject.either_prereq_or_coreq">OR</h4>
             <div v-if="parsedCoreqs.reqs.length > 0">
               <h3 id="coreq0">Corequisites</h3>
-              <expansion-reqs
+              <ExpansionReqs
                 :requirement="parsedCoreqs"
                 :req-i-d="currentSubject.subject_id + 'coreq0'"
                 @click-subject="clickRelatedSubject"
@@ -285,7 +285,7 @@
               data-cy="cardRelatedSubjects"
             >
               <h3>Related Subjects</h3>
-              <subject-scroll
+              <SubjectScroll
                 :subjects="currentSubject.related_subjects.map(classInfo)"
                 @click-subject="clickRelatedSubject"
               />
@@ -294,7 +294,7 @@
               <h3>
                 Subjects with {{ currentSubject.subject_id }} as Prerequisite
               </h3>
-              <subject-scroll
+              <SubjectScroll
                 :subjects="subjectsWithPrereq"
                 @click-subject="clickRelatedSubject"
               />
@@ -302,319 +302,300 @@
           </div>
         </v-card-text>
       </v-card>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
-<script>
+<script setup>
 import $ from "jquery";
 import SubjectScroll from "../components/SubjectScroll.vue";
 import ExpansionReqs from "../components/ExpansionReqs.vue";
-import colorMixin from "./../mixins/colorMixin.js";
-import schedule from "./../mixins/schedule.js";
-import reqFulfillment from "./../mixins/reqFulfillment.js";
-import { defineComponent } from "vue";
+import {
+  getRawColor,
+  getRawTextColor,
+  courseColor,
+} from "./../mixins/colorMixin.js";
+import { reqsFulfilled } from "./../mixins/reqFulfillment.js";
+import { computed } from "vue";
+import { useStore } from "../plugins/composition.js";
+import { flatten } from "../plugins/browserSupport.js";
 
-export default defineComponent({
-  name: "ClassInfo",
-  components: {
-    "subject-scroll": SubjectScroll,
-    "expansion-reqs": ExpansionReqs,
-  },
-  mixins: [colorMixin, schedule, reqFulfillment],
-  data: function () {
-    return {};
-  },
-  computed: {
-    addingFromCard() {
-      return this.$store.state.addingFromCard;
-    },
-    classInfoStack() {
-      return this.$store.state.classInfoStack;
-    },
-    currentSubject: function () {
-      const currentID = this.classInfoStack[this.classInfoStack.length - 1];
-      return currentID in this.$store.state.subjectsIndex
-        ? this.$store.state.subjectsInfo[
-            this.$store.state.subjectsIndex[currentID]
-          ]
-        : this.$store.state.genericCourses[
-            this.$store.state.genericIndex[currentID]
-          ];
-    },
-    parsedPrereqs: function () {
-      return this.currentSubject.prerequisites !== undefined
-        ? this.parseRequirements(this.currentSubject.prerequisites)
-        : { reqs: [] };
-    },
-    parsedCoreqs: function () {
-      return this.currentSubject.corequisites !== undefined
-        ? this.parseRequirements(this.currentSubject.corequisites)
-        : { reqs: [] };
-    },
-    subjectsWithPrereq: function () {
-      const currentID = this.currentSubject.subject_id;
-      const currentDept = currentID.substring(0, currentID.indexOf("."));
+const store = useStore();
 
-      const thisGIRAttr = this.currentSubject.gir_attribute;
-      let IDMatcher;
-
-      if (thisGIRAttr === undefined) {
-        IDMatcher = new RegExp(
-          "(^|[^\\da-zA-Z])" +
-            currentID.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
-            "(?![\\da-zA-Z])",
-        );
-      } else {
-        // Expression taken directly from above, but modified for GIRs
-        const filteredCurrentID = currentID.replace(
-          /[.*+?^${}()|[\]\\]/g,
-          "\\$&",
-        );
-        IDMatcher = new RegExp(
-          "(^|[^\\da-zA-Z])" +
-            "(" +
-            "GIR:" +
-            thisGIRAttr +
-            "|" +
-            filteredCurrentID +
-            ")" +
-            "(?![\\da-zA-Z])",
-        );
-      }
-      return this.$store.state.subjectsInfo
-        .filter(function (s) {
-          return (
-            s.prerequisites !== undefined && IDMatcher.test(s.prerequisites)
-          );
-        })
-        .sort(function (s1, s2) {
-          // show subjects in same department first
-          const dept1 = s1.subject_id.substring(0, s1.subject_id.indexOf("."));
-          const dept2 = s2.subject_id.substring(0, s2.subject_id.indexOf("."));
-          if (dept1 === currentDept && dept2 !== currentDept) {
-            return -1;
-          } else {
-            return 0;
-          }
-        });
-    },
-    firstAppearance: function () {
-      const currentSubjects =
-        this.$store.state.roads[this.$store.state.activeRoad].contents
-          .selectedSubjects;
-      const currentID = this.currentSubject.subject_id;
-
-      const subjectInSemesters = currentSubjects.map((semesterSubjects) => {
-        return (
-          semesterSubjects.map((subj) => subj.subject_id).indexOf(currentID) >=
-          0
-        );
-      });
-
-      return subjectInSemesters.indexOf(true);
-    },
-  },
-  methods: {
-    classInfo: function (subjectID) {
-      const subj =
-        this.$store.state.subjectsInfo[
-          this.$store.state.subjectsIndex[subjectID]
-        ];
-      return (
-        subj || {
-          subject_id: subjectID,
-          title: "",
-        }
-      );
-    },
-    clickRelatedSubject: function (subject) {
-      this.$store.commit("pushClassStack", subject.subject_id);
-      $("#cardBody").animate({ scrollTop: 0 });
-    },
-    parseRequirements: function (requirements) {
-      // TODO: a way to make this more ETU?
-      // remove spaces after commas and slashes
-      requirements = requirements.replace(/([,/])\s+/g, "$1");
-      function getParenGroup(str) {
-        if (str[0] === "(") {
-          let retString = "";
-          str = str.substring(1);
-          let nextParen;
-          let numParens = 1;
-          while ((nextParen = /[()]/.exec(str)) !== null && numParens > 0) {
-            const parenIndex = nextParen.index;
-            const parenType = nextParen[0];
-            if (parenType === "(") {
-              numParens++;
-            } else {
-              numParens--;
-            }
-            retString += str.substring(0, parenIndex + 1);
-            str = str.substring(parenIndex + 1);
-          }
-          return [
-            retString.substring(0, retString.length - 1),
-            str.substring(1),
-            str.length > 0 ? str.substring(0, 1) : undefined,
-          ];
-        } else {
-          return undefined;
-        }
-      }
-
-      function getNextReq(reqString) {
-        if (reqString[0] === "(") {
-          return getParenGroup(reqString);
-        } else {
-          const nextMatch = /^([^/,]+)([/,])(.*)/g.exec(reqString);
-          if (nextMatch !== null) {
-            const nextReq = nextMatch[1];
-            const restOfString = nextMatch[3];
-            const delimiter = nextMatch[2];
-            return [nextReq, restOfString, delimiter];
-          } else {
-            return [reqString, "", undefined];
-          }
-        }
-      }
-
-      function isBaseReq(req) {
-        return /[/(),]/g.exec(req) === null;
-      }
-
-      const getClassInfo = this.classInfo;
-
-      const parseReqs = (reqString) => {
-        const parsedReq = {
-          reqs: [],
-          subject_id: "",
-          connectionType: "",
-          title: "",
-          expansionDesc: "",
-          topLevel: false,
-          fulfilled: false,
-        };
-        let onereq;
-        let connectionType;
-        let nextConnectionType;
-        while (reqString.length > 0) {
-          [onereq, reqString, nextConnectionType] = getNextReq(reqString);
-          if (nextConnectionType !== undefined) {
-            connectionType = nextConnectionType;
-          }
-          if (isBaseReq(onereq)) {
-            let subRequirement;
-            if (onereq.indexOf("'") >= 0) {
-              subRequirement = {
-                subject_id: onereq.replace(/'/g, ""),
-                title: "",
-              };
-            } else {
-              subRequirement = Object.assign({}, getClassInfo(onereq));
-            }
-            if (this.firstAppearance >= -1) {
-              const allPreviousSubjects = this.flatten(
-                this.$store.state.roads[
-                  this.$store.state.activeRoad
-                ].contents.selectedSubjects.slice(0, this.firstAppearance),
-              );
-              subRequirement.fulfilled = this.reqsFulfilled(
-                onereq,
-                allPreviousSubjects,
-              );
-            } else {
-              subRequirement.fulfilled = true;
-            }
-            parsedReq.reqs.push(subRequirement);
-          } else {
-            parsedReq.reqs.push(parseReqs(onereq));
-          }
-        }
-
-        if (connectionType === "/") {
-          parsedReq.connectionType = "any";
-          parsedReq.fulfilled = parsedReq.reqs.some((req) => req.fulfilled);
-        } else if (connectionType === ",") {
-          parsedReq.connectionType = "all";
-          parsedReq.fulfilled = parsedReq.reqs.every((req) => req.fulfilled);
-        }
-
-        function sortOrder(req) {
-          if (req.reqs !== undefined) {
-            return 0;
-          } else if (req.total_units !== undefined) {
-            return -1;
-          } else {
-            return 1;
-          }
-        }
-
-        parsedReq.reqs.sort(function (a, b) {
-          return sortOrder(a) - sortOrder(b);
-        });
-
-        function getReqTitle(req) {
-          if (req.total_units !== undefined) {
-            return req.subject_id;
-          } else if (typeof req === "string") {
-            return req;
-          } else {
-            return req.subject_id + " " + req.title;
-          }
-        }
-
-        if (parsedReq.reqs.length === 2) {
-          if (parsedReq.connectionType === "any") {
-            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
-            parsedReq.title = "or " + getReqTitle(parsedReq.reqs[1]);
-            parsedReq.expansionDesc = "Select either:";
-          } else {
-            parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
-            parsedReq.title = "and " + getReqTitle(parsedReq.reqs[1]);
-            parsedReq.expansionDesc = "Select both:";
-          }
-        } else if (parsedReq.reqs.length > 2) {
-          parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
-          if (parsedReq.connectionType === "any") {
-            parsedReq.title = "or " + (parsedReq.reqs.length - 1) + " others";
-            parsedReq.expansionDesc = "Select any:";
-          } else {
-            parsedReq.title = "and " + (parsedReq.reqs.length - 1) + " others";
-            parsedReq.expansionDesc = "Select all:";
-          }
-        }
-
-        const connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
-
-        if (connectionMatch !== null) {
-          const connectionIndex = connectionMatch.index;
-          const firstPart = parsedReq.subject_id
-            .substring(0, connectionIndex)
-            .replace(/\s/g, "");
-          const secondPart = parsedReq.subject_id.substring(connectionIndex);
-          parsedReq.subject_id = firstPart;
-          parsedReq.title = secondPart + " " + parsedReq.title;
-        }
-
-        return parsedReq;
-      };
-
-      const rList = parseReqs(requirements);
-      rList.topLevel = true;
-      return rList;
-    },
-    addClass: function () {
-      this.$store.commit("addFromCard", this.currentSubject);
-    },
-    cardColor: function () {
-      return `${this.getRawColor(this.courseColor(this.currentSubject))}`;
-    },
-    cardTextColor: function () {
-      return `${this.getRawTextColor(this.courseColor(this.currentSubject))}`;
-    },
-  },
+const addingFromCard = computed(() => store.addingFromCard);
+const classInfoStack = computed(() => store.classInfoStack);
+const currentSubject = computed(() => {
+  const currentID = classInfoStack.value[classInfoStack.value.length - 1];
+  return currentID in store.subjectsIndex
+    ? store.subjectsInfo[store.subjectsIndex[currentID]]
+    : store.genericCourses[store.genericIndex[currentID]];
 });
+const parsedPrereqs = computed(() => {
+  return currentSubject.value.prerequisites !== undefined
+    ? parseRequirements(currentSubject.value.prerequisites)
+    : { reqs: [] };
+});
+const parsedCoreqs = computed(() => {
+  return currentSubject.value.corequisites !== undefined
+    ? parseRequirements(currentSubject.value.corequisites)
+    : { reqs: [] };
+});
+
+const subjectsWithPrereq = computed(() => {
+  const currentID = currentSubject.value.subject_id;
+  const currentDept = currentID.substring(0, currentID.indexOf("."));
+
+  const thisGIRAttr = currentSubject.value.gir_attribute;
+  let IDMatcher;
+
+  if (thisGIRAttr === undefined) {
+    IDMatcher = new RegExp(
+      "(^|[^\\da-zA-Z])" +
+        currentID.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+        "(?![\\da-zA-Z])",
+    );
+  } else {
+    // Expression taken directly from above, but modified for GIRs
+    const filteredCurrentID = currentID.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    IDMatcher = new RegExp(
+      "(^|[^\\da-zA-Z])" +
+        "(" +
+        "GIR:" +
+        thisGIRAttr +
+        "|" +
+        filteredCurrentID +
+        ")" +
+        "(?![\\da-zA-Z])",
+    );
+  }
+  return store.subjectsInfo
+    .filter(function (s) {
+      return s.prerequisites !== undefined && IDMatcher.test(s.prerequisites);
+    })
+    .sort(function (s1, s2) {
+      // show subjects in same department first
+      const dept1 = s1.subject_id.substring(0, s1.subject_id.indexOf("."));
+      const dept2 = s2.subject_id.substring(0, s2.subject_id.indexOf("."));
+      if (dept1 === currentDept && dept2 !== currentDept) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+});
+const firstAppearance = computed(() => {
+  const currentSubjects =
+    store.roads[store.activeRoad].contents.selectedSubjects;
+  const currentID = currentSubject.value.subject_id;
+
+  const subjectInSemesters = currentSubjects.map((semesterSubjects) => {
+    return (
+      semesterSubjects.map((subj) => subj.subject_id).indexOf(currentID) >= 0
+    );
+  });
+
+  return subjectInSemesters.indexOf(true);
+});
+
+const classInfo = (subjectID) => {
+  const subj = store.subjectsInfo[store.subjectsIndex[subjectID]];
+  return (
+    subj || {
+      subject_id: subjectID,
+      title: "",
+    }
+  );
+};
+
+const clickRelatedSubject = (subject) => {
+  store.pushClassStack(subject.subject_id);
+  $("#cardBody").animate({ scrollTop: 0 });
+};
+
+const parseRequirements = (requirements) => {
+  // TODO: a way to make this more ETU?
+  // remove spaces after commas and slashes
+  requirements = requirements.replace(/([,/])\s+/g, "$1");
+  function getParenGroup(str) {
+    if (str[0] === "(") {
+      let retString = "";
+      str = str.substring(1);
+      let nextParen;
+      let numParens = 1;
+      while ((nextParen = /[()]/.exec(str)) !== null && numParens > 0) {
+        const parenIndex = nextParen.index;
+        const parenType = nextParen[0];
+        if (parenType === "(") {
+          numParens++;
+        } else {
+          numParens--;
+        }
+        retString += str.substring(0, parenIndex + 1);
+        str = str.substring(parenIndex + 1);
+      }
+      return [
+        retString.substring(0, retString.length - 1),
+        str.substring(1),
+        str.length > 0 ? str.substring(0, 1) : undefined,
+      ];
+    } else {
+      return undefined;
+    }
+  }
+
+  function getNextReq(reqString) {
+    if (reqString[0] === "(") {
+      return getParenGroup(reqString);
+    } else {
+      const nextMatch = /^([^/,]+)([/,])(.*)/g.exec(reqString);
+      if (nextMatch !== null) {
+        const nextReq = nextMatch[1];
+        const restOfString = nextMatch[3];
+        const delimiter = nextMatch[2];
+        return [nextReq, restOfString, delimiter];
+      } else {
+        return [reqString, "", undefined];
+      }
+    }
+  }
+
+  function isBaseReq(req) {
+    return /[/(),]/g.exec(req) === null;
+  }
+
+  const getClassInfo = classInfo;
+
+  const parseReqs = (reqString) => {
+    const parsedReq = {
+      reqs: [],
+      subject_id: "",
+      connectionType: "",
+      title: "",
+      expansionDesc: "",
+      topLevel: false,
+      fulfilled: false,
+    };
+    let onereq;
+    let connectionType;
+    let nextConnectionType;
+    while (reqString.length > 0) {
+      [onereq, reqString, nextConnectionType] = getNextReq(reqString);
+      if (nextConnectionType !== undefined) {
+        connectionType = nextConnectionType;
+      }
+      if (isBaseReq(onereq)) {
+        let subRequirement;
+        if (onereq.indexOf("'") >= 0) {
+          subRequirement = {
+            subject_id: onereq.replace(/'/g, ""),
+            title: "",
+          };
+        } else {
+          subRequirement = Object.assign({}, getClassInfo(onereq));
+        }
+        if (firstAppearance.value >= -1) {
+          const allPreviousSubjects = flatten(
+            store.roads[store.activeRoad].contents.selectedSubjects.slice(
+              0,
+              firstAppearance.value,
+            ),
+          );
+          subRequirement.fulfilled = reqsFulfilled(
+            store,
+            onereq,
+            allPreviousSubjects,
+          );
+        } else {
+          subRequirement.fulfilled = true;
+        }
+        parsedReq.reqs.push(subRequirement);
+      } else {
+        parsedReq.reqs.push(parseReqs(onereq));
+      }
+    }
+
+    if (connectionType === "/") {
+      parsedReq.connectionType = "any";
+      parsedReq.fulfilled = parsedReq.reqs.some((req) => req.fulfilled);
+    } else if (connectionType === ",") {
+      parsedReq.connectionType = "all";
+      parsedReq.fulfilled = parsedReq.reqs.every((req) => req.fulfilled);
+    }
+
+    function sortOrder(req) {
+      if (req.reqs !== undefined) {
+        return 0;
+      } else if (req.total_units !== undefined) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
+
+    parsedReq.reqs.sort(function (a, b) {
+      return sortOrder(a) - sortOrder(b);
+    });
+
+    function getReqTitle(req) {
+      if (req.total_units !== undefined) {
+        return req.subject_id;
+      } else if (typeof req === "string") {
+        return req;
+      } else {
+        return req.subject_id + " " + req.title;
+      }
+    }
+
+    if (parsedReq.reqs.length === 2) {
+      if (parsedReq.connectionType === "any") {
+        parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+        parsedReq.title = "or " + getReqTitle(parsedReq.reqs[1]);
+        parsedReq.expansionDesc = "Select either:";
+      } else {
+        parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+        parsedReq.title = "and " + getReqTitle(parsedReq.reqs[1]);
+        parsedReq.expansionDesc = "Select both:";
+      }
+    } else if (parsedReq.reqs.length > 2) {
+      parsedReq.subject_id = getReqTitle(parsedReq.reqs[0]);
+      if (parsedReq.connectionType === "any") {
+        parsedReq.title = "or " + (parsedReq.reqs.length - 1) + " others";
+        parsedReq.expansionDesc = "Select any:";
+      } else {
+        parsedReq.title = "and " + (parsedReq.reqs.length - 1) + " others";
+        parsedReq.expansionDesc = "Select all:";
+      }
+    }
+
+    const connectionMatch = /(and|or)/.exec(parsedReq.subject_id);
+
+    if (connectionMatch !== null) {
+      const connectionIndex = connectionMatch.index;
+      const firstPart = parsedReq.subject_id
+        .substring(0, connectionIndex)
+        .replace(/\s/g, "");
+      const secondPart = parsedReq.subject_id.substring(connectionIndex);
+      parsedReq.subject_id = firstPart;
+      parsedReq.title = secondPart + " " + parsedReq.title;
+    }
+
+    return parsedReq;
+  };
+
+  const rList = parseReqs(requirements);
+  rList.topLevel = true;
+  return rList;
+};
+
+const addClass = () => {
+  store.addFromCard(currentSubject.value);
+};
+const cardColor = () => {
+  return `${getRawColor(courseColor(currentSubject.value))}`;
+};
+const cardTextColor = () => {
+  return `${getRawTextColor(courseColor(currentSubject.value))}`;
+};
 </script>
 
 <style scoped>
@@ -629,7 +610,7 @@ export default defineComponent({
 }
 
 .card-header {
-  padding: 0.5em 1em;
+  padding: 0em 1em;
   display: inline-block;
   color: white;
 }
