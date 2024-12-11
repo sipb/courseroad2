@@ -1,5 +1,5 @@
 <template>
-  <v-layout grow>
+  <v-row class="grow" no-gutters>
     <v-btn
       class="collapse-button"
       outlined
@@ -63,15 +63,15 @@
           />
 
           <v-spacer />
-          <v-flex v-if="otherRoadHasName(roadtitle)">
+          <v-col v-if="otherRoadHasName(roadtitle)">
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
                 There's already a road with this name.
               </v-card-text>
             </v-card>
-          </v-flex>
-          <v-flex v-if="badinput">
+          </v-col>
+          <v-col v-if="badinput">
             <v-card color="red">
               <v-card-text>
                 <b>Invalid input!</b>
@@ -79,7 +79,7 @@
                 uploaded/pasted a valid '.road' file.
               </v-card-text>
             </v-card>
-          </v-flex>
+          </v-col>
         </v-card-text>
 
         <v-card-actions>
@@ -96,7 +96,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
+  </v-row>
 </template>
 
 <script setup>

@@ -1,7 +1,7 @@
 <!-- this is a cool idea for class info on click: https://vuetifyjs.com/en/components/expansion-panels#popout-inset -->
 
 <template>
-  <v-flex lg2 md3 xs4>
+  <v-col lg="2" md="3" cols="4">
     <v-hover>
       <v-badge
         slot-scope="{ hover }"
@@ -15,12 +15,12 @@
           data-cy="placeholderClass"
           class="placeholder classbox"
         >
-          <v-container fill-height>
-            <v-layout align-center justify-center>
+          <v-container class="fill-height">
+            <v-row align="center" justify="center">
               <v-btn large icon @click="store.addAtPlaceholder(semesterIndex)">
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
-            </v-layout>
+            </v-row>
           </v-container>
         </v-card>
 
@@ -111,7 +111,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-flex>
+  </v-col>
 </template>
 
 <script>

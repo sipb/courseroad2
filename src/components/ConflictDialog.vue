@@ -10,9 +10,9 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
       <v-card-title>Save Conflict</v-card-title>
-      <v-layout>
+      <v-row>
         <!-- TODO: remove duplicate code? -->
-        <v-flex id="cloud-column" xs6 style="padding: 2em">
+        <v-col id="cloud-column" cols="6" style="padding: 2em">
           <b>Cloud</b>
           <v-list>
             <v-card style="padding: 1em">
@@ -54,8 +54,8 @@
           >
             Keep Remote
           </v-btn>
-        </v-flex>
-        <v-flex id="local-column" xs6 style="padding: 2em">
+        </v-col>
+        <v-col id="local-column" cols="6" style="padding: 2em">
           <b>Local</b>
           <v-list>
             <v-card style="padding: 1em">
@@ -98,8 +98,8 @@
           >
             Keep Local
           </v-btn>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-card>
   </v-dialog>
 </template>

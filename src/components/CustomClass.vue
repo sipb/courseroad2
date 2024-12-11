@@ -72,8 +72,8 @@
                 mandatory
                 class="elevation-0"
               >
-                <v-layout wrap>
-                  <v-flex class="xs12">
+                <v-row>
+                  <v-col class="xs12">
                     <v-btn
                       class="white--text px-6 ma-2"
                       value="default"
@@ -81,8 +81,8 @@
                     >
                       Default
                     </v-btn>
-                  </v-flex>
-                  <v-flex v-for="(_i, i) in 7" :key="i">
+                  </v-col>
+                  <v-col v-for="(_i, i) in 7" :key="i">
                     <v-btn
                       v-for="(_j, j) in 6"
                       :key="j"
@@ -96,8 +96,8 @@
                         >mdi-check</v-icon
                       >
                     </v-btn>
-                  </v-flex>
-                </v-layout>
+                  </v-col>
+                </v-row>
               </v-btn-toggle>
             </div>
           </div>

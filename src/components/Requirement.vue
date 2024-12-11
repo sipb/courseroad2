@@ -7,8 +7,8 @@
     @mouseover="hoveringOver = true"
     @mouseleave="hoveringOver = false"
   >
-    <v-layout>
-      <v-flex>
+    <v-row no-gutters>
+      <v-col class="grow">
         <div v-if="!isLeaf" style="text-wrap: wrap">
           <span v-if="'title-no-degree' in req && req['title-no-degree'] != ''">
             {{ req["title-no-degree"] }}
@@ -86,8 +86,8 @@
         <span v-if="req.max === 0 && isLeaf" style="font-style: italic">
           (optional)
         </span>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col class="shrink" style="min-width: 7.8ch">
         <div>
           <span v-if="hoveringOver && isLeaf" style="float: right">
             <v-icon
@@ -126,8 +126,8 @@
             </v-icon>
           </span>
         </div>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     <div :class="percentage_bar" :style="percentage"></div>
   </div>
 </template>

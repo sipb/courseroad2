@@ -3,9 +3,9 @@
   <v-app id="app-wrapper">
     <v-dialog v-model="showMobile" fullscreen>
       <v-card height="100%">
-        <v-container fill-height>
-          <v-layout column>
-            <v-flex grow>
+        <v-container class="fill-height">
+          <v-row class="flex-column">
+            <v-col class="grow">
               <v-card-title primary-title>
                 <h1 class="text-h3">Hello there!</h1>
               </v-card-title>
@@ -16,8 +16,8 @@
                   app instead, available on Android and iOS.
                 </p>
               </v-card-text>
-            </v-flex>
-            <v-flex shrink align-self-center>
+            </v-col>
+            <v-col class="shrink" align-self="center">
               <v-btn block :href="appLink" color="info">
                 <v-icon>mdi-download</v-icon> Download
               </v-btn>
@@ -25,8 +25,8 @@
               <v-btn block href="#" @click="showMobile = false">
                 No thanks, take me to the desktop site.
               </v-btn>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card>
     </v-dialog>
@@ -48,7 +48,7 @@
         @resolve-conflict="resolveConflict"
       />
 
-      <v-layout justify-end>
+      <v-row justify="end" no-gutters>
         <v-text-field
           id="searchInputTF"
           v-model="searchInput"
@@ -68,7 +68,7 @@
           @keydown.esc="searchOpen = false"
           @keyup.enter="searchMenu.openFirstClass"
         />
-      </v-layout>
+      </v-row>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -78,16 +78,16 @@
       class="side-panel elevation-2 scroller"
       app
     >
-      <v-container fill-height style="padding: 0">
-        <v-layout fill-height column>
-          <v-layout
-            shrink
+      <v-container class="fill-height" style="padding: 0">
+        <v-row class="fill-height flex-column" no-gutters>
+          <v-row
+            class="shrink"
             style="padding: 14px; padding-bottom: 0"
-            align-center
+            align="center"
+            no-gutters
           >
-            <v-flex
-              shrink
-              class="blue-grey"
+            <v-col
+              class="blue-grey shrink"
               :class="[vuetify.theme.dark ? 'darken-4' : 'lighten-4']"
               style="
                 user-select: none;
@@ -98,13 +98,15 @@
                 display: inline-block;
               "
             >
-              <v-icon size="1.3em" color="#00b300">
-                mdi-checkbox-marked
-              </v-icon>
-              <h3 style="display: inline">{{ " C o u r s e R o a d " }}</h3>
-            </v-flex>
+              <h3 style="white-space: nowrap; display: inline-block">
+                <v-icon size="0.75lh" color="#00b300">
+                  mdi-checkbox-marked
+                </v-icon>
+                {{ " C o u r s e R o a d " }}
+              </h3>
+            </v-col>
             <ThemeToggler />
-            <v-flex>
+            <v-col>
               <v-dialog
                 v-model="aboutDialog"
                 fullscreen
@@ -133,8 +135,8 @@
                   </v-container>
                 </v-card>
               </v-dialog>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
           <Audit
             v-if="activeRoad !== ''"
             :req-trees="reqTrees"
@@ -144,8 +146,8 @@
             :progress-overrides="roads[activeRoad].contents.progressOverrides"
             data-cy="audit"
           />
-          <v-flex
-            shrink
+          <v-col
+            class="shrink"
             style="padding: 14px; padding-bottom: 0"
             data-cy="unofficialWarning"
           >
@@ -175,8 +177,8 @@
                 >courseroad@mit.edu</a
               >.
             </p>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
       </v-container>
       <!-- TODO: will need to add event for when the child can edit selectedReqs probably -->
     </v-navigation-drawer>
@@ -228,10 +230,10 @@
     />
 
     <v-footer v-if="!dismissedCookies" fixed :color="'#34627d'" app>
-      <v-layout column>
-        <v-flex v-if="!dismissedCookies" class="py-1 px-2">
-          <v-layout align-center>
-            <v-flex style="color: white">
+      <v-row class="flex-column">
+        <v-col v-if="!dismissedCookies" class="py-1 px-2">
+          <v-row align="center">
+            <v-col style="color: white">
               This website uses cookies and session storage to store your data
               and login token, and important features like saving roads will not
               work without them. <br />
@@ -244,8 +246,8 @@
                 use of cookies, but may opt out by clicking the button to the
                 right.</span
               >
-            </v-flex>
-            <v-flex shrink>
+            </v-col>
+            <v-col class="shrink">
               <v-btn
                 small
                 depressed
@@ -260,8 +262,8 @@
               >
                 I accept
               </v-btn>
-            </v-flex>
-            <v-flex shrink>
+            </v-col>
+            <v-col class="shrink">
               <v-btn
                 small
                 depressed
@@ -273,10 +275,10 @@
               >
                 Opt out
               </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-footer>
   </v-app>
 </template>

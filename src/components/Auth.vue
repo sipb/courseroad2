@@ -1,5 +1,5 @@
 <template>
-  <v-layout align-center grow>
+  <v-row class="grow" align="center" no-gutters>
     <v-tooltip v-if="!loggedIn" bottom>
       <template #activator="{ on }">
         <v-btn
@@ -60,7 +60,7 @@
     <div v-if="currentlySaving || gettingUserData">
       <v-progress-circular :size="18" indeterminate />
     </div>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>

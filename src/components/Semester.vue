@@ -10,15 +10,14 @@
   >
     <v-expansion-panel-header>
       <v-container
-        grid-list-xs
         style="padding: 0px; margin-left: 0px"
         data-cy="semesterHeader"
         @dragenter="dragenter"
         @dragleave="dragleave"
         @drop="ondrop"
       >
-        <v-layout align-center style="user-select: none">
-          <v-flex xs6>
+        <v-row align="center" style="user-select: none" no-gutters>
+          <v-col cols="6">
             <span style="width: 12em; display: inline-block">
               <b>
                 <v-hover>
@@ -126,15 +125,19 @@
                 <span v-else>No Classes</span>
               </div>
             </v-tooltip>
-          </v-flex>
-          <v-layout v-if="!isOpen" xs6 style="max-width: 50%; overflow-x: auto">
-            <v-flex xs10 :style="{ color: semData.textColor }">
+          </v-col>
+          <v-row
+            v-if="!isOpen"
+            class="xs6"
+            style="max-width: 50%; overflow-x: auto"
+          >
+            <v-col cols="10" :style="{ color: semData.textColor }">
               {{ semData.message }}
-            </v-flex>
-            <v-flex
+            </v-col>
+            <v-col
               v-for="(subject, subjindex) in semesterSubjects"
               :key="subject.subject_id + '-' + subjindex + '-' + index"
-              xs3
+              cols="3"
             >
               <v-card :color="getRawColor(courseColor(subject))">
                 <div v-if="subject !== 'placeholder'">
@@ -146,14 +149,14 @@
                   </v-card-text>
                 </div>
               </v-card>
-            </v-flex>
-          </v-layout>
-          <v-layout v-else>
-            <v-flex xs10 :style="{ color: semData.textColor }">
+            </v-col>
+          </v-row>
+          <v-row v-else>
+            <v-col cols="10" :style="{ color: semData.textColor }">
               {{ semData.message }}
-            </v-flex>
-          </v-layout>
-        </v-layout>
+            </v-col>
+          </v-row>
+        </v-row>
       </v-container>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
@@ -163,13 +166,12 @@
           semData.bgColor,
         ]"
         fluid
-        grid-list-md
         :data-cy="'road_' + roadID + '__semester_' + index + '_dropZone'"
         @dragenter="dragenter"
         @dragleave="dragleave"
         @drop="ondrop"
       >
-        <v-layout wrap align-center justify-center>
+        <v-row align="center" justify="center" dense>
           <Class
             v-for="(subject, subjindex) in semesterSubjects"
             :key="subject.subject_id + '-' + subjindex + '-' + index"
@@ -186,7 +188,7 @@
             :warnings="[]"
             :class-index="semesterSubjects.length"
           />
-        </v-layout>
+        </v-row>
       </v-container>
     </v-expansion-panel-content>
   </v-expansion-panel>

@@ -1,6 +1,6 @@
 <template>
-  <v-layout>
-    <v-flex>
+  <v-row no-gutters>
+    <v-col>
       <v-card
         id="classInfoCard"
         data-cy="classInfoCard"
@@ -14,7 +14,7 @@
           class="card-header"
           :style="'background-color: ' + cardColor()"
         >
-          <v-flex
+          <v-col
             style="display: flex; flex-direction: row; align-items: center"
           >
             <div style="padding: 0; margin: 0; display: block">
@@ -52,12 +52,12 @@
                 </v-icon>
               </v-btn>
             </div>
-          </v-flex>
+          </v-col>
         </v-card-title>
 
         <v-card-text class="card-body">
           <div id="cardBody" class="card-body-container">
-            <v-layout>
+            <v-row no-gutters>
               <div style="padding: 0 0 0.5em 0">
                 <h3 data-cy="cardSubjectTitle">
                   {{ currentSubject.title }}
@@ -85,7 +85,7 @@
               >
                 <v-icon>mdi-cancel</v-icon>
               </v-btn>
-            </v-layout>
+            </v-row>
             <h4 v-if="currentSubject.is_historical">
               <v-icon small> mdi-alert </v-icon>
               This subject is no longer offered (last offered
@@ -302,8 +302,8 @@
           </div>
         </v-card-text>
       </v-card>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>
@@ -610,7 +610,7 @@ const cardTextColor = () => {
 }
 
 .card-header {
-  padding: 0.5em 1em;
+  padding: 0em 1em;
   display: inline-block;
   color: white;
 }
