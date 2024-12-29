@@ -167,27 +167,28 @@ export default {
     getRawColor: function (courseColor) {
       return this.colors[courseColor];
     },
-    getRawTextColor: function (courseColor) {
+    getRawTextColor: function (/* courseColor */) {
+      return "#ffffff";
       // See https://github.com/Myndex/max-contrast
       // https://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
 
-      const Rs = parseInt(this.colors[courseColor].substring(1, 3), 16);
-      const Gs = parseInt(this.colors[courseColor].substring(3, 5), 16);
-      const Bs = parseInt(this.colors[courseColor].substring(5, 7), 16);
+      // const Rs = parseInt(this.colors[courseColor].substring(1, 3), 16);
+      // const Gs = parseInt(this.colors[courseColor].substring(3, 5), 16);
+      // const Bs = parseInt(this.colors[courseColor].substring(5, 7), 16);
 
-      const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG
+      // const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG
 
-      const trc = 2.4,
-        Rco = 0.2126729,
-        Gco = 0.7151522,
-        Bco = 0.072175;
+      // const trc = 2.4,
+      //   Rco = 0.2126729,
+      //   Gco = 0.7151522,
+      //   Bco = 0.072175;
 
-      let Ys =
-        (Rs / 255.0) ** trc * Rco +
-        (Gs / 255.0) ** trc * Gco +
-        (Bs / 255.0) ** trc * Bco;
+      // let Ys =
+      //   (Rs / 255.0) ** trc * Rco +
+      //   (Gs / 255.0) ** trc * Gco +
+      //   (Bs / 255.0) ** trc * Bco;
 
-      return Ys < flipYs ? "#ffffffee" : "#000000dd";
+      // return Ys < flipYs ? "#ffffffee" : "#000000dd";
     },
     // courseColor takes in subject
     courseColor: function (subject) {
