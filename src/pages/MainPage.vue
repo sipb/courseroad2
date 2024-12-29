@@ -11,19 +11,14 @@
               </v-card-title>
               <v-card-text>
                 <p class="text-h5">
-                  It looks like you're browsing CourseRoad from mobile! For a
-                  better mobile experience, consider downloading the FireRoad
-                  app instead, available on Android and iOS.
+                  Courseroad is currently not optimized for mobile use! For a
+                  better experience, please browse from a desktop computer.
                 </p>
               </v-card-text>
             </v-flex>
             <v-flex shrink align-self-center>
-              <v-btn block :href="appLink" color="info">
-                <v-icon>mdi-download</v-icon> Download
-              </v-btn>
-              <br />
-              <v-btn block href="#" @click="showMobile = false">
-                No thanks, take me to the desktop site.
+              <v-btn block href="#" color="info" @click="showMobile = false">
+                Take me to the desktop site
               </v-btn>
             </v-flex>
           </v-layout>
@@ -351,16 +346,6 @@ export default {
     },
     addingFromCard() {
       return this.$store.state.addingFromCard;
-    },
-    appLink: function () {
-      switch (new UAParser(navigator.userAgent).getOS().name) {
-        case "Android":
-          return "http://play.google.com/store/apps/details?id=com.base12innovations.android.fireroad";
-        case "iOS":
-          return "https://itunes.apple.com/us/app/fireroad-mit-course-planner/id1330678450?mt=8";
-        default:
-          return null;
-      }
     },
     cookiesAllowed() {
       return this.$store.state.cookiesAllowed;

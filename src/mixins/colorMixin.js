@@ -66,48 +66,48 @@ export default {
       ],
       colors: {
         "course-none": "#999999",
-        "course-1": "#d10d23",
-        "course-2": "#f16024",
-        "course-3": "#305aba",
-        "course-4": "#bde788",
-        "course-5": "#8abd6d",
-        "course-6": "#499eda",
-        "course-7": "#4365a2",
-        "course-8": "#7a36bf",
-        "course-9": "#4bb399",
-        "course-10": "#c96b52",
-        "course-11": "#81235b",
-        "course-12": "#4bcb4a",
-        "course-14": "#f5a623",
-        "course-15": "#a40052",
-        "course-16": "#64d4e3",
-        "course-17": "#c80db9",
-        "course-18": "#1f3573",
-        "course-20": "#64a518",
-        "course-21": "#a18cd3",
-        "course-21A": "#9162d0",
-        "course-21G": "#764e8d",
-        "course-21H": "#b560c3",
-        "course-21L": "#d574d7",
-        "course-21M": "#f1a7e5",
-        "course-21T": "#ad4096",
-        "course-21W": "#d16ca4",
-        "course-22": "#734954",
-        "course-24": "#3f1c57",
-        "course-CC": "#398486",
-        "course-CMS": "#8aafb1",
-        "course-CSB": "#f5889c",
-        "course-EC": "#8b1d17",
-        "course-EM": "#e1d059",
-        "course-ES": "#b0b02e",
-        "course-HST": "#90cdd0",
-        "course-IDS": "#9eabd0",
-        "course-MAS": "#64696d",
-        "course-SCM": "#152348",
-        "course-STS": "#155410",
-        "course-WGS": "#44cf9d",
-        "course-SP": "#deb821",
-        "course-SWE": "#b82165",
+        "course-1": "#de4343",
+        "course-2": "#de7643",
+        "course-3": "#4369de",
+        "course-4": "#57b563",
+        "course-5": "#43deaf",
+        "course-6": "#4390de",
+        "course-7": "#5779b5",
+        "course-8": "#8157b5",
+        "course-9": "#8143de",
+        "course-10": "#b55757",
+        "course-11": "#b55773",
+        "course-12": "#43de4f",
+        "course-14": "#de9043",
+        "course-15": "#b55c57",
+        "course-16": "#43b2de",
+        "course-17": "#de43b7",
+        "course-18": "#575db5",
+        "course-20": "#57b56e",
+        "course-21": "#57b573",
+        "course-21A": "#57b573",
+        "course-21G": "#57b599",
+        "course-21H": "#57b5a5",
+        "course-21L": "#57b5b2",
+        "course-21M": "#57acb5",
+        "course-21T": "#5e9da6",
+        "course-21W": "#57b580",
+        "course-22": "#b55757",
+        "course-24": "#7657b5",
+        "course-CC": "#4fde43",
+        "course-CMS": "#57b58c",
+        "course-CSB": "#579ab5",
+        "course-EC": "#76b557",
+        "course-EM": "#576eb5",
+        "course-ES": "#5a57b5",
+        "course-HST": "#5779b5",
+        "course-IDS": "#57b586",
+        "course-MAS": "#57b55a",
+        "course-SCM": "#57b573",
+        "course-STS": "#8f57b5",
+        "course-WGS": "#579fb5",
+        "course-SP": "#4343de",
+        "course-SWE": "#b56b57",
         "course-AS": "#b0b0b0",
         "course-MS": "#b0b0b0",
         "course-NS": "#b0b0b0",
@@ -167,27 +167,28 @@ export default {
     getRawColor: function (courseColor) {
       return this.colors[courseColor];
     },
-    getRawTextColor: function (courseColor) {
+    getRawTextColor: function (/* courseColor */) {
+      return "#ffffff";
       // See https://github.com/Myndex/max-contrast
       // https://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
 
-      const Rs = parseInt(this.colors[courseColor].substring(1, 3), 16);
-      const Gs = parseInt(this.colors[courseColor].substring(3, 5), 16);
-      const Bs = parseInt(this.colors[courseColor].substring(5, 7), 16);
+      // const Rs = parseInt(this.colors[courseColor].substring(1, 3), 16);
+      // const Gs = parseInt(this.colors[courseColor].substring(3, 5), 16);
+      // const Bs = parseInt(this.colors[courseColor].substring(5, 7), 16);
 
-      const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG
+      // const flipYs = 0.342; // based on APCA™ 0.98G middle contrast BG
 
-      const trc = 2.4,
-        Rco = 0.2126729,
-        Gco = 0.7151522,
-        Bco = 0.072175;
+      // const trc = 2.4,
+      //   Rco = 0.2126729,
+      //   Gco = 0.7151522,
+      //   Bco = 0.072175;
 
-      let Ys =
-        (Rs / 255.0) ** trc * Rco +
-        (Gs / 255.0) ** trc * Gco +
-        (Bs / 255.0) ** trc * Bco;
+      // let Ys =
+      //   (Rs / 255.0) ** trc * Rco +
+      //   (Gs / 255.0) ** trc * Gco +
+      //   (Bs / 255.0) ** trc * Bco;
 
-      return Ys < flipYs ? "#ffffffee" : "#000000dd";
+      // return Ys < flipYs ? "#ffffffee" : "#000000dd";
     },
     // courseColor takes in subject
     courseColor: function (subject) {
