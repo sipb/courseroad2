@@ -11,15 +11,14 @@
               </v-card-title>
               <v-card-text>
                 <p class="text-h5">
-                  Courseroad is currently not optimized for mobile use!
-                  For a better experience, please browse from a desktop
-                  computer.
+                  Courseroad is currently not optimized for mobile use! For a
+                  better experience, please browse from a desktop computer.
                 </p>
               </v-card-text>
             </v-flex>
             <v-flex shrink align-self-center>
-              <v-btn block href="#" @click="showMobile = false">
-                Take me to the desktop site.
+              <v-btn block href="#" color="info" @click="showMobile = false">
+                Take me to the desktop site
               </v-btn>
             </v-flex>
           </v-layout>
