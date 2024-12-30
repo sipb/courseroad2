@@ -31,7 +31,7 @@
                     {{ semesterYearName }}
                     {{ semesterType }}
                     <span v-if="index > 0">{{
-                      "'" + semesterYear.toString().substring(2)
+                      "'" + semesterYearShort
                     }}</span>
                   </span>
                 </v-hover>
@@ -130,9 +130,8 @@
             <v-tooltip bottom>
               <template #activator="{ on }">
                 <v-btn
-                  :href="hydrantURL"
-                  icon small v-on="on"
-                  style="background-color: transparent; border: none; margin-left: 10px;"
+                  :href="hydrantURL" target="_blank" @click.stop v-on="on"
+                  icon small style="background-color: transparent; border: none; margin-left: 10px;"
                 >
                   <v-icon v-if="semesterSubjects.length" class="mr-1" style="color: red;">mdi-fire-hydrant</v-icon>
                 </v-btn>
@@ -592,6 +591,9 @@ export default defineComponent({
         ? ""
         : Math.floor((this.index - 2) / 3) + this.baseYear;
     },
+    semesterYearShort: function () {
+      return this.semesterYear.toString().substring(2);
+    },
     semesterType: function () {
       return this.index === 0
         ? "Prior Credit"
@@ -604,7 +606,7 @@ export default defineComponent({
     },
     hydrant_t: function () {
       const sem = this.semesterTypeShort;
-      const year = this.semesterYear % 2000;
+      const year = this.semesterYearShort;
       return sem + year;
     },
     hydrant_s: function () {
