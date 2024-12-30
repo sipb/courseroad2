@@ -126,13 +126,15 @@
                 <span v-else>No Classes</span>
               </div>
             </v-tooltip>
+            
             <v-tooltip bottom>
               <template #activator="{ on }">
                 <v-btn
-                  icon small href="https://hydrant.mit.edu"
+                  href="https://hydrant.mit.edu"
+                  icon small v-on="on"
                   style="background-color: transparent; border: none; margin-left: 10px;"
                 >
-                  <v-icon class="mr-1" style="color: red;">mdi-fire-hydrant</v-icon>
+                  <v-icon v-if="semesterSubjects.length" class="mr-1" style="color: red;">mdi-fire-hydrant</v-icon>
                 </v-btn>
               </template>
               <span>View in Hydrant</span>
