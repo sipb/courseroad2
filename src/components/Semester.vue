@@ -597,17 +597,28 @@ export default defineComponent({
         ? "Prior Credit"
         : ["Fall", "IAP", "Spring"][(this.index - 1) % 3];
     },
+    semesterTypeShort: function () {
+      return this.index === 0
+        ? ""
+        : ["f", "i", "s"][(this.index - 1) % 3];
+    },
+    hydrant_t: function () {
+      const sem = this.semesterTypeShort;
+      const year = this.semesterYear % 2000;
+      return sem + year;
+    },
+    hydrant_s: function () {
+      // get subject_id's of subjects in this semester
+      const classes = this.semesterSubjects.map((subj) => [subj.subject_id]);
+      // use format from Hydrant
+      const obj = [classes, null, 0];
+      // encoding logic copied from hydrant/src/lib/utils.tsx:urlencode, except removed "as Uint8Array"
+      return btoa(String.fromCharCode.apply(null, Msgpack.encode(obj)));
+    },
     hydrantURL: function () {
       const url = new URL("https://hydrant.mit.edu/");
-      // 1. get semester in this form: i25 (for IAP 2025) and set t
-      url.searchParams.set("t", this.semesterType);
-      // 2. get classes in this form: const classes = [[['18.600'],['8.06'],['6.1020']], null, 0];
-      const classes = [[['18.600'],['8.06'],['6.1020']], null, 0];
-      // 3. encode classes and set as s
-      // encoding logic copied from hydrant/src/lib/utils.tsx:urlencode, except removed "as Uint8Array"
-      const encoded = btoa(String.fromCharCode.apply(null, Msgpack.encode(classes)));
-      url.searchParams.set("s", encoded);
-      console.log(url.href);
+      url.searchParams.set("t", this.hydrant_t);
+      url.searchParams.set("s", this.hydrant_s);
       return url.href;
     }
   },
