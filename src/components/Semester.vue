@@ -130,7 +130,7 @@
             <v-tooltip bottom>
               <template #activator="{ on }">
                 <v-btn
-                  href="https://hydrant.mit.edu"
+                  :href="hydrantURL"
                   icon small v-on="on"
                   style="background-color: transparent; border: none; margin-left: 10px;"
                 >
@@ -211,6 +211,7 @@ import colorMixin from "./../mixins/colorMixin.js";
 import reqFulfillment from "./../mixins/reqFulfillment.js";
 import schedule from "./../mixins/schedule.js";
 import { defineComponent } from "vue";
+import Msgpack from 'msgpack-lite';
 
 export default defineComponent({
   name: "SemesterComponent",
@@ -596,6 +597,19 @@ export default defineComponent({
         ? "Prior Credit"
         : ["Fall", "IAP", "Spring"][(this.index - 1) % 3];
     },
+    hydrantURL: function () {
+      const url = new URL("https://hydrant.mit.edu/");
+      // 1. get semester in this form: i25 (for IAP 2025) and set t
+      url.searchParams.set("t", this.semesterType);
+      // 2. get classes in this form: const classes = [[['18.600'],['8.06'],['6.1020']], null, 0];
+      const classes = [[['18.600'],['8.06'],['6.1020']], null, 0];
+      // 3. encode classes and set as s
+      // encoding logic copied from hydrant/src/lib/utils.tsx:urlencode, except removed "as Uint8Array"
+      const encoded = btoa(String.fromCharCode.apply(null, Msgpack.encode(classes)));
+      url.searchParams.set("s", encoded);
+      console.log(url.href);
+      return url.href;
+    }
   },
   methods: {
     openRoadSettingsDialog: function (event) {
