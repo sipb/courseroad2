@@ -126,6 +126,17 @@
                 <span v-else>No Classes</span>
               </div>
             </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{ on }">
+                <v-btn
+                  icon small href="https://hydrant.mit.edu"
+                  style="background-color: transparent; border: none; margin-left: 10px;"
+                >
+                  <v-icon class="mr-1" style="color: red;">mdi-fire-hydrant</v-icon>
+                </v-btn>
+              </template>
+              <span>View in Hydrant</span>
+            </v-tooltip>            
           </v-flex>
           <v-layout v-if="!isOpen" xs6 style="max-width: 50%; overflow-x: auto">
             <v-flex xs10 :style="{ color: semData.textColor }">
