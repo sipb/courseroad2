@@ -31,7 +31,7 @@
                     {{ semesterYearName }}
                     {{ semesterType }}
                     <span v-if="index > 0">{{
-                      "'" + semesterYear.toString().substring(2)
+                      "'" + semesterYearShort
                     }}</span>
                   </span>
                 </v-hover>
@@ -126,6 +126,18 @@
                 <span v-else>No Classes</span>
               </div>
             </v-tooltip>
+            
+            <v-tooltip bottom>
+              <template #activator="{ on }">
+                <v-btn
+                  :href="hydrantURL" target="_blank" @click.stop v-on="on"
+                  icon small style="background-color: transparent; border: none; margin-left: 10px;"
+                >
+                  <v-icon v-if="semesterSubjects.length" class="mr-1" style="color: red;">mdi-fire-hydrant</v-icon>
+                </v-btn>
+              </template>
+              <span>View in Hydrant</span>
+            </v-tooltip>            
           </v-flex>
           <v-layout v-if="!isOpen" xs6 style="max-width: 50%; overflow-x: auto">
             <v-flex xs10 :style="{ color: semData.textColor }">
@@ -198,6 +210,7 @@ import colorMixin from "./../mixins/colorMixin.js";
 import reqFulfillment from "./../mixins/reqFulfillment.js";
 import schedule from "./../mixins/schedule.js";
 import { defineComponent } from "vue";
+import Msgpack from 'msgpack-lite';
 
 export default defineComponent({
   name: "SemesterComponent",
@@ -578,11 +591,38 @@ export default defineComponent({
         ? ""
         : Math.floor((this.index - 2) / 3) + this.baseYear;
     },
+    semesterYearShort: function () {
+      return this.semesterYear.toString().substring(2);
+    },
     semesterType: function () {
       return this.index === 0
         ? "Prior Credit"
         : ["Fall", "IAP", "Spring"][(this.index - 1) % 3];
     },
+    semesterTypeShort: function () {
+      return this.index === 0
+        ? ""
+        : ["f", "i", "s"][(this.index - 1) % 3];
+    },
+    hydrant_t: function () {
+      const sem = this.semesterTypeShort;
+      const year = this.semesterYearShort;
+      return sem + year;
+    },
+    hydrant_s: function () {
+      // get subject_id's of subjects in this semester
+      const classes = this.semesterSubjects.map((subj) => [subj.subject_id]);
+      // use format from Hydrant
+      const obj = [classes, null, 0];
+      // encoding logic copied from hydrant/src/lib/utils.tsx:urlencode, except removed "as Uint8Array"
+      return btoa(String.fromCharCode.apply(null, Msgpack.encode(obj)));
+    },
+    hydrantURL: function () {
+      const url = new URL("https://hydrant.mit.edu/");
+      url.searchParams.set("t", this.hydrant_t);
+      url.searchParams.set("s", this.hydrant_s);
+      return url.href;
+    }
   },
   methods: {
     openRoadSettingsDialog: function (event) {
