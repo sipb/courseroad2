@@ -125,7 +125,7 @@
               </div>
             </v-tooltip>
 
-            <v-tooltip v-if="semesterSubjects.length" bottom>
+            <v-tooltip v-if="semesterSubjects.length && index != 0" bottom>
               <template #activator="{ on }">
                 <v-btn
                   :href="hydrantURL"
