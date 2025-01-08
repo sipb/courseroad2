@@ -125,27 +125,19 @@
               </div>
             </v-tooltip>
 
-            <v-tooltip bottom>
+            <v-tooltip v-if="semesterSubjects.length" bottom>
               <template #activator="{ on }">
                 <v-btn
                   :href="hydrantURL"
                   target="_blank"
                   small
                   icon
-                  style="
-                    background-color: transparent;
-                    border: none;
-                    margin-left: 10px;
-                  "
+                  class="ms-3"
+                  color="red"
                   @click.stop
                   v-on="on"
                 >
-                  <v-icon
-                    v-if="semesterSubjects.length"
-                    class="mr-1"
-                    style="color: red"
-                    >mdi-fire-hydrant</v-icon
-                  >
+                  <v-icon class="me-1">mdi-fire-hydrant</v-icon>
                 </v-btn>
               </template>
               <span>View in Hydrant</span>
