@@ -248,6 +248,16 @@
                 View Course Evaluations
               </a>
             </p>
+            <p v-if="currentSubject.subject_id in $store.state.subjectsIndex">
+              <a target="_blank" :href="
+                'https://opengrades.mit.edu/classes/aggregate/' + 
+                currentSubject.subject_id + 
+                '?utm_source=courseroad'
+                "
+              >
+                View Course Data on OpenGrades
+              </a>
+            </p>
             <div v-if="currentSubject.joint_subjects !== undefined">
               <h3>Joint Subjects</h3>
               <subject-scroll
